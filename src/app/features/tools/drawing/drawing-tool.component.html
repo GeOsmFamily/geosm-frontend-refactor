@@ -1,0 +1,79 @@
+<div class="drawing-tool">
+  <h3>Dessin</h3>
+
+  <div class="draw-types">
+    @for (dt of drawTypes; track dt.type) {
+      <button mat-mini-fab
+              [class.active]="activeDrawType === dt.type"
+              [matTooltip]="dt.label"
+              (click)="activateDraw(dt.type)">
+        <mat-icon>{{ dt.icon }}</mat-icon>
+      </button>
+    }
+  </div>
+
+  @if (activeDrawType === 'Text') {
+    <div class="text-input">
+      <input type="text"
+             [(ngModel)]="textLabel"
+             placeholder="Texte de l'annotation"
+             class="text-field">
+    </div>
+  }
+
+  @if (activeDrawType) {
+    <p class="draw-hint">Mode actif : {{ activeDrawType }}. Cliquez sur la carte pour dessiner.</p>
+  }
+
+  <mat-divider></mat-divider>
+
+  <div class="color-section">
+    <h4>Couleur</h4>
+    <div class="color-presets">
+      @for (c of presetColors; track c) {
+        <button class="color-swatch"
+                [class.selected]="selectedColor === c"
+                [style.background-color]="c"
+                (click)="selectColor(c)">
+        </button>
+      }
+    </div>
+    <div class="custom-color">
+      <input type="text"
+             [(ngModel)]="customColor"
+             placeholder="#hex"
+             class="hex-input"
+             maxlength="7">
+      <button mat-stroked-button (click)="applyCustomColor()">Appliquer</button>
+    </div>
+  </div>
+
+  <mat-divider></mat-divider>
+
+  @if (drawnFeatures.length > 0) {
+    <div class="features-list">
+      <h4>Dessins ({{ drawnFeatures.length }})</h4>
+      @for (item of drawnFeatures; track item.id) {
+        <div class="feature-item">
+          <span class="feature-color" [style.background-color]="item.color"></span>
+          <span class="feature-label">{{ item.label }}</span>
+          <button mat-icon-button (click)="deleteFeature(item)">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </div>
+      }
+    </div>
+  }
+
+  <div class="actions">
+    <button mat-stroked-button (click)="saveDrawings()" [disabled]="drawnFeatures.length === 0">
+      <mat-icon>save</mat-icon> Sauvegarder
+    </button>
+    <button mat-stroked-button (click)="loadDrawings()">
+      <mat-icon>folder_open</mat-icon> Charger
+    </button>
+    <button mat-stroked-button color="warn" (click)="clearAll()" [disabled]="drawnFeatures.length === 0">
+      <mat-icon>delete_sweep</mat-icon> Tout effacer
+    </button>
+  </div>
+</div>

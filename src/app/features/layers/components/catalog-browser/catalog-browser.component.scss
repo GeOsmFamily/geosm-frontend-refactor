@@ -1,0 +1,46 @@
+.catalog-browser {
+  padding: 8px;
+  height: 100%;
+  overflow-y: auto;
+
+  .search-box {
+    margin-bottom: 8px;
+
+    .full-width {
+      width: 100%;
+    }
+  }
+
+  .empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 32px 16px;
+    color: rgba(0, 0, 0, 0.54);
+
+    mat-icon {
+      font-size: 48px;
+      width: 48px;
+      height: 48px;
+      margin-bottom: 8px;
+    }
+  }
+
+  .layer-count {
+    font-size: 12px;
+    color: rgba(0, 0, 0, 0.54);
+  }
+
+  .sub-group-panel {
+    margin-left: 16px;
+  }
+
+  mat-expansion-panel-header mat-icon {
+    margin-right: 8px;
+    font-size: 20px;
+  }
+
+  mat-list-item {
+    height: 48px;
+  }
+}

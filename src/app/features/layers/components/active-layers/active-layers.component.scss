@@ -1,0 +1,141 @@
+.active-layers {
+  padding: 8px;
+  height: 100%;
+  overflow-y: auto;
+
+  .empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 48px 16px;
+    color: rgba(0, 0, 0, 0.54);
+
+    mat-icon {
+      font-size: 48px;
+      width: 48px;
+      height: 48px;
+      margin-bottom: 12px;
+    }
+
+    .hint {
+      font-size: 12px;
+      margin-top: 4px;
+    }
+  }
+
+  .layer-list {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .layer-item {
+    display: flex;
+    align-items: flex-start;
+    background: white;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 8px;
+    cursor: default;
+
+    &.cdk-drag-preview {
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    &.cdk-drag-placeholder {
+      opacity: 0.3;
+    }
+  }
+
+  .drag-handle {
+    cursor: grab;
+    color: rgba(0, 0, 0, 0.3);
+    padding: 4px 4px 4px 0;
+
+    &:active {
+      cursor: grabbing;
+    }
+  }
+
+  .layer-info {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .layer-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .layer-name {
+    font-size: 13px;
+    font-weight: 500;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .layer-actions {
+    display: flex;
+    gap: 0;
+
+    button {
+      width: 32px;
+      height: 32px;
+
+      mat-icon {
+        font-size: 18px;
+      }
+    }
+  }
+
+  .opacity-control {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 4px;
+
+    .opacity-icon {
+      font-size: 16px;
+      width: 16px;
+      height: 16px;
+      color: rgba(0, 0, 0, 0.4);
+    }
+
+    .opacity-slider {
+      flex: 1;
+      height: 4px;
+      accent-color: #1976d2;
+    }
+
+    .opacity-value {
+      font-size: 11px;
+      color: rgba(0, 0, 0, 0.54);
+      min-width: 32px;
+      text-align: right;
+    }
+  }
+
+  .layer-legend {
+    margin-top: 4px;
+
+    .legend-swatch {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      border-radius: 3px;
+      border: 1px solid rgba(0, 0, 0, 0.12);
+    }
+  }
+
+  .actions-bar {
+    margin-top: 16px;
+    display: flex;
+    justify-content: center;
+
+    button mat-icon {
+      margin-right: 4px;
+    }
+  }
+}

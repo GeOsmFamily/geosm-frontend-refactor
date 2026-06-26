@@ -1,0 +1,63 @@
+.export-tool {
+  h3 {
+    margin: 0 0 12px;
+    font-size: 16px;
+    font-weight: 500;
+  }
+
+  h4 {
+    margin: 12px 0 8px;
+    font-size: 13px;
+    font-weight: 500;
+  }
+
+  .full-width {
+    width: 100%;
+  }
+
+  .hint {
+    font-size: 12px;
+    color: rgba(0, 0, 0, 0.54);
+    font-style: italic;
+    margin: -8px 0 12px;
+  }
+
+  .export-history {
+    max-height: 300px;
+    overflow-y: auto;
+
+    .export-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 0;
+      border-bottom: 1px solid #f0f0f0;
+
+      .export-info {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+
+        .export-format {
+          font-weight: 500;
+          font-size: 13px;
+        }
+
+        .export-date {
+          font-size: 11px;
+          color: rgba(0, 0, 0, 0.54);
+        }
+      }
+
+      .export-actions {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+      }
+    }
+  }
+
+  mat-divider {
+    margin: 16px 0;
+  }
+}

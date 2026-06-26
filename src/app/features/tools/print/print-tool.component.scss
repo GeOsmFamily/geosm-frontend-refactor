@@ -1,0 +1,32 @@
+.print-tool {
+  h3 {
+    margin: 0 0 12px;
+    font-size: 16px;
+    font-weight: 500;
+  }
+
+  .full-width {
+    width: 100%;
+  }
+
+  .row {
+    display: flex;
+    gap: 12px;
+
+    .half-width {
+      flex: 1;
+    }
+  }
+
+  mat-checkbox {
+    margin-bottom: 12px;
+  }
+
+  mat-divider {
+    margin: 12px 0;
+  }
+
+  button mat-icon {
+    margin-right: 4px;
+  }
+}

@@ -1,0 +1,30 @@
+.search-bar {
+  .search-field {
+    width: 100%;
+    max-width: 400px;
+
+    ::ng-deep .mat-mdc-form-field-subscript-wrapper {
+      display: none;
+    }
+
+    mat-icon[matPrefix] {
+      margin-right: 8px;
+      color: rgba(0, 0, 0, 0.54);
+    }
+  }
+}
+
+::ng-deep .mat-mdc-autocomplete-panel {
+  mat-icon {
+    margin-right: 8px;
+    font-size: 18px;
+    vertical-align: middle;
+  }
+
+  .mat-mdc-optgroup-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: rgba(0, 0, 0, 0.54);
+    text-transform: uppercase;
+  }
+}

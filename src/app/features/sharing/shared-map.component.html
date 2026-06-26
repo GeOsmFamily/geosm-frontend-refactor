@@ -1,0 +1,32 @@
+<div class="shared-map-container">
+  <!-- Info bar -->
+  <div class="info-bar">
+    <span class="brand">GeOSM</span>
+    @if (shareInfo(); as info) {
+      <span class="share-label">Shared Map</span>
+    }
+  </div>
+
+  <!-- Loading state -->
+  @if (loading()) {
+    <div class="loading-overlay">
+      <mat-spinner diameter="48"></mat-spinner>
+      <p>Loading shared map...</p>
+    </div>
+  }
+
+  <!-- Error state -->
+  @if (error()) {
+    <div class="error-overlay">
+      <mat-icon class="error-icon">error_outline</mat-icon>
+      <p>{{ error() }}</p>
+    </div>
+  }
+
+  <!-- Map -->
+  @if (!loading() && !error()) {
+    <div class="map-wrapper">
+      <app-map-view></app-map-view>
+    </div>
+  }
+</div>

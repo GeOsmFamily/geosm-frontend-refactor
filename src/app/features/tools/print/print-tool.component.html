@@ -1,0 +1,47 @@
+<div class="print-tool">
+  <h3>Impression</h3>
+
+  <mat-form-field appearance="outline" class="full-width">
+    <mat-label>Titre</mat-label>
+    <input matInput [(ngModel)]="title" placeholder="Titre de la carte">
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="full-width">
+    <mat-label>Description</mat-label>
+    <textarea matInput [(ngModel)]="description" rows="3" placeholder="Description optionnelle"></textarea>
+  </mat-form-field>
+
+  <div class="row">
+    <mat-form-field appearance="outline" class="half-width">
+      <mat-label>Format</mat-label>
+      <mat-select [(ngModel)]="paperSize">
+        <mat-option value="a4">A4</mat-option>
+        <mat-option value="a3">A3</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="half-width">
+      <mat-label>Orientation</mat-label>
+      <mat-select [(ngModel)]="orientation">
+        <mat-option value="portrait">Portrait</mat-option>
+        <mat-option value="landscape">Paysage</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  <mat-checkbox [(ngModel)]="includeLegend">Inclure la légende</mat-checkbox>
+
+  <mat-divider></mat-divider>
+
+  <button mat-flat-button
+          color="primary"
+          class="full-width"
+          [disabled]="generating"
+          (click)="generatePdf()">
+    @if (generating) {
+      <app-loading-spinner [diameter]="20" message="" />
+    } @else {
+      <mat-icon>picture_as_pdf</mat-icon> Générer le PDF
+    }
+  </button>
+</div>

@@ -1,0 +1,72 @@
+.routing-tool {
+  h3 {
+    margin: 0 0 12px;
+    font-size: 16px;
+    font-weight: 500;
+  }
+
+  .full-width {
+    width: 100%;
+  }
+
+  .point-input {
+    margin-bottom: 4px;
+  }
+
+  .waypoint-input {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+
+    mat-form-field {
+      flex: 1;
+    }
+
+    .remove-wp {
+      color: #f44336;
+    }
+  }
+
+  .add-waypoint {
+    width: 100%;
+    margin-bottom: 12px;
+  }
+
+  .actions {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 12px;
+
+    button {
+      flex: 1;
+
+      mat-icon {
+        margin-right: 4px;
+      }
+    }
+  }
+
+  .route-result {
+    padding: 12px 0;
+
+    .result-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 8px 0;
+
+      mat-icon {
+        color: rgba(0, 0, 0, 0.54);
+      }
+
+      span {
+        font-size: 16px;
+        font-weight: 500;
+      }
+    }
+  }
+
+  mat-divider {
+    margin: 12px 0;
+  }
+}

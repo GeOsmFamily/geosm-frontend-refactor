@@ -1,0 +1,13 @@
+.spinner-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  gap: 12px;
+
+  .spinner-message {
+    color: rgba(0, 0, 0, 0.54);
+    font-size: 14px;
+  }
+}

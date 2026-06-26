@@ -1,0 +1,83 @@
+<div class="routing-tool">
+  <h3>Itinéraire</h3>
+
+  <div class="point-input">
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Départ</mat-label>
+      <input matInput [(ngModel)]="startText" placeholder="Cliquez sur la carte" readonly>
+      <button matSuffix mat-icon-button (click)="pickOnMap('start')" matTooltip="Choisir sur la carte">
+        <mat-icon>my_location</mat-icon>
+      </button>
+    </mat-form-field>
+  </div>
+
+  @for (wp of waypoints; track $index) {
+    <div class="point-input waypoint-input">
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Étape {{ $index + 1 }}</mat-label>
+        <input matInput [ngModel]="wp.text" placeholder="Cliquez sur la carte" readonly>
+        <button matSuffix mat-icon-button (click)="pickOnMap($index)">
+          <mat-icon>my_location</mat-icon>
+        </button>
+      </mat-form-field>
+      <button mat-icon-button (click)="removeWaypoint($index)" class="remove-wp">
+        <mat-icon>remove_circle_outline</mat-icon>
+      </button>
+    </div>
+  }
+
+  <button mat-stroked-button (click)="addWaypoint()" class="add-waypoint">
+    <mat-icon>add</mat-icon> Ajouter une étape
+  </button>
+
+  <div class="point-input">
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Arrivée</mat-label>
+      <input matInput [(ngModel)]="endText" placeholder="Cliquez sur la carte" readonly>
+      <button matSuffix mat-icon-button (click)="pickOnMap('end')">
+        <mat-icon>my_location</mat-icon>
+      </button>
+    </mat-form-field>
+  </div>
+
+  <mat-form-field appearance="outline" class="full-width">
+    <mat-label>Profil</mat-label>
+    <mat-select [(ngModel)]="profile">
+      @for (p of profiles; track p.value) {
+        <mat-option [value]="p.value">
+          <mat-icon>{{ p.icon }}</mat-icon> {{ p.label }}
+        </mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+
+  <div class="actions">
+    <button mat-flat-button
+            color="primary"
+            [disabled]="!startCoord || !endCoord || loading"
+            (click)="calculateRoute()">
+      <mat-icon>directions</mat-icon> Calculer
+    </button>
+    <button mat-stroked-button (click)="clearRoute()">
+      <mat-icon>clear</mat-icon> Effacer
+    </button>
+  </div>
+
+  @if (loading) {
+    <app-loading-spinner message="Calcul en cours..." [diameter]="30" />
+  }
+
+  @if (routeResult) {
+    <mat-divider></mat-divider>
+    <div class="route-result">
+      <div class="result-row">
+        <mat-icon>straighten</mat-icon>
+        <span>{{ formatDistance(routeResult.distance) }}</span>
+      </div>
+      <div class="result-row">
+        <mat-icon>schedule</mat-icon>
+        <span>{{ formatDuration(routeResult.duration) }}</span>
+      </div>
+    </div>
+  }
+</div>

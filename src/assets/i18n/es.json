@@ -1,0 +1,22 @@
+{
+  "app": {
+    "title": "GeOSM",
+    "search_placeholder": "Buscar un lugar, una capa..."
+  },
+  "auth": {
+    "login": "Iniciar sesión",
+    "register": "Registrarse",
+    "email": "Email",
+    "password": "Contraseña",
+    "forgot_password": "¿Olvidaste tu contraseña?",
+    "create_account": "Crear cuenta",
+    "already_have_account": "¿Ya tienes una cuenta?",
+    "sign_in": "Iniciar sesión"
+  },
+  "map": {
+    "layers": "Capas",
+    "tools": "Herramientas",
+    "zoom_in": "Acercar",
+    "zoom_out": "Alejar"
+  }
+}

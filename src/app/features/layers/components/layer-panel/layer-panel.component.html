@@ -1,0 +1,27 @@
+<div class="layer-panel">
+  <mat-tab-group animationDuration="200ms">
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <mat-icon>layers</mat-icon>
+        <span class="tab-label">Catalogue</span>
+      </ng-template>
+      <app-catalog-browser />
+    </mat-tab>
+
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <mat-icon>visibility</mat-icon>
+        <span class="tab-label">Couches actives</span>
+      </ng-template>
+      <app-active-layers />
+    </mat-tab>
+
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <mat-icon>map</mat-icon>
+        <span class="tab-label">Fonds de carte</span>
+      </ng-template>
+      <app-base-map-switcher />
+    </mat-tab>
+  </mat-tab-group>
+</div>

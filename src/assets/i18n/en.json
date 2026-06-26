@@ -1,0 +1,22 @@
+{
+  "app": {
+    "title": "GeOSM",
+    "search_placeholder": "Search for a place, a layer..."
+  },
+  "auth": {
+    "login": "Login",
+    "register": "Register",
+    "email": "Email",
+    "password": "Password",
+    "forgot_password": "Forgot password?",
+    "create_account": "Create account",
+    "already_have_account": "Already have an account?",
+    "sign_in": "Sign in"
+  },
+  "map": {
+    "layers": "Layers",
+    "tools": "Tools",
+    "zoom_in": "Zoom in",
+    "zoom_out": "Zoom out"
+  }
+}

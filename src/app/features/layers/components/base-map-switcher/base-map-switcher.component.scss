@@ -1,0 +1,64 @@
+.base-map-switcher {
+  padding: 16px;
+
+  .base-map-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+
+  mat-card {
+    cursor: pointer;
+    position: relative;
+    padding: 0;
+    overflow: hidden;
+    border: 2px solid transparent;
+    transition: border-color 0.2s;
+
+    &:hover {
+      border-color: #90caf9;
+    }
+
+    &.selected {
+      border-color: #1976d2;
+    }
+
+    .thumbnail {
+      height: 80px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #f5f5f5;
+
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .placeholder-icon {
+        font-size: 36px;
+        width: 36px;
+        height: 36px;
+        color: rgba(0, 0, 0, 0.3);
+      }
+    }
+
+    .base-map-name {
+      padding: 8px;
+      font-size: 12px;
+      font-weight: 500;
+      text-align: center;
+    }
+
+    .check-icon {
+      position: absolute;
+      top: 4px;
+      right: 4px;
+      font-size: 20px;
+      width: 20px;
+      height: 20px;
+      color: #1976d2;
+    }
+  }
+}

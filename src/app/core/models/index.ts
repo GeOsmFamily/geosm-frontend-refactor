@@ -1,3 +1,5 @@
+import type * as GeoJSON from 'geojson';
+
 export enum Role {
   SUPER_ADMIN = 'SUPER_ADMIN',
   ADMIN_INSTANCE = 'ADMIN_INSTANCE',

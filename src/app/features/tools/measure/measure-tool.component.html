@@ -1,0 +1,49 @@
+<div class="measure-tool">
+  <h3>Mesure</h3>
+
+  <mat-button-toggle-group [value]="mode" (change)="setMode($event.value)">
+    <mat-button-toggle value="distance">
+      <mat-icon>straighten</mat-icon> Distance
+    </mat-button-toggle>
+    <mat-button-toggle value="area">
+      <mat-icon>square_foot</mat-icon> Surface
+    </mat-button-toggle>
+  </mat-button-toggle-group>
+
+  <div class="activate-section">
+    <button mat-flat-button
+            [color]="isActive ? 'warn' : 'primary'"
+            (click)="toggleActive()">
+      <mat-icon>{{ isActive ? 'stop' : 'play_arrow' }}</mat-icon>
+      {{ isActive ? 'Arrêter' : 'Mesurer' }}
+    </button>
+  </div>
+
+  @if (isActive) {
+    <p class="measure-hint">
+      Cliquez sur la carte pour {{ mode === 'distance' ? 'tracer une ligne' : 'tracer un polygone' }}.
+      Double-cliquez pour terminer.
+    </p>
+  }
+
+  @if (measurements.length > 0) {
+    <mat-divider></mat-divider>
+
+    <div class="results">
+      <h4>Résultats</h4>
+      @for (m of measurements; track m.id) {
+        <div class="result-item">
+          <mat-icon>{{ m.mode === 'distance' ? 'straighten' : 'square_foot' }}</mat-icon>
+          <span class="result-value">{{ m.value }}</span>
+          <button mat-icon-button (click)="removeMeasurement(m)">
+            <mat-icon>close</mat-icon>
+          </button>
+        </div>
+      }
+    </div>
+
+    <button mat-stroked-button color="warn" (click)="clearMeasurements()">
+      <mat-icon>delete_sweep</mat-icon> Tout effacer
+    </button>
+  }
+</div>

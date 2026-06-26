@@ -1,0 +1,27 @@
+<div class="base-map-switcher">
+  @if (loading) {
+    <app-loading-spinner message="Chargement des fonds de carte..." />
+  } @else {
+    <div class="base-map-grid">
+      @for (bm of baseMaps; track bm.id) {
+        <mat-card
+          [class.selected]="selectedBaseMapId === bm.id"
+          (click)="applyBaseMap(bm.id)">
+          <div class="thumbnail">
+            @if (bm.thumbnail) {
+              <img [src]="bm.thumbnail" [alt]="bm.name">
+            } @else if (bm.id === 'none') {
+              <mat-icon class="placeholder-icon">block</mat-icon>
+            } @else {
+              <mat-icon class="placeholder-icon">map</mat-icon>
+            }
+          </div>
+          <div class="base-map-name">{{ bm.name }}</div>
+          @if (selectedBaseMapId === bm.id) {
+            <mat-icon class="check-icon">check_circle</mat-icon>
+          }
+        </mat-card>
+      }
+    </div>
+  }
+</div>

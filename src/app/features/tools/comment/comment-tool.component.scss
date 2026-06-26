@@ -1,0 +1,113 @@
+.comment-tool {
+  h3 {
+    margin: 0 0 12px;
+    font-size: 16px;
+    font-weight: 500;
+  }
+
+  h4 {
+    margin: 12px 0 8px;
+    font-size: 13px;
+    font-weight: 500;
+  }
+
+  .full-width {
+    width: 100%;
+  }
+
+  .hint {
+    font-size: 12px;
+    color: #1976d2;
+    font-style: italic;
+    margin-top: 8px;
+  }
+
+  .comment-form {
+    margin-top: 12px;
+
+    .coord-info {
+      font-size: 12px;
+      color: rgba(0, 0, 0, 0.54);
+      margin-bottom: 8px;
+    }
+  }
+
+  .comments-list {
+    max-height: 300px;
+    overflow-y: auto;
+
+    .comment-item {
+      display: flex;
+      align-items: center;
+      padding: 8px 0;
+      border-bottom: 1px solid #f0f0f0;
+
+      .comment-content {
+        flex: 1;
+        display: flex;
+        align-items: flex-start;
+        gap: 8px;
+        cursor: pointer;
+
+        &:hover {
+          .comment-text {
+            color: #1976d2;
+          }
+        }
+
+        .pin-icon {
+          color: #e53935;
+          font-size: 20px;
+          flex-shrink: 0;
+        }
+
+        .comment-detail {
+          display: flex;
+          flex-direction: column;
+          gap: 2px;
+
+          .comment-text {
+            font-size: 13px;
+            transition: color 0.2s;
+          }
+
+          .comment-coords {
+            font-size: 11px;
+            color: rgba(0, 0, 0, 0.4);
+            font-family: monospace;
+          }
+        }
+      }
+
+      button {
+        width: 32px;
+        height: 32px;
+        flex-shrink: 0;
+
+        mat-icon {
+          font-size: 18px;
+        }
+      }
+    }
+  }
+
+  .empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 32px 16px;
+    color: rgba(0, 0, 0, 0.38);
+    margin-top: 16px;
+
+    mat-icon {
+      font-size: 40px;
+      width: 40px;
+      height: 40px;
+      margin-bottom: 8px;
+    }
+  }
+
+  mat-divider {
+    margin: 16px 0;
+  }
+}

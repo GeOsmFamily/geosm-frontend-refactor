@@ -1,0 +1,61 @@
+<div class="export-tool">
+  <h3>Export de données</h3>
+
+  <mat-form-field appearance="outline" class="full-width">
+    <mat-label>Couche</mat-label>
+    <mat-select [(ngModel)]="selectedLayerId">
+      @for (al of activeLayers; track al.layer.id) {
+        <mat-option [value]="al.layer.id">{{ al.layer.name }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+
+  @if (activeLayers.length === 0) {
+    <p class="hint">Ajoutez des couches à la carte pour les exporter.</p>
+  }
+
+  <mat-form-field appearance="outline" class="full-width">
+    <mat-label>Format</mat-label>
+    <mat-select [(ngModel)]="selectedFormat">
+      @for (f of formats; track f.value) {
+        <mat-option [value]="f.value">{{ f.label }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+
+  <button mat-flat-button
+          color="primary"
+          class="full-width"
+          [disabled]="!selectedLayerId || exporting"
+          (click)="startExport()">
+    @if (exporting) {
+      <app-loading-spinner [diameter]="20" message="" />
+    } @else {
+      <mat-icon>download</mat-icon> Exporter
+    }
+  </button>
+
+  @if (exports.length > 0) {
+    <mat-divider></mat-divider>
+
+    <div class="export-history">
+      <h4>Historique</h4>
+      @for (exp of exports; track exp.id) {
+        <div class="export-item">
+          <div class="export-info">
+            <span class="export-format">{{ exp.format | uppercase }}</span>
+            <span class="export-date">{{ exp.createdAt | date:'short' }}</span>
+          </div>
+          <div class="export-actions">
+            <mat-chip [color]="getStatusColor(exp.status)">{{ getStatusLabel(exp.status) }}</mat-chip>
+            @if (exp.status === 'completed') {
+              <button mat-icon-button (click)="downloadExport(exp)">
+                <mat-icon>download</mat-icon>
+              </button>
+            }
+          </div>
+        </div>
+      }
+    </div>
+  }
+</div>

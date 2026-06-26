@@ -1,0 +1,97 @@
+import { Component, inject, signal } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
+
+import { MapViewComponent } from '../map-view/map-view.component';
+import { MapService } from '../../services/map.service';
+import { AuthService } from '../../../../core/services/auth.service';
+import { environment } from '../../../../../environments/environment';
+
+@Component({
+  selector: 'app-map-layout',
+  standalone: true,
+  imports: [
+    CommonModule,
+    MatSidenavModule,
+    MatToolbarModule,
+    MatIconModule,
+    MatButtonModule,
+    MatMenuModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatTooltipModule,
+    TranslateModule,
+    MapViewComponent,
+  ],
+  templateUrl: './map-layout.component.html',
+  styleUrl: './map-layout.component.scss',
+})
+export class MapLayoutComponent {
+  private readonly router = inject(Router);
+  private readonly authService = inject(AuthService);
+  private readonly mapService = inject(MapService);
+  private readonly translate = inject(TranslateService);
+
+  readonly leftPanelOpen = signal(true);
+  readonly rightPanelOpen = signal(false);
+  readonly searchQuery = signal('');
+  readonly currentLang = signal(environment.defaultLanguage);
+  readonly availableLanguages = environment.availableLanguages;
+  readonly mousePosition = this.mapService.mousePosition$;
+  readonly currentUser = this.authService.currentUser$;
+
+  constructor() {
+    this.authService.getProfile().subscribe();
+  }
+
+  toggleLeftPanel(): void {
+    this.leftPanelOpen.update((v) => !v);
+    setTimeout(() => this.mapService.getMap()?.updateSize(), 300);
+  }
+
+  toggleRightPanel(): void {
+    this.rightPanelOpen.update((v) => !v);
+    setTimeout(() => this.mapService.getMap()?.updateSize(), 300);
+  }
+
+  onSearch(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    this.searchQuery.set(input.value);
+  }
+
+  switchLanguage(lang: string): void {
+    this.currentLang.set(lang);
+    this.translate.use(lang);
+  }
+
+  zoomIn(): void {
+    const zoom = this.mapService.getZoom();
+    if (zoom !== undefined) {
+      this.mapService.setZoom(zoom + 1);
+    }
+  }
+
+  zoomOut(): void {
+    const zoom = this.mapService.getZoom();
+    if (zoom !== undefined) {
+      this.mapService.setZoom(zoom - 1);
+    }
+  }
+
+  logout(): void {
+    this.authService.logout();
+  }
+
+  navigateToProfile(): void {
+    // Profile navigation placeholder
+  }
+}

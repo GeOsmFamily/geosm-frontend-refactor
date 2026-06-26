@@ -1,0 +1,69 @@
+<div class="catalog-browser">
+  <div class="search-box">
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Rechercher une couche</mat-label>
+      <input matInput [(ngModel)]="searchQuery" (ngModelChange)="onSearch()" placeholder="Nom, tag...">
+      <mat-icon matPrefix>search</mat-icon>
+      @if (searchQuery) {
+        <button matSuffix mat-icon-button (click)="searchQuery = ''; onSearch()">
+          <mat-icon>close</mat-icon>
+        </button>
+      }
+    </mat-form-field>
+  </div>
+
+  @if (loading) {
+    <app-loading-spinner message="Chargement du catalogue..." />
+  } @else if (filteredGroups.length === 0) {
+    <div class="empty-state">
+      <mat-icon>search_off</mat-icon>
+      <p>Aucun résultat trouvé</p>
+    </div>
+  } @else {
+    <mat-accordion multi>
+      @for (group of filteredGroups; track group.id) {
+        <mat-expansion-panel>
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              <mat-icon>folder</mat-icon>
+              <span>{{ group.name }}</span>
+            </mat-panel-title>
+            <mat-panel-description>
+              <span class="layer-count">{{ group.layerCount }} couche{{ group.layerCount > 1 ? 's' : '' }}</span>
+            </mat-panel-description>
+          </mat-expansion-panel-header>
+
+          @for (subGroup of group.subGroups; track subGroup.id) {
+            <mat-expansion-panel class="sub-group-panel">
+              <mat-expansion-panel-header>
+                <mat-panel-title>
+                  <mat-icon>folder_open</mat-icon>
+                  <span>{{ subGroup.name }}</span>
+                </mat-panel-title>
+                <mat-panel-description>
+                  <span class="layer-count">{{ subGroup.layers.length }}</span>
+                </mat-panel-description>
+              </mat-expansion-panel-header>
+
+              <mat-list>
+                @for (layer of subGroup.layers; track layer.id) {
+                  <mat-list-item>
+                    <mat-icon matListItemIcon [matTooltip]="layer.sourceType">{{ getGeometryIcon(layer.sourceType) }}</mat-icon>
+                    <span matListItemTitle>{{ layer.name | truncate:40 }}</span>
+                    <button mat-icon-button
+                            matListItemMeta
+                            [matTooltip]="isLayerActive(layer.id) ? 'Déjà ajoutée' : 'Ajouter à la carte'"
+                            [disabled]="isLayerActive(layer.id)"
+                            (click)="addLayerToMap(layer)">
+                      <mat-icon>{{ isLayerActive(layer.id) ? 'check_circle' : 'add_circle_outline' }}</mat-icon>
+                    </button>
+                  </mat-list-item>
+                }
+              </mat-list>
+            </mat-expansion-panel>
+          }
+        </mat-expansion-panel>
+      }
+    </mat-accordion>
+  }
+</div>

@@ -1,0 +1,22 @@
+{
+  "app": {
+    "title": "GeOSM",
+    "search_placeholder": "Rechercher un lieu, une couche..."
+  },
+  "auth": {
+    "login": "Connexion",
+    "register": "Inscription",
+    "email": "Email",
+    "password": "Mot de passe",
+    "forgot_password": "Mot de passe oublié ?",
+    "create_account": "Créer un compte",
+    "already_have_account": "Vous avez déjà un compte ?",
+    "sign_in": "Se connecter"
+  },
+  "map": {
+    "layers": "Couches",
+    "tools": "Outils",
+    "zoom_in": "Zoom avant",
+    "zoom_out": "Zoom arrière"
+  }
+}
