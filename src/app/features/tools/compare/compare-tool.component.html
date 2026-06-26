@@ -1,0 +1,54 @@
+<div class="compare-tool">
+  <h4>Comparer les cartes</h4>
+  <p class="description">Comparez deux couches côte à côte avec un curseur de balayage.</p>
+
+  @if (!comparing) {
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Couche gauche</mat-label>
+      <mat-select [(ngModel)]="leftLayerId">
+        @for (al of activeLayers; track al.layer.id) {
+          <mat-option [value]="al.layer.id" [disabled]="al.layer.id === rightLayerId">
+            {{ al.layer.name }}
+          </mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Couche droite</mat-label>
+      <mat-select [(ngModel)]="rightLayerId">
+        @for (al of activeLayers; track al.layer.id) {
+          <mat-option [value]="al.layer.id" [disabled]="al.layer.id === leftLayerId">
+            {{ al.layer.name }}
+          </mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    @if (activeLayers.length < 2) {
+      <p class="hint">Ajoutez au moins 2 couches à la carte pour les comparer.</p>
+    }
+
+    <button mat-raised-button color="primary" class="full-width"
+            [disabled]="!leftLayerId || !rightLayerId"
+            (click)="startCompare()">
+      <mat-icon>compare</mat-icon> Comparer
+    </button>
+  } @else {
+    <div class="swipe-control">
+      <div class="swipe-labels">
+        <span>&larr; Gauche</span>
+        <span>Droite &rarr;</span>
+      </div>
+      <input type="range" min="0" max="100" [value]="swipePosition"
+             (input)="onSwipeInput($event)" class="swipe-slider">
+      <div class="swipe-value">{{ swipePosition | number:'1.0-0' }}%</div>
+    </div>
+
+    <mat-divider></mat-divider>
+
+    <button mat-raised-button color="warn" class="full-width" (click)="resetCompare()">
+      <mat-icon>close</mat-icon> Arrêter la comparaison
+    </button>
+  }
+</div>

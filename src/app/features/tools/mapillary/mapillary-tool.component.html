@@ -1,0 +1,40 @@
+<div class="mapillary-tool">
+  <h4>Mapillary Street View</h4>
+  <p class="description">Explorez les images de rue Mapillary sur la carte.</p>
+
+  <button mat-raised-button [color]="active ? 'warn' : 'primary'" (click)="toggle()">
+    <mat-icon>{{ active ? 'close' : 'streetview' }}</mat-icon>
+    {{ active ? 'Désactiver' : 'Activer Mapillary' }}
+  </button>
+
+  @if (active) {
+    <p class="hint">Cliquez sur la carte pour rechercher des images à proximité.</p>
+  }
+
+  @if (loading) {
+    <app-loading-spinner></app-loading-spinner>
+  }
+
+  @if (images.length > 0 && !loading) {
+    <div class="image-strip">
+      @for (img of images; track img.id) {
+        <div class="thumb" [class.selected]="selectedImage?.id === img.id" (click)="selectImage(img)">
+          <img [src]="img.thumb_1024_url" [alt]="'Mapillary ' + img.id" loading="lazy">
+          <small>{{ formatDate(img.captured_at) }}</small>
+        </div>
+      }
+    </div>
+  }
+
+  @if (viewerUrl) {
+    <div class="viewer-panel">
+      <div class="viewer-header">
+        <span>Vue Mapillary</span>
+        <button mat-icon-button (click)="closeViewer()">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+      <iframe [src]="viewerUrl" class="mapillary-iframe" allowfullscreen></iframe>
+    </div>
+  }
+</div>

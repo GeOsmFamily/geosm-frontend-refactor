@@ -1,0 +1,61 @@
+.statistics-tool {
+  padding: 8px;
+  h4 { margin: 0 0 8px; }
+  h5 { margin: 8px 0; font-size: 13px; color: #555; }
+  .description { font-size: 13px; color: #666; margin-bottom: 12px; }
+  .hint { font-size: 12px; color: #999; font-style: italic; }
+  .full-width { width: 100%; }
+
+  .stats-card {
+    margin-bottom: 12px;
+    .stat-number {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      .big-number { font-size: 32px; font-weight: 700; color: var(--primary, #023f5f); }
+      .stat-label { font-size: 14px; color: #666; }
+    }
+  }
+
+  .chart {
+    .chart-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 6px;
+
+      .chart-label {
+        width: 80px;
+        font-size: 11px;
+        color: #555;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        text-align: right;
+      }
+
+      .chart-bar-container {
+        flex: 1;
+        height: 20px;
+        background: rgba(0, 0, 0, 0.04);
+        border-radius: 4px;
+        overflow: hidden;
+
+        .chart-bar {
+          height: 100%;
+          border-radius: 4px;
+          transition: width 0.3s ease;
+          min-width: 2px;
+        }
+      }
+
+      .chart-value {
+        width: 35px;
+        font-size: 12px;
+        font-weight: 500;
+        color: #333;
+        text-align: right;
+      }
+    }
+  }
+}

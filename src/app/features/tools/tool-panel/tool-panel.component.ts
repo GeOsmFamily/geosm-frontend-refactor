@@ -10,6 +10,9 @@ import { ExportToolComponent } from '../export/export-tool.component.js';
 import { PrintToolComponent } from '../print/print-tool.component.js';
 import { CommentToolComponent } from '../comment/comment-tool.component.js';
 import { AltimetryToolComponent } from '../altimetry/altimetry-tool.component.js';
+import { MapillaryToolComponent } from '../mapillary/mapillary-tool.component.js';
+import { CompareToolComponent } from '../compare/compare-tool.component.js';
+import { StatisticsToolComponent } from '../statistics/statistics-tool.component';
 import { TranslateModule } from '@ngx-translate/core';
 
 interface ToolItem {
@@ -33,6 +36,9 @@ interface ToolItem {
     PrintToolComponent,
     CommentToolComponent,
     AltimetryToolComponent,
+    MapillaryToolComponent,
+    CompareToolComponent,
+    StatisticsToolComponent,
   ],
   templateUrl: './tool-panel.component.html',
   styleUrl: './tool-panel.component.scss',
@@ -48,6 +54,9 @@ export class ToolPanelComponent {
     { id: 'print', icon: 'print', label: 'Impression' },
     { id: 'comment', icon: 'comment', label: 'Commentaires' },
     { id: 'altimetry', icon: 'terrain', label: 'Altimétrie' },
+    { id: 'mapillary', icon: 'streetview', label: 'Mapillary' },
+    { id: 'compare', icon: 'compare', label: 'Comparer' },
+    { id: 'statistics', icon: 'bar_chart', label: 'Statistiques' },
   ];
 
   toggleTool(toolId: string): void {

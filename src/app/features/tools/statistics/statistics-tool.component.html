@@ -1,0 +1,52 @@
+<div class="statistics-tool">
+  <h4>Statistiques</h4>
+  <p class="description">Visualisez les statistiques des données de vos couches actives.</p>
+
+  <mat-form-field appearance="outline" class="full-width">
+    <mat-label>Couche</mat-label>
+    <mat-select [(ngModel)]="selectedLayerId" (selectionChange)="loadStats()">
+      @for (al of activeLayers; track al.layer.id) {
+        <mat-option [value]="al.layer.id">{{ al.layer.name }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+
+  <app-loading-spinner *ngIf="loading"></app-loading-spinner>
+
+  @if (stats && !loading) {
+    <mat-card class="stats-card">
+      <mat-card-content>
+        <div class="stat-number">
+          <span class="big-number">{{ stats.totalFeatures }}</span>
+          <span class="stat-label">entités</span>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    @if (stats.properties.length > 0) {
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Propriété</mat-label>
+        <mat-select [(ngModel)]="selectedProperty">
+          @for (prop of stats.properties; track prop) {
+            <mat-option [value]="prop">{{ prop }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      <div class="chart">
+        <h5>Distribution: {{ selectedProperty }}</h5>
+        @for (bar of currentBars; track bar.label) {
+          <div class="chart-row">
+            <div class="chart-label" [title]="bar.label">{{ bar.label }}</div>
+            <div class="chart-bar-container">
+              <div class="chart-bar" [style.width.%]="bar.percentage" [style.background]="bar.color"></div>
+            </div>
+            <div class="chart-value">{{ bar.value }}</div>
+          </div>
+        }
+      </div>
+    } @else {
+      <p class="hint">Aucune propriété analysable trouvée.</p>
+    }
+  }
+</div>
