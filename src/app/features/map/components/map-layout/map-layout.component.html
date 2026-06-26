@@ -75,6 +75,7 @@
     <!-- Map container -->
     <div class="map-area">
       <app-map-view></app-map-view>
+      <app-map-toolbar></app-map-toolbar>
       <app-feature-info></app-feature-info>
       <app-context-menu></app-context-menu>
     </div>
@@ -108,12 +109,6 @@
       <span class="scale-info">Scale bar in map</span>
     </div>
     <div class="status-right">
-      <button mat-icon-button class="zoom-btn" (click)="zoomIn()" matTooltip="Zoom in">
-        <mat-icon>add</mat-icon>
-      </button>
-      <button mat-icon-button class="zoom-btn" (click)="zoomOut()" matTooltip="Zoom out">
-        <mat-icon>remove</mat-icon>
-      </button>
     </div>
   </div>
 </div>

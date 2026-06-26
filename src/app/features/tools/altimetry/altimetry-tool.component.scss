@@ -1,0 +1,12 @@
+.altimetry-tool {
+  padding: 8px;
+  h4 { margin: 0 0 8px; }
+  .description { font-size: 13px; color: #666; margin-bottom: 12px; }
+  .actions { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+  .result { padding-top: 12px; }
+  .altitude-display {
+    display: flex; align-items: center; gap: 8px; margin-top: 12px;
+    .value { font-size: 24px; font-weight: 600; color: var(--primary); }
+  }
+  .coords-display { margin-top: 4px; color: #888; }
+}

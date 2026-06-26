@@ -9,6 +9,7 @@ import { RoutingToolComponent } from '../routing/routing-tool.component.js';
 import { ExportToolComponent } from '../export/export-tool.component.js';
 import { PrintToolComponent } from '../print/print-tool.component.js';
 import { CommentToolComponent } from '../comment/comment-tool.component.js';
+import { AltimetryToolComponent } from '../altimetry/altimetry-tool.component.js';
 
 interface ToolItem {
   id: string;
@@ -30,6 +31,7 @@ interface ToolItem {
     ExportToolComponent,
     PrintToolComponent,
     CommentToolComponent,
+    AltimetryToolComponent,
   ],
   templateUrl: './tool-panel.component.html',
   styleUrl: './tool-panel.component.scss',
@@ -44,6 +46,7 @@ export class ToolPanelComponent {
     { id: 'export', icon: 'download', label: 'Export' },
     { id: 'print', icon: 'print', label: 'Impression' },
     { id: 'comment', icon: 'comment', label: 'Commentaires' },
+    { id: 'altimetry', icon: 'terrain', label: 'Altimétrie' },
   ];
 
   toggleTool(toolId: string): void {

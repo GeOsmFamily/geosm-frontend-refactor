@@ -1,0 +1,10 @@
+.metadata-table {
+  width: 100%;
+  min-width: 400px;
+  border-collapse: collapse;
+  tr:nth-child(even) { background: rgba(0,0,0,0.03); }
+  td { padding: 8px 12px; border-bottom: 1px solid rgba(0,0,0,0.08); font-size: 13px; }
+  .meta-key { font-weight: 500; color: #555; width: 35%; text-transform: capitalize; }
+  .meta-value { word-break: break-word; }
+}
+.no-data { color: #999; text-align: center; padding: 20px; }

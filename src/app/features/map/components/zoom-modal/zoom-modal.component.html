@@ -1,0 +1,19 @@
+<h2 mat-dialog-title>Aller aux coordonnées</h2>
+<mat-dialog-content>
+  <div class="coord-form">
+    <mat-form-field appearance="outline">
+      <mat-label>Longitude</mat-label>
+      <input matInput type="number" [(ngModel)]="longitude" placeholder="-180 à 180" step="any">
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Latitude</mat-label>
+      <input matInput type="number" [(ngModel)]="latitude" placeholder="-90 à 90" step="any">
+    </mat-form-field>
+  </div>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button (click)="cancel()">Annuler</button>
+  <button mat-raised-button color="primary" [disabled]="!isValid()" (click)="submit()">
+    <mat-icon>my_location</mat-icon> Aller
+  </button>
+</mat-dialog-actions>

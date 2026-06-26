@@ -1,0 +1,27 @@
+<div class="altimetry-tool">
+  <h4>Altimétrie</h4>
+  <p class="description">Cliquez sur la carte pour obtenir l'altitude d'un point.</p>
+
+  <div class="actions">
+    <button mat-raised-button color="primary" (click)="startPicking()" [disabled]="picking">
+      <mat-icon>terrain</mat-icon>
+      {{ picking ? 'Cliquez sur la carte...' : 'Mesurer l\'altitude' }}
+    </button>
+    <button mat-button (click)="clear()" *ngIf="altitude !== null">
+      <mat-icon>clear</mat-icon> Effacer
+    </button>
+  </div>
+
+  <app-loading-spinner *ngIf="loading"></app-loading-spinner>
+
+  <div class="result" *ngIf="altitude !== null && !loading">
+    <mat-divider></mat-divider>
+    <div class="altitude-display">
+      <mat-icon>landscape</mat-icon>
+      <span class="value">{{ altitude }} m</span>
+    </div>
+    <div class="coords-display" *ngIf="coordinates">
+      <small>Lon: {{ coordinates[0] | number:'1.5-5' }} | Lat: {{ coordinates[1] | number:'1.5-5' }}</small>
+    </div>
+  </div>
+</div>

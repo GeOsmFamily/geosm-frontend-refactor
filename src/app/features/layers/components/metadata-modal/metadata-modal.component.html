@@ -1,0 +1,16 @@
+<h2 mat-dialog-title>
+  <mat-icon>description</mat-icon>
+  Métadonnées - {{ data.layerName }}
+</h2>
+<mat-dialog-content>
+  <table class="metadata-table">
+    <tr *ngFor="let entry of entries">
+      <td class="meta-key">{{ entry.key }}</td>
+      <td class="meta-value">{{ entry.value }}</td>
+    </tr>
+  </table>
+  <p *ngIf="entries.length === 0" class="no-data">Aucune métadonnée disponible.</p>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button (click)="close()">Fermer</button>
+</mat-dialog-actions>

@@ -23,6 +23,7 @@ import { ContextMenuComponent } from '../context-menu/context-menu.component';
 import { GeosignetsComponent } from '../geosignets/geosignets.component';
 import { SocialShareComponent } from '../../../../features/sharing/social-share.component';
 import { LegendComponent } from '../../../../features/layers/components/legend/legend.component';
+import { MapToolbarComponent } from '../map-toolbar/map-toolbar.component';
 
 @Component({
   selector: 'app-map-layout',
@@ -47,6 +48,7 @@ import { LegendComponent } from '../../../../features/layers/components/legend/l
     GeosignetsComponent,
     SocialShareComponent,
     LegendComponent,
+    MapToolbarComponent,
   ],
   templateUrl: './map-layout.component.html',
   styleUrl: './map-layout.component.scss',
@@ -87,20 +89,6 @@ export class MapLayoutComponent {
   switchLanguage(lang: string): void {
     this.currentLang.set(lang);
     this.translate.use(lang);
-  }
-
-  zoomIn(): void {
-    const zoom = this.mapService.getZoom();
-    if (zoom !== undefined) {
-      this.mapService.setZoom(zoom + 1);
-    }
-  }
-
-  zoomOut(): void {
-    const zoom = this.mapService.getZoom();
-    if (zoom !== undefined) {
-      this.mapService.setZoom(zoom - 1);
-    }
   }
 
   logout(): void {

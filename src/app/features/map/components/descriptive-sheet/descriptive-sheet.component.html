@@ -1,0 +1,36 @@
+<h2 mat-dialog-title>
+  <mat-icon>info</mat-icon>
+  {{ data.layerName || 'Fiche descriptive' }}
+</h2>
+<mat-dialog-content>
+  <div class="sheet-content">
+    <!-- External links -->
+    <div class="external-links" *ngIf="wikipediaUrl || wikidataUrl || osmUrl">
+      <button mat-stroked-button *ngIf="wikipediaUrl" (click)="openExternal(wikipediaUrl!)">
+        <img src="assets/icones/descriptive-sheet/wikipedia-logo.svg" alt="Wikipedia" class="link-icon">
+        Wikipedia
+      </button>
+      <button mat-stroked-button *ngIf="wikidataUrl" (click)="openExternal(wikidataUrl!)">
+        <img src="assets/icones/descriptive-sheet/wikidata-logo.svg" alt="Wikidata" class="link-icon">
+        Wikidata
+      </button>
+      <button mat-stroked-button *ngIf="osmUrl" (click)="openExternal(osmUrl!)">
+        <img src="assets/icones/descriptive-sheet/Logo_mono.svg" alt="OSM" class="link-icon">
+        OpenStreetMap
+      </button>
+    </div>
+
+    <mat-divider *ngIf="wikipediaUrl || wikidataUrl || osmUrl"></mat-divider>
+
+    <!-- Properties table -->
+    <table class="properties-table">
+      <tr *ngFor="let prop of properties">
+        <td class="prop-key">{{ prop.key }}</td>
+        <td class="prop-value">{{ prop.value }}</td>
+      </tr>
+    </table>
+  </div>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button (click)="close()">Fermer</button>
+</mat-dialog-actions>
