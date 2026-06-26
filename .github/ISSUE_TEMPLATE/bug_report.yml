@@ -1,0 +1,84 @@
+name: "🐛 Rapport de bug"
+description: "Signaler un bug ou un comportement inattendu"
+labels: ["bug", "à trier"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Merci de prendre le temps de remplir ce rapport de bug.
+  - type: textarea
+    id: description
+    attributes:
+      label: Description du bug
+      description: "Décrivez clairement le bug rencontré."
+      placeholder: "Quand je clique sur X, il se passe Y au lieu de Z."
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Étapes pour reproduire
+      description: "Listez les étapes pour reproduire le bug."
+      placeholder: |
+        1. Ouvrir la page /map
+        2. Cliquer sur l'outil de mesure
+        3. Observer l'erreur dans la console
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Comportement attendu
+      description: "Décrivez ce qui devrait se passer normalement."
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Comportement actuel
+      description: "Décrivez ce qui se passe réellement."
+    validations:
+      required: true
+  - type: dropdown
+    id: severity
+    attributes:
+      label: Sévérité
+      options:
+        - Critique (bloque l'utilisation)
+        - Majeur (fonctionnalité cassée)
+        - Mineur (contournement possible)
+        - Cosmétique
+    validations:
+      required: true
+  - type: dropdown
+    id: component
+    attributes:
+      label: Composant affecté
+      options:
+        - Carte (OpenLayers)
+        - Couches / Catalogue
+        - Outils (dessin, mesure, itinéraire...)
+        - Recherche / Géocodage
+        - Authentification
+        - Export / Impression
+        - Partage
+        - Interface générale
+        - Autre
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environnement
+      description: "Navigateur, OS, résolution d'écran, etc."
+      placeholder: |
+        - Navigateur: Chrome 126
+        - OS: Windows 11
+        - Résolution: 1920x1080
+        - Mobile: Non
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs / Captures d'écran
+      description: "Collez ici les logs de la console du navigateur ou ajoutez des captures d'écran."
+      render: shell

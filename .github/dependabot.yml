@@ -1,0 +1,73 @@
+version: 2
+updates:
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "08:00"
+      timezone: "Africa/Douala"
+    target-branch: "dev"
+    labels:
+      - "dépendances"
+      - "maintenance"
+    commit-message:
+      prefix: "deps"
+      include: "scope"
+    open-pull-requests-limit: 10
+    groups:
+      angular:
+        patterns:
+          - "@angular/*"
+          - "@angular-devkit/*"
+      angular-material:
+        patterns:
+          - "@angular/material"
+          - "@angular/cdk"
+      openlayers:
+        patterns:
+          - "ol"
+          - "ol-*"
+      testing:
+        patterns:
+          - "karma"
+          - "karma-*"
+          - "jasmine-core"
+          - "@types/jasmine"
+      typescript:
+        patterns:
+          - "typescript"
+          - "@types/*"
+      i18n:
+        patterns:
+          - "@ngx-translate/*"
+
+  - package-ecosystem: "docker"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "08:00"
+      timezone: "Africa/Douala"
+    target-branch: "dev"
+    labels:
+      - "dépendances"
+      - "docker"
+      - "maintenance"
+    commit-message:
+      prefix: "docker"
+
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "08:00"
+      timezone: "Africa/Douala"
+    target-branch: "dev"
+    labels:
+      - "dépendances"
+      - "ci/cd"
+      - "maintenance"
+    commit-message:
+      prefix: "ci"

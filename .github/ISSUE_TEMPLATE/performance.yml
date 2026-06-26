@@ -1,0 +1,48 @@
+name: "⚡ Problème de performance"
+description: "Signaler un problème de lenteur ou de consommation de ressources"
+labels: ["performance", "à trier"]
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: Description du problème
+      description: "Décrivez le problème de performance observé."
+      placeholder: "Le chargement de la carte prend plus de 10 secondes."
+    validations:
+      required: true
+  - type: textarea
+    id: metrics
+    attributes:
+      label: Métriques observées
+      description: "Temps de chargement, utilisation mémoire, FPS, taille du bundle, etc."
+      placeholder: |
+        - Temps de chargement initial : 8s (attendu < 3s)
+        - FPS lors du pan : 15 (attendu > 30)
+        - Mémoire onglet : 500 MB
+    validations:
+      required: true
+  - type: dropdown
+    id: component
+    attributes:
+      label: Composant affecté
+      options:
+        - Chargement initial
+        - Rendu carte (OpenLayers)
+        - Chargement des couches
+        - Recherche / Géocodage
+        - Export / Impression PDF
+        - Bundle size
+        - Autre
+    validations:
+      required: true
+  - type: textarea
+    id: context
+    attributes:
+      label: Contexte
+      description: "Navigateur, nombre de couches actives, volume de données, réseau, etc."
+  - type: textarea
+    id: profiling
+    attributes:
+      label: Données de profilage
+      description: "Chrome DevTools Performance, Lighthouse scores, Network waterfall, etc."
+      render: shell
