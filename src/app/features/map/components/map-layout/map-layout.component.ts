@@ -9,6 +9,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatDividerModule } from '@angular/material/divider';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 import { MapViewComponent } from '../map-view/map-view.component';
@@ -38,6 +39,7 @@ import { MapToolbarComponent } from '../map-toolbar/map-toolbar.component';
     MatFormFieldModule,
     MatInputModule,
     MatTooltipModule,
+    MatDividerModule,
     TranslateModule,
     MapViewComponent,
     LayerPanelComponent,

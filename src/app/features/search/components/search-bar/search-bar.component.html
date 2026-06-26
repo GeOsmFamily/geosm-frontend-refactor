@@ -1,39 +1,39 @@
-<div class="search-bar">
-  <mat-form-field appearance="outline" class="search-field">
-    <mat-icon matPrefix>search</mat-icon>
+<div class="search-container">
+  <mat-form-field appearance="outline" class="search-field" subscriptSizing="dynamic">
+    <mat-icon matPrefix class="search-icon">search</mat-icon>
     <input matInput
            [(ngModel)]="searchQuery"
            (ngModelChange)="onInput()"
            [matAutocomplete]="auto"
            placeholder="Rechercher un lieu, une couche...">
     @if (searchQuery) {
-      <button matSuffix mat-icon-button (click)="clearSearch()">
+      <button matSuffix mat-icon-button class="clear-btn" (click)="clearSearch()">
         <mat-icon>close</mat-icon>
       </button>
     }
-
-    <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selectResult($event.option.value)">
-      @if (geocodingResults.length > 0) {
-        <mat-optgroup label="Lieux">
-          @for (item of geocodingResults; track item.label) {
-            <mat-option [value]="item">
-              <mat-icon>place</mat-icon>
-              <span>{{ item.label }}</span>
-            </mat-option>
-          }
-        </mat-optgroup>
-      }
-
-      @if (layerResults.length > 0) {
-        <mat-optgroup label="Couches">
-          @for (item of layerResults; track item.label) {
-            <mat-option [value]="item">
-              <mat-icon>layers</mat-icon>
-              <span>{{ item.label }}</span>
-            </mat-option>
-          }
-        </mat-optgroup>
-      }
-    </mat-autocomplete>
   </mat-form-field>
+
+  <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selectResult($event.option.value)" class="search-results">
+    @if (geocodingResults.length > 0) {
+      <mat-optgroup label="Lieux">
+        @for (item of geocodingResults; track item.label) {
+          <mat-option [value]="item">
+            <mat-icon class="result-icon place">place</mat-icon>
+            <span class="result-label">{{ item.label }}</span>
+          </mat-option>
+        }
+      </mat-optgroup>
+    }
+
+    @if (layerResults.length > 0) {
+      <mat-optgroup label="Couches">
+        @for (item of layerResults; track item.label) {
+          <mat-option [value]="item">
+            <mat-icon class="result-icon layer">layers</mat-icon>
+            <span class="result-label">{{ item.label }}</span>
+          </mat-option>
+        }
+      </mat-optgroup>
+    }
+  </mat-autocomplete>
 </div>

@@ -62,4 +62,8 @@ export class ToolPanelComponent {
   toggleTool(toolId: string): void {
     this.activeTool = this.activeTool === toolId ? null : toolId;
   }
+
+  getActiveToolLabel(): string {
+    return this.tools.find(t => t.id === this.activeTool)?.label ?? '';
+  }
 }

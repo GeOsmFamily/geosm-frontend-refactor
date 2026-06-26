@@ -1,29 +1,29 @@
 <div class="map-toolbar">
-  <button mat-mini-fab color="primary" (click)="zoomIn()" matTooltip="Zoom avant" matTooltipPosition="left">
+  <button mat-mini-fab class="toolbar-btn primary" (click)="zoomIn()" matTooltip="Zoom avant" matTooltipPosition="left">
     <mat-icon>add</mat-icon>
   </button>
-  <button mat-mini-fab color="primary" (click)="zoomOut()" matTooltip="Zoom arrière" matTooltipPosition="left">
+  <button mat-mini-fab class="toolbar-btn primary" (click)="zoomOut()" matTooltip="Zoom arrière" matTooltipPosition="left">
     <mat-icon>remove</mat-icon>
   </button>
 
-  <div class="separator"></div>
+  <div class="toolbar-divider"></div>
 
-  <button mat-mini-fab (click)="goBack()" [disabled]="!canGoBack" matTooltip="Vue précédente" matTooltipPosition="left">
+  <button mat-mini-fab class="toolbar-btn" (click)="goBack()" [disabled]="!canGoBack" matTooltip="Vue précédente" matTooltipPosition="left">
     <mat-icon>undo</mat-icon>
   </button>
-  <button mat-mini-fab (click)="goForward()" [disabled]="!canGoForward" matTooltip="Vue suivante" matTooltipPosition="left">
+  <button mat-mini-fab class="toolbar-btn" (click)="goForward()" [disabled]="!canGoForward" matTooltip="Vue suivante" matTooltipPosition="left">
     <mat-icon>redo</mat-icon>
   </button>
 
-  <div class="separator"></div>
+  <div class="toolbar-divider"></div>
 
-  <button mat-mini-fab (click)="fitExtent()" matTooltip="Vue globale" matTooltipPosition="left">
+  <button mat-mini-fab class="toolbar-btn" (click)="fitExtent()" matTooltip="Vue globale" matTooltipPosition="left">
     <mat-icon>public</mat-icon>
   </button>
-  <button mat-mini-fab (click)="openZoomModal()" matTooltip="Aller aux coordonnées" matTooltipPosition="left">
+  <button mat-mini-fab class="toolbar-btn" (click)="openZoomModal()" matTooltip="Aller aux coordonnées" matTooltipPosition="left">
     <mat-icon>my_location</mat-icon>
   </button>
-  <button mat-mini-fab (click)="toggleCompare()" matTooltip="Comparer les cartes" matTooltipPosition="left">
+  <button mat-mini-fab class="toolbar-btn" (click)="toggleCompare()" matTooltip="Comparer les cartes" matTooltipPosition="left">
     <mat-icon>compare</mat-icon>
   </button>
 </div>

@@ -1,13 +1,18 @@
 .catalog-browser {
-  padding: 8px;
+  padding: 12px;
   height: 100%;
   overflow-y: auto;
 
   .search-box {
     margin-bottom: 8px;
 
-    .full-width {
-      width: 100%;
+    .full-width { width: 100%; }
+
+    ::ng-deep .mat-mdc-form-field-subscript-wrapper { display: none; }
+
+    ::ng-deep .mdc-notched-outline__leading,
+    ::ng-deep .mdc-notched-outline__trailing {
+      border-radius: var(--radius-sm) !important;
     }
   }
 
@@ -15,32 +20,70 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 32px 16px;
-    color: rgba(0, 0, 0, 0.54);
+    padding: 48px 16px;
+    color: var(--text-light);
 
     mat-icon {
-      font-size: 48px;
-      width: 48px;
-      height: 48px;
-      margin-bottom: 8px;
+      font-size: 52px;
+      width: 52px;
+      height: 52px;
+      margin-bottom: 12px;
+      color: var(--border);
+    }
+
+    p {
+      font-size: 14px;
+      color: var(--text-secondary);
     }
   }
 
   .layer-count {
-    font-size: 12px;
-    color: rgba(0, 0, 0, 0.54);
+    font-size: 11px;
+    color: var(--text-light);
+    background: var(--background);
+    padding: 2px 8px;
+    border-radius: 10px;
   }
 
   .sub-group-panel {
-    margin-left: 16px;
+    margin-left: 12px;
+  }
+
+  ::ng-deep .mat-expansion-panel {
+    box-shadow: none !important;
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-sm) !important;
+    margin-bottom: 4px;
+
+    &::before { display: none; }
+  }
+
+  ::ng-deep .mat-expansion-panel-header {
+    height: 44px !important;
+    padding: 0 12px;
+    font-family: 'Avenir Next Rounded Pro Medium', 'Roboto', sans-serif;
+    font-size: 13px;
   }
 
   mat-expansion-panel-header mat-icon {
     margin-right: 8px;
     font-size: 20px;
+    color: var(--accent);
+  }
+
+  ::ng-deep .mat-expansion-panel-body {
+    padding: 0 8px 8px !important;
   }
 
   mat-list-item {
-    height: 48px;
+    height: 44px !important;
+    border-radius: var(--radius-sm);
+    transition: background var(--transition-fast);
+
+    &:hover { background: var(--surface-hover); }
+
+    ::ng-deep .mat-mdc-list-item-icon {
+      color: var(--text-secondary);
+    }
   }
 }

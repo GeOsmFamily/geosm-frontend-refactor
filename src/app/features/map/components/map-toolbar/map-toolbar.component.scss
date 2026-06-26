@@ -2,20 +2,49 @@
   display: flex;
   flex-direction: column;
   gap: 6px;
-  padding: 6px;
-  background: rgba(255, 255, 255, 0.9);
-  border-radius: 8px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  padding: 8px;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(12px);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+}
 
-  .separator {
-    height: 1px;
-    background: rgba(0, 0, 0, 0.12);
-    margin: 2px 0;
+.toolbar-divider {
+  height: 1px;
+  background: var(--border);
+  margin: 2px 4px;
+}
+
+.toolbar-btn {
+  width: 36px !important;
+  height: 36px !important;
+  box-shadow: none !important;
+  background: var(--surface) !important;
+  color: var(--text) !important;
+  transition: all var(--transition-fast) !important;
+
+  .mat-icon {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
   }
 
-  button[mat-mini-fab] {
-    width: 36px;
-    height: 36px;
-    .mat-icon { font-size: 20px; width: 20px; height: 20px; }
+  &:hover:not(:disabled) {
+    background: var(--background) !important;
+    transform: scale(1.08);
+  }
+
+  &:disabled {
+    opacity: 0.35;
+  }
+
+  &.primary {
+    background: var(--primary) !important;
+    color: white !important;
+
+    &:hover {
+      background: var(--primary-light) !important;
+    }
   }
 }
