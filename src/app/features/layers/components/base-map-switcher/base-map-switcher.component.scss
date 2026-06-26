@@ -1,26 +1,31 @@
 .base-map-switcher {
-  padding: 16px;
+  padding: 12px;
 
   .base-map-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
+    gap: 10px;
   }
 
   mat-card {
     cursor: pointer;
     position: relative;
-    padding: 0;
+    padding: 0 !important;
     overflow: hidden;
-    border: 2px solid transparent;
-    transition: border-color 0.2s;
+    border: 2px solid var(--border-light) !important;
+    border-radius: var(--radius-md) !important;
+    box-shadow: var(--shadow-sm) !important;
+    transition: all var(--transition-fast) !important;
 
     &:hover {
-      border-color: #90caf9;
+      border-color: var(--accent-light) !important;
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md) !important;
     }
 
     &.selected {
-      border-color: #1976d2;
+      border-color: var(--accent) !important;
+      box-shadow: 0 0 0 3px rgba(0, 173, 167, 0.15) !important;
     }
 
     .thumbnail {
@@ -28,7 +33,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      background: #f5f5f5;
+      background: var(--background);
 
       img {
         width: 100%;
@@ -37,28 +42,31 @@
       }
 
       .placeholder-icon {
-        font-size: 36px;
-        width: 36px;
-        height: 36px;
-        color: rgba(0, 0, 0, 0.3);
+        font-size: 32px;
+        width: 32px;
+        height: 32px;
+        color: var(--text-light);
       }
     }
 
     .base-map-name {
       padding: 8px;
+      font-family: 'Avenir Next Rounded Pro Medium', 'Roboto', sans-serif;
       font-size: 12px;
       font-weight: 500;
       text-align: center;
+      color: var(--text);
     }
 
     .check-icon {
       position: absolute;
-      top: 4px;
-      right: 4px;
+      top: 6px;
+      right: 6px;
       font-size: 20px;
       width: 20px;
       height: 20px;
-      color: #1976d2;
+      color: var(--accent);
+      filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3));
     }
   }
 }

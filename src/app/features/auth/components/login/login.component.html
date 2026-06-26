@@ -1,29 +1,51 @@
 <div class="login-page">
-  <mat-card class="login-card">
-    <mat-card-header>
-      <div class="logo-container">
-        <h1 class="logo-text">GeOSM</h1>
-        <p class="subtitle">Plateforme Cartographique</p>
+  <div class="login-left">
+    <div class="brand-area">
+      <div class="brand-logo">
+        <mat-icon class="globe-icon">public</mat-icon>
       </div>
-    </mat-card-header>
+      <h1 class="brand-name">GeOSM</h1>
+      <p class="brand-tagline">Plateforme Cartographique Collaborative</p>
+      <div class="brand-features">
+        <div class="feature-item">
+          <mat-icon>layers</mat-icon>
+          <span>Couches thématiques</span>
+        </div>
+        <div class="feature-item">
+          <mat-icon>share</mat-icon>
+          <span>Partage & collaboration</span>
+        </div>
+        <div class="feature-item">
+          <mat-icon>analytics</mat-icon>
+          <span>Outils d'analyse</span>
+        </div>
+      </div>
+    </div>
+  </div>
 
-    <mat-card-content>
+  <div class="login-right">
+    <div class="login-form-container">
+      <div class="form-header">
+        <h2>Connexion</h2>
+        <p>Accédez à votre espace cartographique</p>
+      </div>
+
       @if (errorMessage()) {
-        <div class="error-message">
+        <div class="error-message animate-in">
           <mat-icon>error_outline</mat-icon>
           <span>{{ errorMessage() }}</span>
         </div>
       }
 
-      <form (ngSubmit)="login()">
+      <form (ngSubmit)="login()" class="login-form">
         <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Email</mat-label>
+          <mat-label>Adresse email</mat-label>
           <input matInput type="email" [(ngModel)]="email" name="email" required autocomplete="email" />
           <mat-icon matPrefix>email</mat-icon>
         </mat-form-field>
 
         <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Password</mat-label>
+          <mat-label>Mot de passe</mat-label>
           <input
             matInput
             [type]="hidePassword ? 'password' : 'text'"
@@ -38,30 +60,33 @@
           </button>
         </mat-form-field>
 
-        <div class="forgot-password">
-          <a routerLink="/login" class="link">Forgot password?</a>
+        <div class="form-options">
+          <a routerLink="/login" class="forgot-link">Mot de passe oublié ?</a>
         </div>
 
         <button
-          mat-raised-button
+          mat-flat-button
           color="primary"
           class="full-width login-btn"
           type="submit"
           [disabled]="loading()"
         >
           @if (loading()) {
-            <mat-spinner diameter="20"></mat-spinner>
+            <mat-spinner diameter="22" color="accent"></mat-spinner>
           } @else {
-            Login
+            <ng-container>Se connecter</ng-container>
           }
         </button>
       </form>
-    </mat-card-content>
 
-    <mat-card-actions align="end">
-      <span class="register-link">
-        Don't have an account? <a routerLink="/register" class="link">Create account</a>
-      </span>
-    </mat-card-actions>
-  </mat-card>
+      <div class="divider">
+        <span>ou</span>
+      </div>
+
+      <div class="register-prompt">
+        Pas encore de compte ?
+        <a routerLink="/register" class="register-link">Créer un compte</a>
+      </div>
+    </div>
+  </div>
 </div>

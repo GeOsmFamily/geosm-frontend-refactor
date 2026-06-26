@@ -1,51 +1,70 @@
 .feature-info-popup {
-  background: #fff;
-  border-radius: 8px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.2);
-  min-width: 250px;
-  max-width: 360px;
-  max-height: 300px;
+  background: var(--surface);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-xl);
+  min-width: 260px;
+  max-width: 380px;
+  max-height: 320px;
   overflow: hidden;
   display: flex;
   flex-direction: column;
+  border: 1px solid var(--border-light);
 }
 
 .popup-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 8px 12px;
+  padding: 10px 14px;
   background: var(--primary);
   color: #fff;
 }
 
-.popup-title { font-size: 14px; font-weight: 500; }
-.close-btn { color: #fff; }
+.popup-title {
+  font-family: 'Avenir Next Rounded Pro Medium', 'Roboto', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.close-btn { color: #fff !important; }
 
 .popup-body {
-  padding: 8px 12px;
+  padding: 10px 14px;
   overflow-y: auto;
-  max-height: 220px;
+  max-height: 240px;
 }
 
 .loading {
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 12px 0;
+  padding: 16px 0;
   font-size: 13px;
-  color: #666;
+  color: var(--text-secondary);
 }
 
-.no-data { color: #999; font-size: 13px; text-align: center; padding: 12px 0; }
+.no-data {
+  color: var(--text-light);
+  font-size: 13px;
+  text-align: center;
+  padding: 16px 0;
+}
 
 .properties-table {
   width: 100%;
   border-collapse: collapse;
   font-size: 13px;
 
-  tr:nth-child(even) { background: #f9f9f9; }
-  td { padding: 4px 8px; border-bottom: 1px solid #eee; }
-  .prop-key { font-weight: 500; color: #555; white-space: nowrap; }
-  .prop-value { word-break: break-word; }
+  tr:nth-child(even) { background: var(--background); }
+  td {
+    padding: 6px 10px;
+    border-bottom: 1px solid var(--border-light);
+  }
+  .prop-key {
+    font-weight: 500;
+    color: var(--text-secondary);
+    white-space: nowrap;
+    font-size: 12px;
+  }
+  .prop-value { word-break: break-word; color: var(--text); }
 }

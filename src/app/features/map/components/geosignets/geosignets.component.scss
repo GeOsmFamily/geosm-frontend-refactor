@@ -1,5 +1,13 @@
 .geosignets {
-  h4 { margin: 0 0 12px; font-size: 15px; font-weight: 500; color: var(--primary); }
+  padding: 12px;
+
+  h4 {
+    margin: 0 0 12px;
+    font-family: 'Avenir Next Rounded Pro Demi', 'Roboto', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--primary);
+  }
 }
 
 .save-form {
@@ -7,14 +15,31 @@
   gap: 8px;
   align-items: flex-start;
   margin-bottom: 12px;
+
+  button {
+    height: 40px;
+    border-radius: var(--radius-sm) !important;
+    font-size: 13px;
+    white-space: nowrap;
+  }
+
+  ::ng-deep .mat-mdc-form-field-subscript-wrapper { display: none; }
 }
 
 .name-field { flex: 1; }
 
-.no-bookmarks { color: #999; font-size: 13px; text-align: center; padding: 16px 0; }
+.no-bookmarks {
+  color: var(--text-light);
+  font-size: 13px;
+  text-align: center;
+  padding: 20px 0;
+}
 
 .bookmark-item {
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid var(--border-light) !important;
+  transition: background var(--transition-fast);
+
+  &:hover { background: var(--surface-hover); }
 }
 
 .bookmark-content {
@@ -25,9 +50,17 @@
 }
 
 .bookmark-name {
-  font-size: 14px;
+  font-family: 'Avenir Next Rounded Pro Medium', 'Roboto', sans-serif;
+  font-size: 13px;
   font-weight: 500;
-  &:hover { color: var(--primary); }
+  color: var(--text);
+  transition: color var(--transition-fast);
+
+  &:hover { color: var(--accent); }
 }
 
-.bookmark-coords { font-size: 11px; color: #999; }
+.bookmark-coords {
+  font-size: 11px;
+  color: var(--text-light);
+  font-family: 'Roboto Mono', monospace;
+}

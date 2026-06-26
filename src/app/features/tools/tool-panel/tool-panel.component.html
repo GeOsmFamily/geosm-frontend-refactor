@@ -1,30 +1,41 @@
 <div class="tool-panel">
-  <div class="tool-buttons">
+  <div class="tool-grid">
     @for (tool of tools; track tool.id) {
-      <button mat-icon-button
+      <button class="tool-btn"
               [class.active]="activeTool === tool.id"
               [matTooltip]="tool.label"
-              matTooltipPosition="left"
+              matTooltipPosition="below"
               (click)="toggleTool(tool.id)">
-        <mat-icon>{{ tool.icon }}</mat-icon>
+        <div class="tool-icon-wrapper">
+          <mat-icon>{{ tool.icon }}</mat-icon>
+        </div>
+        <span class="tool-label">{{ tool.label }}</span>
       </button>
     }
   </div>
 
   @if (activeTool) {
-    <div class="tool-content">
-      @switch (activeTool) {
-        @case ('drawing') { <app-drawing-tool /> }
-        @case ('measure') { <app-measure-tool /> }
-        @case ('routing') { <app-routing-tool /> }
-        @case ('export') { <app-export-tool /> }
-        @case ('print') { <app-print-tool /> }
-        @case ('comment') { <app-comment-tool /> }
-        @case ('altimetry') { <app-altimetry-tool /> }
-        @case ('mapillary') { <app-mapillary-tool /> }
-        @case ('compare') { <app-compare-tool /> }
-        @case ('statistics') { <app-statistics-tool /> }
-      }
+    <div class="tool-content animate-in">
+      <div class="tool-content-header">
+        <h4>{{ getActiveToolLabel() }}</h4>
+        <button mat-icon-button class="tool-close" (click)="toggleTool(activeTool)">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+      <div class="tool-content-body">
+        @switch (activeTool) {
+          @case ('drawing') { <app-drawing-tool /> }
+          @case ('measure') { <app-measure-tool /> }
+          @case ('routing') { <app-routing-tool /> }
+          @case ('export') { <app-export-tool /> }
+          @case ('print') { <app-print-tool /> }
+          @case ('comment') { <app-comment-tool /> }
+          @case ('altimetry') { <app-altimetry-tool /> }
+          @case ('mapillary') { <app-mapillary-tool /> }
+          @case ('compare') { <app-compare-tool /> }
+          @case ('statistics') { <app-statistics-tool /> }
+        }
+      </div>
     </div>
   }
 </div>

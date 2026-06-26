@@ -1,11 +1,14 @@
 <div class="map-layout">
   <!-- Header -->
-  <mat-toolbar class="header" color="primary">
+  <header class="header">
     <div class="header-left">
-      <button mat-icon-button (click)="toggleLeftPanel()" matTooltip="Toggle layers panel">
-        <mat-icon>menu</mat-icon>
+      <button mat-icon-button class="menu-btn" (click)="toggleLeftPanel()" matTooltip="Panneau couches">
+        <mat-icon>{{ leftPanelOpen() ? 'menu_open' : 'menu' }}</mat-icon>
       </button>
-      <span class="logo">GeOSM</span>
+      <div class="logo-group">
+        <mat-icon class="logo-icon">public</mat-icon>
+        <span class="logo-text">GeOSM</span>
+      </div>
     </div>
 
     <div class="header-center">
@@ -13,53 +16,60 @@
     </div>
 
     <div class="header-right">
-      <!-- Language selector -->
-      <button mat-icon-button [matMenuTriggerFor]="langMenu" matTooltip="Language">
-        <mat-icon>language</mat-icon>
+      <button mat-icon-button [matMenuTriggerFor]="langMenu" matTooltip="Langue" class="header-action">
+        <mat-icon>translate</mat-icon>
       </button>
-      <mat-menu #langMenu="matMenu">
+      <mat-menu #langMenu="matMenu" class="lang-menu">
         @for (lang of availableLanguages; track lang) {
-          <button mat-menu-item (click)="switchLanguage(lang)">
-            <span [class.active-lang]="currentLang() === lang">{{ lang | uppercase }}</span>
+          <button mat-menu-item (click)="switchLanguage(lang)" [class.active-lang]="currentLang() === lang">
+            <span class="lang-label">{{ lang | uppercase }}</span>
           </button>
         }
       </mat-menu>
 
-      <!-- User menu -->
-      <button mat-icon-button [matMenuTriggerFor]="userMenu" matTooltip="User menu">
-        <mat-icon>account_circle</mat-icon>
+      <button mat-icon-button [matMenuTriggerFor]="userMenu" matTooltip="Mon compte" class="header-action user-btn">
+        <mat-icon>person</mat-icon>
       </button>
       <mat-menu #userMenu="matMenu">
         @if (currentUser | async; as user) {
-          <div class="user-info" mat-menu-item disabled>
-            <span>{{ user.firstName }} {{ user.lastName }}</span>
+          <div class="user-info-header" mat-menu-item disabled>
+            <div class="user-avatar">
+              <mat-icon>account_circle</mat-icon>
+            </div>
+            <div class="user-details">
+              <span class="user-name">{{ user.firstName }} {{ user.lastName }}</span>
+              <span class="user-email">{{ user.email }}</span>
+            </div>
           </div>
+          <mat-divider></mat-divider>
         }
         <button mat-menu-item (click)="navigateToProfile()">
-          <mat-icon>person</mat-icon>
-          <span>Profile</span>
+          <mat-icon>settings</mat-icon>
+          <span>Paramètres</span>
         </button>
-        <button mat-menu-item (click)="logout()">
-          <mat-icon>exit_to_app</mat-icon>
-          <span>Logout</span>
+        <button mat-menu-item (click)="logout()" class="logout-item">
+          <mat-icon>logout</mat-icon>
+          <span>Déconnexion</span>
         </button>
       </mat-menu>
 
-      <!-- Tools toggle -->
-      <button mat-icon-button (click)="toggleRightPanel()" matTooltip="Toggle tools panel">
-        <mat-icon>build</mat-icon>
+      <button mat-icon-button (click)="toggleRightPanel()" matTooltip="Outils" class="header-action tools-btn" [class.active]="rightPanelOpen()">
+        <mat-icon>handyman</mat-icon>
       </button>
     </div>
-  </mat-toolbar>
+  </header>
 
   <!-- Main content area -->
   <div class="main-content">
     <!-- Left sidebar -->
-    <div class="left-panel" [class.collapsed]="!leftPanelOpen()">
+    <aside class="left-panel" [class.collapsed]="!leftPanelOpen()">
       <div class="panel-content">
         <div class="panel-header">
-          <h3>Couches</h3>
-          <button mat-icon-button (click)="toggleLeftPanel()">
+          <div class="panel-title-group">
+            <mat-icon class="panel-icon">layers</mat-icon>
+            <h3>Couches</h3>
+          </div>
+          <button mat-icon-button (click)="toggleLeftPanel()" class="panel-close">
             <mat-icon>chevron_left</mat-icon>
           </button>
         </div>
@@ -70,7 +80,7 @@
           <app-social-share></app-social-share>
         </div>
       </div>
-    </div>
+    </aside>
 
     <!-- Map container -->
     <div class="map-area">
@@ -81,11 +91,14 @@
     </div>
 
     <!-- Right sidebar -->
-    <div class="right-panel" [class.collapsed]="!rightPanelOpen()">
+    <aside class="right-panel" [class.collapsed]="!rightPanelOpen()">
       <div class="panel-content">
         <div class="panel-header">
-          <h3>Outils</h3>
-          <button mat-icon-button (click)="toggleRightPanel()">
+          <div class="panel-title-group">
+            <mat-icon class="panel-icon">handyman</mat-icon>
+            <h3>Outils</h3>
+          </div>
+          <button mat-icon-button (click)="toggleRightPanel()" class="panel-close">
             <mat-icon>chevron_right</mat-icon>
           </button>
         </div>
@@ -93,22 +106,23 @@
           <app-tool-panel></app-tool-panel>
         </div>
       </div>
-    </div>
+    </aside>
   </div>
 
   <!-- Status bar -->
-  <div class="status-bar">
+  <footer class="status-bar">
     <div class="status-left">
       @if (mousePosition | async; as pos) {
-        <span class="coordinates">
-          Lon: {{ pos[0] | number:'1.4-4' }} | Lat: {{ pos[1] | number:'1.4-4' }}
-        </span>
+        <div class="coord-badge">
+          <mat-icon>place</mat-icon>
+          <span>{{ pos[0] | number:'1.4-4' }}, {{ pos[1] | number:'1.4-4' }}</span>
+        </div>
       }
     </div>
     <div class="status-center">
-      <span class="scale-info">Scale bar in map</span>
     </div>
     <div class="status-right">
+      <span class="powered-by">GeOSM v3.0</span>
     </div>
-  </div>
+  </footer>
 </div>

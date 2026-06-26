@@ -3,11 +3,12 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 24px;
-  gap: 12px;
+  padding: 32px;
+  gap: 14px;
 
   .spinner-message {
-    color: rgba(0, 0, 0, 0.54);
+    color: var(--text-secondary);
     font-size: 14px;
+    font-family: 'Avenir Next Rounded Pro Regular', 'Roboto', sans-serif;
   }
 }
