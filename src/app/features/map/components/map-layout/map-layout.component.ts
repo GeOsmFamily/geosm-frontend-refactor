@@ -12,9 +12,17 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 import { MapViewComponent } from '../map-view/map-view.component';
+import { LayerPanelComponent } from '../../../../features/layers/components/layer-panel/layer-panel.component';
+import { ToolPanelComponent } from '../../../../features/tools/tool-panel/tool-panel.component';
+import { SearchBarComponent } from '../../../../features/search/components/search-bar/search-bar.component';
 import { MapService } from '../../services/map.service';
 import { AuthService } from '../../../../core/services/auth.service';
 import { environment } from '../../../../../environments/environment';
+import { FeatureInfoComponent } from '../feature-info/feature-info.component';
+import { ContextMenuComponent } from '../context-menu/context-menu.component';
+import { GeosignetsComponent } from '../geosignets/geosignets.component';
+import { SocialShareComponent } from '../../../../features/sharing/social-share.component';
+import { LegendComponent } from '../../../../features/layers/components/legend/legend.component';
 
 @Component({
   selector: 'app-map-layout',
@@ -31,6 +39,14 @@ import { environment } from '../../../../../environments/environment';
     MatTooltipModule,
     TranslateModule,
     MapViewComponent,
+    LayerPanelComponent,
+    ToolPanelComponent,
+    SearchBarComponent,
+    FeatureInfoComponent,
+    ContextMenuComponent,
+    GeosignetsComponent,
+    SocialShareComponent,
+    LegendComponent,
   ],
   templateUrl: './map-layout.component.html',
   styleUrl: './map-layout.component.scss',

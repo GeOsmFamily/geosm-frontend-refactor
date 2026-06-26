@@ -1,0 +1,29 @@
+@if (visible()) {
+  <div class="feature-info-popup">
+    <div class="popup-header">
+      <span class="popup-title">{{ title() || ('featureInfo.title' | translate) }}</span>
+      <button mat-icon-button (click)="close()" class="close-btn">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+    <div class="popup-body">
+      @if (loading()) {
+        <div class="loading">
+          <mat-spinner diameter="24"></mat-spinner>
+          <span>{{ 'featureInfo.loading' | translate }}</span>
+        </div>
+      } @else if (properties().length === 0) {
+        <p class="no-data">{{ 'featureInfo.noData' | translate }}</p>
+      } @else {
+        <table class="properties-table">
+          @for (prop of properties(); track prop.key) {
+            <tr>
+              <td class="prop-key">{{ prop.key }}</td>
+              <td class="prop-value">{{ prop.value }}</td>
+            </tr>
+          }
+        </table>
+      }
+    </div>
+  </div>
+}

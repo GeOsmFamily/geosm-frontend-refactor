@@ -1,0 +1,20 @@
+<div class="social-share">
+  <h4>{{ 'sharing.share' | translate }}</h4>
+  <div class="share-buttons">
+    <button mat-mini-fab class="fb-btn" (click)="shareFacebook()" [matTooltip]="'sharing.facebook' | translate">
+      <mat-icon>facebook</mat-icon>
+    </button>
+    <button mat-mini-fab class="tw-btn" (click)="shareTwitter()" [matTooltip]="'sharing.twitter' | translate">
+      <mat-icon>share</mat-icon>
+    </button>
+    <button mat-mini-fab class="wa-btn" (click)="shareWhatsApp()" [matTooltip]="'sharing.whatsapp' | translate">
+      <mat-icon>chat</mat-icon>
+    </button>
+    <button mat-mini-fab class="li-btn" (click)="shareLinkedIn()" [matTooltip]="'sharing.linkedin' | translate">
+      <mat-icon>work</mat-icon>
+    </button>
+    <button mat-mini-fab class="copy-btn" (click)="copyUrl()" [matTooltip]="'sharing.copyLink' | translate">
+      <mat-icon>content_copy</mat-icon>
+    </button>
+  </div>
+</div>

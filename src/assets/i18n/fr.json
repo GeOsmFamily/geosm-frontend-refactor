@@ -1,22 +1,86 @@
 {
-  "app": {
-    "title": "GeOSM",
-    "search_placeholder": "Rechercher un lieu, une couche..."
-  },
+  "app": { "title": "GeOSM", "subtitle": "Plateforme Cartographique" },
   "auth": {
-    "login": "Connexion",
-    "register": "Inscription",
-    "email": "Email",
-    "password": "Mot de passe",
-    "forgot_password": "Mot de passe oublié ?",
-    "create_account": "Créer un compte",
-    "already_have_account": "Vous avez déjà un compte ?",
-    "sign_in": "Se connecter"
+    "login": "Connexion", "register": "Inscription", "logout": "Deconnexion",
+    "email": "Adresse email", "password": "Mot de passe", "confirmPassword": "Confirmer le mot de passe",
+    "firstName": "Prenom", "lastName": "Nom", "forgotPassword": "Mot de passe oublie ?",
+    "noAccount": "Pas de compte ?", "hasAccount": "Deja un compte ?",
+    "loginButton": "Se connecter", "registerButton": "S'inscrire",
+    "loginError": "Email ou mot de passe incorrect", "registerSuccess": "Compte cree avec succes"
   },
   "map": {
-    "layers": "Couches",
-    "tools": "Outils",
-    "zoom_in": "Zoom avant",
-    "zoom_out": "Zoom arrière"
+    "layers": "Couches", "tools": "Outils", "search": "Rechercher un lieu, une couche...",
+    "zoomIn": "Zoom avant", "zoomOut": "Zoom arriere", "coordinates": "Coordonnees",
+    "baseMaps": "Fonds de carte", "activeLayers": "Couches actives", "catalog": "Catalogue",
+    "noActiveLayers": "Aucune couche active", "removeAll": "Tout retirer",
+    "opacity": "Opacite", "visibility": "Visibilite", "legend": "Legende",
+    "addToMap": "Ajouter a la carte", "removeFromMap": "Retirer de la carte"
+  },
+  "tools": {
+    "drawing": "Dessin", "measure": "Mesure", "routing": "Itineraire",
+    "export": "Export", "print": "Impression", "comment": "Commentaire",
+    "draw": {
+      "point": "Point", "line": "Ligne", "polygon": "Polygone",
+      "circle": "Cercle", "text": "Texte", "color": "Couleur",
+      "save": "Enregistrer", "load": "Charger", "clear": "Effacer tout",
+      "delete": "Supprimer", "edit": "Modifier"
+    },
+    "measure": {
+      "distance": "Distance", "area": "Surface", "clearAll": "Effacer les mesures",
+      "result": "Resultat"
+    },
+    "routing": {
+      "start": "Point de depart", "end": "Point d'arrivee", "waypoint": "Etape",
+      "addWaypoint": "Ajouter une etape", "calculate": "Calculer l'itineraire",
+      "clear": "Effacer", "distance": "Distance", "duration": "Duree",
+      "car": "Voiture", "bicycle": "Velo", "foot": "A pied",
+      "clickMap": "Cliquer sur la carte"
+    },
+    "export": {
+      "selectLayer": "Selectionner une couche", "selectFormat": "Format",
+      "exportButton": "Exporter", "history": "Historique des exports",
+      "download": "Telecharger", "pending": "En attente", "completed": "Termine",
+      "failed": "Echoue", "processing": "En cours"
+    },
+    "print": {
+      "title": "Titre", "description": "Description", "paperSize": "Format",
+      "orientation": "Orientation", "portrait": "Portrait", "landscape": "Paysage",
+      "includeLegend": "Inclure la legende", "generate": "Generer le PDF",
+      "generating": "Generation en cours..."
+    },
+    "comment": {
+      "addComment": "Ajouter un commentaire", "placeholder": "Votre commentaire...",
+      "clickToPlace": "Cliquer sur la carte pour placer le commentaire",
+      "noComments": "Aucun commentaire"
+    }
+  },
+  "search": {
+    "placeholder": "Rechercher un lieu, une couche...",
+    "noResults": "Aucun resultat", "places": "Lieux", "layers": "Couches"
+  },
+  "sharing": {
+    "share": "Partager", "copyLink": "Copier le lien", "copied": "Lien copie !",
+    "facebook": "Facebook", "twitter": "Twitter", "whatsapp": "WhatsApp",
+    "linkedin": "LinkedIn", "sharedMap": "Carte partagee"
+  },
+  "geosignets": {
+    "title": "Geosignets", "save": "Enregistrer la vue", "name": "Nom du geosignet",
+    "noBookmarks": "Aucun geosignet enregistre", "delete": "Supprimer",
+    "flyTo": "Aller a"
+  },
+  "contextMenu": {
+    "coordinates": "Coordonnees", "routeFrom": "Itineraire depuis ici",
+    "routeTo": "Itineraire vers ici", "info": "Informations", "addComment": "Ajouter un commentaire",
+    "copyCoords": "Copier les coordonnees", "coordsCopied": "Coordonnees copiees !"
+  },
+  "featureInfo": {
+    "title": "Informations", "noData": "Aucune donnee disponible",
+    "close": "Fermer", "loading": "Chargement..."
+  },
+  "common": {
+    "save": "Enregistrer", "cancel": "Annuler", "delete": "Supprimer",
+    "confirm": "Confirmer", "close": "Fermer", "loading": "Chargement...",
+    "error": "Erreur", "success": "Succes", "warning": "Attention",
+    "yes": "Oui", "no": "Non", "ok": "OK"
   }
 }

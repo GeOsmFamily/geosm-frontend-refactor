@@ -1,0 +1,26 @@
+@if (legendItems().length === 0) {
+  <p class="no-legend">{{ 'map.noActiveLayers' | translate }}</p>
+} @else {
+  <div class="legend-list">
+    @for (item of legendItems(); track item.layerId) {
+      <div class="legend-item">
+        <div class="legend-header" (click)="toggleCollapse(item)">
+          <mat-icon class="collapse-icon" [class.collapsed]="item.collapsed">expand_more</mat-icon>
+          <span class="layer-name">{{ item.layerName }}</span>
+        </div>
+        @if (!item.collapsed) {
+          <div class="legend-body">
+            @if (item.type === 'wms' && item.legendUrl) {
+              <img [src]="item.legendUrl" alt="Legend" class="legend-image" loading="lazy" />
+            } @else {
+              <div class="color-swatch">
+                <span class="swatch" [style.background-color]="item.color"></span>
+                <span class="swatch-label">{{ item.layerName }}</span>
+              </div>
+            }
+          </div>
+        }
+      </div>
+    }
+  </div>
+}

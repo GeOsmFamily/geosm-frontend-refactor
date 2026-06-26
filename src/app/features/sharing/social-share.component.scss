@@ -1,0 +1,15 @@
+.social-share {
+  h4 { margin: 0 0 12px; font-size: 15px; font-weight: 500; color: var(--primary); }
+}
+
+.share-buttons {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.fb-btn { background-color: #1877f2 !important; color: #fff !important; }
+.tw-btn { background-color: #1da1f2 !important; color: #fff !important; }
+.wa-btn { background-color: #25d366 !important; color: #fff !important; }
+.li-btn { background-color: #0a66c2 !important; color: #fff !important; }
+.copy-btn { background-color: #666 !important; color: #fff !important; }

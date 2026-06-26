@@ -1,22 +1,86 @@
 {
-  "app": {
-    "title": "GeOSM",
-    "search_placeholder": "Buscar un lugar, una capa..."
-  },
+  "app": { "title": "GeOSM", "subtitle": "Plataforma Cartografica" },
   "auth": {
-    "login": "Iniciar sesión",
-    "register": "Registrarse",
-    "email": "Email",
-    "password": "Contraseña",
-    "forgot_password": "¿Olvidaste tu contraseña?",
-    "create_account": "Crear cuenta",
-    "already_have_account": "¿Ya tienes una cuenta?",
-    "sign_in": "Iniciar sesión"
+    "login": "Iniciar sesion", "register": "Registrarse", "logout": "Cerrar sesion",
+    "email": "Correo electronico", "password": "Contrasena", "confirmPassword": "Confirmar contrasena",
+    "firstName": "Nombre", "lastName": "Apellido", "forgotPassword": "Olvidaste tu contrasena?",
+    "noAccount": "No tienes cuenta?", "hasAccount": "Ya tienes una cuenta?",
+    "loginButton": "Iniciar sesion", "registerButton": "Registrarse",
+    "loginError": "Correo o contrasena incorrectos", "registerSuccess": "Cuenta creada con exito"
   },
   "map": {
-    "layers": "Capas",
-    "tools": "Herramientas",
-    "zoom_in": "Acercar",
-    "zoom_out": "Alejar"
+    "layers": "Capas", "tools": "Herramientas", "search": "Buscar un lugar, una capa...",
+    "zoomIn": "Acercar", "zoomOut": "Alejar", "coordinates": "Coordenadas",
+    "baseMaps": "Mapas base", "activeLayers": "Capas activas", "catalog": "Catalogo",
+    "noActiveLayers": "Sin capas activas", "removeAll": "Eliminar todo",
+    "opacity": "Opacidad", "visibility": "Visibilidad", "legend": "Leyenda",
+    "addToMap": "Agregar al mapa", "removeFromMap": "Quitar del mapa"
+  },
+  "tools": {
+    "drawing": "Dibujo", "measure": "Medida", "routing": "Ruta",
+    "export": "Exportar", "print": "Imprimir", "comment": "Comentario",
+    "draw": {
+      "point": "Punto", "line": "Linea", "polygon": "Poligono",
+      "circle": "Circulo", "text": "Texto", "color": "Color",
+      "save": "Guardar", "load": "Cargar", "clear": "Borrar todo",
+      "delete": "Eliminar", "edit": "Editar"
+    },
+    "measure": {
+      "distance": "Distancia", "area": "Area", "clearAll": "Borrar medidas",
+      "result": "Resultado"
+    },
+    "routing": {
+      "start": "Punto de inicio", "end": "Punto de llegada", "waypoint": "Parada",
+      "addWaypoint": "Agregar parada", "calculate": "Calcular ruta",
+      "clear": "Borrar", "distance": "Distancia", "duration": "Duracion",
+      "car": "Coche", "bicycle": "Bicicleta", "foot": "A pie",
+      "clickMap": "Haga clic en el mapa"
+    },
+    "export": {
+      "selectLayer": "Seleccionar una capa", "selectFormat": "Formato",
+      "exportButton": "Exportar", "history": "Historial de exportaciones",
+      "download": "Descargar", "pending": "Pendiente", "completed": "Completado",
+      "failed": "Fallido", "processing": "En proceso"
+    },
+    "print": {
+      "title": "Titulo", "description": "Descripcion", "paperSize": "Tamano del papel",
+      "orientation": "Orientacion", "portrait": "Vertical", "landscape": "Horizontal",
+      "includeLegend": "Incluir leyenda", "generate": "Generar PDF",
+      "generating": "Generando..."
+    },
+    "comment": {
+      "addComment": "Agregar comentario", "placeholder": "Tu comentario...",
+      "clickToPlace": "Haz clic en el mapa para colocar el comentario",
+      "noComments": "Sin comentarios"
+    }
+  },
+  "search": {
+    "placeholder": "Buscar un lugar, una capa...",
+    "noResults": "Sin resultados", "places": "Lugares", "layers": "Capas"
+  },
+  "sharing": {
+    "share": "Compartir", "copyLink": "Copiar enlace", "copied": "Enlace copiado!",
+    "facebook": "Facebook", "twitter": "Twitter", "whatsapp": "WhatsApp",
+    "linkedin": "LinkedIn", "sharedMap": "Mapa compartido"
+  },
+  "geosignets": {
+    "title": "Marcadores", "save": "Guardar vista actual", "name": "Nombre del marcador",
+    "noBookmarks": "Sin marcadores guardados", "delete": "Eliminar",
+    "flyTo": "Ir a"
+  },
+  "contextMenu": {
+    "coordinates": "Coordenadas", "routeFrom": "Ruta desde aqui",
+    "routeTo": "Ruta hasta aqui", "info": "Informacion", "addComment": "Agregar comentario",
+    "copyCoords": "Copiar coordenadas", "coordsCopied": "Coordenadas copiadas!"
+  },
+  "featureInfo": {
+    "title": "Informacion", "noData": "No hay datos disponibles",
+    "close": "Cerrar", "loading": "Cargando..."
+  },
+  "common": {
+    "save": "Guardar", "cancel": "Cancelar", "delete": "Eliminar",
+    "confirm": "Confirmar", "close": "Cerrar", "loading": "Cargando...",
+    "error": "Error", "success": "Exito", "warning": "Atencion",
+    "yes": "Si", "no": "No", "ok": "OK"
   }
 }

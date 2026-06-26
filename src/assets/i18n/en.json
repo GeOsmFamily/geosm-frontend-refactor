@@ -1,22 +1,86 @@
 {
-  "app": {
-    "title": "GeOSM",
-    "search_placeholder": "Search for a place, a layer..."
-  },
+  "app": { "title": "GeOSM", "subtitle": "Mapping Platform" },
   "auth": {
-    "login": "Login",
-    "register": "Register",
-    "email": "Email",
-    "password": "Password",
-    "forgot_password": "Forgot password?",
-    "create_account": "Create account",
-    "already_have_account": "Already have an account?",
-    "sign_in": "Sign in"
+    "login": "Login", "register": "Register", "logout": "Logout",
+    "email": "Email address", "password": "Password", "confirmPassword": "Confirm password",
+    "firstName": "First name", "lastName": "Last name", "forgotPassword": "Forgot password?",
+    "noAccount": "No account?", "hasAccount": "Already have an account?",
+    "loginButton": "Sign in", "registerButton": "Sign up",
+    "loginError": "Incorrect email or password", "registerSuccess": "Account created successfully"
   },
   "map": {
-    "layers": "Layers",
-    "tools": "Tools",
-    "zoom_in": "Zoom in",
-    "zoom_out": "Zoom out"
+    "layers": "Layers", "tools": "Tools", "search": "Search for a place, a layer...",
+    "zoomIn": "Zoom in", "zoomOut": "Zoom out", "coordinates": "Coordinates",
+    "baseMaps": "Base maps", "activeLayers": "Active layers", "catalog": "Catalog",
+    "noActiveLayers": "No active layers", "removeAll": "Remove all",
+    "opacity": "Opacity", "visibility": "Visibility", "legend": "Legend",
+    "addToMap": "Add to map", "removeFromMap": "Remove from map"
+  },
+  "tools": {
+    "drawing": "Drawing", "measure": "Measure", "routing": "Routing",
+    "export": "Export", "print": "Print", "comment": "Comment",
+    "draw": {
+      "point": "Point", "line": "Line", "polygon": "Polygon",
+      "circle": "Circle", "text": "Text", "color": "Color",
+      "save": "Save", "load": "Load", "clear": "Clear all",
+      "delete": "Delete", "edit": "Edit"
+    },
+    "measure": {
+      "distance": "Distance", "area": "Area", "clearAll": "Clear measurements",
+      "result": "Result"
+    },
+    "routing": {
+      "start": "Start point", "end": "End point", "waypoint": "Waypoint",
+      "addWaypoint": "Add waypoint", "calculate": "Calculate route",
+      "clear": "Clear", "distance": "Distance", "duration": "Duration",
+      "car": "Car", "bicycle": "Bicycle", "foot": "On foot",
+      "clickMap": "Click on map"
+    },
+    "export": {
+      "selectLayer": "Select a layer", "selectFormat": "Format",
+      "exportButton": "Export", "history": "Export history",
+      "download": "Download", "pending": "Pending", "completed": "Completed",
+      "failed": "Failed", "processing": "Processing"
+    },
+    "print": {
+      "title": "Title", "description": "Description", "paperSize": "Paper size",
+      "orientation": "Orientation", "portrait": "Portrait", "landscape": "Landscape",
+      "includeLegend": "Include legend", "generate": "Generate PDF",
+      "generating": "Generating..."
+    },
+    "comment": {
+      "addComment": "Add a comment", "placeholder": "Your comment...",
+      "clickToPlace": "Click on the map to place the comment",
+      "noComments": "No comments"
+    }
+  },
+  "search": {
+    "placeholder": "Search for a place, a layer...",
+    "noResults": "No results", "places": "Places", "layers": "Layers"
+  },
+  "sharing": {
+    "share": "Share", "copyLink": "Copy link", "copied": "Link copied!",
+    "facebook": "Facebook", "twitter": "Twitter", "whatsapp": "WhatsApp",
+    "linkedin": "LinkedIn", "sharedMap": "Shared map"
+  },
+  "geosignets": {
+    "title": "Bookmarks", "save": "Save current view", "name": "Bookmark name",
+    "noBookmarks": "No bookmarks saved", "delete": "Delete",
+    "flyTo": "Go to"
+  },
+  "contextMenu": {
+    "coordinates": "Coordinates", "routeFrom": "Route from here",
+    "routeTo": "Route to here", "info": "Information", "addComment": "Add a comment",
+    "copyCoords": "Copy coordinates", "coordsCopied": "Coordinates copied!"
+  },
+  "featureInfo": {
+    "title": "Information", "noData": "No data available",
+    "close": "Close", "loading": "Loading..."
+  },
+  "common": {
+    "save": "Save", "cancel": "Cancel", "delete": "Delete",
+    "confirm": "Confirm", "close": "Close", "loading": "Loading...",
+    "error": "Error", "success": "Success", "warning": "Warning",
+    "yes": "Yes", "no": "No", "ok": "OK"
   }
 }

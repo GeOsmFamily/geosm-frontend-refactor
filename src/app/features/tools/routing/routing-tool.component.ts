@@ -51,7 +51,7 @@ export class RoutingToolComponent implements OnInit, OnDestroy {
   private vectorSource = new VectorSource();
   private vectorLayer!: VectorLayer<VectorSource>;
   private pickTarget: PickTarget | null = null;
-  private clickListener: ((evt: MapBrowserEvent<UIEvent>) => void) | null = null;
+  private clickListener: ((evt: any) => void) | null = null;
 
   startText = '';
   endText = '';
@@ -120,7 +120,7 @@ export class RoutingToolComponent implements OnInit, OnDestroy {
     this.removeClickListener();
     this.pickTarget = target;
 
-    this.clickListener = (evt: MapBrowserEvent<UIEvent>) => {
+    this.clickListener = (evt: any) => {
       const lonLat = toLonLat(evt.coordinate) as [number, number];
       const label = `${lonLat[1].toFixed(5)}, ${lonLat[0].toFixed(5)}`;
 
@@ -187,10 +187,11 @@ export class RoutingToolComponent implements OnInit, OnDestroy {
       .forEach(f => this.vectorSource.removeFeature(f));
 
     const geojsonFormat = new GeoJSON();
-    const routeFeature = geojsonFormat.readFeature(result.geometry, {
+    const routeFeatures = geojsonFormat.readFeatures(result.geometry, {
       featureProjection: 'EPSG:3857',
       dataProjection: 'EPSG:4326',
     });
+    const routeFeature = routeFeatures[0];
     routeFeature.set('pointType', 'route');
     this.vectorSource.addFeature(routeFeature);
 

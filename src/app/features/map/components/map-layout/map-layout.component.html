@@ -9,16 +9,7 @@
     </div>
 
     <div class="header-center">
-      <div class="search-bar">
-        <mat-icon class="search-icon">search</mat-icon>
-        <input
-          type="text"
-          class="search-input"
-          placeholder="Rechercher un lieu, une couche..."
-          [value]="searchQuery()"
-          (input)="onSearch($event)"
-        />
-      </div>
+      <app-search-bar></app-search-bar>
     </div>
 
     <div class="header-right">
@@ -73,7 +64,10 @@
           </button>
         </div>
         <div class="panel-body">
-          <p class="panel-placeholder">Layer catalog will be displayed here.</p>
+          <app-layer-panel></app-layer-panel>
+          <app-legend></app-legend>
+          <app-geosignets></app-geosignets>
+          <app-social-share></app-social-share>
         </div>
       </div>
     </div>
@@ -81,6 +75,8 @@
     <!-- Map container -->
     <div class="map-area">
       <app-map-view></app-map-view>
+      <app-feature-info></app-feature-info>
+      <app-context-menu></app-context-menu>
     </div>
 
     <!-- Right sidebar -->
@@ -93,7 +89,7 @@
           </button>
         </div>
         <div class="panel-body">
-          <p class="panel-placeholder">Tools will be displayed here.</p>
+          <app-tool-panel></app-tool-panel>
         </div>
       </div>
     </div>

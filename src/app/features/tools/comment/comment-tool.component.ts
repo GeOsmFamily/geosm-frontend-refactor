@@ -48,7 +48,7 @@ export class CommentToolComponent implements OnInit, OnDestroy {
   private map!: Map;
   private vectorSource = new VectorSource();
   private vectorLayer!: VectorLayer<VectorSource>;
-  private clickListener: ((evt: MapBrowserEvent<UIEvent>) => void) | null = null;
+  private clickListener: ((evt: any) => void) | null = null;
   private counter = 0;
 
   comments: MapComment[] = [];
@@ -96,7 +96,7 @@ export class CommentToolComponent implements OnInit, OnDestroy {
     this.stopPlacing();
     this.isPlacing = true;
 
-    this.clickListener = (evt: MapBrowserEvent<UIEvent>) => {
+    this.clickListener = (evt: any) => {
       const lonLat = toLonLat(evt.coordinate) as [number, number];
       this.pendingCoord = lonLat;
       this.isPlacing = false;
@@ -109,7 +109,7 @@ export class CommentToolComponent implements OnInit, OnDestroy {
     this.map.on('singleclick', this.clickListener);
   }
 
-  private stopPlacing(): void {
+  stopPlacing(): void {
     if (this.clickListener) {
       this.map.un('singleclick', this.clickListener);
       this.clickListener = null;
