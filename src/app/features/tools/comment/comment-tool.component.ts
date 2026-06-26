@@ -7,16 +7,16 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatListModule } from '@angular/material/list';
-import Map from 'ol/Map.js';
-import VectorLayer from 'ol/layer/Vector.js';
-import VectorSource from 'ol/source/Vector.js';
-import Feature from 'ol/Feature.js';
-import Point from 'ol/geom/Point.js';
-import { fromLonLat, toLonLat } from 'ol/proj.js';
-import { Fill, Stroke, Style, Icon, Text } from 'ol/style.js';
+import Map from 'ol/Map';
+import VectorLayer from 'ol/layer/Vector';
+import VectorSource from 'ol/source/Vector';
+import Feature from 'ol/Feature';
+import Point from 'ol/geom/Point';
+import { fromLonLat, toLonLat } from 'ol/proj';
+import { Fill, Stroke, Style, Icon, Text } from 'ol/style';
 import { MapBrowserEvent } from 'ol';
 
-import { MapService } from '../../map/services/map.service.js';
+import { MapService } from '../../map/services/map.service';
 import { TranslateModule } from '@ngx-translate/core';
 
 interface MapComment {

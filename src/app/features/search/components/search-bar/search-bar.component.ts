@@ -10,17 +10,17 @@ import { MatOptionModule } from '@angular/material/core';
 import { MatDividerModule } from '@angular/material/divider';
 import { Subject, debounceTime, distinctUntilChanged, switchMap, forkJoin, of, takeUntil, catchError } from 'rxjs';
 
-import { GeocodingService } from '../../../../core/services/geocoding.service.js';
-import { SearchService } from '../../../../core/services/search.service.js';
-import { MapService } from '../../../map/services/map.service.js';
-import { MapLayerService } from '../../../map/services/map-layer.service.js';
-import { GeocodingResult } from '../../../../core/models/index.js';
-import VectorLayer from 'ol/layer/Vector.js';
-import VectorSource from 'ol/source/Vector.js';
-import Feature from 'ol/Feature.js';
-import Point from 'ol/geom/Point.js';
-import { fromLonLat } from 'ol/proj.js';
-import { Fill, Stroke, Style, Circle as CircleStyle } from 'ol/style.js';
+import { GeocodingService } from '../../../../core/services/geocoding.service';
+import { SearchService } from '../../../../core/services/search.service';
+import { MapService } from '../../../map/services/map.service';
+import { MapLayerService } from '../../../map/services/map-layer.service';
+import { GeocodingResult } from '../../../../core/models/index';
+import VectorLayer from 'ol/layer/Vector';
+import VectorSource from 'ol/source/Vector';
+import Feature from 'ol/Feature';
+import Point from 'ol/geom/Point';
+import { fromLonLat } from 'ol/proj';
+import { Fill, Stroke, Style, Circle as CircleStyle } from 'ol/style';
 import { TranslateModule } from '@ngx-translate/core';
 
 interface SearchResultItem {

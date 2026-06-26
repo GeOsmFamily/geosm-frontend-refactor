@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 
-import { ApiService } from './api.service.js';
+import { ApiService } from './api.service';
 
 @Injectable({ providedIn: 'root' })
 export class CatalogService {

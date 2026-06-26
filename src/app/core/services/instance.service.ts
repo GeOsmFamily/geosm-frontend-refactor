@@ -1,8 +1,8 @@
 import { Injectable, inject } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 
-import { ApiService } from './api.service.js';
-import { Instance, PaginatedResponse } from '../models/index.js';
+import { ApiService } from './api.service';
+import { Instance, PaginatedResponse } from '../models/index';
 
 @Injectable({ providedIn: 'root' })
 export class InstanceService {

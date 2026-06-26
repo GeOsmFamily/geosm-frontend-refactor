@@ -11,13 +11,13 @@ import { MatBadgeModule } from '@angular/material/badge';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { Subject, forkJoin, takeUntil } from 'rxjs';
 
-import { GroupService } from '../../../../core/services/group.service.js';
-import { InstanceService } from '../../../../core/services/instance.service.js';
-import { LayerService } from '../../../../core/services/layer.service.js';
-import { MapLayerService } from '../../../map/services/map-layer.service.js';
-import { Group, SubGroup, Layer } from '../../../../core/models/index.js';
-import { LoadingSpinnerComponent } from '../../../../shared/components/loading-spinner/loading-spinner.component.js';
-import { TruncatePipe } from '../../../../shared/pipes/truncate.pipe.js';
+import { GroupService } from '../../../../core/services/group.service';
+import { InstanceService } from '../../../../core/services/instance.service';
+import { LayerService } from '../../../../core/services/layer.service';
+import { MapLayerService } from '../../../map/services/map-layer.service';
+import { Group, SubGroup, Layer } from '../../../../core/models/index';
+import { LoadingSpinnerComponent } from '../../../../shared/components/loading-spinner/loading-spinner.component';
+import { TruncatePipe } from '../../../../shared/pipes/truncate.pipe';
 import { TranslateModule } from '@ngx-translate/core';
 
 interface CatalogGroup extends Group {

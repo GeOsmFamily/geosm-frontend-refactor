@@ -9,10 +9,10 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatListModule } from '@angular/material/list';
 import { MatChipsModule } from '@angular/material/chips';
 
-import { MapLayerService, ActiveLayer } from '../../map/services/map-layer.service.js';
-import { ExportService } from '../../../core/services/export.service.js';
-import { Export } from '../../../core/models/index.js';
-import { LoadingSpinnerComponent } from '../../../shared/components/loading-spinner/loading-spinner.component.js';
+import { MapLayerService, ActiveLayer } from '../../map/services/map-layer.service';
+import { ExportService } from '../../../core/services/export.service';
+import { Export } from '../../../core/models/index';
+import { LoadingSpinnerComponent } from '../../../shared/components/loading-spinner/loading-spinner.component';
 import { TranslateModule } from '@ngx-translate/core';
 
 @Component({

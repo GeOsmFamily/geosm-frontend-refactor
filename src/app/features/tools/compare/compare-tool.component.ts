@@ -7,7 +7,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatDividerModule } from '@angular/material/divider';
 import { TranslateModule } from '@ngx-translate/core';
-import Map from 'ol/Map.js';
+import Map from 'ol/Map';
 import { Subscription } from 'rxjs';
 import { MapService } from '../../map/services/map.service';
 import { MapLayerService, ActiveLayer } from '../../map/services/map-layer.service';

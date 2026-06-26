@@ -9,8 +9,8 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatDividerModule } from '@angular/material/divider';
 
-import { MapService } from '../../map/services/map.service.js';
-import { LoadingSpinnerComponent } from '../../../shared/components/loading-spinner/loading-spinner.component.js';
+import { MapService } from '../../map/services/map.service';
+import { LoadingSpinnerComponent } from '../../../shared/components/loading-spinner/loading-spinner.component';
 import { TranslateModule } from '@ngx-translate/core';
 
 @Component({

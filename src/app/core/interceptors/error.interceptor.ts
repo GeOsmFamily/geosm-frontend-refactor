@@ -3,7 +3,7 @@ import { inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { catchError, switchMap, throwError } from 'rxjs';
 
-import { AuthService } from '../services/auth.service.js';
+import { AuthService } from '../services/auth.service';
 
 let isRefreshing = false;
 

@@ -1,19 +1,19 @@
 import { Injectable, NgZone, inject } from '@angular/core';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
-import Map from 'ol/Map.js';
-import View from 'ol/View.js';
-import { fromLonLat, toLonLat } from 'ol/proj.js';
-import TileLayer from 'ol/layer/Tile.js';
-import OSM from 'ol/source/OSM.js';
-import XYZ from 'ol/source/XYZ.js';
-import TileWMS from 'ol/source/TileWMS.js';
-import VectorLayer from 'ol/layer/Vector.js';
-import VectorSource from 'ol/source/Vector.js';
+import Map from 'ol/Map';
+import View from 'ol/View';
+import { fromLonLat, toLonLat } from 'ol/proj';
+import TileLayer from 'ol/layer/Tile';
+import OSM from 'ol/source/OSM';
+import XYZ from 'ol/source/XYZ';
+import TileWMS from 'ol/source/TileWMS';
+import VectorLayer from 'ol/layer/Vector';
+import VectorSource from 'ol/source/Vector';
 import { Feature } from 'ol';
-import { Style } from 'ol/style.js';
-import { Coordinate } from 'ol/coordinate.js';
-import { Extent } from 'ol/extent.js';
-import BaseLayer from 'ol/layer/Base.js';
+import { Style } from 'ol/style';
+import { Coordinate } from 'ol/coordinate';
+import { Extent } from 'ol/extent';
+import BaseLayer from 'ol/layer/Base';
 
 @Injectable({ providedIn: 'root' })
 export class MapService {

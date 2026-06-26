@@ -6,8 +6,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatSliderModule } from '@angular/material/slider';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { CdkDragDrop, DragDropModule } from '@angular/cdk/drag-drop';
-import { MapLayerService, ActiveLayer } from '../../../map/services/map-layer.service.js';
-import { TruncatePipe } from '../../../../shared/pipes/truncate.pipe.js';
+import { MapLayerService, ActiveLayer } from '../../../map/services/map-layer.service';
+import { TruncatePipe } from '../../../../shared/pipes/truncate.pipe';
 import { TranslateModule } from '@ngx-translate/core';
 
 @Component({

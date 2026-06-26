@@ -1,11 +1,11 @@
 import { Injectable, inject } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import VectorLayer from 'ol/layer/Vector.js';
-import VectorSource from 'ol/source/Vector.js';
-import TileLayer from 'ol/layer/Tile.js';
-import TileWMS from 'ol/source/TileWMS.js';
-import { Layer } from '../../../core/models/index.js';
-import { MapService } from './map.service.js';
+import VectorLayer from 'ol/layer/Vector';
+import VectorSource from 'ol/source/Vector';
+import TileLayer from 'ol/layer/Tile';
+import TileWMS from 'ol/source/TileWMS';
+import { Layer } from '../../../core/models/index';
+import { MapService } from './map.service';
 
 export interface ActiveLayer {
   layer: Layer;

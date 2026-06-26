@@ -1,8 +1,8 @@
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 
-import { ApiService } from './api.service.js';
-import { ShareMap } from '../models/index.js';
+import { ApiService } from './api.service';
+import { ShareMap } from '../models/index';
 
 @Injectable({ providedIn: 'root' })
 export class SharingService {

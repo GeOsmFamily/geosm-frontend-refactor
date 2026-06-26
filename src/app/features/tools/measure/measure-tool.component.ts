@@ -5,17 +5,17 @@ import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDividerModule } from '@angular/material/divider';
 import { FormsModule } from '@angular/forms';
-import Map from 'ol/Map.js';
-import VectorLayer from 'ol/layer/Vector.js';
-import VectorSource from 'ol/source/Vector.js';
-import Draw from 'ol/interaction/Draw.js';
-import Overlay from 'ol/Overlay.js';
-import { getLength, getArea } from 'ol/sphere.js';
-import { Fill, Stroke, Style, Circle as CircleStyle } from 'ol/style.js';
-import { Geometry, LineString, Polygon } from 'ol/geom.js';
-import Feature from 'ol/Feature.js';
+import Map from 'ol/Map';
+import VectorLayer from 'ol/layer/Vector';
+import VectorSource from 'ol/source/Vector';
+import Draw from 'ol/interaction/Draw';
+import Overlay from 'ol/Overlay';
+import { getLength, getArea } from 'ol/sphere';
+import { Fill, Stroke, Style, Circle as CircleStyle } from 'ol/style';
+import { Geometry, LineString, Polygon } from 'ol/geom';
+import Feature from 'ol/Feature';
 
-import { MapService } from '../../map/services/map.service.js';
+import { MapService } from '../../map/services/map.service';
 import { TranslateModule } from '@ngx-translate/core';
 
 type MeasureMode = 'distance' | 'area';

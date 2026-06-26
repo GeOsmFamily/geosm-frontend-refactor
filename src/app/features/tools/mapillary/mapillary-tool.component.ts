@@ -5,16 +5,16 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { TranslateModule } from '@ngx-translate/core';
-import Map from 'ol/Map.js';
-import VectorLayer from 'ol/layer/Vector.js';
-import VectorSource from 'ol/source/Vector.js';
-import Feature from 'ol/Feature.js';
-import Point from 'ol/geom/Point.js';
-import { fromLonLat, toLonLat } from 'ol/proj.js';
-import { Fill, Stroke, Style, Circle as CircleStyle } from 'ol/style.js';
-import { MapService } from '../../map/services/map.service.js';
-import { MapillaryService, MapillaryImage } from '../../../core/services/mapillary.service.js';
-import { LoadingSpinnerComponent } from '../../../shared/components/loading-spinner/loading-spinner.component.js';
+import Map from 'ol/Map';
+import VectorLayer from 'ol/layer/Vector';
+import VectorSource from 'ol/source/Vector';
+import Feature from 'ol/Feature';
+import Point from 'ol/geom/Point';
+import { fromLonLat, toLonLat } from 'ol/proj';
+import { Fill, Stroke, Style, Circle as CircleStyle } from 'ol/style';
+import { MapService } from '../../map/services/map.service';
+import { MapillaryService, MapillaryImage } from '../../../core/services/mapillary.service';
+import { LoadingSpinnerComponent } from '../../../shared/components/loading-spinner/loading-spinner.component';
 
 @Component({
   selector: 'app-mapillary-tool',

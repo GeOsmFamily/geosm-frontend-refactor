@@ -5,15 +5,15 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatRadioModule } from '@angular/material/radio';
 import { FormsModule } from '@angular/forms';
 import { Subject, takeUntil } from 'rxjs';
-import TileLayer from 'ol/layer/Tile.js';
-import OSM from 'ol/source/OSM.js';
-import XYZ from 'ol/source/XYZ.js';
+import TileLayer from 'ol/layer/Tile';
+import OSM from 'ol/source/OSM';
+import XYZ from 'ol/source/XYZ';
 
-import { BaseMapService } from '../../../../core/services/base-map.service.js';
-import { InstanceService } from '../../../../core/services/instance.service.js';
-import { MapService } from '../../../map/services/map.service.js';
-import { BaseMap } from '../../../../core/models/index.js';
-import { LoadingSpinnerComponent } from '../../../../shared/components/loading-spinner/loading-spinner.component.js';
+import { BaseMapService } from '../../../../core/services/base-map.service';
+import { InstanceService } from '../../../../core/services/instance.service';
+import { MapService } from '../../../map/services/map.service';
+import { BaseMap } from '../../../../core/models/index';
+import { LoadingSpinnerComponent } from '../../../../shared/components/loading-spinner/loading-spinner.component';
 import { TranslateModule } from '@ngx-translate/core';
 
 interface BaseMapOption {

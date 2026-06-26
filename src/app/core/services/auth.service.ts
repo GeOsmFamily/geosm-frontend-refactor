@@ -2,8 +2,8 @@ import { Injectable, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
 
-import { ApiService } from './api.service.js';
-import { AuthTokens, LoginRequest, RegisterRequest, User } from '../models/index.js';
+import { ApiService } from './api.service';
+import { AuthTokens, LoginRequest, RegisterRequest, User } from '../models/index';
 
 const ACCESS_TOKEN_KEY = 'access_token';
 const REFRESH_TOKEN_KEY = 'refresh_token';
