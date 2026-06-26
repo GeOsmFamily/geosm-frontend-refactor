@@ -1,0 +1,246 @@
+export enum Role {
+  SUPER_ADMIN = 'SUPER_ADMIN',
+  ADMIN_INSTANCE = 'ADMIN_INSTANCE',
+  EDITOR = 'EDITOR',
+  VIEWER = 'VIEWER',
+}
+
+export interface User {
+  id: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  avatar: string | null;
+  role: Role;
+  isActive: boolean;
+  emailVerified: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface AuthTokens {
+  accessToken: string;
+  refreshToken: string;
+}
+
+export interface LoginRequest {
+  email: string;
+  password: string;
+}
+
+export interface RegisterRequest {
+  email: string;
+  password: string;
+  firstName: string;
+  lastName: string;
+}
+
+export interface Instance {
+  id: string;
+  name: string;
+  slug: string;
+  description: string;
+  logo: string | null;
+  bbox: [number, number, number, number] | null;
+  centerLat: number;
+  centerLon: number;
+  defaultZoom: number;
+  isActive: boolean;
+}
+
+export interface Group {
+  id: string;
+  name: string;
+  description: string;
+  order: number;
+  instanceId: string;
+}
+
+export interface SubGroup {
+  id: string;
+  name: string;
+  description: string;
+  order: number;
+  groupId: string;
+}
+
+export interface Layer {
+  id: string;
+  name: string;
+  sourceType: string;
+  url: string;
+  tableName: string;
+  description: string;
+  bbox: [number, number, number, number] | null;
+  tags: string[];
+  instanceId: string;
+  subGroupId: string;
+}
+
+export interface Feature {
+  id: string;
+  geometry: GeoJSON.Geometry;
+  properties: Record<string, unknown>;
+  layerId: string;
+}
+
+export interface BaseMap {
+  id: string;
+  name: string;
+  slug: string;
+  type: 'xyz' | 'wms' | 'wmts';
+  url: string;
+  thumbnail: string | null;
+  attribution: string;
+  isDefault: boolean;
+  order: number;
+  config: Record<string, unknown>;
+}
+
+export interface Drawing {
+  id: string;
+  name: string;
+  geojson: GeoJSON.GeoJSON;
+  description: string;
+  isPublic: boolean;
+  instanceId: string;
+  userId: string;
+}
+
+export interface ShareMap {
+  code: string;
+  instanceId: string;
+  mapState: Record<string, unknown>;
+  expiresAt: string;
+}
+
+export interface MapComposition {
+  id: string;
+  name: string;
+  slug: string;
+  description: string;
+  layers: string[];
+  center: [number, number];
+  zoom: number;
+  isPublic: boolean;
+}
+
+export interface Export {
+  id: string;
+  format: string;
+  layerId: string;
+  status: string;
+  filePath: string;
+  createdAt: string;
+}
+
+export interface Document {
+  id: string;
+  name: string;
+  description: string;
+  filePath: string;
+  instanceId: string;
+  layerId: string;
+}
+
+export interface DefaultTheme {
+  id: string;
+  name: string;
+  slug: string;
+  icon: string;
+  color: string;
+  order: number;
+  tags?: string[];
+}
+
+export interface AnalyticsEvent {
+  instanceId: string;
+  eventType: string;
+  layerId?: string;
+  metadata?: Record<string, unknown>;
+}
+
+export interface PaginationMeta {
+  page: number;
+  limit: number;
+  total: number;
+  totalPages: number;
+}
+
+export interface PaginatedResponse<T> {
+  data: T[];
+  meta: PaginationMeta;
+}
+
+export interface ApiResponse<T> {
+  success: boolean;
+  data: T;
+  meta?: any;
+}
+
+export interface SearchResult {
+  id: string;
+  type: string;
+  name: string;
+  description: string;
+  instanceId?: string;
+  layerId?: string;
+  score: number;
+}
+
+export interface GeocodingResult {
+  placeId: string;
+  displayName: string;
+  lat: number;
+  lon: number;
+  boundingbox: [number, number, number, number];
+  type: string;
+  importance: number;
+  address: Record<string, string>;
+}
+
+export interface RouteResult {
+  distance: number;
+  duration: number;
+  geometry: GeoJSON.Geometry;
+  legs: RouteLeg[];
+  waypoints: RouteWaypoint[];
+}
+
+export interface RouteLeg {
+  distance: number;
+  duration: number;
+  summary: string;
+  steps: RouteStep[];
+}
+
+export interface RouteStep {
+  distance: number;
+  duration: number;
+  instruction: string;
+  name: string;
+  geometry: GeoJSON.Geometry;
+}
+
+export interface RouteWaypoint {
+  name: string;
+  location: [number, number];
+}
+
+export interface ElevationProfile {
+  points: ElevationPoint[];
+  statistics: {
+    minElevation: number;
+    maxElevation: number;
+    totalAscent: number;
+    totalDescent: number;
+    totalDistance: number;
+  };
+}
+
+export interface ElevationPoint {
+  distance: number;
+  elevation: number;
+  lat: number;
+  lon: number;
+}
