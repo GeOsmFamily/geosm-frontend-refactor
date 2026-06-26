@@ -16,8 +16,8 @@ jobs:
     name: Audit des dépendances
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v7
-      - uses: actions/setup-node@v6
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: 'npm'
@@ -26,7 +26,7 @@ jobs:
         run: npm audit --audit-level=high || true
       - name: Rapport d'audit détaillé
         run: npm audit --json > npm-audit-report.json || true
-      - uses: actions/upload-artifact@v7
+      - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: npm-audit-report
@@ -37,16 +37,16 @@ jobs:
     name: Détection de secrets
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
       - name: Installer Gitleaks
         run: |
-          curl -sSfL https://github.com/gitleaks/gitleaks/releases/download/v8.18.4/gitleaks_8.18.4_linux_x64.tar.gz | tar xz
+          curl -sSfL https://github.com/gitleaks/gitleaks/releases/download/v8.21.2/gitleaks_8.21.2_linux_x64.tar.gz | tar xz
           sudo mv gitleaks /usr/local/bin/
       - name: Scan des secrets
         run: gitleaks detect --source . --report-format json --report-path gitleaks-report.json --verbose || true
-      - uses: actions/upload-artifact@v7
+      - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: gitleaks-report
@@ -57,10 +57,10 @@ jobs:
     name: Scan image Docker
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@v4
       - uses: docker/setup-buildx-action@v3
       - name: Build image Docker
-        uses: docker/build-push-action@v7
+        uses: docker/build-push-action@v6
         with:
           context: .
           push: false

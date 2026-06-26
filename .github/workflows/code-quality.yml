@@ -11,8 +11,8 @@ jobs:
     name: Vérification du build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v7
-      - uses: actions/setup-node@v6
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: 'npm'
@@ -24,15 +24,15 @@ jobs:
     name: Taille du bundle
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v7
-      - uses: actions/setup-node@v6
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: 'npm'
       - run: npm ci
       - name: Analyse de la taille du bundle
         run: |
-          npx ng build --configuration production --stats-json 2>/dev/null || true
+          npx ng build --configuration production 2>/dev/null || true
           echo "=== Taille des fichiers générés ==="
           if [ -d "dist/geosm-frontend/browser" ]; then
             du -sh dist/geosm-frontend/browser/
@@ -48,24 +48,28 @@ jobs:
     name: Vérification i18n
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@v4
       - name: Vérifier la cohérence des traductions
         run: |
           echo "=== Vérification des fichiers i18n ==="
+          FAILED=0
           for lang in fr en es; do
-            if [ -f "src/assets/i18n/${lang}.json" ]; then
-              python3 -c "
-          import json, sys
-          d = json.load(open('src/assets/i18n/${lang}.json'))
+            FILE="src/assets/i18n/${lang}.json"
+            if [ -f "$FILE" ]; then
+              COUNT=$(python3 -c "
+          import json
           def count(obj):
               c = 0
               for v in obj.values():
                   c += count(v) if isinstance(v, dict) else 1
               return c
-          print(f'${lang}.json: {count(d)} clés de traduction')
-          " || echo "Erreur lors de la lecture de ${lang}.json"
+          d = json.load(open('$FILE'))
+          print(count(d))
+          ")
+              echo "${lang}.json: ${COUNT} clés de traduction"
             else
               echo "⚠️ ${lang}.json manquant!"
-              exit 1
+              FAILED=1
             fi
           done
+          exit $FAILED
