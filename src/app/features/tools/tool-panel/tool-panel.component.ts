@@ -47,16 +47,16 @@ export class ToolPanelComponent {
   activeTool: string | null = null;
 
   readonly tools: ToolItem[] = [
-    { id: 'drawing', icon: 'draw', label: 'Dessin' },
-    { id: 'measure', icon: 'straighten', label: 'Mesure' },
-    { id: 'routing', icon: 'directions', label: 'Itinéraire' },
-    { id: 'export', icon: 'download', label: 'Export' },
-    { id: 'print', icon: 'print', label: 'Impression' },
-    { id: 'comment', icon: 'comment', label: 'Commentaires' },
-    { id: 'altimetry', icon: 'terrain', label: 'Altimétrie' },
-    { id: 'mapillary', icon: 'streetview', label: 'Mapillary' },
-    { id: 'compare', icon: 'compare', label: 'Comparer' },
-    { id: 'statistics', icon: 'bar_chart', label: 'Statistiques' },
+    { id: 'drawing', icon: 'draw', label: 'tools.drawing' },
+    { id: 'measure', icon: 'straighten', label: 'right_menu.tools.mesure.title' },
+    { id: 'routing', icon: 'directions', label: 'right_menu.map_routing.title' },
+    { id: 'export', icon: 'download', label: 'right_menu.download_data.title' },
+    { id: 'print', icon: 'print', label: 'right_menu.tools.print.title' },
+    { id: 'comment', icon: 'comment', label: 'right_menu.tools.comment.title' },
+    { id: 'altimetry', icon: 'terrain', label: 'right_menu.tools.altimetry.title' },
+    { id: 'mapillary', icon: 'streetview', label: 'naviguation_tools.mappilary' },
+    { id: 'compare', icon: 'compare', label: 'compare_maps.compare' },
+    { id: 'statistics', icon: 'bar_chart', label: 'tools.statistics' },
   ];
 
   toggleTool(toolId: string): void {

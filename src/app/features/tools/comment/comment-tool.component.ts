@@ -17,6 +17,7 @@ import { Fill, Stroke, Style, Icon, Text } from 'ol/style';
 import { MapBrowserEvent } from 'ol';
 
 import { MapService } from '../../map/services/map.service';
+import { ToolActionService } from '../../../core/services/tool-action.service';
 import { TranslateModule } from '@ngx-translate/core';
 
 interface MapComment {
@@ -45,6 +46,7 @@ interface MapComment {
 })
 export class CommentToolComponent implements OnInit, OnDestroy {
   private readonly mapService = inject(MapService);
+  private readonly toolActionService = inject(ToolActionService);
 
   private map!: Map;
   private vectorSource = new VectorSource();
@@ -59,6 +61,13 @@ export class CommentToolComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.map = this.mapService.getMap();
+
+    this.toolActionService.action$.subscribe((action) => {
+      if (action.tool === 'comment' && action.action === 'addAt') {
+        this.pendingCoord = action.data as [number, number];
+      }
+    });
+
     this.vectorLayer = new VectorLayer({
       source: this.vectorSource,
       style: (feature) => {

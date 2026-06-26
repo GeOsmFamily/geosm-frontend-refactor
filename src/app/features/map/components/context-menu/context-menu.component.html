@@ -1,10 +1,24 @@
 @if (visible()) {
   <div class="context-menu" [style.left.px]="menuX()" [style.top.px]="menuY()">
     <ul class="menu-list">
+      <li (click)="centerHere()">
+        <mat-icon>center_focus_strong</mat-icon>
+        <span>{{ 'contextMenu.centerHere' | translate }}</span>
+      </li>
+      <li (click)="zoomIn()">
+        <mat-icon>zoom_in</mat-icon>
+        <span>{{ 'contextMenu.zoomIn' | translate }}</span>
+      </li>
+      <li class="divider"></li>
       <li (click)="copyCoordinates()">
         <mat-icon>content_copy</mat-icon>
         <span>{{ 'contextMenu.copyCoords' | translate }}</span>
       </li>
+      <li (click)="queryInfo()">
+        <mat-icon>info</mat-icon>
+        <span>{{ 'contextMenu.info' | translate }}</span>
+      </li>
+      <li class="divider"></li>
       <li (click)="routeFrom()">
         <mat-icon>trip_origin</mat-icon>
         <span>{{ 'contextMenu.routeFrom' | translate }}</span>
@@ -13,10 +27,7 @@
         <mat-icon>place</mat-icon>
         <span>{{ 'contextMenu.routeTo' | translate }}</span>
       </li>
-      <li (click)="queryInfo()">
-        <mat-icon>info</mat-icon>
-        <span>{{ 'contextMenu.info' | translate }}</span>
-      </li>
+      <li class="divider"></li>
       <li (click)="addComment()">
         <mat-icon>comment</mat-icon>
         <span>{{ 'contextMenu.addComment' | translate }}</span>

@@ -3,8 +3,8 @@
     @if (layers.length === 0) {
       <div class="empty-state">
         <mat-icon>layers_clear</mat-icon>
-        <p>Aucune couche active</p>
-        <p class="hint">Ajoutez des couches depuis le catalogue</p>
+        <p>{{ 'map.noActiveLayers' | translate }}</p>
+        <p class="hint">{{ 'map.addFromCatalog' | translate }}</p>
       </div>
     } @else {
       <div cdkDropList (cdkDropListDropped)="onDrop($event)" class="layer-list">
@@ -21,11 +21,11 @@
                 </span>
                 <div class="layer-actions">
                   <button mat-icon-button
-                          [matTooltip]="activeLayer.visible ? 'Masquer' : 'Afficher'"
+                          [matTooltip]="'map.visibility' | translate"
                           (click)="toggleVisibility(activeLayer)">
                     <mat-icon>{{ activeLayer.visible ? 'visibility' : 'visibility_off' }}</mat-icon>
                   </button>
-                  <button mat-icon-button matTooltip="Supprimer" (click)="removeLayer(activeLayer)">
+                  <button mat-icon-button [matTooltip]="'common.delete' | translate" (click)="removeLayer(activeLayer)">
                     <mat-icon>close</mat-icon>
                   </button>
                 </div>
@@ -53,7 +53,7 @@
       <div class="actions-bar">
         <button mat-stroked-button color="warn" (click)="removeAll()">
           <mat-icon>delete_sweep</mat-icon>
-          Tout supprimer
+          {{ 'map.removeAll' | translate }}
         </button>
       </div>
     }

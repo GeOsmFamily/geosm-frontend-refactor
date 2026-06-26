@@ -3,7 +3,7 @@
     <mat-tab>
       <ng-template mat-tab-label>
         <mat-icon>layers</mat-icon>
-        <span class="tab-label">Catalogue</span>
+        <span class="tab-label">{{ 'map.catalog' | translate }}</span>
       </ng-template>
       <app-catalog-browser />
     </mat-tab>
@@ -11,7 +11,7 @@
     <mat-tab>
       <ng-template mat-tab-label>
         <mat-icon>visibility</mat-icon>
-        <span class="tab-label">Couches actives</span>
+        <span class="tab-label">{{ 'map.activeLayers' | translate }}</span>
       </ng-template>
       <app-active-layers />
     </mat-tab>
@@ -19,7 +19,7 @@
     <mat-tab>
       <ng-template mat-tab-label>
         <mat-icon>map</mat-icon>
-        <span class="tab-label">Fonds de carte</span>
+        <span class="tab-label">{{ 'map.baseMaps' | translate }}</span>
       </ng-template>
       <app-base-map-switcher />
     </mat-tab>

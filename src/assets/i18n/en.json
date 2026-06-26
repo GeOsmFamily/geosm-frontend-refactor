@@ -242,6 +242,7 @@
     "registerSuccess": "Account created successfully"
   },
   "map": {
+    "zoom": "Zoom",
     "layers": "Layers",
     "tools": "Tools",
     "search": "Search for a place, a layer...",
@@ -257,10 +258,12 @@
     "visibility": "Visibility",
     "legend": "Legend",
     "addToMap": "Add to map",
-    "removeFromMap": "Remove from map"
+    "removeFromMap": "Remove from map",
+    "addFromCatalog": "Add layers from the catalog"
   },
   "tools": {
     "drawing": "Drawing",
+    "statistics": "Statistics",
     "measure": {
       "distance": "Distance",
       "area": "Area",
@@ -279,7 +282,8 @@
       "car": "Car",
       "bicycle": "Bicycle",
       "foot": "On foot",
-      "clickMap": "Click on map"
+      "clickMap": "Click on map",
+      "profile": "Profile"
     },
     "export": {
       "selectLayer": "Select a layer",
@@ -345,10 +349,15 @@
     "coordinates": "Coordinates",
     "routeFrom": "Route from here",
     "routeTo": "Route to here",
-    "info": "Information",
+    "info": "Information about this place",
     "addComment": "Add a comment",
     "copyCoords": "Copy coordinates",
-    "coordsCopied": "Coordinates copied!"
+    "coordsCopied": "Coordinates copied!",
+    "centerHere": "Center here",
+    "zoomIn": "Zoom here",
+    "routeStartSet": "Start point set",
+    "routeEndSet": "End point set",
+    "commentPlaced": "Comment placed - enter text in the tool"
   },
   "featureInfo": {
     "title": "Information",
@@ -368,6 +377,9 @@
     "warning": "Warning",
     "yes": "Yes",
     "no": "No",
-    "ok": "OK"
+    "ok": "OK",
+    "language": "Language",
+    "myAccount": "My account",
+    "settings": "Settings"
   }
 }

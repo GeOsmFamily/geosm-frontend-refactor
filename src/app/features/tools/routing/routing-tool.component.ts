@@ -7,6 +7,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { MatDividerModule } from '@angular/material/divider';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import Map from 'ol/Map';
 import VectorLayer from 'ol/layer/Vector';
 import VectorSource from 'ol/source/Vector';
@@ -21,6 +22,7 @@ import { Coordinate } from 'ol/coordinate';
 
 import { MapService } from '../../map/services/map.service';
 import { RoutingService } from '../../../core/services/routing.service';
+import { ToolActionService } from '../../../core/services/tool-action.service';
 import { RouteResult } from '../../../core/models/index';
 import { LoadingSpinnerComponent } from '../../../shared/components/loading-spinner/loading-spinner.component';
 import { TranslateModule } from '@ngx-translate/core';
@@ -39,6 +41,7 @@ type PickTarget = 'start' | 'end' | number;
     MatFormFieldModule,
     MatSelectModule,
     MatDividerModule,
+    MatTooltipModule,
     LoadingSpinnerComponent,
   ],
   templateUrl: './routing-tool.component.html',
@@ -47,6 +50,7 @@ type PickTarget = 'start' | 'end' | number;
 export class RoutingToolComponent implements OnInit, OnDestroy {
   private readonly mapService = inject(MapService);
   private readonly routingService = inject(RoutingService);
+  private readonly toolActionService = inject(ToolActionService);
 
   private map!: Map;
   private vectorSource = new VectorSource();
@@ -71,6 +75,21 @@ export class RoutingToolComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.map = this.mapService.getMap();
+
+    this.toolActionService.action$.subscribe((action) => {
+      if (action.tool !== 'routing') return;
+      const lonLat = action.data as [number, number];
+      const label = `${lonLat[1].toFixed(5)}, ${lonLat[0].toFixed(5)}`;
+      if (action.action === 'setStart') {
+        this.startCoord = lonLat;
+        this.startText = label;
+      } else if (action.action === 'setEnd') {
+        this.endCoord = lonLat;
+        this.endText = label;
+      }
+      this.updateMarkers();
+    });
+
     this.vectorLayer = new VectorLayer({
       source: this.vectorSource,
       style: (feature) => {

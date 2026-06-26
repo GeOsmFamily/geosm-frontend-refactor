@@ -290,7 +290,8 @@
     "search": "Rechercher un lieu, une couche...",
     "zoomIn": "Zoom avant",
     "zoomOut": "Zoom arriere",
-    "coordinates": "Coordonnees",
+    "zoom": "Zoom",
+    "coordinates": "Coordonnées",
     "baseMaps": "Fonds de carte",
     "activeLayers": "Couches actives",
     "catalog": "Catalogue",
@@ -300,10 +301,12 @@
     "visibility": "Visibilite",
     "legend": "Legende",
     "addToMap": "Ajouter a la carte",
-    "removeFromMap": "Retirer de la carte"
+    "removeFromMap": "Retirer de la carte",
+    "addFromCatalog": "Ajoutez des couches depuis le catalogue"
   },
   "tools": {
     "drawing": "Dessin",
+    "statistics": "Statistiques",
     "measure": {
       "distance": "Distance",
       "area": "Surface",
@@ -322,7 +325,8 @@
       "car": "Voiture",
       "bicycle": "Velo",
       "foot": "A pied",
-      "clickMap": "Cliquer sur la carte"
+      "clickMap": "Cliquer sur la carte",
+      "profile": "Profil"
     },
     "export": {
       "selectLayer": "Selectionner une couche",
@@ -385,13 +389,18 @@
     "flyTo": "Aller a"
   },
   "contextMenu": {
-    "coordinates": "Coordonnees",
-    "routeFrom": "Itineraire depuis ici",
-    "routeTo": "Itineraire vers ici",
-    "info": "Informations",
+    "coordinates": "Coordonnées",
+    "routeFrom": "Itinéraire depuis ici",
+    "routeTo": "Itinéraire vers ici",
+    "info": "Informations sur ce lieu",
     "addComment": "Ajouter un commentaire",
-    "copyCoords": "Copier les coordonnees",
-    "coordsCopied": "Coordonnees copiees !"
+    "copyCoords": "Copier les coordonnées",
+    "coordsCopied": "Coordonnées copiées !",
+    "centerHere": "Centrer ici",
+    "zoomIn": "Zoomer ici",
+    "routeStartSet": "Point de départ défini",
+    "routeEndSet": "Point d'arrivée défini",
+    "commentPlaced": "Commentaire placé - saisissez le texte dans l'outil"
   },
   "featureInfo": {
     "title": "Informations",
@@ -407,10 +416,13 @@
     "close": "Fermer",
     "loading": "Chargement...",
     "error": "Erreur",
-    "success": "Succes",
+    "success": "Succès",
     "warning": "Attention",
     "yes": "Oui",
     "no": "Non",
-    "ok": "OK"
+    "ok": "OK",
+    "language": "Langue",
+    "myAccount": "Mon compte",
+    "settings": "Paramètres"
   }
 }

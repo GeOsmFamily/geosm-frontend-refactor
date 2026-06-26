@@ -55,7 +55,7 @@ describe('ToolPanelComponent', () => {
 
   it('should return correct active tool label', () => {
     component.toggleTool('drawing');
-    expect(component.getActiveToolLabel()).toBe('Dessin');
+    expect(component.getActiveToolLabel()).toBe('tools.drawing');
   });
 
   it('should return empty string when no tool active', () => {

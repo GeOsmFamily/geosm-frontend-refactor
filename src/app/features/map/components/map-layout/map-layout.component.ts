@@ -1,6 +1,6 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatIconModule } from '@angular/material/icon';
@@ -16,8 +16,12 @@ import { MapViewComponent } from '../map-view/map-view.component';
 import { LayerPanelComponent } from '../../../../features/layers/components/layer-panel/layer-panel.component';
 import { ToolPanelComponent } from '../../../../features/tools/tool-panel/tool-panel.component';
 import { SearchBarComponent } from '../../../../features/search/components/search-bar/search-bar.component';
+import { transformExtent } from 'ol/proj';
 import { MapService } from '../../services/map.service';
 import { AuthService } from '../../../../core/services/auth.service';
+import { InstanceService } from '../../../../core/services/instance.service';
+import { ApiService } from '../../../../core/services/api.service';
+import { Instance } from '../../../../core/models/index';
 import { environment } from '../../../../../environments/environment';
 import { FeatureInfoComponent } from '../feature-info/feature-info.component';
 import { ContextMenuComponent } from '../context-menu/context-menu.component';
@@ -55,10 +59,13 @@ import { MapToolbarComponent } from '../map-toolbar/map-toolbar.component';
   templateUrl: './map-layout.component.html',
   styleUrl: './map-layout.component.scss',
 })
-export class MapLayoutComponent {
+export class MapLayoutComponent implements OnInit {
   private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
   private readonly authService = inject(AuthService);
   private readonly mapService = inject(MapService);
+  private readonly instanceService = inject(InstanceService);
+  private readonly apiService = inject(ApiService);
   private readonly translate = inject(TranslateService);
 
   readonly leftPanelOpen = signal(true);
@@ -68,9 +75,45 @@ export class MapLayoutComponent {
   readonly availableLanguages = environment.availableLanguages;
   readonly mousePosition = this.mapService.mousePosition$;
   readonly currentUser = this.authService.currentUser$;
+  currentZoom = 6;
 
   constructor() {
     this.authService.getProfile().subscribe();
+    this.mapService.mapReady$.subscribe((ready) => {
+      if (ready) {
+        const map = this.mapService.getMap();
+        map.getView().on('change:resolution', () => {
+          this.currentZoom = Math.round(map.getView().getZoom() || 6);
+        });
+        this.currentZoom = Math.round(map.getView().getZoom() || 6);
+      }
+    });
+  }
+
+  ngOnInit(): void {
+    this.route.paramMap.subscribe((params) => {
+      const slug = params.get('instanceSlug');
+      if (slug) {
+        this.loadInstance(slug);
+      }
+    });
+  }
+
+  private loadInstance(slug: string): void {
+    this.apiService.get<Instance>(`/instances/slug/${slug}`).subscribe({
+      next: (instance) => {
+        this.instanceService.setCurrentInstance(instance);
+        if (instance.bbox) {
+          this.mapService.fitExtent(
+            transformExtent(instance.bbox, 'EPSG:4326', 'EPSG:3857'),
+            [50, 50, 50, 50]
+          );
+        } else {
+          this.mapService.zoomTo([instance.centerLon, instance.centerLat], instance.defaultZoom);
+        }
+      },
+      error: () => {},
+    });
   }
 
   toggleLeftPanel(): void {

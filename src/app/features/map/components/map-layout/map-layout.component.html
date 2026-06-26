@@ -2,7 +2,7 @@
   <!-- Header -->
   <header class="header">
     <div class="header-left">
-      <button mat-icon-button class="menu-btn" (click)="toggleLeftPanel()" matTooltip="Panneau couches">
+      <button mat-icon-button class="menu-btn" (click)="toggleLeftPanel()" [matTooltip]="'map.layers' | translate">
         <mat-icon>{{ leftPanelOpen() ? 'menu_open' : 'menu' }}</mat-icon>
       </button>
       <div class="logo-group">
@@ -16,7 +16,7 @@
     </div>
 
     <div class="header-right">
-      <button mat-icon-button [matMenuTriggerFor]="langMenu" matTooltip="Langue" class="header-action">
+      <button mat-icon-button [matMenuTriggerFor]="langMenu" matTooltip="{{ 'common.language' | translate }}" class="header-action">
         <mat-icon>translate</mat-icon>
       </button>
       <mat-menu #langMenu="matMenu" class="lang-menu">
@@ -27,7 +27,7 @@
         }
       </mat-menu>
 
-      <button mat-icon-button [matMenuTriggerFor]="userMenu" matTooltip="Mon compte" class="header-action user-btn">
+      <button mat-icon-button [matMenuTriggerFor]="userMenu" [matTooltip]="'common.myAccount' | translate" class="header-action user-btn">
         <mat-icon>person</mat-icon>
       </button>
       <mat-menu #userMenu="matMenu">
@@ -45,15 +45,15 @@
         }
         <button mat-menu-item (click)="navigateToProfile()">
           <mat-icon>settings</mat-icon>
-          <span>Paramètres</span>
+          <span>{{ 'common.settings' | translate }}</span>
         </button>
         <button mat-menu-item (click)="logout()" class="logout-item">
           <mat-icon>logout</mat-icon>
-          <span>Déconnexion</span>
+          <span>{{ 'auth.logout' | translate }}</span>
         </button>
       </mat-menu>
 
-      <button mat-icon-button (click)="toggleRightPanel()" matTooltip="Outils" class="header-action tools-btn" [class.active]="rightPanelOpen()">
+      <button mat-icon-button (click)="toggleRightPanel()" [matTooltip]="'map.tools' | translate" class="header-action tools-btn" [class.active]="rightPanelOpen()">
         <mat-icon>handyman</mat-icon>
       </button>
     </div>
@@ -67,7 +67,7 @@
         <div class="panel-header">
           <div class="panel-title-group">
             <mat-icon class="panel-icon">layers</mat-icon>
-            <h3>Couches</h3>
+            <h3>{{ 'map.layers' | translate }}</h3>
           </div>
           <button mat-icon-button (click)="toggleLeftPanel()" class="panel-close">
             <mat-icon>chevron_left</mat-icon>
@@ -88,6 +88,19 @@
       <app-map-toolbar></app-map-toolbar>
       <app-feature-info></app-feature-info>
       <app-context-menu></app-context-menu>
+      <!-- Coordinate display -->
+      <div class="coord-display">
+        @if (mousePosition | async; as pos) {
+          <div class="coord-badge">
+            <mat-icon>place</mat-icon>
+            <span>{{ pos[1] | number:'1.5-5' }}° N, {{ pos[0] | number:'1.5-5' }}° E</span>
+          </div>
+        }
+        <div class="zoom-badge">
+          <mat-icon>zoom_in</mat-icon>
+          <span>{{ 'map.zoom' | translate }}: {{ currentZoom }}</span>
+        </div>
+      </div>
     </div>
 
     <!-- Right sidebar -->
@@ -96,7 +109,7 @@
         <div class="panel-header">
           <div class="panel-title-group">
             <mat-icon class="panel-icon">handyman</mat-icon>
-            <h3>Outils</h3>
+            <h3>{{ 'map.tools' | translate }}</h3>
           </div>
           <button mat-icon-button (click)="toggleRightPanel()" class="panel-close">
             <mat-icon>chevron_right</mat-icon>
@@ -109,20 +122,4 @@
     </aside>
   </div>
 
-  <!-- Status bar -->
-  <footer class="status-bar">
-    <div class="status-left">
-      @if (mousePosition | async; as pos) {
-        <div class="coord-badge">
-          <mat-icon>place</mat-icon>
-          <span>{{ pos[0] | number:'1.4-4' }}, {{ pos[1] | number:'1.4-4' }}</span>
-        </div>
-      }
-    </div>
-    <div class="status-center">
-    </div>
-    <div class="status-right">
-      <span class="powered-by">GeOSM v3.0</span>
-    </div>
-  </footer>
 </div>

@@ -4,9 +4,10 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
-import { toLonLat } from 'ol/proj';
+import { toLonLat, fromLonLat } from 'ol/proj';
 
 import { MapService } from '../../services/map.service';
+import { ToolActionService } from '../../../../core/services/tool-action.service';
 
 @Component({
   selector: 'app-context-menu',
@@ -19,6 +20,7 @@ export class ContextMenuComponent implements OnInit, OnDestroy {
   private readonly mapService = inject(MapService);
   private readonly snackBar = inject(MatSnackBar);
   private readonly translate = inject(TranslateService);
+  private readonly toolAction = inject(ToolActionService);
   private readonly elRef = inject(ElementRef);
 
   readonly visible = signal(false);
@@ -77,23 +79,70 @@ export class ContextMenuComponent implements OnInit, OnDestroy {
   }
 
   routeFrom(): void {
-    // Placeholder: integrate with routing service
+    this.toolAction.emit({
+      tool: 'routing',
+      action: 'setStart',
+      data: this.coordinates(),
+    });
+    this.snackBar.open(
+      this.translate.instant('contextMenu.routeStartSet'),
+      'OK',
+      { duration: 2000 }
+    );
     this.visible.set(false);
   }
 
   routeTo(): void {
-    // Placeholder: integrate with routing service
+    this.toolAction.emit({
+      tool: 'routing',
+      action: 'setEnd',
+      data: this.coordinates(),
+    });
+    this.snackBar.open(
+      this.translate.instant('contextMenu.routeEndSet'),
+      'OK',
+      { duration: 2000 }
+    );
     this.visible.set(false);
   }
 
   queryInfo(): void {
+    const map = this.mapService.getMap();
     const coord = this.coordinates();
-    this.mapService.onClick$.subscribe(); // trigger feature info via map click simulation
+    const projCoord = fromLonLat(coord);
+    const pixel = map.getPixelFromCoordinate(projCoord);
+    map.dispatchEvent({
+      type: 'click',
+      pixel,
+      coordinate: projCoord,
+      map,
+    } as any);
     this.visible.set(false);
   }
 
   addComment(): void {
-    // Placeholder: integrate with comment tool
+    this.toolAction.emit({
+      tool: 'comment',
+      action: 'addAt',
+      data: this.coordinates(),
+    });
+    this.snackBar.open(
+      this.translate.instant('contextMenu.commentPlaced'),
+      'OK',
+      { duration: 2000 }
+    );
+    this.visible.set(false);
+  }
+
+  zoomIn(): void {
+    const [lon, lat] = this.coordinates();
+    this.mapService.zoomTo([lon, lat], (this.mapService.getZoom() || 10) + 2);
+    this.visible.set(false);
+  }
+
+  centerHere(): void {
+    const [lon, lat] = this.coordinates();
+    this.mapService.setCenter([lon, lat]);
     this.visible.set(false);
   }
 }

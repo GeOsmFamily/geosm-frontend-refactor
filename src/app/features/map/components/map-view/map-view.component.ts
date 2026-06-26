@@ -7,9 +7,6 @@ import OSM from 'ol/source/OSM';
 import XYZ from 'ol/source/XYZ';
 import TileWMS from 'ol/source/TileWMS';
 import ScaleLine from 'ol/control/ScaleLine';
-import MousePosition from 'ol/control/MousePosition';
-import Zoom from 'ol/control/Zoom';
-import { createStringXY } from 'ol/coordinate';
 import { fromLonLat } from 'ol/proj';
 
 import { MapService } from '../../services/map.service';
@@ -41,13 +38,6 @@ export class MapViewComponent implements AfterViewInit, OnDestroy {
 
     const scaleLine = new ScaleLine({ units: 'metric' });
     map.addControl(scaleLine);
-
-    const mousePosition = new MousePosition({
-      coordinateFormat: createStringXY(4),
-      projection: 'EPSG:4326',
-      placeholder: '&nbsp;',
-    });
-    map.addControl(mousePosition);
 
     this.loadBaseMaps();
   }

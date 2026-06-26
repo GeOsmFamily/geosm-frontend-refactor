@@ -3,11 +3,12 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { TranslateModule } from '@ngx-translate/core';
-import { of } from 'rxjs';
+import { BehaviorSubject, of } from 'rxjs';
 
 import { MapLayoutComponent } from './map-layout.component';
 import { AuthService } from '../../../../core/services/auth.service';
 import { MapService } from '../../services/map.service';
+import { ActivatedRoute } from '@angular/router';
 
 describe('MapLayoutComponent', () => {
   let component: MapLayoutComponent;
@@ -19,10 +20,15 @@ describe('MapLayoutComponent', () => {
     });
     authSpy.getProfile.and.returnValue(of(null));
 
-    const mapSpy = jasmine.createSpyObj('MapService', ['getMap'], {
+    const mapSpy = jasmine.createSpyObj('MapService', ['getMap', 'zoomTo', 'fitExtent'], {
       mousePosition$: of([0, 0]),
+      mapReady$: new BehaviorSubject(false),
     });
     mapSpy.getMap.and.returnValue(null);
+
+    const routeSpy = {
+      paramMap: of({ get: () => null }),
+    };
 
     await TestBed.configureTestingModule({
       imports: [
@@ -35,6 +41,7 @@ describe('MapLayoutComponent', () => {
       providers: [
         { provide: AuthService, useValue: authSpy },
         { provide: MapService, useValue: mapSpy },
+        { provide: ActivatedRoute, useValue: routeSpy },
       ],
     }).compileComponents();
 

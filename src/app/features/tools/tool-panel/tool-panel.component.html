@@ -3,13 +3,13 @@
     @for (tool of tools; track tool.id) {
       <button class="tool-btn"
               [class.active]="activeTool === tool.id"
-              [matTooltip]="tool.label"
+              [matTooltip]="tool.label | translate"
               matTooltipPosition="below"
               (click)="toggleTool(tool.id)">
         <div class="tool-icon-wrapper">
           <mat-icon>{{ tool.icon }}</mat-icon>
         </div>
-        <span class="tool-label">{{ tool.label }}</span>
+        <span class="tool-label">{{ tool.label | translate }}</span>
       </button>
     }
   </div>
@@ -17,7 +17,7 @@
   @if (activeTool) {
     <div class="tool-content animate-in">
       <div class="tool-content-header">
-        <h4>{{ getActiveToolLabel() }}</h4>
+        <h4>{{ getActiveToolLabel() | translate }}</h4>
         <button mat-icon-button class="tool-close" (click)="toggleTool(activeTool)">
           <mat-icon>close</mat-icon>
         </button>

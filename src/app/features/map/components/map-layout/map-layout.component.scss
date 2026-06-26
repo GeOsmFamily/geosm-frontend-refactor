@@ -242,35 +242,31 @@
   }
 }
 
-// Status bar
-.status-bar {
-  height: var(--status-bar-height);
-  min-height: var(--status-bar-height);
-  background: var(--primary-dark);
-  color: rgba(255, 255, 255, 0.8);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 16px;
-  font-size: 11px;
-  z-index: 100;
-}
-
-.status-left, .status-center, .status-right {
+// Coordinate display
+.coord-display {
+  position: absolute;
+  bottom: 8px;
+  left: 50%;
+  transform: translateX(-50%);
   display: flex;
   align-items: center;
   gap: 8px;
+  z-index: 10;
+  pointer-events: none;
 }
 
-.coord-badge {
+.coord-badge, .zoom-badge {
   display: flex;
   align-items: center;
   gap: 4px;
-  padding: 2px 8px;
-  background: rgba(255, 255, 255, 0.08);
-  border-radius: 4px;
+  padding: 4px 10px;
+  background: rgba(2, 63, 95, 0.85);
+  backdrop-filter: blur(8px);
+  border-radius: 20px;
   font-family: 'Roboto Mono', monospace;
   font-size: 11px;
+  color: rgba(255, 255, 255, 0.9);
+  white-space: nowrap;
 
   mat-icon {
     font-size: 14px;
@@ -278,12 +274,6 @@
     height: 14px;
     color: var(--accent);
   }
-}
-
-.powered-by {
-  font-size: 10px;
-  opacity: 0.6;
-  letter-spacing: 0.5px;
 }
 
 // Responsive

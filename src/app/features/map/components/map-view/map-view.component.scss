@@ -7,4 +7,13 @@
 .map-container {
   width: 100%;
   height: 100%;
+
+  ::ng-deep .ol-zoom {
+    display: none;
+  }
+
+  ::ng-deep .ol-scale-line {
+    bottom: 28px;
+    left: 12px;
+  }
 }

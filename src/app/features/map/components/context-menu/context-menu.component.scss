@@ -25,5 +25,14 @@
     &:hover { background: #f0f0f0; }
 
     mat-icon { font-size: 20px; width: 20px; height: 20px; color: #666; }
+
+    &.divider {
+      height: 1px;
+      padding: 0;
+      margin: 4px 12px;
+      background: #e2e8f0;
+      cursor: default;
+      &:hover { background: #e2e8f0; }
+    }
   }
 }

@@ -242,6 +242,7 @@
     "registerSuccess": "Cuenta creada con exito"
   },
   "map": {
+    "zoom": "Zoom",
     "layers": "Capas",
     "tools": "Herramientas",
     "search": "Buscar un lugar, una capa...",
@@ -257,10 +258,12 @@
     "visibility": "Visibilidad",
     "legend": "Leyenda",
     "addToMap": "Agregar al mapa",
-    "removeFromMap": "Quitar del mapa"
+    "removeFromMap": "Quitar del mapa",
+    "addFromCatalog": "Agregue capas desde el catálogo"
   },
   "tools": {
     "drawing": "Dibujo",
+    "statistics": "Estadísticas",
     "measure": {
       "distance": "Distancia",
       "area": "Area",
@@ -279,7 +282,8 @@
       "car": "Coche",
       "bicycle": "Bicicleta",
       "foot": "A pie",
-      "clickMap": "Haga clic en el mapa"
+      "clickMap": "Haga clic en el mapa",
+      "profile": "Perfil"
     },
     "export": {
       "selectLayer": "Seleccionar una capa",
@@ -343,12 +347,17 @@
   },
   "contextMenu": {
     "coordinates": "Coordenadas",
-    "routeFrom": "Ruta desde aqui",
-    "routeTo": "Ruta hasta aqui",
-    "info": "Informacion",
+    "routeFrom": "Ruta desde aquí",
+    "routeTo": "Ruta hasta aquí",
+    "info": "Información sobre este lugar",
     "addComment": "Agregar comentario",
     "copyCoords": "Copiar coordenadas",
-    "coordsCopied": "Coordenadas copiadas!"
+    "coordsCopied": "Coordenadas copiadas!",
+    "centerHere": "Centrar aquí",
+    "zoomIn": "Acercar aquí",
+    "routeStartSet": "Punto de partida definido",
+    "routeEndSet": "Punto de llegada definido",
+    "commentPlaced": "Comentario colocado - ingrese el texto en la herramienta"
   },
   "featureInfo": {
     "title": "Informacion",
@@ -364,10 +373,13 @@
     "close": "Cerrar",
     "loading": "Cargando...",
     "error": "Error",
-    "success": "Exito",
-    "warning": "Atencion",
-    "yes": "Si",
+    "success": "Éxito",
+    "warning": "Atención",
+    "yes": "Sí",
     "no": "No",
-    "ok": "OK"
+    "ok": "OK",
+    "language": "Idioma",
+    "myAccount": "Mi cuenta",
+    "settings": "Configuración"
   }
 }
