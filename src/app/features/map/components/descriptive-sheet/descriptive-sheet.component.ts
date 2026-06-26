@@ -12,6 +12,7 @@ import VectorSource from 'ol/source/Vector.js';
 import GeoJSON from 'ol/format/GeoJSON.js';
 import { Fill, Stroke, Style } from 'ol/style.js';
 import { MapService } from '../../services/map.service';
+import { TranslateModule } from '@ngx-translate/core';
 
 export interface DescriptiveSheetData {
   properties: Record<string, any>;
@@ -22,7 +23,7 @@ export interface DescriptiveSheetData {
 @Component({
   selector: 'app-descriptive-sheet',
   standalone: true,
-  imports: [CommonModule, MatDialogModule, MatButtonModule, MatIconModule, MatTabsModule, MatTableModule, MatDividerModule],
+  imports: [TranslateModule, CommonModule, MatDialogModule, MatButtonModule, MatIconModule, MatTabsModule, MatTableModule, MatDividerModule],
   templateUrl: './descriptive-sheet.component.html',
   styleUrl: './descriptive-sheet.component.scss',
 })

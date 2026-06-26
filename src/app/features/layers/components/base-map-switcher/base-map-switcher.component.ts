@@ -14,6 +14,7 @@ import { InstanceService } from '../../../../core/services/instance.service.js';
 import { MapService } from '../../../map/services/map.service.js';
 import { BaseMap } from '../../../../core/models/index.js';
 import { LoadingSpinnerComponent } from '../../../../shared/components/loading-spinner/loading-spinner.component.js';
+import { TranslateModule } from '@ngx-translate/core';
 
 interface BaseMapOption {
   id: string;
@@ -25,7 +26,7 @@ interface BaseMapOption {
 @Component({
   selector: 'app-base-map-switcher',
   standalone: true,
-  imports: [
+  imports: [TranslateModule, 
     CommonModule,
     FormsModule,
     MatCardModule,

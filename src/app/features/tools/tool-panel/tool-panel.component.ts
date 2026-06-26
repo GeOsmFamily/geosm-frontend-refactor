@@ -10,6 +10,7 @@ import { ExportToolComponent } from '../export/export-tool.component.js';
 import { PrintToolComponent } from '../print/print-tool.component.js';
 import { CommentToolComponent } from '../comment/comment-tool.component.js';
 import { AltimetryToolComponent } from '../altimetry/altimetry-tool.component.js';
+import { TranslateModule } from '@ngx-translate/core';
 
 interface ToolItem {
   id: string;
@@ -20,7 +21,7 @@ interface ToolItem {
 @Component({
   selector: 'app-tool-panel',
   standalone: true,
-  imports: [
+  imports: [TranslateModule, 
     CommonModule,
     MatIconModule,
     MatButtonModule,

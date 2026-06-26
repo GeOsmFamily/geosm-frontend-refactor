@@ -17,6 +17,7 @@ import { Fill, Stroke, Style, Icon, Text } from 'ol/style.js';
 import { MapBrowserEvent } from 'ol';
 
 import { MapService } from '../../map/services/map.service.js';
+import { TranslateModule } from '@ngx-translate/core';
 
 interface MapComment {
   id: number;
@@ -29,7 +30,7 @@ interface MapComment {
 @Component({
   selector: 'app-comment-tool',
   standalone: true,
-  imports: [
+  imports: [TranslateModule, 
     CommonModule,
     FormsModule,
     MatButtonModule,

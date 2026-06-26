@@ -41,7 +41,7 @@
     @if (generating) {
       <app-loading-spinner [diameter]="20" message="" />
     } @else {
-      <mat-icon>picture_as_pdf</mat-icon> Générer le PDF
+      <ng-container><mat-icon>picture_as_pdf</mat-icon> Générer le PDF</ng-container>
     }
   </button>
 </div>

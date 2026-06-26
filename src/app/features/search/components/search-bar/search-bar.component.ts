@@ -21,6 +21,7 @@ import Feature from 'ol/Feature.js';
 import Point from 'ol/geom/Point.js';
 import { fromLonLat } from 'ol/proj.js';
 import { Fill, Stroke, Style, Circle as CircleStyle } from 'ol/style.js';
+import { TranslateModule } from '@ngx-translate/core';
 
 interface SearchResultItem {
   type: 'geocoding' | 'layer';
@@ -31,7 +32,7 @@ interface SearchResultItem {
 @Component({
   selector: 'app-search-bar',
   standalone: true,
-  imports: [
+  imports: [TranslateModule, 
     CommonModule,
     FormsModule,
     MatAutocompleteModule,

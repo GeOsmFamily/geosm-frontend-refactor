@@ -20,6 +20,7 @@ import { MapService } from '../../map/services/map.service.js';
 import { DrawingService } from '../../../core/services/drawing.service.js';
 import { InstanceService } from '../../../core/services/instance.service.js';
 import { ConfirmDialogComponent } from '../../../shared/components/confirm-dialog/confirm-dialog.component.js';
+import { TranslateModule } from '@ngx-translate/core';
 
 type DrawType = 'Point' | 'LineString' | 'Polygon' | 'Circle';
 
@@ -34,7 +35,7 @@ interface DrawnFeature {
 @Component({
   selector: 'app-drawing-tool',
   standalone: true,
-  imports: [
+  imports: [TranslateModule, 
     CommonModule,
     FormsModule,
     MatButtonModule,

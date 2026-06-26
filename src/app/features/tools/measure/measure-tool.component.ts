@@ -16,6 +16,7 @@ import { Geometry, LineString, Polygon } from 'ol/geom.js';
 import Feature from 'ol/Feature.js';
 
 import { MapService } from '../../map/services/map.service.js';
+import { TranslateModule } from '@ngx-translate/core';
 
 type MeasureMode = 'distance' | 'area';
 
@@ -30,7 +31,7 @@ interface MeasureResult {
 @Component({
   selector: 'app-measure-tool',
   standalone: true,
-  imports: [
+  imports: [TranslateModule, 
     CommonModule,
     FormsModule,
     MatButtonModule,

@@ -23,13 +23,14 @@ import { MapService } from '../../map/services/map.service.js';
 import { RoutingService } from '../../../core/services/routing.service.js';
 import { RouteResult } from '../../../core/models/index.js';
 import { LoadingSpinnerComponent } from '../../../shared/components/loading-spinner/loading-spinner.component.js';
+import { TranslateModule } from '@ngx-translate/core';
 
 type PickTarget = 'start' | 'end' | number;
 
 @Component({
   selector: 'app-routing-tool',
   standalone: true,
-  imports: [
+  imports: [TranslateModule, 
     CommonModule,
     FormsModule,
     MatButtonModule,

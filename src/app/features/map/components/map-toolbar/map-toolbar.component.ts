@@ -8,6 +8,7 @@ import Map from 'ol/Map.js';
 import { fromLonLat } from 'ol/proj.js';
 import { MapService } from '../../services/map.service';
 import { ZoomModalComponent } from '../zoom-modal/zoom-modal.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 interface MapPosition {
   center: [number, number];
@@ -17,7 +18,7 @@ interface MapPosition {
 @Component({
   selector: 'app-map-toolbar',
   standalone: true,
-  imports: [CommonModule, MatButtonModule, MatIconModule, MatTooltipModule, MatDialogModule],
+  imports: [TranslateModule, CommonModule, MatButtonModule, MatIconModule, MatTooltipModule, MatDialogModule],
   templateUrl: './map-toolbar.component.html',
   styleUrl: './map-toolbar.component.scss',
 })

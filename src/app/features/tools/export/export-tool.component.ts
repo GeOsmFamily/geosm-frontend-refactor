@@ -13,11 +13,12 @@ import { MapLayerService, ActiveLayer } from '../../map/services/map-layer.servi
 import { ExportService } from '../../../core/services/export.service.js';
 import { Export } from '../../../core/models/index.js';
 import { LoadingSpinnerComponent } from '../../../shared/components/loading-spinner/loading-spinner.component.js';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-export-tool',
   standalone: true,
-  imports: [
+  imports: [TranslateModule, 
     CommonModule,
     FormsModule,
     MatButtonModule,

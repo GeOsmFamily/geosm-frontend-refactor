@@ -4,11 +4,12 @@ import { MatIconModule } from '@angular/material/icon';
 import { CatalogBrowserComponent } from '../catalog-browser/catalog-browser.component.js';
 import { ActiveLayersComponent } from '../active-layers/active-layers.component.js';
 import { BaseMapSwitcherComponent } from '../base-map-switcher/base-map-switcher.component.js';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-layer-panel',
   standalone: true,
-  imports: [
+  imports: [TranslateModule, 
     MatTabsModule,
     MatIconModule,
     CatalogBrowserComponent,

@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { TranslateModule } from '@ngx-translate/core';
 
 export interface MetadataModalData {
   layerName: string;
@@ -12,7 +13,7 @@ export interface MetadataModalData {
 @Component({
   selector: 'app-metadata-modal',
   standalone: true,
-  imports: [CommonModule, MatDialogModule, MatButtonModule, MatIconModule],
+  imports: [TranslateModule, CommonModule, MatDialogModule, MatButtonModule, MatIconModule],
   templateUrl: './metadata-modal.component.html',
   styleUrl: './metadata-modal.component.scss',
 })

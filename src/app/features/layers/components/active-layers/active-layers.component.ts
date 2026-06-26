@@ -8,11 +8,12 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { CdkDragDrop, DragDropModule } from '@angular/cdk/drag-drop';
 import { MapLayerService, ActiveLayer } from '../../../map/services/map-layer.service.js';
 import { TruncatePipe } from '../../../../shared/pipes/truncate.pipe.js';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-active-layers',
   standalone: true,
-  imports: [
+  imports: [TranslateModule, 
     CommonModule,
     MatListModule,
     MatIconModule,

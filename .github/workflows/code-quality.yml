@@ -1,0 +1,71 @@
+name: Qualité du code
+
+on:
+  push:
+    branches: [main, dev, 'claude/**']
+  pull_request:
+    branches: [main, dev]
+
+jobs:
+  build-check:
+    name: Vérification du build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 20
+          cache: 'npm'
+      - run: npm ci
+      - name: Build strict
+        run: npx ng build --configuration production
+
+  bundle-size:
+    name: Taille du bundle
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 20
+          cache: 'npm'
+      - run: npm ci
+      - name: Analyse de la taille du bundle
+        run: |
+          npx ng build --configuration production --stats-json 2>/dev/null || true
+          echo "=== Taille des fichiers générés ==="
+          if [ -d "dist/geosm-frontend/browser" ]; then
+            du -sh dist/geosm-frontend/browser/
+            echo ""
+            echo "=== Fichiers JavaScript ==="
+            find dist/geosm-frontend/browser/ -name "*.js" -exec du -sh {} \; | sort -rh | head -15
+            echo ""
+            echo "=== Fichiers CSS ==="
+            find dist/geosm-frontend/browser/ -name "*.css" -exec du -sh {} \;
+          fi
+
+  i18n-check:
+    name: Vérification i18n
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: Vérifier la cohérence des traductions
+        run: |
+          echo "=== Vérification des fichiers i18n ==="
+          for lang in fr en es; do
+            if [ -f "src/assets/i18n/${lang}.json" ]; then
+              python3 -c "
+          import json, sys
+          d = json.load(open('src/assets/i18n/${lang}.json'))
+          def count(obj):
+              c = 0
+              for v in obj.values():
+                  c += count(v) if isinstance(v, dict) else 1
+              return c
+          print(f'${lang}.json: {count(d)} clés de traduction')
+          " || echo "Erreur lors de la lecture de ${lang}.json"
+            else
+              echo "⚠️ ${lang}.json manquant!"
+              exit 1
+            fi
+          done

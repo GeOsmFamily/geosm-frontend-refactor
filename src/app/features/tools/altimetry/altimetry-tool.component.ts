@@ -8,11 +8,12 @@ import { toLonLat } from 'ol/proj.js';
 import { MapService } from '../../map/services/map.service';
 import { GeoportailService } from '../../../core/services/geoportail.service';
 import { LoadingSpinnerComponent } from '../../../shared/components/loading-spinner/loading-spinner.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-altimetry-tool',
   standalone: true,
-  imports: [CommonModule, MatButtonModule, MatIconModule, MatDividerModule, LoadingSpinnerComponent],
+  imports: [TranslateModule, CommonModule, MatButtonModule, MatIconModule, MatDividerModule, LoadingSpinnerComponent],
   templateUrl: './altimetry-tool.component.html',
   styleUrl: './altimetry-tool.component.scss',
 })

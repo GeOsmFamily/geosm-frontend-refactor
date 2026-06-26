@@ -18,6 +18,7 @@ import { MapLayerService } from '../../../map/services/map-layer.service.js';
 import { Group, SubGroup, Layer } from '../../../../core/models/index.js';
 import { LoadingSpinnerComponent } from '../../../../shared/components/loading-spinner/loading-spinner.component.js';
 import { TruncatePipe } from '../../../../shared/pipes/truncate.pipe.js';
+import { TranslateModule } from '@ngx-translate/core';
 
 interface CatalogGroup extends Group {
   subGroups: CatalogSubGroup[];
@@ -31,7 +32,7 @@ interface CatalogSubGroup extends SubGroup {
 @Component({
   selector: 'app-catalog-browser',
   standalone: true,
-  imports: [
+  imports: [TranslateModule, 
     CommonModule,
     FormsModule,
     MatExpansionModule,

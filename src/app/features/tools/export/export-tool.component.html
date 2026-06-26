@@ -31,7 +31,7 @@
     @if (exporting) {
       <app-loading-spinner [diameter]="20" message="" />
     } @else {
-      <mat-icon>download</mat-icon> Exporter
+      <ng-container><mat-icon>download</mat-icon> Exporter</ng-container>
     }
   </button>
 
