@@ -7,37 +7,48 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatListModule } from '@angular/material/list';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { TranslateModule } from '@ngx-translate/core';
+import { MatCardModule } from '@angular/material/card';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { Router } from '@angular/router';
 
 import { MapService } from '../../services/map.service';
-
-interface Geosignet {
-  id: string;
-  name: string;
-  center: [number, number];
-  zoom: number;
-}
-
-const STORAGE_KEY = 'geosm_geosignets';
+import { GeosignetService, Geosignet } from '../../../../core/services/geosignet.service';
+import { AuthService } from '../../../../core/services/auth.service';
+import { MapLayoutComponent } from '../map-layout/map-layout.component';
 
 @Component({
   selector: 'app-geosignets',
   standalone: true,
   imports: [
     CommonModule, FormsModule, MatIconModule, MatButtonModule,
-    MatInputModule, MatFormFieldModule, MatListModule, MatTooltipModule, TranslateModule,
+    MatInputModule, MatFormFieldModule, MatListModule, MatTooltipModule,
+    MatCardModule, MatSnackBarModule, TranslateModule,
   ],
   templateUrl: './geosignets.component.html',
   styleUrl: './geosignets.component.scss',
 })
 export class GeosignetsComponent implements OnInit {
   private readonly mapService = inject(MapService);
+  private readonly geosignetService = inject(GeosignetService);
+  private readonly authService = inject(AuthService);
+  private readonly router = inject(Router);
+  private readonly snackBar = inject(MatSnackBar);
+  private readonly translate = inject(TranslateService);
+  private readonly parentLayout = inject(MapLayoutComponent, { optional: true });
 
+  readonly currentUser = this.authService.currentUser$;
   readonly bookmarks = signal<Geosignet[]>([]);
   bookmarkName = '';
 
   ngOnInit(): void {
-    this.loadBookmarks();
+    this.currentUser.subscribe(user => {
+      if (user) {
+        this.loadBookmarks();
+      } else {
+        this.bookmarks.set([]);
+      }
+    });
   }
 
   saveCurrentView(): void {
@@ -46,16 +57,28 @@ export class GeosignetsComponent implements OnInit {
     const center = this.mapService.getCenter() as [number, number];
     const zoom = this.mapService.getZoom();
 
-    const bookmark: Geosignet = {
-      id: Date.now().toString(),
+    this.geosignetService.create({
       name: this.bookmarkName.trim(),
       center,
       zoom,
-    };
-
-    this.bookmarks.update((bm) => [...bm, bookmark]);
-    this.persistBookmarks();
-    this.bookmarkName = '';
+    }).subscribe({
+      next: (bookmark) => {
+        this.bookmarks.update((bm) => [bookmark, ...bm]);
+        this.bookmarkName = '';
+        this.snackBar.open(
+          this.translate.instant('shared.savedSuccessfully') || 'Enregistré avec succès',
+          'OK',
+          { duration: 3000 }
+        );
+      },
+      error: () => {
+        this.snackBar.open(
+          this.translate.instant('shared.error') || 'Une erreur est survenue',
+          'OK',
+          { duration: 3000 }
+        );
+      }
+    });
   }
 
   flyTo(bookmark: Geosignet): void {
@@ -63,22 +86,56 @@ export class GeosignetsComponent implements OnInit {
   }
 
   delete(id: string): void {
-    this.bookmarks.update((bm) => bm.filter((b) => b.id !== id));
-    this.persistBookmarks();
+    this.geosignetService.delete(id).subscribe({
+      next: () => {
+        this.bookmarks.update((bm) => bm.filter((b) => b.id !== id));
+      },
+      error: () => {
+        this.snackBar.open(
+          this.translate.instant('shared.error') || 'Une erreur est survenue',
+          'OK',
+          { duration: 3000 }
+        );
+      }
+    });
+  }
+
+  share(bookmark: Geosignet): void {
+    const lat = bookmark.center[1];
+    const lon = bookmark.center[0];
+    const zoom = bookmark.zoom;
+    
+    // Generate share URL
+    const url = `${globalThis.location.origin}${globalThis.location.pathname}?lat=${lat}&lon=${lon}&z=${zoom}`;
+    
+    // Copy link to clipboard
+    navigator.clipboard.writeText(url).then(() => {
+      if (this.parentLayout) {
+        this.parentLayout.shareUrlText.set(url);
+        this.parentLayout.shareModalOpen.set(true);
+      } else {
+        this.snackBar.open(
+          this.translate.instant('geosignets.share') || 'Lien copié !',
+          'OK',
+          { duration: 3000 }
+        );
+      }
+    });
+  }
+
+  navigateToLogin(): void {
+    this.router.navigate(['/login']);
   }
 
   private loadBookmarks(): void {
-    try {
-      const raw = localStorage.getItem(STORAGE_KEY);
-      if (raw) {
-        this.bookmarks.set(JSON.parse(raw));
+    this.geosignetService.list().subscribe({
+      next: (data) => {
+        this.bookmarks.set(data);
+      },
+      error: () => {
+        // Silent fail or default empty
+        this.bookmarks.set([]);
       }
-    } catch {
-      // ignore
-    }
-  }
-
-  private persistBookmarks(): void {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(this.bookmarks()));
+    });
   }
 }

@@ -21,6 +21,10 @@ export class MapLayerService {
   private readonly activeLayersSubject = new BehaviorSubject<ActiveLayer[]>([]);
   readonly activeLayers$ = this.activeLayersSubject.asObservable();
 
+  getActiveLayers(): ActiveLayer[] {
+    return this.activeLayersSubject.value;
+  }
+
   addLayer(layer: Layer): void {
     const existing = this.activeLayersSubject.value.find(al => al.layer.id === layer.id);
     if (existing) return;
@@ -68,6 +72,18 @@ export class MapLayerService {
     });
     this.activeLayersSubject.next(current);
   }
+
+  setVisibility(layerId: string, visible: boolean): void {
+    const current = this.activeLayersSubject.value.map(al => {
+      if (al.layer.id === layerId) {
+        al.olLayer.setVisible(visible);
+        return { ...al, visible };
+      }
+      return al;
+    });
+    this.activeLayersSubject.next(current);
+  }
+
 
   setOpacity(layerId: string, opacity: number): void {
     const current = this.activeLayersSubject.value.map(al => {

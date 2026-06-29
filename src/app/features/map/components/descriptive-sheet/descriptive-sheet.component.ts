@@ -81,7 +81,7 @@ export class DescriptiveSheetComponent implements OnInit, OnDestroy {
         const feature = format.readFeature(
           { type: 'Feature', geometry: this.data.geometry, properties: {} },
           { featureProjection: 'EPSG:3857', dataProjection: 'EPSG:4326' }
-        );
+        ) as any;
         this.highlightSource.addFeature(feature);
         const extent = feature.getGeometry()!.getExtent();
         this.map.getView().fit(extent, { padding: [50, 50, 50, 50], duration: 500, maxZoom: 18 });

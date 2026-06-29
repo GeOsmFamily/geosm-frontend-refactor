@@ -1,0 +1,224 @@
+.settings-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 4px;
+}
+
+.settings-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.section-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'Avenir Next Rounded Pro Demi', 'Roboto', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--primary);
+
+  mat-icon {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+    color: var(--accent);
+  }
+}
+
+.user-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px;
+  border-radius: var(--radius-md);
+  background: rgba(2, 63, 95, 0.05);
+
+  .user-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: var(--primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+
+    mat-icon {
+      font-size: 28px;
+      width: 28px;
+      height: 28px;
+    }
+  }
+
+  .user-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .user-fullname {
+    font-family: 'Avenir Next Rounded Pro Demi', 'Roboto', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  .user-email {
+    font-size: 12px;
+    color: var(--text-secondary);
+  }
+
+  .user-role-badge {
+    align-self: flex-start;
+    font-size: 9px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    background: var(--accent);
+    color: white;
+    padding: 2px 6px;
+    border-radius: 10px;
+    margin-top: 4px;
+  }
+}
+
+.settings-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+
+  .form-row {
+    display: flex;
+    gap: 8px;
+  }
+
+  .form-field {
+    flex: 1;
+
+    ::ng-deep {
+      .mat-mdc-text-field-wrapper {
+        height: 44px !important;
+        min-height: 44px !important;
+        padding: 0 16px !important;
+      }
+
+      .mat-mdc-form-field-flex {
+        height: 44px !important;
+        align-items: center !important;
+      }
+
+      .mat-mdc-form-field-infix {
+        padding: 0 !important;
+        min-height: auto !important;
+        display: flex !important;
+        align-items: center !important;
+      }
+
+      .mat-mdc-input-element {
+        height: 38px !important;
+        line-height: 38px !important;
+        padding: 0 !important;
+        margin: 0 !important;
+      }
+
+      .mat-mdc-floating-label {
+        top: 22px !important;
+        transform: translateY(-50%) !important;
+        
+        &.mdc-floating-label--float-above {
+          top: 0 !important;
+          transform: translateY(-50%) scale(0.75) !important;
+        }
+      }
+
+      .mdc-notched-outline {
+        top: 0 !important;
+        bottom: 0 !important;
+      }
+
+      .mdc-notched-outline__notch {
+        border-top: none !important;
+      }
+    }
+  }
+
+  ::ng-deep .mat-mdc-form-field-subscript-wrapper { display: none; }
+
+  button {
+    align-self: flex-start;
+    height: 36px;
+    border-radius: var(--radius-sm);
+    font-size: 12px;
+    padding: 0 16px;
+  }
+}
+
+.pref-list {
+  display: flex;
+  flex-direction: column;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.pref-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px;
+  border-bottom: 1px solid var(--border-light);
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  .pref-info {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .pref-name {
+    font-family: 'Avenir Next Rounded Pro Medium', 'Roboto', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text);
+  }
+
+  .pref-desc {
+    font-size: 11px;
+    color: var(--text-secondary);
+  }
+}
+
+.auth-fallback-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  text-align: center;
+  border-radius: var(--radius-md);
+  background: var(--surface);
+
+  .fallback-icon {
+    font-size: 40px;
+    width: 40px;
+    height: 40px;
+    margin-bottom: 12px;
+    color: var(--text-light);
+  }
+
+  .fallback-text {
+    font-size: 13px;
+    color: var(--text-secondary);
+    margin-bottom: 16px;
+  }
+
+  button {
+    height: 38px;
+    border-radius: var(--radius-sm);
+    font-size: 13px;
+  }
+}

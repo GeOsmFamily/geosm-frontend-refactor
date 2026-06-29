@@ -5,21 +5,27 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSliderModule } from '@angular/material/slider';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatSnackBarModule, MatSnackBar } from '@angular/material/snack-bar';
 import { CdkDragDrop, DragDropModule } from '@angular/cdk/drag-drop';
 import { MapLayerService, ActiveLayer } from '../../../map/services/map-layer.service';
 import { TruncatePipe } from '../../../../shared/pipes/truncate.pipe';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { SharingService } from '../../../../core/services/sharing.service';
+import { InstanceService } from '../../../../core/services/instance.service';
+import { MapService } from '../../../map/services/map.service';
 
 @Component({
   selector: 'app-active-layers',
   standalone: true,
-  imports: [TranslateModule, 
+  imports: [
+    TranslateModule,
     CommonModule,
     MatListModule,
     MatIconModule,
     MatButtonModule,
     MatSliderModule,
     MatTooltipModule,
+    MatSnackBarModule,
     DragDropModule,
     TruncatePipe,
   ],
@@ -28,6 +34,12 @@ import { TranslateModule } from '@ngx-translate/core';
 })
 export class ActiveLayersComponent {
   private readonly mapLayerService = inject(MapLayerService);
+  private readonly sharingService = inject(SharingService);
+  private readonly instanceService = inject(InstanceService);
+  private readonly mapService = inject(MapService);
+  private readonly snackBar = inject(MatSnackBar);
+  private readonly translate = inject(TranslateService);
+
 
   readonly activeLayers$ = this.mapLayerService.activeLayers$;
 
@@ -51,4 +63,43 @@ export class ActiveLayersComponent {
   onDrop(event: CdkDragDrop<ActiveLayer[]>): void {
     this.mapLayerService.reorder(event.previousIndex, event.currentIndex);
   }
+
+  shareLayer(activeLayer: ActiveLayer): void {
+    const instance = this.instanceService.currentInstance$.value;
+    const map = this.mapService.getMap();
+    const center = map.getView().getCenter();
+    const zoom = map.getView().getZoom();
+
+    const layersState = this.mapLayerService.getActiveLayers().map(al => ({
+      layerId: al.layer.id,
+      opacity: al.opacity,
+      visible: al.layer.id === activeLayer.layer.id ? true : al.visible
+    }));
+
+    const mapState = {
+      center,
+      zoom,
+      layers: layersState
+    };
+
+    this.sharingService.createShare({
+      instanceId: instance ? instance.id : '',
+      mapState
+    }).subscribe({
+      next: (res) => {
+        const shareUrl = `${globalThis.location.origin}/share/${res.code}`;
+        navigator.clipboard.writeText(shareUrl).then(() => {
+          this.snackBar.open(
+            this.translate.instant('sharing.copied') || 'Lien copié dans le presse-papiers !',
+            'OK',
+            { duration: 3000 }
+          );
+        });
+      },
+      error: () => {
+        this.snackBar.open('Erreur lors de la création du partage.', 'OK', { duration: 3000 });
+      }
+    });
+  }
 }
+

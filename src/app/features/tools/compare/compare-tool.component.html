@@ -1,54 +1,55 @@
 <div class="compare-tool">
-  <h4>Comparer les cartes</h4>
-  <p class="description">Comparez deux couches côte à côte avec un curseur de balayage.</p>
+  <h4>{{ 'compare_maps.compare' | translate }}</h4>
+  <p class="description">{{ 'compare_maps.title' | translate }}</p>
 
   @if (!comparing) {
     <mat-form-field appearance="outline" class="full-width">
-      <mat-label>Couche gauche</mat-label>
-      <mat-select [(ngModel)]="leftLayerId">
-        @for (al of activeLayers; track al.layer.id) {
-          <mat-option [value]="al.layer.id" [disabled]="al.layer.id === rightLayerId">
-            {{ al.layer.name }}
+      <mat-label>{{ 'left_menu.fonds' | translate }} ({{ 'naviguation_tools.past_view' | translate }})</mat-label>
+      <mat-select [(ngModel)]="leftBaseMapId">
+        @for (bm of baseMaps; track bm.id) {
+          <mat-option [value]="bm.id" [disabled]="bm.id === rightBaseMapId">
+            {{ bm.name }}
           </mat-option>
         }
       </mat-select>
     </mat-form-field>
 
     <mat-form-field appearance="outline" class="full-width">
-      <mat-label>Couche droite</mat-label>
-      <mat-select [(ngModel)]="rightLayerId">
-        @for (al of activeLayers; track al.layer.id) {
-          <mat-option [value]="al.layer.id" [disabled]="al.layer.id === leftLayerId">
-            {{ al.layer.name }}
+      <mat-label>{{ 'left_menu.fonds' | translate }} ({{ 'naviguation_tools.next_view' | translate }})</mat-label>
+      <mat-select [(ngModel)]="rightBaseMapId">
+        @for (bm of baseMaps; track bm.id) {
+          <mat-option [value]="bm.id" [disabled]="bm.id === leftBaseMapId">
+            {{ bm.name }}
           </mat-option>
         }
       </mat-select>
     </mat-form-field>
 
-    @if (activeLayers.length < 2) {
-      <p class="hint">Ajoutez au moins 2 couches à la carte pour les comparer.</p>
+    @if (baseMaps.length < 2) {
+      <p class="hint">Chargez au moins 2 fonds de carte pour les comparer.</p>
     }
 
     <button mat-raised-button color="primary" class="full-width"
-            [disabled]="!leftLayerId || !rightLayerId"
+            [disabled]="!leftBaseMapId || !rightBaseMapId"
             (click)="startCompare()">
-      <mat-icon>compare</mat-icon> Comparer
+      <mat-icon>compare</mat-icon> {{ 'compare_maps.compare' | translate }}
     </button>
   } @else {
     <div class="swipe-control">
       <div class="swipe-labels">
-        <span>&larr; Gauche</span>
-        <span>Droite &rarr;</span>
+        <span>&larr; {{ 'naviguation_tools.past_view' | translate }}</span>
+        <span>{{ 'naviguation_tools.next_view' | translate }} &rarr;</span>
       </div>
-      <input type="range" min="0" max="100" [value]="swipePosition"
+      <input type="range" id="compare-swipe-range" aria-label="Position de balayage" min="0" max="100" [value]="swipePosition"
              (input)="onSwipeInput($event)" class="swipe-slider">
+
       <div class="swipe-value">{{ swipePosition | number:'1.0-0' }}%</div>
     </div>
 
     <mat-divider></mat-divider>
 
     <button mat-raised-button color="warn" class="full-width" (click)="resetCompare()">
-      <mat-icon>close</mat-icon> Arrêter la comparaison
+      <mat-icon>close</mat-icon> {{ 'common.cancel' | translate }}
     </button>
   }
 </div>

@@ -7,6 +7,9 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatListModule } from '@angular/material/list';
+import { MatCardModule } from '@angular/material/card';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { Router } from '@angular/router';
 import Map from 'ol/Map';
 import VectorLayer from 'ol/layer/Vector';
 import VectorSource from 'ol/source/Vector';
@@ -14,14 +17,17 @@ import Feature from 'ol/Feature';
 import Point from 'ol/geom/Point';
 import { fromLonLat, toLonLat } from 'ol/proj';
 import { Fill, Stroke, Style, Icon, Text } from 'ol/style';
-import { MapBrowserEvent } from 'ol';
 
 import { MapService } from '../../map/services/map.service';
 import { ToolActionService } from '../../../core/services/tool-action.service';
-import { TranslateModule } from '@ngx-translate/core';
+import { AuthService } from '../../../core/services/auth.service';
+import { InstanceService } from '../../../core/services/instance.service';
+import { CommentService } from '../../../core/services/comment.service';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { Subscription } from 'rxjs';
 
 interface MapComment {
-  id: number;
+  id: string;
   text: string;
   lon: number;
   lat: number;
@@ -31,7 +37,8 @@ interface MapComment {
 @Component({
   selector: 'app-comment-tool',
   standalone: true,
-  imports: [TranslateModule, 
+  imports: [
+    TranslateModule, 
     CommonModule,
     FormsModule,
     MatButtonModule,
@@ -40,6 +47,8 @@ interface MapComment {
     MatFormFieldModule,
     MatDividerModule,
     MatListModule,
+    MatSnackBarModule,
+    MatCardModule,
   ],
   templateUrl: './comment-tool.component.html',
   styleUrl: './comment-tool.component.scss',
@@ -47,13 +56,20 @@ interface MapComment {
 export class CommentToolComponent implements OnInit, OnDestroy {
   private readonly mapService = inject(MapService);
   private readonly toolActionService = inject(ToolActionService);
+  private readonly authService = inject(AuthService);
+  private readonly instanceService = inject(InstanceService);
+  private readonly commentService = inject(CommentService);
+  private readonly snackBar = inject(MatSnackBar);
+  private readonly translate = inject(TranslateService);
+  private readonly router = inject(Router);
 
   private map!: Map;
-  private vectorSource = new VectorSource();
+  private readonly vectorSource = new VectorSource();
   private vectorLayer!: VectorLayer<VectorSource>;
   private clickListener: ((evt: any) => void) | null = null;
-  private counter = 0;
+  private authSubscription!: Subscription;
 
+  readonly currentUser = this.authService.currentUser$;
   comments: MapComment[] = [];
   commentText = '';
   isPlacing = false;
@@ -61,12 +77,6 @@ export class CommentToolComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.map = this.mapService.getMap();
-
-    this.toolActionService.action$.subscribe((action) => {
-      if (action.tool === 'comment' && action.action === 'addAt') {
-        this.pendingCoord = action.data as [number, number];
-      }
-    });
 
     this.vectorLayer = new VectorLayer({
       source: this.vectorSource,
@@ -93,12 +103,30 @@ export class CommentToolComponent implements OnInit, OnDestroy {
       },
     });
     this.map.addLayer(this.vectorLayer);
+
+    this.toolActionService.action$.subscribe((action) => {
+      if (action.tool === 'comment' && action.action === 'addAt') {
+        this.pendingCoord = action.data as [number, number];
+      }
+    });
+
+    this.authSubscription = this.currentUser.subscribe(user => {
+      if (user) {
+        this.loadComments();
+      } else {
+        this.vectorSource.clear();
+        this.comments = [];
+      }
+    });
   }
 
   ngOnDestroy(): void {
     this.stopPlacing();
     if (this.vectorLayer) {
       this.map.removeLayer(this.vectorLayer);
+    }
+    if (this.authSubscription) {
+      this.authSubscription.unsubscribe();
     }
   }
 
@@ -128,26 +156,48 @@ export class CommentToolComponent implements OnInit, OnDestroy {
   }
 
   addComment(): void {
-    if (!this.pendingCoord || !this.commentText.trim()) return;
+    const instance = this.instanceService.currentInstance$.value;
+    if (!instance || !this.pendingCoord || !this.commentText.trim()) return;
 
-    this.counter++;
     const [lon, lat] = this.pendingCoord;
+    const text = this.commentText.trim();
 
-    const feature = new Feature(new Point(fromLonLat(this.pendingCoord)));
-    feature.set('label', this.commentText.trim());
-    feature.setId(`comment-${this.counter}`);
-    this.vectorSource.addFeature(feature);
-
-    this.comments.push({
-      id: this.counter,
-      text: this.commentText.trim(),
-      lon,
+    this.commentService.create({
+      instanceId: instance.id,
+      text,
       lat,
-      feature,
-    });
+      lon,
+    }).subscribe({
+      next: (savedComment) => {
+        const feature = new Feature(new Point(fromLonLat(this.pendingCoord!)));
+        feature.set('label', text);
+        feature.setId(`comment-${savedComment.id}`);
+        this.vectorSource.addFeature(feature);
 
-    this.commentText = '';
-    this.pendingCoord = null;
+        this.comments.push({
+          id: savedComment.id,
+          text,
+          lon,
+          lat,
+          feature,
+        });
+
+        this.commentText = '';
+        this.pendingCoord = null;
+        this.snackBar.open(
+          this.translate.instant('shared.savedSuccessfully') || 'Commentaire enregistré avec succès',
+          'OK',
+          { duration: 3000 }
+        );
+      },
+      error: () => {
+        this.snackBar.open(
+          this.translate.instant('shared.error') || 'Une erreur est survenue lors de l\'enregistrement',
+          'OK',
+          { duration: 3000 }
+        );
+      }
+    });
   }
 
   navigateTo(comment: MapComment): void {
@@ -155,7 +205,57 @@ export class CommentToolComponent implements OnInit, OnDestroy {
   }
 
   deleteComment(comment: MapComment): void {
-    this.vectorSource.removeFeature(comment.feature);
-    this.comments = this.comments.filter(c => c.id !== comment.id);
+    this.commentService.delete(comment.id).subscribe({
+      next: () => {
+        this.vectorSource.removeFeature(comment.feature);
+        this.comments = this.comments.filter(c => c.id !== comment.id);
+        this.snackBar.open(
+          this.translate.instant('shared.deletedSuccessfully') || 'Commentaire supprimé',
+          'OK',
+          { duration: 3000 }
+        );
+      },
+      error: () => {
+        this.snackBar.open(
+          this.translate.instant('shared.error') || 'Une erreur est survenue',
+          'OK',
+          { duration: 3000 }
+        );
+      }
+    });
+  }
+
+  navigateToLogin(): void {
+    this.router.navigate(['/login']);
+  }
+
+  private loadComments(): void {
+    const instance = this.instanceService.currentInstance$.value;
+    if (!instance) return;
+
+    this.commentService.list(instance.id).subscribe({
+      next: (data) => {
+        this.vectorSource.clear();
+        this.comments = [];
+        data.forEach(c => {
+          const feature = new Feature(new Point(fromLonLat([c.lon, c.lat])));
+          feature.set('label', c.text);
+          feature.setId(`comment-${c.id}`);
+          this.vectorSource.addFeature(feature);
+
+          this.comments.push({
+            id: c.id,
+            text: c.text,
+            lon: c.lon,
+            lat: c.lat,
+            feature,
+          });
+        });
+      },
+      error: () => {
+        this.vectorSource.clear();
+        this.comments = [];
+      }
+    });
   }
 }

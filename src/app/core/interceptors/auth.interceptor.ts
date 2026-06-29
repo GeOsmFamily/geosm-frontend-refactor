@@ -1,5 +1,6 @@
 import { HttpInterceptorFn } from '@angular/common/http';
 import { inject } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
 
 import { AuthService } from '../services/auth.service';
 
@@ -10,19 +11,22 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
     return next(req);
   }
 
-  if (PUBLIC_PATHS.some((path) => req.url.includes(path))) {
-    return next(req);
+  const translate = inject(TranslateService);
+  const lang = translate.currentLang || 'fr';
+  const headers: Record<string, string> = {
+    'Accept-Language': lang,
+  };
+
+  const isPublic = PUBLIC_PATHS.some((path) => req.url.includes(path));
+  if (!isPublic) {
+    const authService = inject(AuthService);
+    const token = authService.getToken();
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+    }
   }
 
-  const authService = inject(AuthService);
-  const token = authService.getToken();
-
-  if (token) {
-    const cloned = req.clone({
-      setHeaders: { Authorization: `Bearer ${token}` },
-    });
-    return next(cloned);
-  }
-
-  return next(req);
+  const cloned = req.clone({ setHeaders: headers });
+  return next(cloned);
 };
+

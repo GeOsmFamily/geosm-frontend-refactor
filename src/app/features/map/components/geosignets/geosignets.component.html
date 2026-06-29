@@ -1,36 +1,81 @@
-<div class="geosignets">
-  <h4>{{ 'geosignets.title' | translate }}</h4>
+@if (currentUser | async) {
+  <div class="geosignets">
+    <div class="info-bubble glass">
+      <mat-icon class="info-icon">info</mat-icon>
+      <div class="info-text">
+        {{ 'geosignets.helpText' | translate }}
+      </div>
+    </div>
 
-  <div class="save-form">
-    <mat-form-field appearance="outline" class="name-field">
-      <mat-label>{{ 'geosignets.name' | translate }}</mat-label>
-      <input matInput [(ngModel)]="bookmarkName" (keyup.enter)="saveCurrentView()" />
-    </mat-form-field>
-    <button mat-flat-button color="primary" (click)="saveCurrentView()" [disabled]="!bookmarkName.trim()">
-      <mat-icon>bookmark_add</mat-icon>
-      {{ 'geosignets.save' | translate }}
-    </button>
-  </div>
+    <div class="save-form">
+      <div class="input-wrapper">
+        <mat-icon class="input-icon">bookmark_border</mat-icon>
+        <input type="text"
+               id="bookmark-name-input"
+               aria-label="Nom du geosignet"
+               [placeholder]="'geosignets.name' | translate"
+               [(ngModel)]="bookmarkName"
+               (keyup.enter)="saveCurrentView()"
+               class="custom-input" />
+      </div>
+      <button mat-flat-button color="primary" class="save-btn" (click)="saveCurrentView()" [disabled]="!bookmarkName.trim()">
+        <mat-icon>bookmark_add</mat-icon>
+        <span>{{ 'geosignets.save' | translate }}</span>
+      </button>
+    </div>
 
-  @if (bookmarks().length === 0) {
-    <p class="no-bookmarks">{{ 'geosignets.noBookmarks' | translate }}</p>
-  } @else {
-    <mat-list class="bookmark-list">
-      @for (bm of bookmarks(); track bm.id) {
-        <mat-list-item class="bookmark-item">
-          <div class="bookmark-content">
-            <span class="bookmark-name" (click)="flyTo(bm)" [matTooltip]="'geosignets.flyTo' | translate">
-              {{ bm.name }}
-            </span>
-            <span class="bookmark-coords">
-              {{ bm.center[0] | number:'1.2-2' }}, {{ bm.center[1] | number:'1.2-2' }} (z{{ bm.zoom | number:'1.0-0' }})
-            </span>
+    @if (bookmarks().length === 0) {
+      <div class="empty-state">
+        <mat-icon class="empty-icon">bookmark_border</mat-icon>
+        <p class="no-bookmarks">{{ 'geosignets.noBookmarks' | translate }}</p>
+      </div>
+    } @else {
+      <div class="bookmark-list">
+        @for (bm of bookmarks(); track bm.id) {
+          <div class="bookmark-card glass">
+            <button class="bookmark-info" type="button" (click)="flyTo(bm)">
+              <mat-icon class="bookmark-icon">pin_drop</mat-icon>
+              <div class="bookmark-details">
+                <span class="bookmark-name" [matTooltip]="'geosignets.flyTo' | translate">
+                  {{ bm.name }}
+                </span>
+                <span class="bookmark-coords">
+                  {{ bm.center[1] | number:'1.4-4' }}° N, {{ bm.center[0] | number:'1.4-4' }}° E (z{{ bm.zoom | number:'1.0-0' }})
+                </span>
+              </div>
+            </button>
+
+            <div class="bookmark-actions">
+              <button mat-icon-button class="share-btn" (click)="share(bm)" [matTooltip]="'geosignets.share' | translate">
+                <mat-icon>share</mat-icon>
+              </button>
+              <button mat-icon-button class="delete-btn" (click)="delete(bm.id)" [matTooltip]="'geosignets.delete' | translate">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </div>
           </div>
-          <button mat-icon-button color="warn" (click)="delete(bm.id)" [matTooltip]="'geosignets.delete' | translate">
-            <mat-icon>delete</mat-icon>
-          </button>
-        </mat-list-item>
-      }
-    </mat-list>
-  }
-</div>
+        }
+      </div>
+    }
+  </div>
+} @else {
+  <div class="login-required-container">
+    <mat-card class="login-card glass">
+      <mat-card-header>
+        <div mat-card-avatar class="lock-avatar">
+          <mat-icon>lock</mat-icon>
+        </div>
+        <mat-card-title>{{ 'geosignets.loginRequired' | translate }}</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <p>{{ 'geosignets.loginRequiredDesc' | translate }}</p>
+      </mat-card-content>
+      <mat-card-actions>
+        <button mat-flat-button color="primary" class="login-btn" (click)="navigateToLogin()">
+          <mat-icon>login</mat-icon>
+          <span>{{ 'geosignets.loginBtn' | translate }}</span>
+        </button>
+      </mat-card-actions>
+    </mat-card>
+  </div>
+}

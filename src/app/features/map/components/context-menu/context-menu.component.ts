@@ -4,7 +4,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
-import { toLonLat, fromLonLat } from 'ol/proj';
+import { toLonLat } from 'ol/proj';
 
 import { MapService } from '../../services/map.service';
 import { ToolActionService } from '../../../../core/services/tool-action.service';
@@ -107,16 +107,12 @@ export class ContextMenuComponent implements OnInit, OnDestroy {
   }
 
   queryInfo(): void {
-    const map = this.mapService.getMap();
-    const coord = this.coordinates();
-    const projCoord = fromLonLat(coord);
-    const pixel = map.getPixelFromCoordinate(projCoord);
-    map.dispatchEvent({
-      type: 'click',
-      pixel,
-      coordinate: projCoord,
-      map,
-    } as any);
+    const [lon, lat] = this.coordinates();
+    this.toolAction.emit({
+      tool: 'location-info',
+      action: 'show',
+      data: { lat, lon },
+    });
     this.visible.set(false);
   }
 

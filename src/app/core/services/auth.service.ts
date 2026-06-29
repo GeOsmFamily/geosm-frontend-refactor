@@ -42,19 +42,19 @@ export class AuthService {
   }
 
   getProfile(): Observable<User> {
-    return this.api.get<User>('/auth/profile').pipe(
+    return this.api.get<User>('/auth/me').pipe(
       tap((user) => this.currentUser$.next(user)),
     );
   }
 
   updateProfile(dto: Partial<User>): Observable<User> {
-    return this.api.patch<User>('/auth/profile', dto).pipe(
+    return this.api.patch<User>('/auth/me', dto).pipe(
       tap((user) => this.currentUser$.next(user)),
     );
   }
 
   changePassword(dto: { currentPassword: string; newPassword: string }): Observable<void> {
-    return this.api.post<void>('/auth/change-password', dto);
+    return this.api.put<void>('/auth/me/password', dto);
   }
 
   forgotPassword(email: string): Observable<void> {

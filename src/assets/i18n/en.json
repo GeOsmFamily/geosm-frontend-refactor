@@ -337,13 +337,47 @@
     "linkedin": "LinkedIn",
     "sharedMap": "Shared map"
   },
+  "settings": {
+    "accountInfo": "Account Information",
+    "editProfile": "Edit Profile",
+    "changePassword": "Change Password",
+    "currentPassword": "Current Password",
+    "newPassword": "New Password",
+    "updatePassword": "Update Password",
+    "preferences": "Geoportal Preferences",
+    "darkMode": "Dark Mode",
+    "darkModeDesc": "Enable the dark theme for the platform",
+    "profileUpdated": "Profile updated successfully",
+    "profileUpdateError": "Failed to update profile",
+    "passwordChanged": "Password changed successfully",
+    "passwordChangeError": "Incorrect current password"
+  },
+
   "geosignets": {
     "title": "Bookmarks",
+    "helpText": "Save your favorite map views and zoom levels to quickly jump back to them with a single click.",
     "save": "Save current view",
     "name": "Bookmark name",
     "noBookmarks": "No bookmarks saved",
     "delete": "Delete",
-    "flyTo": "Go to"
+    "flyTo": "Go to",
+    "loginRequired": "Login required",
+    "loginRequiredDesc": "Please log in to your account to save and share your bookmarks.",
+    "loginBtn": "Log in",
+    "share": "Share"
+  },
+  "comment": {
+    "placeComment": "Place a comment",
+    "cancel": "Cancel",
+    "add": "Add",
+    "placeHint": "Click on the map to place the comment.",
+    "commentLabel": "Comment",
+    "writeComment": "Your comment...",
+    "noComments": "No comments",
+    "loginRequired": "Login required",
+    "loginRequiredDesc": "Please log in to your account to add and view comments on the map.",
+    "loginBtn": "Log in",
+    "delete": "Delete"
   },
   "contextMenu": {
     "coordinates": "Coordinates",

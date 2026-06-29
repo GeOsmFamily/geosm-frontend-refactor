@@ -282,14 +282,322 @@
 
   .logo-text { display: none; }
 
-  .left-panel, .right-panel {
+  .left-panel {
     position: absolute;
     top: 0;
     bottom: 0;
     z-index: 60;
     box-shadow: var(--shadow-xl);
+    left: 0;
+    right: auto;
+  }
+}
+
+// Floating Panel Styles
+.floating-panel {
+  position: absolute;
+  z-index: 55;
+  display: flex;
+  flex-direction: column;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-xl);
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  transition: all var(--transition-normal);
+
+  &.geosignets-panel {
+    left: 16px;
+    top: 16px;
+    width: 320px;
+    height: 420px;
   }
 
-  .left-panel { left: 0; right: auto; }
-  .right-panel { right: 0; left: auto; }
+  &.share-panel {
+    left: 16px;
+    top: 16px;
+    width: 320px;
+  }
+
+  &.tools-menu-panel {
+    right: 16px;
+    top: 16px;
+    width: 340px;
+  }
+
+  &.active-tool-panel {
+    right: 16px;
+    top: 16px;
+    width: 350px;
+    max-height: calc(100% - 32px);
+  }
+
+  .panel-header {
+    background: rgba(2, 63, 95, 0.9);
+    color: white;
+    padding: 10px 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+    
+    h3 {
+      margin: 0;
+      color: white;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .panel-icon {
+      color: var(--accent);
+      font-size: 20px;
+      width: 20px;
+      height: 20px;
+    }
+
+    .panel-close {
+      color: white !important;
+      width: 32px !important;
+      height: 32px !important;
+      display: inline-flex !important;
+      align-items: center;
+      justify-content: center;
+      margin: 0 !important;
+      padding: 0 !important;
+      border-radius: 50% !important;
+      transition: all var(--transition-fast) !important;
+
+      &:hover {
+        background: rgba(255, 255, 255, 0.2) !important;
+      }
+      mat-icon {
+        font-size: 18px;
+        width: 18px;
+        height: 18px;
+        margin: 0;
+      }
+    }
+  }
+
+  .panel-body {
+    background: var(--surface);
+    padding: 14px;
+    overflow-y: auto;
+    color: var(--text);
+    flex: 1;
+  }
+}
+
+// Mobile responsive design for floating panels
+@media (max-width: 768px) {
+  .floating-panel {
+    left: 10px !important;
+    right: 10px !important;
+    width: auto !important;
+    max-width: none !important;
+    top: 70px !important;
+    max-height: calc(100% - 85px) !important;
+  }
+}
+
+
+// Tool grid inside floating tools menu
+.tool-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  padding: 4px;
+
+  .tool-btn {
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 4px;
+    border-radius: var(--radius-md);
+    transition: all var(--transition-fast);
+    color: var(--text);
+
+    .tool-icon-wrapper {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: rgba(2, 63, 95, 0.06);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 4px;
+      color: var(--primary);
+      transition: all var(--transition-fast);
+
+      mat-icon {
+        font-size: 20px;
+        width: 20px;
+        height: 20px;
+      }
+    }
+
+    .tool-label {
+      font-size: 10px;
+      font-weight: 500;
+      text-align: center;
+      width: 100%;
+      white-space: normal;
+      word-wrap: break-word;
+      line-height: 1.2;
+    }
+
+    &:hover {
+      background: rgba(0, 173, 167, 0.08);
+      .tool-icon-wrapper {
+        background: var(--accent);
+        color: white;
+        transform: scale(1.05);
+      }
+      color: var(--accent-dark);
+    }
+
+    &.active {
+      background: rgba(0, 173, 167, 0.12);
+      color: var(--primary);
+      .tool-icon-wrapper {
+        background: var(--primary);
+        color: white;
+      }
+    }
+  }
+}
+
+.loader-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 12px;
+  gap: 12px;
+  color: var(--text-secondary);
+  font-size: 13px;
+
+  .spinner {
+    width: 28px;
+    height: 28px;
+    border: 3px solid rgba(0, 173, 167, 0.1);
+    border-radius: 50%;
+    border-top-color: var(--primary);
+    animation: spin 1s ease-in-out infinite;
+  }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.share-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(4px);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.share-modal-card {
+  width: 420px;
+  max-width: 90vw;
+  background: var(--surface);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  border: 1px solid var(--border-light);
+  transform: scale(1);
+  transition: transform var(--transition-normal);
+
+  .share-modal-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    .share-modal-icon {
+      color: #4CAF50;
+      font-size: 32px;
+      width: 32px;
+      height: 32px;
+    }
+
+    h3 {
+      margin: 0;
+      font-family: 'Avenir Next Rounded Pro Demi', 'Roboto', sans-serif;
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--primary);
+    }
+  }
+
+  .share-modal-body {
+    font-size: 13px;
+    color: var(--text-secondary);
+    line-height: 1.5;
+
+    p {
+      margin: 0 0 12px 0;
+    }
+
+    .share-link-box {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--bg-hover);
+      border-radius: var(--radius-sm);
+      padding: 6px 12px;
+      border: 1px solid var(--border-light);
+
+      .share-link-input {
+        flex: 1;
+        background: transparent;
+        border: none;
+        outline: none;
+        font-family: monospace;
+        font-size: 12px;
+        color: var(--text);
+      }
+
+      button {
+        color: var(--text-secondary);
+        width: 32px;
+        height: 32px;
+        line-height: 32px;
+        
+        mat-icon {
+          font-size: 18px;
+          width: 18px;
+          height: 18px;
+        }
+      }
+    }
+  }
+
+  .share-modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 8px;
+
+    button {
+      height: 36px;
+      border-radius: var(--radius-sm);
+      font-size: 13px;
+      padding: 0 20px;
+    }
+  }
 }

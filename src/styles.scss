@@ -33,6 +33,63 @@ $geosm-theme: mat.m2-define-light-theme((
 
 @include mat.all-component-themes($geosm-theme);
 
+$geosm-dark-theme: mat.m2-define-dark-theme((
+  color: (
+    primary: $geosm-primary,
+    accent: $geosm-accent,
+    warn: $geosm-warn,
+  ),
+  typography: mat.m2-define-typography-config(
+    $font-family: "'Avenir Next Rounded Pro Regular', 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif",
+  ),
+));
+
+body.dark-theme {
+  @include mat.all-component-colors($geosm-dark-theme);
+
+  --background: #0f172a;
+  --surface: #1e293b;
+  --surface-hover: #334155;
+  --text: #f8fafc;
+  --text-secondary: #cbd5e1;
+  --text-light: #64748b;
+  --border: #334155;
+  --border-light: #1e293b;
+  
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.45);
+  --shadow-xl: 0 20px 40px rgba(0, 0, 0, 0.5);
+
+  // Glassmorphism overrides for dark theme
+  .glass, &.glass {
+    background: rgba(30, 41, 59, 0.8) !important;
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  }
+
+  // Dark mode form field border and label overrides
+  .mdc-notched-outline__leading,
+  .mdc-notched-outline__notch,
+  .mdc-notched-outline__trailing {
+    border-color: rgba(255, 255, 255, 0.25) !important;
+  }
+
+  .mat-mdc-floating-label {
+    color: var(--text-secondary) !important;
+  }
+
+  .mat-mdc-form-field.mat-focused {
+    .mdc-notched-outline__leading,
+    .mdc-notched-outline__notch,
+    .mdc-notched-outline__trailing {
+      border-color: var(--accent) !important;
+    }
+    .mat-mdc-floating-label {
+      color: var(--accent) !important;
+    }
+  }
+}
+
 // Avenir font-face declarations
 @font-face {
   font-family: 'Avenir Next Rounded Pro Regular';
@@ -417,3 +474,19 @@ input { background: transparent !important; }
     font-family: 'Avenir Next Rounded Pro Medium', 'Roboto', sans-serif !important;
   }
 }
+
+// Global rounded borders override for all outline form fields
+.mat-mdc-form-field {
+  .mat-mdc-text-field-wrapper {
+    border-radius: 24px !important;
+  }
+  .mdc-notched-outline__leading {
+    border-top-left-radius: 24px !important;
+    border-bottom-left-radius: 24px !important;
+  }
+  .mdc-notched-outline__trailing {
+    border-top-right-radius: 24px !important;
+    border-bottom-right-radius: 24px !important;
+  }
+}
+

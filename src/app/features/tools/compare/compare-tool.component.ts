@@ -9,27 +9,50 @@ import { MatDividerModule } from '@angular/material/divider';
 import { TranslateModule } from '@ngx-translate/core';
 import Map from 'ol/Map';
 import { Subscription } from 'rxjs';
+import TileLayer from 'ol/layer/Tile';
+import OSM from 'ol/source/OSM';
+import XYZ from 'ol/source/XYZ';
 import { MapService } from '../../map/services/map.service';
-import { MapLayerService, ActiveLayer } from '../../map/services/map-layer.service';
+import { BaseMapService } from '../../../core/services/base-map.service';
+import { InstanceService } from '../../../core/services/instance.service';
+import { BaseMap, Instance } from '../../../core/models/index';
 import type { Layer } from 'ol/layer';
 import type RenderEvent from 'ol/render/Event';
+
+interface BaseMapOption {
+  id: string;
+  name: string;
+  thumbnail: string | null;
+  baseMap: BaseMap | null;
+}
 
 @Component({
   selector: 'app-compare-tool',
   standalone: true,
-  imports: [CommonModule, FormsModule, MatButtonModule, MatIconModule, MatSelectModule, MatFormFieldModule, MatDividerModule, TranslateModule],
+  imports: [
+    CommonModule,
+    FormsModule,
+    MatButtonModule,
+    MatIconModule,
+    MatSelectModule,
+    MatFormFieldModule,
+    MatDividerModule,
+    TranslateModule,
+  ],
   templateUrl: './compare-tool.component.html',
   styleUrl: './compare-tool.component.scss',
 })
 export class CompareToolComponent implements OnInit, OnDestroy {
   private readonly mapService = inject(MapService);
-  private readonly mapLayerService = inject(MapLayerService);
+  private readonly baseMapService = inject(BaseMapService);
+  private readonly instanceService = inject(InstanceService);
+
   private map!: Map;
   private subscription!: Subscription;
 
-  activeLayers: ActiveLayer[] = [];
-  leftLayerId: string | null = null;
-  rightLayerId: string | null = null;
+  baseMaps: BaseMapOption[] = [];
+  leftBaseMapId: string | null = null;
+  rightBaseMapId: string | null = null;
   comparing = false;
   swipePosition = 50;
 
@@ -39,31 +62,73 @@ export class CompareToolComponent implements OnInit, OnDestroy {
   private leftPostrender: ((evt: RenderEvent) => void) | null = null;
   private rightPrerender: ((evt: RenderEvent) => void) | null = null;
   private rightPostrender: ((evt: RenderEvent) => void) | null = null;
-  private swipeListener: ((evt: MouseEvent) => void) | null = null;
-  private swipeEndListener: (() => void) | null = null;
-  private dragging = false;
+
+  private readonly defaultBaseMaps: BaseMapOption[] = [
+    { id: 'osm', name: 'OpenStreetMap', thumbnail: null, baseMap: null },
+  ];
 
   ngOnInit(): void {
     this.map = this.mapService.getMap();
-    this.subscription = this.mapLayerService.activeLayers$.subscribe(layers => {
-      this.activeLayers = layers;
+    this.subscription = this.instanceService.currentInstance$.subscribe((instance: Instance | null) => {
+      if (instance) {
+        this.baseMapService.list(instance.id).subscribe({
+          next: (maps: BaseMap[]) => {
+            this.baseMaps = [
+              ...this.defaultBaseMaps,
+              ...[...maps].sort((a: BaseMap, b: BaseMap) => a.order - b.order).map((bm: BaseMap) => ({
+                id: bm.id,
+                name: bm.name,
+                thumbnail: bm.thumbnail,
+                baseMap: bm,
+              })),
+
+            ];
+          },
+          error: () => {
+            this.baseMaps = [...this.defaultBaseMaps];
+          }
+        });
+      } else {
+        this.baseMaps = [...this.defaultBaseMaps];
+      }
     });
   }
+
 
   ngOnDestroy(): void {
     this.resetCompare();
     this.subscription?.unsubscribe();
   }
 
+  private createOlLayer(id: string): Layer {
+    if (id === 'osm') {
+      return new TileLayer({ source: new OSM() });
+    }
+    const option = this.baseMaps.find(bm => bm.id === id);
+    if (option?.baseMap) {
+      return new TileLayer({
+        source: new XYZ({
+          url: option.baseMap.url,
+          attributions: option.baseMap.attribution,
+        })
+      });
+    }
+    return new TileLayer({ visible: false });
+  }
+
   startCompare(): void {
-    if (!this.leftLayerId || !this.rightLayerId) return;
+    if (!this.leftBaseMapId || !this.rightBaseMapId) return;
 
-    const leftActive = this.activeLayers.find(al => al.layer.id === this.leftLayerId);
-    const rightActive = this.activeLayers.find(al => al.layer.id === this.rightLayerId);
-    if (!leftActive?.olLayer || !rightActive?.olLayer) return;
+    this.leftLayer = this.createOlLayer(this.leftBaseMapId);
+    this.rightLayer = this.createOlLayer(this.rightBaseMapId);
 
-    this.leftLayer = leftActive.olLayer;
-    this.rightLayer = rightActive.olLayer;
+    // Hide original base layer
+    this.mapService.getBaseLayer().setVisible(false);
+
+    // Add comparison base layers
+    this.map.getLayers().insertAt(0, this.leftLayer);
+    this.map.getLayers().insertAt(1, this.rightLayer);
+
     this.comparing = true;
 
     this.leftPrerender = (event: RenderEvent) => {
@@ -100,6 +165,7 @@ export class CompareToolComponent implements OnInit, OnDestroy {
     this.leftLayer.on('postrender', this.leftPostrender as any);
     this.rightLayer.on('prerender', this.rightPrerender as any);
     this.rightLayer.on('postrender', this.rightPostrender as any);
+
     this.map.render();
   }
 
@@ -109,41 +175,30 @@ export class CompareToolComponent implements OnInit, OnDestroy {
     this.map.render();
   }
 
-  startDrag(): void {
-    this.dragging = true;
-    const mapEl = this.map.getTargetElement() as HTMLElement;
-
-    this.swipeListener = (evt: MouseEvent) => {
-      if (!this.dragging) return;
-      const rect = mapEl.getBoundingClientRect();
-      const x = evt.clientX - rect.left;
-      this.swipePosition = Math.max(0, Math.min(100, (x / rect.width) * 100));
-      this.map.render();
-    };
-
-    this.swipeEndListener = () => {
-      this.dragging = false;
-      document.removeEventListener('mousemove', this.swipeListener!);
-      document.removeEventListener('mouseup', this.swipeEndListener!);
-    };
-
-    document.addEventListener('mousemove', this.swipeListener);
-    document.addEventListener('mouseup', this.swipeEndListener);
-  }
-
   resetCompare(): void {
-    if (this.leftLayer && this.leftPrerender) {
-      this.leftLayer.un('prerender', this.leftPrerender as any);
-      this.leftLayer.un('postrender', this.leftPostrender as any);
+    if (this.leftLayer) {
+      if (this.leftPrerender) {
+        this.leftLayer.un('prerender', this.leftPrerender as any);
+        this.leftLayer.un('postrender', this.leftPostrender as any);
+      }
+      this.map.removeLayer(this.leftLayer);
     }
-    if (this.rightLayer && this.rightPrerender) {
-      this.rightLayer.un('prerender', this.rightPrerender as any);
-      this.rightLayer.un('postrender', this.rightPostrender as any);
+    if (this.rightLayer) {
+      if (this.rightPrerender) {
+        this.rightLayer.un('prerender', this.rightPrerender as any);
+        this.rightLayer.un('postrender', this.rightPostrender as any);
+      }
+      this.map.removeLayer(this.rightLayer);
     }
+
     this.leftLayer = null;
     this.rightLayer = null;
     this.comparing = false;
     this.swipePosition = 50;
+
+    // Restore original base layer
+    this.mapService.getBaseLayer().setVisible(true);
+
     if (this.map) {
       this.map.render();
     }

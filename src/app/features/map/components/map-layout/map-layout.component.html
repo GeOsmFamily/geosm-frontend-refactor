@@ -53,7 +53,13 @@
         </button>
       </mat-menu>
 
-      <button mat-icon-button (click)="toggleRightPanel()" [matTooltip]="'map.tools' | translate" class="header-action tools-btn" [class.active]="rightPanelOpen()">
+      <button mat-icon-button (click)="toggleGeosignets()" [matTooltip]="'geosignets.title' | translate" class="header-action" [class.active]="geosignetsOpen()">
+        <mat-icon>bookmarks</mat-icon>
+      </button>
+      <button mat-icon-button (click)="toggleBaseMaps()" [matTooltip]="'map.baseMaps' | translate" class="header-action" [class.active]="baseMapsOpen()">
+        <mat-icon>map</mat-icon>
+      </button>
+      <button mat-icon-button (click)="toggleToolsMenu()" [matTooltip]="'map.tools' | translate" class="header-action tools-btn" [class.active]="toolsMenuOpen() || activeTool()">
         <mat-icon>handyman</mat-icon>
       </button>
     </div>
@@ -76,8 +82,6 @@
         <div class="panel-body">
           <app-layer-panel></app-layer-panel>
           <app-legend></app-legend>
-          <app-geosignets></app-geosignets>
-          <app-social-share></app-social-share>
         </div>
       </div>
     </aside>
@@ -85,9 +89,164 @@
     <!-- Map container -->
     <div class="map-area">
       <app-map-view></app-map-view>
-      <app-map-toolbar></app-map-toolbar>
+      <app-map-toolbar (compareMode)="toggleCompareTool()"></app-map-toolbar>
       <app-feature-info></app-feature-info>
       <app-context-menu></app-context-menu>
+
+      <!-- Floating Panels -->
+      @if (geosignetsOpen()) {
+        <div class="floating-panel geosignets-panel glass animate-in">
+          <div class="panel-header">
+            <div class="panel-title-group">
+              <mat-icon class="panel-icon">bookmarks</mat-icon>
+              <h3>{{ 'geosignets.title' | translate }}</h3>
+            </div>
+            <button mat-icon-button (click)="closeGeosignets()" class="panel-close">
+              <mat-icon>close</mat-icon>
+            </button>
+          </div>
+          <div class="panel-body">
+            <app-geosignets></app-geosignets>
+          </div>
+        </div>
+      }
+
+      @if (baseMapsOpen()) {
+        <div class="floating-panel geosignets-panel glass animate-in">
+          <div class="panel-header">
+            <div class="panel-title-group">
+              <mat-icon class="panel-icon">map</mat-icon>
+              <h3>{{ 'map.baseMaps' | translate }}</h3>
+            </div>
+            <button mat-icon-button (click)="closeBaseMaps()" class="panel-close">
+              <mat-icon>close</mat-icon>
+            </button>
+          </div>
+          <div class="panel-body">
+            <app-base-map-switcher></app-base-map-switcher>
+          </div>
+        </div>
+      }
+
+      @if (settingsOpen()) {
+        <div class="floating-panel active-tool-panel glass animate-in">
+          <div class="panel-header">
+            <div class="panel-title-group">
+              <mat-icon class="panel-icon">settings</mat-icon>
+              <h3>{{ 'common.settings' | translate }}</h3>
+            </div>
+            <button mat-icon-button (click)="closeSettings()" class="panel-close">
+              <mat-icon>close</mat-icon>
+            </button>
+          </div>
+          <div class="panel-body">
+            <app-settings></app-settings>
+          </div>
+        </div>
+      }
+
+      @if (locationInfoOpen()) {
+        <div class="floating-panel share-panel glass animate-in">
+          <div class="panel-header">
+            <div class="panel-title-group">
+              <mat-icon class="panel-icon">info</mat-icon>
+              <h3>{{ 'contextMenu.info' | translate }}</h3>
+            </div>
+            <button mat-icon-button (click)="closeLocationInfo()" class="panel-close">
+              <mat-icon>close</mat-icon>
+            </button>
+          </div>
+          <div class="panel-body">
+            @if (locationInfoLoading()) {
+              <div class="loader-container">
+                <div class="spinner"></div>
+                <span>Recherche de l'adresse...</span>
+              </div>
+            } @else if (locationInfo()) {
+              <div style="font-size: 13px; font-weight: 500; margin-bottom: 8px; color: var(--text)">
+                {{ locationInfo()?.displayName }}
+              </div>
+              <div style="font-size: 11px; font-family: monospace; color: var(--text-secondary); margin-bottom: 12px">
+                Lat: {{ locationInfo()?.lat | number:'1.6-6' }}<br>
+                Lon: {{ locationInfo()?.lon | number:'1.6-6' }}
+              </div>
+              <div style="display: flex; gap: 8px">
+                <button mat-stroked-button color="primary" style="flex: 1; font-size: 11px; height: 32px" (click)="setRouteStartFromInfo()">
+                  <mat-icon style="font-size: 16px; width: 16px; height: 16px">trip_origin</mat-icon>
+                  {{ 'right_menu.map_routing.start' | translate }}
+                </button>
+                <button mat-stroked-button color="primary" style="flex: 1; font-size: 11px; height: 32px" (click)="setRouteEndFromInfo()">
+                  <mat-icon style="font-size: 16px; width: 16px; height: 16px">place</mat-icon>
+                  {{ 'right_menu.map_routing.destination' | translate }}
+                </button>
+              </div>
+              <div style="display: flex; gap: 8px; margin-top: 8px">
+                <button mat-flat-button color="accent" style="flex: 1; font-size: 11px; height: 32px" (click)="shareLocation()">
+                  <mat-icon style="font-size: 16px; width: 16px; height: 16px">share</mat-icon>
+                  Partager
+                </button>
+              </div>
+            }
+          </div>
+        </div>
+      }
+
+      @if (toolsMenuOpen()) {
+        <div class="floating-panel tools-menu-panel glass animate-in">
+          <div class="panel-header">
+            <div class="panel-title-group">
+              <mat-icon class="panel-icon">handyman</mat-icon>
+              <h3>{{ 'map.tools' | translate }}</h3>
+            </div>
+            <button mat-icon-button (click)="closeToolsMenu()" class="panel-close">
+              <mat-icon>close</mat-icon>
+            </button>
+          </div>
+          <div class="panel-body">
+            <div class="tool-grid">
+              @for (tool of tools; track tool.id) {
+                <button class="tool-btn"
+                        [class.active]="activeTool() === tool.id"
+                        (click)="selectTool(tool.id)">
+                  <div class="tool-icon-wrapper">
+                    <mat-icon>{{ tool.icon }}</mat-icon>
+                  </div>
+                  <span class="tool-label">{{ tool.label | translate }}</span>
+                </button>
+              }
+            </div>
+          </div>
+        </div>
+      }
+
+      @if (activeTool()) {
+        <div class="floating-panel active-tool-panel glass animate-in">
+          <div class="panel-header">
+            <div class="panel-title-group">
+              <mat-icon class="panel-icon">{{ getActiveToolIcon() }}</mat-icon>
+              <h3>{{ getActiveToolLabel() | translate }}</h3>
+            </div>
+            <button mat-icon-button (click)="closeActiveTool()" class="panel-close">
+              <mat-icon>close</mat-icon>
+            </button>
+          </div>
+          <div class="panel-body">
+            @switch (activeTool()) {
+              @case ('drawing') { <app-drawing-tool /> }
+              @case ('measure') { <app-measure-tool /> }
+              @case ('routing') { <app-routing-tool /> }
+              @case ('export') { <app-export-tool /> }
+              @case ('print') { <app-print-tool /> }
+              @case ('comment') { <app-comment-tool /> }
+              @case ('altimetry') { <app-altimetry-tool /> }
+              @case ('mapillary') { <app-mapillary-tool /> }
+              @case ('compare') { <app-compare-tool /> }
+              @case ('statistics') { <app-statistics-tool /> }
+            }
+          </div>
+        </div>
+      }
+
       <!-- Coordinate display -->
       <div class="coord-display">
         @if (mousePosition | async; as pos) {
@@ -101,25 +260,31 @@
           <span>{{ 'map.zoom' | translate }}: {{ currentZoom }}</span>
         </div>
       </div>
-    </div>
 
-    <!-- Right sidebar -->
-    <aside class="right-panel" [class.collapsed]="!rightPanelOpen()">
-      <div class="panel-content">
-        <div class="panel-header">
-          <div class="panel-title-group">
-            <mat-icon class="panel-icon">handyman</mat-icon>
-            <h3>{{ 'map.tools' | translate }}</h3>
+      <!-- Share Copied Dialog / Modal -->
+      @if (shareModalOpen()) {
+        <div class="share-modal-overlay animate-in" (click)="closeShareModal()">
+          <div class="share-modal-card glass" (click)="$event.stopPropagation()">
+            <div class="share-modal-header">
+              <mat-icon class="share-modal-icon">check_circle</mat-icon>
+              <h3>Lien copié !</h3>
+            </div>
+            <div class="share-modal-body">
+              <p>Le lien de partage pour cette position a bien été copié dans votre presse-papiers :</p>
+              <div class="share-link-box">
+                <input type="text" [value]="shareUrlText()" readonly class="share-link-input" #shareInput>
+                <button mat-icon-button (click)="copyShareLinkFromInput(shareInput.value)" matTooltip="Copier à nouveau">
+                  <mat-icon>content_copy</mat-icon>
+                </button>
+              </div>
+            </div>
+            <div class="share-modal-actions">
+              <button mat-flat-button color="primary" (click)="closeShareModal()">Fermer</button>
+            </div>
           </div>
-          <button mat-icon-button (click)="toggleRightPanel()" class="panel-close">
-            <mat-icon>chevron_right</mat-icon>
-          </button>
         </div>
-        <div class="panel-body">
-          <app-tool-panel></app-tool-panel>
-        </div>
-      </div>
-    </aside>
-  </div>
+      }
 
+    </div>
+  </div>
 </div>

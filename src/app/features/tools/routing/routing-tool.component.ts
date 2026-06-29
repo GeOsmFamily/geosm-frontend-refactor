@@ -13,12 +13,10 @@ import VectorLayer from 'ol/layer/Vector';
 import VectorSource from 'ol/source/Vector';
 import Feature from 'ol/Feature';
 import Point from 'ol/geom/Point';
-import LineString from 'ol/geom/LineString';
 import GeoJSON from 'ol/format/GeoJSON';
 import { fromLonLat, toLonLat } from 'ol/proj';
-import { Fill, Stroke, Style, Circle as CircleStyle, Text } from 'ol/style';
-import { MapBrowserEvent } from 'ol';
-import { Coordinate } from 'ol/coordinate';
+import { Fill, Stroke, Style, Circle as CircleStyle } from 'ol/style';
+
 
 import { MapService } from '../../map/services/map.service';
 import { RoutingService } from '../../../core/services/routing.service';
@@ -53,7 +51,7 @@ export class RoutingToolComponent implements OnInit, OnDestroy {
   private readonly toolActionService = inject(ToolActionService);
 
   private map!: Map;
-  private vectorSource = new VectorSource();
+  private readonly vectorSource = new VectorSource();
   private vectorLayer!: VectorLayer<VectorSource>;
   private pickTarget: PickTarget | null = null;
   private clickListener: ((evt: any) => void) | null = null;
@@ -76,6 +74,16 @@ export class RoutingToolComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.map = this.mapService.getMap();
 
+    // Load initial coordinates from RoutingService if set
+    if (this.routingService.startCoord) {
+      this.startCoord = this.routingService.startCoord;
+      this.startText = `${this.startCoord[1].toFixed(5)}, ${this.startCoord[0].toFixed(5)}`;
+    }
+    if (this.routingService.endCoord) {
+      this.endCoord = this.routingService.endCoord;
+      this.endText = `${this.endCoord[1].toFixed(5)}, ${this.endCoord[0].toFixed(5)}`;
+    }
+
     this.toolActionService.action$.subscribe((action) => {
       if (action.tool !== 'routing') return;
       const lonLat = action.data as [number, number];
@@ -83,12 +91,24 @@ export class RoutingToolComponent implements OnInit, OnDestroy {
       if (action.action === 'setStart') {
         this.startCoord = lonLat;
         this.startText = label;
+        this.routingService.startCoord = lonLat;
       } else if (action.action === 'setEnd') {
         this.endCoord = lonLat;
         this.endText = label;
+        this.routingService.endCoord = lonLat;
       }
       this.updateMarkers();
+      if (this.startCoord && this.endCoord) {
+        this.calculateRoute();
+      }
     });
+
+    if (this.startCoord || this.endCoord) {
+      this.updateMarkers();
+      if (this.startCoord && this.endCoord) {
+        this.calculateRoute();
+      }
+    }
 
     this.vectorLayer = new VectorLayer({
       source: this.vectorSource,
@@ -207,11 +227,11 @@ export class RoutingToolComponent implements OnInit, OnDestroy {
       .forEach(f => this.vectorSource.removeFeature(f));
 
     const geojsonFormat = new GeoJSON();
-    const routeFeatures = geojsonFormat.readFeatures(result.geometry, {
+    const geom = geojsonFormat.readGeometry(result.geometry, {
       featureProjection: 'EPSG:3857',
       dataProjection: 'EPSG:4326',
     });
-    const routeFeature = routeFeatures[0];
+    const routeFeature = new Feature(geom);
     routeFeature.set('pointType', 'route');
     this.vectorSource.addFeature(routeFeature);
 
@@ -251,6 +271,10 @@ export class RoutingToolComponent implements OnInit, OnDestroy {
     this.endText = '';
     this.startCoord = null;
     this.endCoord = null;
+    if (this.routingService) {
+      this.routingService.startCoord = null;
+      this.routingService.endCoord = null;
+    }
     this.waypoints = [];
     this.routeResult = null;
     this.removeClickListener();

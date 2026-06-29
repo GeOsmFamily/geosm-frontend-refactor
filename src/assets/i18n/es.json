@@ -339,11 +339,29 @@
   },
   "geosignets": {
     "title": "Marcadores",
+    "helpText": "Guarde sus vistas de mapa y niveles de zoom favoritos para volver a ellos rápidamente con un solo clic.",
     "save": "Guardar vista actual",
     "name": "Nombre del marcador",
     "noBookmarks": "Sin marcadores guardados",
     "delete": "Eliminar",
-    "flyTo": "Ir a"
+    "flyTo": "Ir a",
+    "loginRequired": "Inicio de sesión requerido",
+    "loginRequiredDesc": "Inicie sesión en su cuenta para guardar y compartir sus marcadores.",
+    "loginBtn": "Iniciar sesión",
+    "share": "Compartir"
+  },
+  "comment": {
+    "placeComment": "Colocar un comentario",
+    "cancel": "Cancelar",
+    "add": "Agregar",
+    "placeHint": "Haga clic en el mapa para colocar el comentario.",
+    "commentLabel": "Comentario",
+    "writeComment": "Tu comentario...",
+    "noComments": "Sin comentarios",
+    "loginRequired": "Inicio de sesión requerido",
+    "loginRequiredDesc": "Inicie sesión en su cuenta para agregar y ver comentarios en el mapa.",
+    "loginBtn": "Iniciar sesión",
+    "delete": "Eliminar"
   },
   "contextMenu": {
     "coordinates": "Coordenadas",

@@ -1,63 +1,85 @@
-<div class="comment-tool">
-  <h3>Commentaires</h3>
+@if (currentUser | async) {
+  <div class="comment-tool">
+    <h3>{{ 'right_menu.tools.comment.title' | translate }}</h3>
 
-  <div class="place-section">
-    <button mat-flat-button
-            [color]="isPlacing ? 'warn' : 'primary'"
-            class="full-width"
-            (click)="isPlacing ? stopPlacing() : startPlacing()">
-      <mat-icon>{{ isPlacing ? 'close' : 'add_location' }}</mat-icon>
-      {{ isPlacing ? 'Annuler' : 'Placer un commentaire' }}
-    </button>
+    <div class="place-section">
+      <button mat-flat-button
+              [color]="isPlacing ? 'warn' : 'primary'"
+              class="full-width"
+              (click)="isPlacing ? stopPlacing() : startPlacing()">
+        <mat-icon>{{ isPlacing ? 'close' : 'add_location' }}</mat-icon>
+        {{ isPlacing ? ('comment.cancel' | translate) : ('comment.placeComment' | translate) }}
+      </button>
 
-    @if (isPlacing) {
-      <p class="hint">Cliquez sur la carte pour placer le commentaire.</p>
-    }
+      @if (isPlacing) {
+        <p class="hint">{{ 'comment.placeHint' | translate }}</p>
+      }
 
-    @if (pendingCoord) {
-      <div class="comment-form">
-        <p class="coord-info">
-          Position : {{ pendingCoord[1] | number:'1.5-5' }}, {{ pendingCoord[0] | number:'1.5-5' }}
-        </p>
-        <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Commentaire</mat-label>
-          <textarea matInput [(ngModel)]="commentText" rows="3" placeholder="Votre commentaire..."></textarea>
-        </mat-form-field>
-        <button mat-flat-button
-                color="primary"
-                class="full-width"
-                [disabled]="!commentText.trim()"
-                (click)="addComment()">
-          <mat-icon>check</mat-icon> Ajouter
-        </button>
-      </div>
-    }
-  </div>
-
-  @if (comments.length > 0) {
-    <mat-divider></mat-divider>
-
-    <div class="comments-list">
-      <h4>Commentaires ({{ comments.length }})</h4>
-      @for (comment of comments; track comment.id) {
-        <div class="comment-item">
-          <div class="comment-content" (click)="navigateTo(comment)">
-            <mat-icon class="pin-icon">place</mat-icon>
-            <div class="comment-detail">
-              <span class="comment-text">{{ comment.text }}</span>
-              <span class="comment-coords">{{ comment.lat | number:'1.4-4' }}, {{ comment.lon | number:'1.4-4' }}</span>
-            </div>
-          </div>
-          <button mat-icon-button (click)="deleteComment(comment)">
-            <mat-icon>delete</mat-icon>
+      @if (pendingCoord) {
+        <div class="comment-form">
+          <p class="coord-info">
+            Position : {{ pendingCoord[1] | number:'1.5-5' }}, {{ pendingCoord[0] | number:'1.5-5' }}
+          </p>
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>{{ 'comment.commentLabel' | translate }}</mat-label>
+            <textarea matInput id="comment-text-input" [attr.aria-label]="'comment.commentLabel' | translate" [(ngModel)]="commentText" rows="3" [placeholder]="'comment.writeComment' | translate"></textarea>
+          </mat-form-field>
+          <button mat-flat-button
+                  color="primary"
+                  class="full-width"
+                  [disabled]="!commentText.trim()"
+                  (click)="addComment()">
+            <mat-icon>check</mat-icon> {{ 'comment.add' | translate }}
           </button>
         </div>
       }
     </div>
-  } @else {
-    <div class="empty-state">
-      <mat-icon>chat_bubble_outline</mat-icon>
-      <p>Aucun commentaire</p>
-    </div>
-  }
-</div>
+
+    @if (comments.length > 0) {
+      <mat-divider></mat-divider>
+
+      <div class="comments-list">
+        <h4>{{ 'right_menu.tools.comment.title' | translate }} ({{ comments.length }})</h4>
+        @for (comment of comments; track comment.id) {
+          <div class="comment-item">
+            <button class="comment-content" type="button" (click)="navigateTo(comment)" aria-label="Comment info">
+              <mat-icon class="pin-icon">place</mat-icon>
+              <div class="comment-detail">
+                <span class="comment-text">{{ comment.text }}</span>
+                <span class="comment-coords">{{ comment.lat | number:'1.4-4' }}, {{ comment.lon | number:'1.4-4' }}</span>
+              </div>
+            </button>
+            <button mat-icon-button (click)="deleteComment(comment)" [attr.aria-label]="'comment.delete' | translate">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </div>
+        }
+      </div>
+    } @else {
+      <div class="empty-state">
+        <mat-icon>chat_bubble_outline</mat-icon>
+        <p>{{ 'comment.noComments' | translate }}</p>
+      </div>
+    }
+  </div>
+} @else {
+  <div class="login-required-container">
+    <mat-card class="login-card glass">
+      <mat-card-header>
+        <div mat-card-avatar class="lock-avatar">
+          <mat-icon>lock</mat-icon>
+        </div>
+        <mat-card-title>{{ 'comment.loginRequired' | translate }}</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <p>{{ 'comment.loginRequiredDesc' | translate }}</p>
+      </mat-card-content>
+      <mat-card-actions>
+        <button mat-flat-button color="primary" class="login-btn" (click)="navigateToLogin()">
+          <mat-icon>login</mat-icon>
+          <span>{{ 'comment.loginBtn' | translate }}</span>
+        </button>
+      </mat-card-actions>
+    </mat-card>
+  </div>
+}

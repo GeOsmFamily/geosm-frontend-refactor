@@ -48,6 +48,12 @@
         align-items: flex-start;
         gap: 8px;
         cursor: pointer;
+        background: none;
+        border: none;
+        padding: 0;
+        text-align: left;
+        font-family: inherit;
+        width: 100%;
 
         &:hover {
           .comment-text {
@@ -109,5 +115,80 @@
 
   mat-divider {
     margin: 16px 0;
+  }
+}
+
+.login-required-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 16px 8px;
+  width: 100%;
+
+  .login-card {
+    width: 100%;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border-light);
+    background: rgba(255, 255, 255, 0.45);
+    padding: 16px;
+    box-shadow: var(--shadow-sm);
+
+    mat-card-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+
+      .lock-avatar {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(2, 63, 95, 0.08);
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        color: var(--primary);
+        flex-shrink: 0;
+
+        mat-icon {
+          font-size: 20px;
+          width: 20px;
+          height: 20px;
+        }
+      }
+
+      mat-card-title {
+        font-family: 'Avenir Next Rounded Pro Bold', sans-serif;
+        font-size: 14px;
+        color: var(--text);
+        margin: 0;
+      }
+    }
+
+    mat-card-content {
+      p {
+        font-size: 12px;
+        line-height: 1.5;
+        color: var(--text-secondary);
+        margin: 0 0 16px 0;
+      }
+    }
+
+    mat-card-actions {
+      padding: 0;
+      display: flex;
+
+      .login-btn {
+        width: 100%;
+        height: 38px;
+        border-radius: 19px !important;
+        font-family: 'Avenir Next Rounded Pro Medium', sans-serif;
+        font-size: 13px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+      }
+    }
   }
 }

@@ -380,13 +380,47 @@
     "linkedin": "LinkedIn",
     "sharedMap": "Carte partagee"
   },
+  "settings": {
+    "accountInfo": "Informations du compte",
+    "editProfile": "Modifier le profil",
+    "changePassword": "Changer le mot de passe",
+    "currentPassword": "Mot de passe actuel",
+    "newPassword": "Nouveau mot de passe",
+    "updatePassword": "Mettre à jour le mot de passe",
+    "preferences": "Préférences du géoportail",
+    "darkMode": "Mode Sombre",
+    "darkModeDesc": "Activer le thème sombre pour la plateforme",
+    "profileUpdated": "Profil mis à jour avec succès",
+    "profileUpdateError": "Erreur lors de la mise à jour du profil",
+    "passwordChanged": "Mot de passe changé avec succès",
+    "passwordChangeError": "Erreur lors du changement de mot de passe"
+  },
+
   "geosignets": {
     "title": "Geosignets",
+    "helpText": "Enregistrez vos positions favorites et vos niveaux de zoom pour y revenir rapidement d'un simple clic.",
     "save": "Enregistrer la vue",
     "name": "Nom du geosignet",
-    "noBookmarks": "Aucun geosignet enregistre",
+    "noBookmarks": "Aucun geosignet enregistré",
     "delete": "Supprimer",
-    "flyTo": "Aller a"
+    "flyTo": "Aller à",
+    "loginRequired": "Connexion requise",
+    "loginRequiredDesc": "Veuillez vous connecter à votre compte pour sauvegarder et partager vos géosignets.",
+    "loginBtn": "Se connecter",
+    "share": "Partager"
+  },
+  "comment": {
+    "placeComment": "Placer un commentaire",
+    "cancel": "Annuler",
+    "add": "Ajouter",
+    "placeHint": "Cliquez sur la carte pour placer le commentaire.",
+    "commentLabel": "Commentaire",
+    "writeComment": "Votre commentaire...",
+    "noComments": "Aucun commentaire",
+    "loginRequired": "Connexion requise",
+    "loginRequiredDesc": "Veuillez vous connecter à votre compte pour ajouter et consulter vos commentaires sur la carte.",
+    "loginBtn": "Se connecter",
+    "delete": "Supprimer"
   },
   "contextMenu": {
     "coordinates": "Coordonnées",

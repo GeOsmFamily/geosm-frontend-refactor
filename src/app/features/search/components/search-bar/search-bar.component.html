@@ -2,18 +2,31 @@
   <mat-form-field appearance="outline" class="search-field" subscriptSizing="dynamic">
     <mat-icon matPrefix class="search-icon">search</mat-icon>
     <input matInput
+           id="search-input-field"
+           aria-label="Rechercher"
            [(ngModel)]="searchQuery"
            (ngModelChange)="onInput()"
            [matAutocomplete]="auto"
            placeholder="Rechercher un lieu, une couche...">
     @if (searchQuery) {
-      <button matSuffix mat-icon-button class="clear-btn" (click)="clearSearch()">
-        <mat-icon>close</mat-icon>
+      <button matSuffix mat-icon-button class="clear-btn" (click)="clearSearch()" aria-label="Effacer la recherche">
+        <mat-icon>clear</mat-icon>
       </button>
     }
   </mat-form-field>
 
   <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selectResult($event.option.value)" class="search-results">
+    @if (boundaryResults.length > 0) {
+      <mat-optgroup label="Limites administratives">
+        @for (item of boundaryResults; track item.label) {
+          <mat-option [value]="item">
+            <mat-icon class="result-icon boundary">map</mat-icon>
+            <span class="result-label">{{ item.label }}</span>
+          </mat-option>
+        }
+      </mat-optgroup>
+    }
+
     @if (geocodingResults.length > 0) {
       <mat-optgroup label="Lieux">
         @for (item of geocodingResults; track item.label) {
@@ -36,4 +49,32 @@
       </mat-optgroup>
     }
   </mat-autocomplete>
+
+  @if (activeBoundary(); as boundary) {
+    <div class="boundary-download-card glass animate-in">
+      <mat-icon class="card-icon">map</mat-icon>
+      <div class="card-info">
+        <div class="card-title">{{ boundary.label.split(',')[0] }}</div>
+        <div class="card-subtitle">Limite administrative</div>
+      </div>
+      <button mat-flat-button color="primary" class="download-btn" [matMenuTriggerFor]="downloadMenu">
+        <mat-icon>download</mat-icon>
+        <span>Télécharger la limite</span>
+        <mat-icon class="menu-arrow">arrow_drop_down</mat-icon>
+      </button>
+      <mat-menu #downloadMenu="matMenu" class="download-format-menu">
+        <button mat-menu-item (click)="downloadBoundary(boundary, 'geojson')">
+          <mat-icon>code</mat-icon>
+          <span>Format GeoJSON (.geojson)</span>
+        </button>
+        <button mat-menu-item (click)="downloadBoundary(boundary, 'shapefile')">
+          <mat-icon>layers</mat-icon>
+          <span>Format Shapefile (.zip)</span>
+        </button>
+      </mat-menu>
+      <button mat-icon-button class="close-card-btn" (click)="clearActiveBoundary()" aria-label="Fermer la carte de téléchargement">
+        <mat-icon>clear</mat-icon>
+      </button>
+    </div>
+  }
 </div>

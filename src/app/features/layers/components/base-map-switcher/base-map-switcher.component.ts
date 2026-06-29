@@ -14,7 +14,7 @@ import { InstanceService } from '../../../../core/services/instance.service';
 import { MapService } from '../../../map/services/map.service';
 import { BaseMap } from '../../../../core/models/index';
 import { LoadingSpinnerComponent } from '../../../../shared/components/loading-spinner/loading-spinner.component';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 interface BaseMapOption {
   id: string;
@@ -41,6 +41,7 @@ export class BaseMapSwitcherComponent implements OnInit, OnDestroy {
   private readonly baseMapService = inject(BaseMapService);
   private readonly instanceService = inject(InstanceService);
   private readonly mapService = inject(MapService);
+  private readonly translate = inject(TranslateService);
   private readonly destroy$ = new Subject<void>();
 
   baseMaps: BaseMapOption[] = [];
@@ -63,6 +64,15 @@ export class BaseMapSwitcherComponent implements OnInit, OnDestroy {
           this.loading = false;
         }
       });
+
+    this.translate.onLangChange
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => {
+        const instance = this.instanceService.currentInstance$.value;
+        if (instance) {
+          this.loadBaseMaps(instance.id);
+        }
+      });
   }
 
   ngOnDestroy(): void {
@@ -74,15 +84,20 @@ export class BaseMapSwitcherComponent implements OnInit, OnDestroy {
     this.loading = true;
     this.baseMapService.list(instanceId).subscribe({
       next: (maps) => {
+        const filtered = maps.filter(m => 
+          m.name.toLowerCase() !== 'openstreetmap' && 
+          !m.url?.includes('openstreetmap.org')
+        );
         this.baseMaps = [
           ...this.defaultBaseMaps,
-          ...maps.sort((a, b) => a.order - b.order).map(bm => ({
+          ...[...filtered].sort((a, b) => a.order - b.order).map(bm => ({
             id: bm.id,
             name: bm.name,
             thumbnail: bm.thumbnail,
             baseMap: bm,
           })),
         ];
+
 
         const defaultMap = maps.find(m => m.isDefault);
         if (defaultMap) {

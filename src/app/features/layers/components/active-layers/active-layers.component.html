@@ -21,6 +21,11 @@
                 </span>
                 <div class="layer-actions">
                   <button mat-icon-button
+                          [matTooltip]="'sharing.share' | translate"
+                          (click)="shareLayer(activeLayer)">
+                    <mat-icon>share</mat-icon>
+                  </button>
+                  <button mat-icon-button
                           [matTooltip]="'map.visibility' | translate"
                           (click)="toggleVisibility(activeLayer)">
                     <mat-icon>{{ activeLayer.visible ? 'visibility' : 'visibility_off' }}</mat-icon>
@@ -34,6 +39,8 @@
               <div class="opacity-control">
                 <mat-icon class="opacity-icon">opacity</mat-icon>
                 <input type="range"
+                       id="layer-opacity-{{ activeLayer.layer.id }}"
+                       aria-label="Opacité de la couche"
                        min="0"
                        max="100"
                        [value]="activeLayer.opacity * 100"

@@ -1,9 +1,10 @@
 .context-menu {
   position: fixed;
   z-index: 1000;
-  background: #fff;
+  background: var(--surface);
   border-radius: 6px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--border);
   min-width: 220px;
   overflow: hidden;
 }
@@ -20,19 +21,19 @@
     padding: 10px 16px;
     cursor: pointer;
     font-size: 14px;
-    color: #333;
+    color: var(--text);
 
-    &:hover { background: #f0f0f0; }
+    &:hover { background: var(--surface-hover); }
 
-    mat-icon { font-size: 20px; width: 20px; height: 20px; color: #666; }
+    mat-icon { font-size: 20px; width: 20px; height: 20px; color: var(--text-secondary); }
 
     &.divider {
       height: 1px;
       padding: 0;
       margin: 4px 12px;
-      background: #e2e8f0;
+      background: var(--border-light);
       cursor: default;
-      &:hover { background: #e2e8f0; }
+      &:hover { background: var(--border-light); }
     }
   }
 }

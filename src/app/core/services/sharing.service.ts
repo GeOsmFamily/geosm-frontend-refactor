@@ -9,10 +9,11 @@ export class SharingService {
   private readonly api = inject(ApiService);
 
   createShare(dto: Partial<ShareMap>): Observable<ShareMap> {
-    return this.api.post<ShareMap>('/shares', dto);
+    return this.api.post<ShareMap>('/share', dto);
   }
 
   getShare(code: string): Observable<ShareMap> {
-    return this.api.get<ShareMap>(`/shares/${code}`);
+    return this.api.get<ShareMap>(`/share/${code}`);
   }
 }
+

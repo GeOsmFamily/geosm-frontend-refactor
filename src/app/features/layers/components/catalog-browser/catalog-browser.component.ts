@@ -9,16 +9,15 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { Subject, forkJoin, takeUntil } from 'rxjs';
+import { Subject, takeUntil } from 'rxjs';
 
-import { GroupService } from '../../../../core/services/group.service';
 import { InstanceService } from '../../../../core/services/instance.service';
-import { LayerService } from '../../../../core/services/layer.service';
+import { CatalogService } from '../../../../core/services/catalog.service';
 import { MapLayerService } from '../../../map/services/map-layer.service';
 import { Group, SubGroup, Layer } from '../../../../core/models/index';
 import { LoadingSpinnerComponent } from '../../../../shared/components/loading-spinner/loading-spinner.component';
 import { TruncatePipe } from '../../../../shared/pipes/truncate.pipe';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 interface CatalogGroup extends Group {
   subGroups: CatalogSubGroup[];
@@ -50,10 +49,10 @@ interface CatalogSubGroup extends SubGroup {
   styleUrl: './catalog-browser.component.scss',
 })
 export class CatalogBrowserComponent implements OnInit, OnDestroy {
-  private readonly groupService = inject(GroupService);
+  private readonly catalogService = inject(CatalogService);
   private readonly instanceService = inject(InstanceService);
-  private readonly layerService = inject(LayerService);
   private readonly mapLayerService = inject(MapLayerService);
+  private readonly translate = inject(TranslateService);
   private readonly destroy$ = new Subject<void>();
 
   groups: CatalogGroup[] = [];
@@ -66,7 +65,16 @@ export class CatalogBrowserComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe(instance => {
         if (instance) {
-          this.loadCatalog(instance.id);
+          this.loadCatalog(instance.slug);
+        }
+      });
+
+    this.translate.onLangChange
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => {
+        const instance = this.instanceService.currentInstance$.value;
+        if (instance) {
+          this.loadCatalog(instance.slug);
         }
       });
   }
@@ -76,57 +84,53 @@ export class CatalogBrowserComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
-  private loadCatalog(instanceId: string): void {
-    this.loading = true;
-    this.groupService.listGroups(instanceId).subscribe(groups => {
-      const sorted = groups.sort((a, b) => a.order - b.order);
-      const groupRequests = sorted.map(group =>
-        this.groupService.listSubGroups(group.id)
-      );
+  private mapLayer(l: any, instanceId: string, subGroupId: string): Layer {
+    return {
+      ...l,
+      bbox: l.bbox || null,
+      tags: l.tags || [],
+      instanceId,
+      subGroupId
+    };
+  }
 
-      if (groupRequests.length === 0) {
+  private mapSubGroup(sg: any, instanceId: string): any {
+    return {
+      ...sg,
+      layers: (sg.layers || []).map((l: any) => this.mapLayer(l, instanceId, sg.id))
+    };
+  }
+
+  private mapGroup(group: any, instanceId: string): CatalogGroup {
+    const subGroups = (group.subGroups || []).map((sg: any) => this.mapSubGroup(sg, instanceId));
+    const layerCount = subGroups.reduce((acc: number, sg: any) => acc + sg.layers.length, 0);
+    return {
+      ...group,
+      subGroups,
+      layerCount
+    };
+  }
+
+  private loadCatalog(slug: string): void {
+    this.loading = true;
+    this.catalogService.getCatalogByInstance(slug).subscribe({
+      next: (instances: any[]) => {
+        const instance = instances?.[0];
+        if (instance?.groups) {
+          this.groups = instance.groups.map((group: any) => this.mapGroup(group, instance.id));
+          this.filteredGroups = this.groups;
+        } else {
+          this.groups = [];
+          this.filteredGroups = [];
+        }
+        this.loading = false;
+      },
+      error: (err) => {
+        console.error('Failed to load catalog', err);
         this.groups = [];
         this.filteredGroups = [];
         this.loading = false;
-        return;
       }
-
-      forkJoin(groupRequests).subscribe(subGroupArrays => {
-        const layerRequests: { groupIdx: number; subGroupIdx: number; subGroup: SubGroup }[] = [];
-        const catalogGroups: CatalogGroup[] = sorted.map((group, gi) => ({
-          ...group,
-          subGroups: (subGroupArrays[gi] || []).sort((a, b) => a.order - b.order).map(sg => ({ ...sg, layers: [] as Layer[] })),
-          layerCount: 0,
-        }));
-
-        catalogGroups.forEach((cg, gi) => {
-          cg.subGroups.forEach((sg, si) => {
-            layerRequests.push({ groupIdx: gi, subGroupIdx: si, subGroup: sg });
-          });
-        });
-
-        if (layerRequests.length === 0) {
-          this.groups = catalogGroups;
-          this.filteredGroups = catalogGroups;
-          this.loading = false;
-          return;
-        }
-
-        const layerObservables = layerRequests.map(req =>
-          this.layerService.list(instanceId, { subGroupId: req.subGroup.id, limit: 100 })
-        );
-
-        forkJoin(layerObservables).subscribe(layerResults => {
-          layerResults.forEach((result, i) => {
-            const req = layerRequests[i];
-            catalogGroups[req.groupIdx].subGroups[req.subGroupIdx].layers = result.data;
-            catalogGroups[req.groupIdx].layerCount += result.data.length;
-          });
-          this.groups = catalogGroups;
-          this.filteredGroups = catalogGroups;
-          this.loading = false;
-        });
-      });
     });
   }
 

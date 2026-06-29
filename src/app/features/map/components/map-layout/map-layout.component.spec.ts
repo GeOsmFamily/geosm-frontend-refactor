@@ -57,8 +57,11 @@ describe('MapLayoutComponent', () => {
     expect(component.leftPanelOpen()).toBeTrue();
   });
 
-  it('should start with right panel closed', () => {
-    expect(component.rightPanelOpen()).toBeFalse();
+  it('should start with overlays closed', () => {
+    expect(component.geosignetsOpen()).toBeFalse();
+    expect(component.shareOpen()).toBeFalse();
+    expect(component.toolsMenuOpen()).toBeFalse();
+    expect(component.activeTool()).toBeNull();
   });
 
   it('should toggle left panel', () => {
@@ -69,10 +72,33 @@ describe('MapLayoutComponent', () => {
     expect(component.leftPanelOpen()).toBeTrue();
   });
 
-  it('should toggle right panel', () => {
-    expect(component.rightPanelOpen()).toBeFalse();
-    component.toggleRightPanel();
-    expect(component.rightPanelOpen()).toBeTrue();
+  it('should toggle geosignets overlay', () => {
+    expect(component.geosignetsOpen()).toBeFalse();
+    component.toggleGeosignets();
+    expect(component.geosignetsOpen()).toBeTrue();
+    component.closeGeosignets();
+    expect(component.geosignetsOpen()).toBeFalse();
+  });
+
+  it('should toggle share overlay', () => {
+    expect(component.shareOpen()).toBeFalse();
+    component.toggleShare();
+    expect(component.shareOpen()).toBeTrue();
+    component.closeShare();
+    expect(component.shareOpen()).toBeFalse();
+  });
+
+  it('should toggle tools menu and active tool overlay', () => {
+    expect(component.toolsMenuOpen()).toBeFalse();
+    component.toggleToolsMenu();
+    expect(component.toolsMenuOpen()).toBeTrue();
+
+    component.selectTool('drawing');
+    expect(component.activeTool()).toBe('drawing');
+    expect(component.toolsMenuOpen()).toBeFalse();
+
+    component.closeActiveTool();
+    expect(component.activeTool()).toBeNull();
   });
 
   it('should switch language', () => {
