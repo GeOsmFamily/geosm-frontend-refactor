@@ -8,4 +8,5 @@ export const environment = {
   accentColor: '#00ada7',
   instanceName: 'GeOSM',
   qgisServerUrl: 'http://localhost:8080/ows',
+  mapillaryToken: 'MLY|27232696753044973|162c805ddb2365b4a8765bb2cb346f2b',
 };

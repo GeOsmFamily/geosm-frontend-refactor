@@ -1,40 +1,169 @@
 <div class="mapillary-tool">
-  <h4>Mapillary Street View</h4>
+  <div class="tool-header">
+    <h4>Mapillary Street View</h4>
+    @if (hasToken) {
+      <button mat-icon-button class="token-btn" (click)="removeToken()" matTooltip="Modifier le Token d'accès">
+        <mat-icon>vpn_key</mat-icon>
+      </button>
+    }
+  </div>
+  
   <p class="description">Explorez les images de rue Mapillary sur la carte.</p>
 
-  <button mat-raised-button [color]="active ? 'warn' : 'primary'" (click)="toggle()">
-    <mat-icon>{{ active ? 'close' : 'streetview' }}</mat-icon>
-    {{ active ? 'Désactiver' : 'Activer Mapillary' }}
-  </button>
-
-  @if (active) {
-    <p class="hint">Cliquez sur la carte pour rechercher des images à proximité.</p>
-  }
-
-  @if (loading) {
-    <app-loading-spinner></app-loading-spinner>
-  }
-
-  @if (images.length > 0 && !loading) {
-    <div class="image-strip">
-      @for (img of images; track img.id) {
-        <div class="thumb" [class.selected]="selectedImage?.id === img.id" (click)="selectImage(img)">
-          <img [src]="img.thumb_1024_url" [alt]="'Mapillary ' + img.id" loading="lazy">
-          <small>{{ formatDate(img.captured_at) }}</small>
-        </div>
-      }
-    </div>
-  }
-
-  @if (viewerUrl) {
-    <div class="viewer-panel">
-      <div class="viewer-header">
-        <span>Vue Mapillary</span>
-        <button mat-icon-button (click)="closeViewer()">
-          <mat-icon>close</mat-icon>
+  <!-- TOKEN CONFIGURATION CARD -->
+  @if (!hasToken) {
+    <div class="token-config-card glass">
+      <mat-icon class="config-icon">vpn_key</mat-icon>
+      <h5>Configuration requise</h5>
+      <p class="config-text">
+        Mapillary requiert un Token d'accès client.
+      </p>
+      <ol class="config-steps">
+        <li>Créez un compte sur le portail <a href="https://www.mapillary.com/dashboard/developer" target="_blank" class="link">Mapillary Developer</a>.</li>
+        <li>Générez un <strong>token d'accès client (Client Token)</strong> dans vos applications.</li>
+        <li>Collez ce token ci-dessous pour l'enregistrer.</li>
+      </ol>
+      <div class="token-input-row">
+        <label for="mapillary-token-input" class="visually-hidden">Token d'accès client Mapillary</label>
+        <input type="text" id="mapillary-token-input" #tokenInput placeholder="MLY|..." class="token-input">
+        <button mat-flat-button color="primary" class="save-btn" (click)="saveToken(tokenInput.value)">
+          Enregistrer
         </button>
       </div>
-      <iframe [src]="viewerUrl" class="mapillary-iframe" allowfullscreen></iframe>
     </div>
+  } @else {
+    <!-- MAIN INTERFACE -->
+    <div class="control-actions">
+      <button mat-raised-button [color]="active ? 'warn' : 'primary'" class="toggle-btn" (click)="toggle()">
+        <mat-icon>{{ active ? 'close' : 'streetview' }}</mat-icon>
+        <span>{{ active ? 'Désactiver Mapillary' : 'Activer Mapillary' }}</span>
+      </button>
+    </div>
+
+    @if (active) {
+      <div class="images-info-card glass" style="margin-bottom: 8px;">
+        <mat-icon>info</mat-icon>
+        <span>Zoomez à un niveau >= 14 pour afficher les points de vue (points verts). Survolez ou cliquez sur un point pour charger la photo.</span>
+      </div>
+
+      @if (loadingSelected) {
+        <div class="loading-container">
+          <app-loading-spinner></app-loading-spinner>
+          <span class="loading-text">Chargement de la photo...</span>
+        </div>
+      }
+
+      <!-- SELECTED IMAGE VIEWER & PLAYBACK CONTROLS -->
+      @if (selectedImage) {
+        <div class="viewer-panel glass animate-in">
+          <div class="viewer-header">
+            <div class="viewer-title">
+              <mat-icon>photo_camera</mat-icon>
+              <span>Image Mapillary</span>
+            </div>
+            <div class="header-actions" style="display: flex; gap: 4px;">
+              <button mat-icon-button class="download-btn" (click)="downloadImage()" matTooltip="Télécharger la photo">
+                <mat-icon>download</mat-icon>
+              </button>
+              <button mat-icon-button class="close-btn" (click)="closeViewer()">
+                <mat-icon>close</mat-icon>
+              </button>
+            </div>
+          </div>
+
+          <div class="image-meta">
+            <div><strong>Prise le :</strong> {{ formatDate(selectedImage.captured_at) }}</div>
+            <div class="sequence-id" [title]="selectedImage.sequence">
+              <strong>Séquence :</strong> {{ selectedImage.sequence.slice(0, 16) }}...
+            </div>
+          </div>
+
+          <!-- PLAYBACK / LIVE VIEW MODE CONTAINER -->
+          <div class="playback-controls-section">
+            @if (playbackMode) {
+              <div class="playback-player" [class.fullscreen]="isFullscreen">
+                <!-- Video image rendering for zero flicker during playback -->
+                <div class="playback-frame">
+                  @if (playbackLoading) {
+                    <div class="frame-loader">
+                      <app-loading-spinner></app-loading-spinner>
+                    </div>
+                  } @else {
+                    <img [src]="selectedImage.thumb_1024_url" class="playback-img" alt="Mapillary View">
+                  }
+                </div>
+
+                <div class="player-hud">
+                  <div class="hud-buttons">
+                    <button mat-icon-button (click)="prevFrame()" [disabled]="playbackIndex === 0" matTooltip="Précédent">
+                      <mat-icon>skip_previous</mat-icon>
+                    </button>
+                    
+                    @if (playing) {
+                      <button mat-mini-fab color="primary" (click)="pausePlayback()" matTooltip="Pause">
+                        <mat-icon>pause</mat-icon>
+                      </button>
+                    } @else {
+                      <button mat-mini-fab color="primary" (click)="startPlayback()" matTooltip="Lecture">
+                        <mat-icon>play_arrow</mat-icon>
+                      </button>
+                    }
+
+                    <button mat-icon-button (click)="nextFrame()" [disabled]="playbackIndex === sequenceImages.length - 1" matTooltip="Suivant">
+                      <mat-icon>skip_next</mat-icon>
+                    </button>
+
+                    <button mat-icon-button class="stop-player-btn" (click)="stopPlayback()" matTooltip="Quitter le mode lecture">
+                      <mat-icon>stop</mat-icon>
+                    </button>
+
+                    <button mat-icon-button class="download-player-btn" (click)="downloadImage()" matTooltip="Télécharger la photo">
+                      <mat-icon>download</mat-icon>
+                    </button>
+
+                    @if (false) {
+                      <button mat-icon-button class="fullscreen-player-btn" (click)="toggleFullscreen()" matTooltip="Agrandir / Plein écran">
+                        <mat-icon>{{ isFullscreen ? 'fullscreen_exit' : 'fullscreen' }}</mat-icon>
+                      </button>
+                    }
+                  </div>
+
+                  <!-- Timeline slider -->
+                  <div class="timeline-row">
+                    <span class="time-label">{{ playbackIndex + 1 }} / {{ sequenceImages.length }}</span>
+                    <mat-slider class="playback-slider" [min]="0" [max]="sequenceImages.length - 1" [step]="1">
+                      <input matSliderThumb id="playback-timeline-slider" aria-label="Curseur de défilement temporel" [value]="playbackIndex" (input)="onSliderChange($event)">
+                    </mat-slider>
+                  </div>
+
+                  <!-- Speed options -->
+                  <div class="speed-selector">
+                    <button mat-stroked-button class="speed-btn" [class.active]="playbackSpeed === 1200" (click)="setSpeed(1200)">0.5x</button>
+                    <button mat-stroked-button class="speed-btn" [class.active]="playbackSpeed === 800" (click)="setSpeed(800)">1x</button>
+                    <button mat-stroked-button class="speed-btn" [class.active]="playbackSpeed === 400" (click)="setSpeed(400)">2x</button>
+                  </div>
+                </div>
+              </div>
+            } @else {
+              <!-- Trigger button for playback -->
+              <button mat-flat-button color="accent" class="play-btn-trigger" (click)="enterPlaybackMode()">
+                <mat-icon>play_circle_filled</mat-icon>
+                <span>Défiler la séquence (Live View)</span>
+              </button>
+              
+              <!-- Mapillary Interactive IFrame -->
+              @if (viewerUrl) {
+                <iframe [src]="viewerUrl" class="mapillary-iframe" title="Interactive Mapillary Embed" allowfullscreen></iframe>
+              }
+            }
+          </div>
+        </div>
+      } @else {
+        <div class="images-info-card glass">
+          <mat-icon>info</mat-icon>
+          <span>Sélectionnez ou survolez un point vert sur la carte pour visualiser la photo correspondante.</span>
+        </div>
+      }
+    }
   }
 </div>
