@@ -1,15 +1,23 @@
 import { Injectable, inject } from '@angular/core';
-import { Observable } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { Observable, map } from 'rxjs';
 
 import { ApiService } from './api.service';
 import { Drawing } from '../models/index';
+import { environment } from '../../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class DrawingService {
   private readonly api = inject(ApiService);
+  private readonly http = inject(HttpClient);
+  private readonly baseUrl = environment.apiUrl;
 
+  /**
+   * Liste les dessins de l'utilisateur courant pour une instance.
+   * Route backend : GET /api/v1/drawings?instanceId=...
+   */
   list(instanceId: string): Observable<Drawing[]> {
-    return this.api.get<Drawing[]>(`/instances/${instanceId}/drawings`);
+    return this.api.get<Drawing[]>('/drawings', { instanceId });
   }
 
   getById(id: string): Observable<Drawing> {
@@ -20,7 +28,13 @@ export class DrawingService {
     return this.api.post<Drawing>('/drawings', dto);
   }
 
+  /**
+   * Supprime un dessin. Le backend retourne 204 No Content →
+   * on utilise HttpClient directement pour éviter l'erreur de parsing JSON.
+   */
   delete(id: string): Observable<void> {
-    return this.api.delete<void>(`/drawings/${id}`);
+    return this.http
+      .delete(`${this.baseUrl}/drawings/${id}`, { observe: 'response' })
+      .pipe(map(() => undefined as void));
   }
 }

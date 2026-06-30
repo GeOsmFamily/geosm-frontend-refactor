@@ -13,6 +13,7 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { Router } from '@angular/router';
 
 import { AuthService } from '../../../../core/services/auth.service';
+import { ThemeService } from '../../../../core/services/theme.service';
 
 @Component({
   selector: 'app-settings',
@@ -40,6 +41,7 @@ export class SettingsComponent implements OnInit {
   private readonly translate = inject(TranslateService);
   private readonly snackBar = inject(MatSnackBar);
   private readonly router = inject(Router);
+  readonly themeService = inject(ThemeService);
 
   readonly currentUser = this.authService.currentUser$;
   readonly isDarkTheme = signal(false);
@@ -48,8 +50,8 @@ export class SettingsComponent implements OnInit {
   passwordForm!: FormGroup;
 
   ngOnInit(): void {
-    // Check current theme
-    this.isDarkTheme.set(document.body.classList.contains('dark-theme'));
+    // Sync toggle with current theme from ThemeService
+    this.isDarkTheme.set(this.themeService.isDark);
 
     this.profileForm = this.fb.group({
       firstName: ['', Validators.required],
@@ -73,13 +75,7 @@ export class SettingsComponent implements OnInit {
 
   toggleTheme(checked: boolean): void {
     this.isDarkTheme.set(checked);
-    if (checked) {
-      document.body.classList.add('dark-theme');
-      localStorage.setItem('geosm_theme', 'dark');
-    } else {
-      document.body.classList.remove('dark-theme');
-      localStorage.setItem('geosm_theme', 'light');
-    }
+    this.themeService.toggle(checked);
   }
 
   saveProfile(): void {

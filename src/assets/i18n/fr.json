@@ -326,7 +326,11 @@
       "bicycle": "Velo",
       "foot": "A pied",
       "clickMap": "Cliquer sur la carte",
-      "profile": "Profil"
+      "profile": "Profil",
+      "infoTitle": "Mode d'emploi",
+      "infoStep1": "Cliquez sur l'icône de cible (🎯) d'un champ puis sur la carte pour définir sa position.",
+      "infoStep2": "Alternativement, faites un clic droit sur la carte pour définir le départ ou l'arrivée.",
+      "infoStep3": "Choisissez votre mode de transport (voiture, vélo, piéton) puis cliquez sur Calculer."
     },
     "export": {
       "selectLayer": "Selectionner une couche",
@@ -458,5 +462,28 @@
     "language": "Langue",
     "myAccount": "Mon compte",
     "settings": "Paramètres"
+  },
+  "drawing": {
+    "noInstance": "Aucune instance active",
+    "empty": "Aucun dessin à sauvegarder",
+    "saved": "Dessins sauvegardés avec succès !",
+    "saveError": "Erreur lors de la sauvegarde des dessins",
+    "noneFound": "Aucun dessin sauvegardé trouvé",
+    "loaded": "Dessin(s) chargé(s) avec succès",
+    "loadError": "Erreur lors du chargement des dessins"
+  },
+  "measure": {
+    "title": "Mesure",
+    "distance": "Distance",
+    "area": "Surface",
+    "circle": "Cercle",
+    "start": "Mesurer",
+    "stop": "Arrêter",
+    "hintDistance": "Cliquez sur la carte pour commencer à tracer la ligne. Double-cliquez pour terminer.",
+    "hintArea": "Cliquez sur la carte pour commencer à tracer le polygone. Double-cliquez pour terminer.",
+    "hintCircle": "Cliquez sur la carte pour définir le centre du cercle, déplacez le curseur et cliquez de nouveau pour le rayon.",
+    "results": "Résultats",
+    "remove": "Supprimer la mesure",
+    "clearAll": "Tout effacer"
   }
 }

@@ -1,49 +1,66 @@
 <div class="measure-tool">
-  <h3>Mesure</h3>
+  <h3>{{ 'measure.title' | translate }}</h3>
 
-  <mat-button-toggle-group [value]="mode" (change)="setMode($event.value)">
-    <mat-button-toggle value="distance">
-      <mat-icon>straighten</mat-icon> Distance
+  <!-- Mode selector -->
+  <mat-button-toggle-group [value]="mode" (change)="setMode($event.value)" class="mode-group">
+    <mat-button-toggle value="distance" [matTooltip]="'measure.distance' | translate">
+      <mat-icon>straighten</mat-icon>
+      {{ 'measure.distance' | translate }}
     </mat-button-toggle>
-    <mat-button-toggle value="area">
-      <mat-icon>square_foot</mat-icon> Surface
+    <mat-button-toggle value="area" [matTooltip]="'measure.area' | translate">
+      <mat-icon>square_foot</mat-icon>
+      {{ 'measure.area' | translate }}
+    </mat-button-toggle>
+    <mat-button-toggle value="circle" [matTooltip]="'measure.circle' | translate">
+      <mat-icon>radio_button_unchecked</mat-icon>
+      {{ 'measure.circle' | translate }}
     </mat-button-toggle>
   </mat-button-toggle-group>
 
+  <!-- Activate / Stop button -->
   <div class="activate-section">
     <button mat-flat-button
             [color]="isActive ? 'warn' : 'primary'"
+            class="full-width"
             (click)="toggleActive()">
       <mat-icon>{{ isActive ? 'stop' : 'play_arrow' }}</mat-icon>
-      {{ isActive ? 'Arrêter' : 'Mesurer' }}
+      {{ isActive ? ('measure.stop' | translate) : ('measure.start' | translate) }}
     </button>
   </div>
 
+  <!-- Contextual hint -->
   @if (isActive) {
-    <p class="measure-hint">
-      Cliquez sur la carte pour {{ mode === 'distance' ? 'tracer une ligne' : 'tracer un polygone' }}.
-      Double-cliquez pour terminer.
+    <p class="hint">
+      @if (mode === 'distance') {
+        {{ 'measure.hintDistance' | translate }}
+      } @else if (mode === 'area') {
+        {{ 'measure.hintArea' | translate }}
+      } @else {
+        {{ 'measure.hintCircle' | translate }}
+      }
     </p>
   }
 
+  <!-- Results list -->
   @if (measurements.length > 0) {
     <mat-divider></mat-divider>
 
     <div class="results">
-      <h4>Résultats</h4>
+      <h4>{{ 'measure.results' | translate }}</h4>
       @for (m of measurements; track m.id) {
         <div class="result-item">
-          <mat-icon>{{ m.mode === 'distance' ? 'straighten' : 'square_foot' }}</mat-icon>
+          <mat-icon class="mode-icon">{{ getModeIcon(m.mode) }}</mat-icon>
           <span class="result-value">{{ m.value }}</span>
-          <button mat-icon-button (click)="removeMeasurement(m)">
+          <button mat-icon-button [attr.aria-label]="'measure.remove' | translate" (click)="removeMeasurement(m)">
             <mat-icon>close</mat-icon>
           </button>
         </div>
       }
     </div>
 
-    <button mat-stroked-button color="warn" (click)="clearMeasurements()">
-      <mat-icon>delete_sweep</mat-icon> Tout effacer
+    <button mat-stroked-button color="warn" class="full-width" (click)="clearMeasurements()">
+      <mat-icon>delete_sweep</mat-icon>
+      {{ 'measure.clearAll' | translate }}
     </button>
   }
 </div>

@@ -4,6 +4,7 @@ import Map from 'ol/Map';
 import View from 'ol/View';
 import { fromLonLat, toLonLat } from 'ol/proj';
 import TileLayer from 'ol/layer/Tile';
+import Overlay from 'ol/Overlay';
 import OSM from 'ol/source/OSM';
 import XYZ from 'ol/source/XYZ';
 import TileWMS from 'ol/source/TileWMS';
@@ -15,12 +16,25 @@ import { Coordinate } from 'ol/coordinate';
 import { Extent } from 'ol/extent';
 import BaseLayer from 'ol/layer/Base';
 
+/** URL du fond de carte sombre (CartoDB Dark Matter) */
+const DARK_BASEMAP_URL = 'https://{a-c}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png';
+
 @Injectable({ providedIn: 'root' })
 export class MapService {
   private readonly zone = inject(NgZone);
 
   private map!: Map;
   private baseLayer!: TileLayer<any>;
+
+  readonly drawingSource = new VectorSource();
+  readonly measureSource = new VectorSource();
+  readonly commentSource = new VectorSource();
+  readonly measureOverlays: Overlay[] = [];
+  readonly measurements: any[] = [];
+
+  drawingLayer!: VectorLayer<VectorSource>;
+  measureLayer!: VectorLayer<VectorSource>;
+  commentLayer!: VectorLayer<VectorSource>;
 
   private readonly clickSubject = new Subject<any>();
   readonly onClick$: Observable<any> = this.clickSubject.asObservable();
@@ -30,9 +44,29 @@ export class MapService {
   initMap(target: string | HTMLElement, center: [number, number] = [0, 0], zoom: number = 2): Map {
     this.baseLayer = new TileLayer({ source: new OSM() });
 
+    this.drawingLayer = new VectorLayer({
+      source: this.drawingSource,
+      properties: { name: 'drawing-layer' }
+    });
+
+    this.measureLayer = new VectorLayer({
+      source: this.measureSource,
+      properties: { name: 'measure-layer' }
+    });
+
+    this.commentLayer = new VectorLayer({
+      source: this.commentSource,
+      properties: { name: 'comment-layer' }
+    });
+
     this.map = new Map({
       target,
-      layers: [this.baseLayer],
+      layers: [
+        this.baseLayer,
+        this.drawingLayer,
+        this.measureLayer,
+        this.commentLayer
+      ],
       view: new View({
         center: fromLonLat(center),
         zoom,
@@ -64,6 +98,21 @@ export class MapService {
     this.map.removeLayer(this.baseLayer);
     this.baseLayer = layer;
     this.map.getLayers().insertAt(0, this.baseLayer);
+  }
+
+  /**
+   * Bascule le fond de carte entre le thème clair (OSM standard)
+   * et le thème sombre (CartoDB Dark Matter).
+   */
+  switchBasemap(dark: boolean): void {
+    if (!this.map) return;
+    const source = dark
+      ? new XYZ({
+          url: DARK_BASEMAP_URL,
+          attributions: '&copy; <a href="https://carto.com/">CartoDB</a>',
+        })
+      : new OSM();
+    this.baseLayer.setSource(source);
   }
 
   getBaseLayer(): TileLayer<any> {

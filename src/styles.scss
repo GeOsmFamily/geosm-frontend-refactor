@@ -346,7 +346,19 @@ app-root {
   position: absolute !important;
   display: block !important;
   border-radius: var(--radius-sm);
+  // Alignment: bottom-right, same vertical level as coord bar
+  bottom: 8px !important;
+  right: 8px !important;
+  top: auto !important;
   button { width: 22px !important; height: 22px !important; margin-bottom: 0; border-radius: 4px !important; background: var(--primary) !important; }
+}
+
+// Dark mode: attribution
+body.dark-theme .ol-attribution {
+  background: rgba(15, 23, 42, 0.85) !important;
+  color: #cbd5e1 !important;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  a { color: var(--accent) !important; }
 }
 
 .tooltip.tooltip-static, .tooltip.tooltip-measure {
@@ -374,6 +386,7 @@ app-root {
 .ol-scale-line {
   background: rgba(2, 63, 95, 0.7) !important;
   border-radius: 4px;
+  // Align with the coord bar — same bottom offset (8px), left side
   bottom: 8px;
   left: 8px;
   padding: 2px;
@@ -389,6 +402,12 @@ app-root {
   margin: 1px;
   will-change: contents, width;
   transition: all 0.25s;
+}
+
+// Dark mode: scale line
+body.dark-theme .ol-scale-line {
+  background: rgba(30, 41, 59, 0.85) !important;
+  border: 1px solid rgba(255, 255, 255, 0.15);
 }
 
 .ol-viewport, .ol-unselectable {

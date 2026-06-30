@@ -1,87 +1,224 @@
 .measure-tool {
   h3 {
-    margin: 0 0 12px;
-    font-size: 16px;
-    font-weight: 500;
+    margin: 0 0 16px;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--primary);
+    font-family: 'Avenir Next Rounded Pro Demi', 'Roboto', sans-serif;
   }
 
-  h4 {
-    margin: 12px 0 8px;
-    font-size: 13px;
-    font-weight: 500;
-  }
-
+  // Segmented control button toggles with stacked icons/labels
   mat-button-toggle-group {
+    display: flex;
     width: 100%;
-    margin-bottom: 12px;
+    margin-bottom: 16px;
+    border: 1px solid var(--border) !important;
+    border-radius: var(--radius-md) !important;
+    overflow: hidden;
+    background: var(--background) !important;
+    box-shadow: var(--shadow-sm);
 
     mat-button-toggle {
       flex: 1;
+      border: none !important;
+      border-right: 1px solid var(--border) !important;
+      background: transparent;
+      color: var(--text-secondary);
+      transition: all var(--transition-fast);
 
-      mat-icon {
-        margin-right: 4px;
-        font-size: 18px;
+      &:last-child {
+        border-right: none !important;
+      }
+
+      ::ng-deep .mat-button-toggle-label-content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        line-height: 1.4 !important;
+        padding: 10px 4px !important;
+        gap: 6px;
+        font-size: 11px;
+        font-weight: 500;
+        font-family: 'Avenir Next Rounded Pro Medium', 'Roboto', sans-serif;
+
+        mat-icon {
+          margin-right: 0 !important;
+          font-size: 20px;
+          width: 20px;
+          height: 20px;
+          transition: transform var(--transition-fast);
+        }
+      }
+
+      &:hover:not(.mat-button-toggle-checked) {
+        background: var(--surface-hover) !important;
+        ::ng-deep .mat-button-toggle-label-content mat-icon {
+          transform: scale(1.1);
+        }
+      }
+
+      &.mat-button-toggle-checked {
+        background: var(--primary) !important;
+        color: white !important;
+
+        ::ng-deep .mat-button-toggle-label-content {
+          color: white !important;
+          mat-icon {
+            color: var(--accent) !important;
+          }
+        }
       }
     }
   }
 
   .activate-section {
-    margin-bottom: 12px;
+    margin-bottom: 16px;
 
     button {
-      width: 100%;
+      border-radius: var(--radius-sm) !important;
+      font-weight: 600;
+      padding: 10px !important;
+      font-family: 'Avenir Next Rounded Pro Demi', 'Roboto', sans-serif !important;
     }
   }
 
-  .measure-hint {
+  // Beautiful contextual info callout
+  .hint {
+    background: rgba(2, 63, 95, 0.05);
+    border-left: 3px solid var(--primary);
+    padding: 10px 14px;
+    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
     font-size: 12px;
-    color: #1976d2;
-    font-style: italic;
-    margin-bottom: 12px;
+    color: var(--text-secondary);
+    line-height: 1.5;
+    margin-bottom: 16px;
+    font-style: normal;
   }
 
   .results {
-    margin-bottom: 12px;
+    margin-bottom: 16px;
 
+    h4 {
+      font-family: 'Avenir Next Rounded Pro Demi', 'Roboto', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text);
+      margin: 16px 0 10px;
+    }
+
+    // Individual premium measurement items
     .result-item {
       display: flex;
       align-items: center;
-      gap: 8px;
-      padding: 6px 0;
+      gap: 10px;
+      padding: 8px 12px;
+      background: var(--surface);
+      border-radius: var(--radius-sm);
+      margin-bottom: 8px;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-sm);
+      transition: border-color var(--transition-fast);
 
-      mat-icon {
+      &:hover {
+        border-color: var(--primary-light);
+      }
+
+      .mode-icon {
         font-size: 18px;
-        color: rgba(0, 0, 0, 0.54);
+        width: 18px;
+        height: 18px;
+        color: var(--primary-light);
       }
 
       .result-value {
         flex: 1;
-        font-size: 14px;
-        font-weight: 500;
+        font-family: 'Roboto Mono', monospace;
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--text);
       }
 
       button {
         width: 28px;
         height: 28px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--text-light);
+        transition: color var(--transition-fast);
+
+        &:hover {
+          color: var(--warn) !important;
+        }
 
         mat-icon {
           font-size: 16px;
+          width: 16px;
+          height: 16px;
         }
       }
     }
   }
 
   mat-divider {
-    margin: 12px 0;
+    margin: 16px 0;
+    border-color: var(--border);
+  }
+
+  button[mat-stroked-button] {
+    border-radius: var(--radius-sm) !important;
   }
 }
 
+// ── Dark mode Overrides ──────────────────────────────────────────────────────
+body.dark-theme {
+  .measure-tool {
+    h3 {
+      color: var(--accent);
+    }
+
+    mat-button-toggle-group {
+      mat-button-toggle {
+        &.mat-button-toggle-checked {
+          background: rgba(0, 173, 167, 0.15) !important; // Translucent Accent
+          color: var(--accent) !important;
+          border-color: var(--accent) !important;
+
+          ::ng-deep .mat-button-toggle-label-content mat-icon {
+            color: var(--accent) !important;
+          }
+        }
+      }
+    }
+
+    .hint {
+      background: rgba(255, 255, 255, 0.03);
+      border-left-color: var(--accent);
+      color: var(--text-secondary);
+    }
+
+    .results .result-item {
+      .mode-icon {
+        color: var(--accent);
+      }
+
+      &:hover {
+        border-color: var(--accent);
+      }
+    }
+  }
+}
+
+// Map tooltip adjustments
 ::ng-deep .measure-tooltip {
-  background: rgba(25, 118, 210, 0.9);
-  color: white;
-  padding: 4px 8px;
-  border-radius: 4px;
-  font-size: 12px;
-  font-weight: 500;
-  white-space: nowrap;
+  background: rgba(15, 23, 42, 0.9) !important; // Sleek dark slate tooltip
+  color: #fff !important;
+  padding: 6px 10px !important;
+  border-radius: var(--radius-sm) !important;
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  font-family: 'Roboto Mono', monospace !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25) !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
 }

@@ -283,7 +283,11 @@
       "bicycle": "Bicycle",
       "foot": "On foot",
       "clickMap": "Click on map",
-      "profile": "Profile"
+      "profile": "Profile",
+      "infoTitle": "How it works",
+      "infoStep1": "Click the target icon (🎯) next to a field, then click on the map to set its position.",
+      "infoStep2": "Alternatively, right-click on the map to set the start or destination directly.",
+      "infoStep3": "Choose your mode of transport (car, bicycle, foot) and click Calculate."
     },
     "export": {
       "selectLayer": "Select a layer",
@@ -415,5 +419,28 @@
     "language": "Language",
     "myAccount": "My account",
     "settings": "Settings"
+  },
+  "drawing": {
+    "noInstance": "No active instance",
+    "empty": "No drawings to save",
+    "saved": "Drawings saved successfully!",
+    "saveError": "Error while saving drawings",
+    "noneFound": "No saved drawings found",
+    "loaded": "Drawing(s) loaded successfully",
+    "loadError": "Error while loading drawings"
+  },
+  "measure": {
+    "title": "Measure",
+    "distance": "Distance",
+    "area": "Area",
+    "circle": "Circle",
+    "start": "Measure",
+    "stop": "Stop",
+    "hintDistance": "Click on the map to start drawing a line. Double-click to finish.",
+    "hintArea": "Click on the map to start drawing a polygon. Double-click to finish.",
+    "hintCircle": "Click on the map to set the center of the circle, move the mouse and click again to set the radius.",
+    "results": "Results",
+    "remove": "Remove measurement",
+    "clearAll": "Clear all"
   }
 }

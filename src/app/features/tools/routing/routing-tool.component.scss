@@ -9,6 +9,47 @@
     width: 100%;
   }
 
+  .routing-info-note {
+    background: rgba(2, 63, 95, 0.05);
+    border-left: 3px solid var(--primary);
+    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    padding: 12px;
+    margin-bottom: 16px;
+    
+    h4 {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin: 0 0 8px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--primary);
+      font-family: 'Avenir Next Rounded Pro Demi', 'Roboto', sans-serif;
+      
+      mat-icon {
+        font-size: 16px;
+        width: 16px;
+        height: 16px;
+        color: inherit;
+      }
+    }
+
+    ul {
+      margin: 0;
+      padding-left: 16px;
+      font-size: 11px;
+      color: var(--text-secondary);
+      line-height: 1.5;
+      
+      li {
+        margin-bottom: 6px;
+        &:last-child {
+          margin-bottom: 0;
+        }
+      }
+    }
+  }
+
   .point-input {
     margin-bottom: 4px;
   }
@@ -70,3 +111,19 @@
     margin: 12px 0;
   }
 }
+
+:host-context(body.dark-theme) {
+  .routing-info-note {
+    background: rgba(255, 255, 255, 0.03);
+    border-left-color: var(--accent);
+    
+    h4 {
+      color: var(--accent);
+    }
+  }
+
+  .route-result .result-row mat-icon {
+    color: var(--accent);
+  }
+}
+

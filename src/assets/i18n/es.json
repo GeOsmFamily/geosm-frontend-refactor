@@ -283,7 +283,11 @@
       "bicycle": "Bicicleta",
       "foot": "A pie",
       "clickMap": "Haga clic en el mapa",
-      "profile": "Perfil"
+      "profile": "Perfil",
+      "infoTitle": "Instrucciones de uso",
+      "infoStep1": "Haga clic en el icono de la mira (🎯) de un campo y luego en el mapa para definir su posición.",
+      "infoStep2": "Alternativamente, haga clic derecho en el mapa para definir la salida o la llegada.",
+      "infoStep3": "Elija su modo de transporte (coche, bicicleta, peatón) y haga clic en Calcular."
     },
     "export": {
       "selectLayer": "Seleccionar una capa",
@@ -399,5 +403,28 @@
     "language": "Idioma",
     "myAccount": "Mi cuenta",
     "settings": "Configuración"
+  },
+  "drawing": {
+    "noInstance": "Ninguna instancia activa",
+    "empty": "No hay dibujos para guardar",
+    "saved": "¡Dibujos guardados con éxito!",
+    "saveError": "Error al guardar los dibujos",
+    "noneFound": "No se encontraron dibujos guardados",
+    "loaded": "Dibujo(s) cargado(s) con éxito",
+    "loadError": "Error al cargar los dibujos"
+  },
+  "measure": {
+    "title": "Medida",
+    "distance": "Distancia",
+    "area": "Superficie",
+    "circle": "Círculo",
+    "start": "Medir",
+    "stop": "Detener",
+    "hintDistance": "Haga clic en el mapa para comenzar a trazar la línea. Doble clic para terminar.",
+    "hintArea": "Haga clic en el mapa para comenzar el polígono. Doble clic para terminar.",
+    "hintCircle": "Haga clic en el mapa para definir el centro del círculo, mueva el ratón y haga clic de nuevo para el radio.",
+    "results": "Resultados",
+    "remove": "Eliminar medida",
+    "clearAll": "Borrar todo"
   }
 }

@@ -242,12 +242,12 @@
   }
 }
 
-// Coordinate display
+// Coordinate display — bottom-left, right of the OL scale line
 .coord-display {
   position: absolute;
   bottom: 8px;
-  left: 50%;
-  transform: translateX(-50%);
+  // Scale line is ~130px max-width + 8px margin + 8px its own left offset = 146px → use 156px
+  left: 156px;
   display: flex;
   align-items: center;
   gap: 8px;

@@ -57,10 +57,19 @@
         <div class="card-title">{{ boundary.label.split(',')[0] }}</div>
         <div class="card-subtitle">Limite administrative</div>
       </div>
-      <button mat-flat-button color="primary" class="download-btn" [matMenuTriggerFor]="downloadMenu">
-        <mat-icon>download</mat-icon>
-        <span>Télécharger la limite</span>
-        <mat-icon class="menu-arrow">arrow_drop_down</mat-icon>
+      <button mat-flat-button color="primary" class="download-btn" [matMenuTriggerFor]="downloadingBoundary() ? null : downloadMenu" [disabled]="downloadingBoundary()">
+        @if (downloadingBoundary()) {
+          <span class="spinner-container">
+            <span class="spinner"></span>
+            <span>Génération...</span>
+          </span>
+        } @else {
+          <ng-container>
+            <mat-icon>download</mat-icon>
+            <span>Télécharger la limite</span>
+            <mat-icon class="menu-arrow">arrow_drop_down</mat-icon>
+          </ng-container>
+        }
       </button>
       <mat-menu #downloadMenu="matMenu" class="download-format-menu">
         <button mat-menu-item (click)="downloadBoundary(boundary, 'geojson')">

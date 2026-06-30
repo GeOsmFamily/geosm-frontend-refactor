@@ -11,7 +11,6 @@ import { MatCardModule } from '@angular/material/card';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import Map from 'ol/Map';
-import VectorLayer from 'ol/layer/Vector';
 import VectorSource from 'ol/source/Vector';
 import Feature from 'ol/Feature';
 import Point from 'ol/geom/Point';
@@ -64,8 +63,7 @@ export class CommentToolComponent implements OnInit, OnDestroy {
   private readonly router = inject(Router);
 
   private map!: Map;
-  private readonly vectorSource = new VectorSource();
-  private vectorLayer!: VectorLayer<VectorSource>;
+  private vectorSource!: VectorSource;
   private clickListener: ((evt: any) => void) | null = null;
   private authSubscription!: Subscription;
 
@@ -77,32 +75,29 @@ export class CommentToolComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.map = this.mapService.getMap();
+    this.vectorSource = this.mapService.commentSource;
 
-    this.vectorLayer = new VectorLayer({
-      source: this.vectorSource,
-      style: (feature) => {
-        const label = (feature.get('label') as string) || '';
-        return new Style({
-          image: new Icon({
-            anchor: [0.5, 1],
-            src: 'data:image/svg+xml,' + encodeURIComponent(
-              '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="%23e53935" d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>'
-            ),
-            scale: 1.5,
-          }),
-          text: label
-            ? new Text({
-                text: label.length > 20 ? label.substring(0, 20) + '...' : label,
-                font: '12px sans-serif',
-                fill: new Fill({ color: '#333' }),
-                stroke: new Stroke({ color: '#fff', width: 3 }),
-                offsetY: 12,
-              })
-            : undefined,
-        });
-      },
+    this.mapService.commentLayer.setStyle((feature) => {
+      const label = (feature.get('label') as string) || '';
+      return new Style({
+        image: new Icon({
+          anchor: [0.5, 1],
+          src: 'data:image/svg+xml,' + encodeURIComponent(
+            '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="%23e53935" d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>'
+          ),
+          scale: 1.5,
+        }),
+        text: label
+          ? new Text({
+              text: label.length > 20 ? label.substring(0, 20) + '...' : label,
+              font: '12px sans-serif',
+              fill: new Fill({ color: '#333' }),
+              stroke: new Stroke({ color: '#fff', width: 3 }),
+              offsetY: 12,
+            })
+          : undefined,
+      });
     });
-    this.map.addLayer(this.vectorLayer);
 
     this.toolActionService.action$.subscribe((action) => {
       if (action.tool === 'comment' && action.action === 'addAt') {
@@ -122,9 +117,6 @@ export class CommentToolComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.stopPlacing();
-    if (this.vectorLayer) {
-      this.map.removeLayer(this.vectorLayer);
-    }
     if (this.authSubscription) {
       this.authSubscription.unsubscribe();
     }

@@ -7,8 +7,9 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatListModule } from '@angular/material/list';
 import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import Map from 'ol/Map';
-import VectorLayer from 'ol/layer/Vector';
 import VectorSource from 'ol/source/Vector';
 import Draw from 'ol/interaction/Draw';
 import { Type as GeometryType } from 'ol/geom/Geometry';
@@ -20,7 +21,7 @@ import { MapService } from '../../map/services/map.service';
 import { DrawingService } from '../../../core/services/drawing.service';
 import { InstanceService } from '../../../core/services/instance.service';
 import { ConfirmDialogComponent } from '../../../shared/components/confirm-dialog/confirm-dialog.component';
-import { TranslateModule } from '@ngx-translate/core';
+
 
 type DrawType = 'Point' | 'LineString' | 'Polygon' | 'Circle';
 
@@ -43,6 +44,7 @@ interface DrawnFeature {
     MatTooltipModule,
     MatDividerModule,
     MatListModule,
+    MatSnackBarModule,
   ],
   templateUrl: './drawing-tool.component.html',
   styleUrl: './drawing-tool.component.scss',
@@ -52,10 +54,11 @@ export class DrawingToolComponent implements OnInit, OnDestroy {
   private readonly drawingService = inject(DrawingService);
   private readonly instanceService = inject(InstanceService);
   private readonly dialog = inject(MatDialog);
+  private readonly snackBar = inject(MatSnackBar);
+  private readonly translate = inject(TranslateService);
 
   private map!: Map;
-  private vectorSource = new VectorSource();
-  private vectorLayer!: VectorLayer<VectorSource>;
+  private vectorSource!: VectorSource;
   private drawInteraction: Draw | null = null;
   private featureCounter = 0;
 
@@ -81,18 +84,35 @@ export class DrawingToolComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.map = this.mapService.getMap();
-    this.vectorLayer = new VectorLayer({
-      source: this.vectorSource,
-      style: (feature) => this.createStyle(feature as Feature),
+    this.vectorSource = this.mapService.drawingSource;
+
+    // Apply the drawing style function to the shared persistent layer
+    this.mapService.drawingLayer.setStyle((feature) => this.createStyle(feature as Feature));
+
+    // Restore drawn features from the shared vector source to keep the UI list in sync
+    const features = this.vectorSource.getFeatures();
+    this.drawnFeatures = features.map((f) => {
+      const type = (f.get('drawType') as string) || 'Point';
+      const id = (f.getId() as string) || `draw-${++this.featureCounter}`;
+      if (!f.getId()) f.setId(id);
+      
+      const numericId = Number.parseInt(id.replace('draw-', ''), 10);
+      if (!Number.isNaN(numericId) && numericId > this.featureCounter) {
+        this.featureCounter = numericId;
+      }
+
+      return {
+        id,
+        type,
+        color: (f.get('color') as string) || this.selectedColor,
+        label: (f.get('label') as string) || `${type} ${id.replace('draw-', '')}`,
+        feature: f,
+      };
     });
-    this.map.addLayer(this.vectorLayer);
   }
 
   ngOnDestroy(): void {
     this.deactivateDrawing();
-    if (this.vectorLayer) {
-      this.map.removeLayer(this.vectorLayer);
-    }
   }
 
   activateDraw(type: DrawType | 'Text'): void {
@@ -177,7 +197,21 @@ export class DrawingToolComponent implements OnInit, OnDestroy {
 
   saveDrawings(): void {
     const instance = this.instanceService.currentInstance$.value;
-    if (!instance) return;
+    if (!instance) {
+      this.snackBar.open(
+        this.translate.instant('drawing.noInstance') || 'Aucune instance active',
+        'OK', { duration: 3000 }
+      );
+      return;
+    }
+
+    if (this.vectorSource.getFeatures().length === 0) {
+      this.snackBar.open(
+        this.translate.instant('drawing.empty') || 'Aucun dessin à sauvegarder',
+        'OK', { duration: 3000 }
+      );
+      return;
+    }
 
     const geojson = new GeoJSON().writeFeaturesObject(this.vectorSource.getFeatures(), {
       featureProjection: 'EPSG:3857',
@@ -190,15 +224,43 @@ export class DrawingToolComponent implements OnInit, OnDestroy {
       description: '',
       isPublic: false,
       instanceId: instance.id,
-    }).subscribe();
+    }).subscribe({
+      next: () => {
+        this.snackBar.open(
+          this.translate.instant('drawing.saved') || 'Dessins sauvegardés avec succès !',
+          'OK', { duration: 3000 }
+        );
+      },
+      error: (err) => {
+        console.error('[DrawingTool] save error', err);
+        this.snackBar.open(
+          this.translate.instant('drawing.saveError') || 'Erreur lors de la sauvegarde',
+          'OK', { duration: 4000 }
+        );
+      },
+    });
   }
 
   loadDrawings(): void {
     const instance = this.instanceService.currentInstance$.value;
-    if (!instance) return;
+    if (!instance) {
+      this.snackBar.open(
+        this.translate.instant('drawing.noInstance') || 'Aucune instance active',
+        'OK', { duration: 3000 }
+      );
+      return;
+    }
 
-    this.drawingService.list(instance.id).subscribe(drawings => {
-      if (drawings.length > 0) {
+    this.drawingService.list(instance.id).subscribe({
+      next: (drawings) => {
+        if (drawings.length === 0) {
+          this.snackBar.open(
+            this.translate.instant('drawing.noneFound') || 'Aucun dessin sauvegardé trouvé',
+            'OK', { duration: 3000 }
+          );
+          return;
+        }
+
         const latest = drawings[drawings.length - 1];
         const features = new GeoJSON().readFeatures(latest.geojson, {
           featureProjection: 'EPSG:3857',
@@ -219,7 +281,19 @@ export class DrawingToolComponent implements OnInit, OnDestroy {
             feature: f,
           });
         });
-      }
+
+        this.snackBar.open(
+          this.translate.instant('drawing.loaded') || `${features.length} dessin(s) chargé(s)`,
+          'OK', { duration: 3000 }
+        );
+      },
+      error: (err) => {
+        console.error('[DrawingTool] load error', err);
+        this.snackBar.open(
+          this.translate.instant('drawing.loadError') || 'Erreur lors du chargement',
+          'OK', { duration: 4000 }
+        );
+      },
     });
   }
 

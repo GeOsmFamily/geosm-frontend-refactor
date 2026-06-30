@@ -25,6 +25,7 @@ import GeoJSON from 'ol/format/GeoJSON';
 import { fromLonLat } from 'ol/proj';
 import { Fill, Stroke, Style, Circle as CircleStyle, Text } from 'ol/style';
 import { TranslateModule } from '@ngx-translate/core';
+import { environment } from '../../../../../environments/environment';
 
 interface SearchResultItem {
   type: 'geocoding' | 'boundary' | 'layer';
@@ -70,6 +71,7 @@ export class SearchBarComponent implements OnInit, OnDestroy {
   layerResults: SearchResultItem[] = [];
 
   readonly activeBoundary = signal<SearchResultItem | null>(null);
+  readonly downloadingBoundary = signal<boolean>(false);
 
   ngOnInit(): void {
     this.markerLayer = new VectorLayer({
@@ -283,6 +285,7 @@ export class SearchBarComponent implements OnInit, OnDestroy {
     if (!geojson) return;
     const name = boundary.label.split(',')[0];
     const safeName = name.toLowerCase().replace(/\s+/g, '_');
+    this.downloadingBoundary.set(true);
 
     const featureCollection = {
       type: 'FeatureCollection',
@@ -300,7 +303,7 @@ export class SearchBarComponent implements OnInit, OnDestroy {
       ],
     };
 
-    const apiUrl = '/api/v1/geocode/export';
+    const apiUrl = `${environment.apiUrl}/geocode/export`;
 
     fetch(apiUrl, {
       method: 'POST',
@@ -338,6 +341,9 @@ export class SearchBarComponent implements OnInit, OnDestroy {
         localLink.click();
         URL.revokeObjectURL(localUrl);
       }
+    })
+    .finally(() => {
+      this.downloadingBoundary.set(false);
     });
   }
 

@@ -16,6 +16,7 @@ import { Style, Fill } from 'ol/style';
 import { MapService } from '../../services/map.service';
 import { InstanceService } from '../../../../core/services/instance.service';
 import { BaseMapService } from '../../../../core/services/base-map.service';
+import { ThemeService } from '../../../../core/services/theme.service';
 import { BaseMap, Instance } from '../../../../core/models/index';
 import { environment } from '../../../../../environments/environment';
 import { transformExtent } from 'ol/proj';
@@ -34,6 +35,7 @@ export class MapViewComponent implements AfterViewInit, OnDestroy {
   private readonly mapService = inject(MapService);
   private readonly instanceService = inject(InstanceService);
   private readonly baseMapService = inject(BaseMapService);
+  private readonly themeService = inject(ThemeService);
   private readonly http = inject(HttpClient);
   private readonly destroy$ = new Subject<void>();
   private currentInstance: Instance | null = null;
@@ -50,6 +52,14 @@ export class MapViewComponent implements AfterViewInit, OnDestroy {
 
     const scaleLine = new ScaleLine({ units: 'metric' });
     map.addControl(scaleLine);
+
+    // Apply current theme basemap immediately
+    this.mapService.switchBasemap(this.themeService.isDark);
+
+    // Subscribe to theme changes to switch basemap dynamically
+    this.themeService.isDark$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((dark) => this.mapService.switchBasemap(dark));
 
     this.instanceService.currentInstance$
       .pipe(takeUntil(this.destroy$))
