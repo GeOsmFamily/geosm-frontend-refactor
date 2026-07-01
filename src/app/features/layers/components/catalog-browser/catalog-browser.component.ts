@@ -57,6 +57,7 @@ export class CatalogBrowserComponent implements OnInit, OnDestroy {
 
   groups: CatalogGroup[] = [];
   filteredGroups: CatalogGroup[] = [];
+  selectedGroup: CatalogGroup | null = null;
   searchQuery = '';
   loading = true;
 
@@ -119,9 +120,14 @@ export class CatalogBrowserComponent implements OnInit, OnDestroy {
         if (instance?.groups) {
           this.groups = instance.groups.map((group: any) => this.mapGroup(group, instance.id));
           this.filteredGroups = this.groups;
+          if (this.selectedGroup) {
+            const found = this.groups.find(g => g.id === this.selectedGroup?.id);
+            this.selectedGroup = found || null;
+          }
         } else {
           this.groups = [];
           this.filteredGroups = [];
+          this.selectedGroup = null;
         }
         this.loading = false;
       },
@@ -129,6 +135,7 @@ export class CatalogBrowserComponent implements OnInit, OnDestroy {
         console.error('Failed to load catalog', err);
         this.groups = [];
         this.filteredGroups = [];
+        this.selectedGroup = null;
         this.loading = false;
       }
     });
@@ -167,6 +174,29 @@ export class CatalogBrowserComponent implements OnInit, OnDestroy {
     this.mapLayerService.addLayer(layer);
   }
 
+  toggleLayer(layer: Layer, event: MouseEvent): void {
+    event.stopPropagation();
+    if (this.isLayerActive(layer.id)) {
+      this.mapLayerService.removeLayer(layer.id);
+    } else {
+      this.mapLayerService.addLayer(layer);
+    }
+  }
+
+  getLayerIconUrl(layer: Layer): string | null {
+    if (layer.metadata?.icon) {
+      return layer.metadata.icon;
+    }
+    if (layer.sourceType?.toUpperCase() === 'WMS') {
+      const baseUrl = layer.url;
+      const layerName = layer.sourceLayer || layer.tableName;
+      if (baseUrl && layerName) {
+        return `${baseUrl}?SERVICE=WMS&VERSION=1.1.1&REQUEST=GetLegendGraphic&LAYER=${layerName}&FORMAT=image/png`;
+      }
+    }
+    return null;
+  }
+
   isLayerActive(layerId: string): boolean {
     return this.mapLayerService.isLayerActive(layerId);
   }
@@ -180,5 +210,26 @@ export class CatalogBrowserComponent implements OnInit, OnDestroy {
       case 'raster': return 'grid_on';
       default: return 'layers';
     }
+  }
+
+  selectGroup(group: CatalogGroup): void {
+    this.selectedGroup = group;
+  }
+
+  isUrl(icon: string | null | undefined): boolean {
+    if (!icon) return false;
+    return icon.startsWith('http://') || icon.startsWith('https://') || icon.startsWith('/') || icon.includes('.');
+  }
+
+  getAlphaColor(hex: string, alpha: number): string {
+    if (!hex) return 'rgba(2, 63, 95, 0.1)';
+    // Check if color is hex
+    if (hex.startsWith('#')) {
+      const r = Number.parseInt(hex.slice(1, 3), 16);
+      const g = Number.parseInt(hex.slice(3, 5), 16);
+      const b = Number.parseInt(hex.slice(5, 7), 16);
+      return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+    }
+    return hex; // Fallback for named/variable colors
   }
 }

@@ -295,6 +295,7 @@
     "baseMaps": "Fonds de carte",
     "activeLayers": "Couches actives",
     "catalog": "Catalogue",
+    "backToThemes": "Retour aux thématiques",
     "noActiveLayers": "Aucune couche active",
     "removeAll": "Tout retirer",
     "opacity": "Opacite",

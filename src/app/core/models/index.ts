@@ -56,6 +56,8 @@ export interface Group {
   description: string;
   order: number;
   instanceId: string;
+  icon?: string | null;
+  color?: string | null;
 }
 
 export interface SubGroup {
@@ -77,6 +79,8 @@ export interface Layer {
   tags: string[];
   instanceId: string;
   subGroupId: string;
+  sourceLayer?: string | null;
+  metadata?: any;
 }
 
 export interface Feature {

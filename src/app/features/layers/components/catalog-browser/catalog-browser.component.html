@@ -2,7 +2,7 @@
   <div class="search-box">
     <mat-form-field appearance="outline" class="full-width">
       <mat-label>Rechercher une couche</mat-label>
-      <input matInput [(ngModel)]="searchQuery" (ngModelChange)="onSearch()" placeholder="Nom, tag...">
+      <input matInput id="catalog-search-input" [(ngModel)]="searchQuery" (ngModelChange)="onSearch()" placeholder="Nom, tag...">
       <mat-icon matPrefix>search</mat-icon>
       @if (searchQuery) {
         <button matSuffix mat-icon-button (click)="searchQuery = ''; onSearch()">
@@ -20,21 +20,87 @@
       <p>Aucun résultat trouvé</p>
     </div>
   } @else {
-    <mat-accordion multi>
-      @for (group of filteredGroups; track group.id) {
-        <mat-expansion-panel>
-          <mat-expansion-panel-header>
-            <mat-panel-title>
-              <mat-icon>folder</mat-icon>
-              <span>{{ group.name }}</span>
-            </mat-panel-title>
-            <mat-panel-description>
-              <span class="layer-count">{{ group.layerCount }} couche{{ group.layerCount > 1 ? 's' : '' }}</span>
-            </mat-panel-description>
-          </mat-expansion-panel-header>
+    @if (searchQuery) {
+      <mat-accordion multi>
+        @for (group of filteredGroups; track group.id) {
+          <mat-expansion-panel [expanded]="true">
+            <mat-expansion-panel-header>
+              <mat-panel-title class="group-title-row">
+                @if (isUrl(group.icon)) {
+                  <img [src]="group.icon" class="group-custom-logo" alt="logo" />
+                } @else {
+                  <mat-icon [style.color]="group.color || 'var(--accent)'">{{ group.icon || 'folder' }}</mat-icon>
+                }
+                <span class="group-title-text">{{ group.name }}</span>
+              </mat-panel-title>
+              <mat-panel-description>
+                <span class="layer-count">{{ group.layerCount }}</span>
+              </mat-panel-description>
+            </mat-expansion-panel-header>
 
-          @for (subGroup of group.subGroups; track subGroup.id) {
-            <mat-expansion-panel class="sub-group-panel">
+            @for (subGroup of group.subGroups; track subGroup.id) {
+              <mat-expansion-panel class="sub-group-panel" [expanded]="true">
+                <mat-expansion-panel-header>
+                  <mat-panel-title>
+                    <mat-icon>folder_open</mat-icon>
+                    <span>{{ subGroup.name }}</span>
+                  </mat-panel-title>
+                  <mat-panel-description>
+                    <span class="layer-count">{{ subGroup.layers.length }}</span>
+                  </mat-panel-description>
+                </mat-expansion-panel-header>
+
+                <mat-list>
+                  @for (layer of subGroup.layers; track layer.id) {
+                    <mat-list-item>
+                      @if (getLayerIconUrl(layer)) {
+                        <img [src]="getLayerIconUrl(layer)" class="layer-legend-icon" [matTooltip]="layer.sourceType" alt="icon" />
+                      } @else {
+                        <mat-icon matListItemIcon [matTooltip]="layer.sourceType">{{ getGeometryIcon(layer.sourceType) }}</mat-icon>
+                      }
+                      <span matListItemTitle>{{ layer.name | truncate:40 }}</span>
+                      <button mat-icon-button
+                              matListItemMeta
+                              [matTooltip]="isLayerActive(layer.id) ? 'Retirer de la carte' : 'Ajouter à la carte'"
+                              (click)="toggleLayer(layer, $event)">
+                        <mat-icon [style.color]="isLayerActive(layer.id) ? 'var(--accent)' : 'inherit'">
+                          {{ isLayerActive(layer.id) ? 'check_circle' : 'add_circle_outline' }}
+                        </mat-icon>
+                      </button>
+                    </mat-list-item>
+                  }
+                </mat-list>
+              </mat-expansion-panel>
+            }
+          </mat-expansion-panel>
+        }
+      </mat-accordion>
+    } @else if (selectedGroup) {
+      <div class="selected-group-detail">
+        <button mat-button class="back-btn" (click)="selectedGroup = null">
+          <mat-icon>arrow_back</mat-icon>
+          <span>{{ 'map.backToThemes' | translate }}</span>
+        </button>
+
+        <div class="group-header-banner" [style.border-left-color]="selectedGroup.color || 'var(--accent)'">
+          <div class="logo-circle" [style.background-color]="getAlphaColor(selectedGroup.color || 'var(--accent)', 0.1)">
+            @if (isUrl(selectedGroup.icon)) {
+              <img [src]="selectedGroup.icon" class="group-banner-logo" alt="logo" />
+            } @else {
+              <mat-icon class="group-banner-icon" [style.color]="selectedGroup.color || 'var(--accent)'">{{ selectedGroup.icon || 'folder' }}</mat-icon>
+            }
+          </div>
+          <div class="group-banner-details">
+            <h4>{{ selectedGroup.name }}</h4>
+            @if (selectedGroup.description) {
+              <p class="desc">{{ selectedGroup.description }}</p>
+            }
+          </div>
+        </div>
+
+        <mat-accordion multi>
+          @for (subGroup of selectedGroup.subGroups; track subGroup.id) {
+            <mat-expansion-panel class="sub-group-panel" [expanded]="true">
               <mat-expansion-panel-header>
                 <mat-panel-title>
                   <mat-icon>folder_open</mat-icon>
@@ -48,22 +114,47 @@
               <mat-list>
                 @for (layer of subGroup.layers; track layer.id) {
                   <mat-list-item>
-                    <mat-icon matListItemIcon [matTooltip]="layer.sourceType">{{ getGeometryIcon(layer.sourceType) }}</mat-icon>
+                    @if (getLayerIconUrl(layer)) {
+                      <img [src]="getLayerIconUrl(layer)" class="layer-legend-icon" [matTooltip]="layer.sourceType" alt="icon" />
+                    } @else {
+                      <mat-icon matListItemIcon [matTooltip]="layer.sourceType">{{ getGeometryIcon(layer.sourceType) }}</mat-icon>
+                    }
                     <span matListItemTitle>{{ layer.name | truncate:40 }}</span>
                     <button mat-icon-button
                             matListItemMeta
-                            [matTooltip]="isLayerActive(layer.id) ? 'Déjà ajoutée' : 'Ajouter à la carte'"
-                            [disabled]="isLayerActive(layer.id)"
-                            (click)="addLayerToMap(layer)">
-                      <mat-icon>{{ isLayerActive(layer.id) ? 'check_circle' : 'add_circle_outline' }}</mat-icon>
+                            [matTooltip]="isLayerActive(layer.id) ? 'Retirer de la carte' : 'Ajouter à la carte'"
+                            (click)="toggleLayer(layer, $event)">
+                      <mat-icon [style.color]="isLayerActive(layer.id) ? 'var(--accent)' : 'inherit'">
+                        {{ isLayerActive(layer.id) ? 'check_circle' : 'add_circle_outline' }}
+                      </mat-icon>
                     </button>
                   </mat-list-item>
                 }
               </mat-list>
             </mat-expansion-panel>
           }
-        </mat-expansion-panel>
-      }
-    </mat-accordion>
+        </mat-accordion>
+      </div>
+    } @else {
+      <div class="themes-grid animate-in">
+        @for (group of filteredGroups; track group.id) {
+          <div class="theme-card"
+               tabindex="0"
+               (click)="selectGroup(group)"
+               (keydown.enter)="selectGroup(group)"
+               [style.border-top-color]="group.color || 'var(--accent)'">
+            <div class="theme-logo-wrapper" [style.background-color]="getAlphaColor(group.color || 'var(--accent)', 0.12)">
+              @if (isUrl(group.icon)) {
+                <img [src]="group.icon" class="theme-logo-img" alt="logo" />
+              } @else {
+                <mat-icon class="theme-logo-icon" [style.color]="group.color || 'var(--accent)'">{{ group.icon || 'folder' }}</mat-icon>
+              }
+            </div>
+            <span class="theme-name">{{ group.name }}</span>
+            <span class="theme-count">{{ group.layerCount }} couche{{ group.layerCount > 1 ? 's' : '' }}</span>
+          </div>
+        }
+      </div>
+    }
   }
 </div>

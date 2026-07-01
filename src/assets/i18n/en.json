@@ -252,6 +252,7 @@
     "baseMaps": "Base maps",
     "activeLayers": "Active layers",
     "catalog": "Catalog",
+    "backToThemes": "Back to themes",
     "noActiveLayers": "No active layers",
     "removeAll": "Remove all",
     "opacity": "Opacity",
