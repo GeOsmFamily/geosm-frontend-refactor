@@ -261,7 +261,7 @@ export class MapLayoutComponent implements OnInit {
     this.apiService.get<Instance>(`/instances/slug/${slug}`).subscribe({
       next: (instance) => {
         this.instanceService.setCurrentInstance(instance);
-        if (instance.bbox) {
+        if (instance?.bbox && instance?.bbox?.length === 4) {
           this.mapService.fitExtent(
             transformExtent(instance.bbox, 'EPSG:4326', 'EPSG:3857'),
             [50, 50, 50, 50]

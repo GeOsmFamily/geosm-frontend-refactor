@@ -29,11 +29,19 @@ export class MapLayerService {
     const existing = this.activeLayersSubject.value.find(al => al.layer.id === layer.id);
     if (existing) return;
 
+    // Use sourceUrl (QGIS Server URL from backend env config) with fallback to url
+    const wmsUrl = layer.sourceUrl || layer.url;
+    // Use sourceLayer (e.g. "cameroon:cameroon_hopitaux") or tableName as WMS LAYERS param
+    let wmsLayers = layer.sourceLayer || layer.tableName;
+    if (wmsLayers?.includes(':')) {
+      wmsLayers = wmsLayers.split(':').pop()!;
+    }
+
     const olLayer = new TileLayer({
       source: new TileWMS({
-        url: layer.url,
-        params: { LAYERS: layer.tableName, TILED: true },
-        serverType: 'geoserver',
+        url: wmsUrl,
+        params: { LAYERS: wmsLayers, TILED: true, FORMAT: 'image/png', TRANSPARENT: true },
+        serverType: 'qgis',
       }),
       opacity: 1,
       visible: true,

@@ -10,6 +10,7 @@ import XYZ from 'ol/source/XYZ';
 import TileWMS from 'ol/source/TileWMS';
 import VectorLayer from 'ol/layer/Vector';
 import VectorSource from 'ol/source/Vector';
+import Cluster from 'ol/source/Cluster';
 import { Feature } from 'ol';
 import { Style } from 'ol/style';
 import { Coordinate } from 'ol/coordinate';
@@ -34,7 +35,7 @@ export class MapService {
 
   drawingLayer!: VectorLayer<VectorSource>;
   measureLayer!: VectorLayer<VectorSource>;
-  commentLayer!: VectorLayer<VectorSource>;
+  commentLayer!: VectorLayer<any>;
 
   private readonly clickSubject = new Subject<any>();
   readonly onClick$: Observable<any> = this.clickSubject.asObservable();
@@ -54,8 +55,13 @@ export class MapService {
       properties: { name: 'measure-layer' }
     });
 
-    this.commentLayer = new VectorLayer({
+    const clusterSource = new Cluster({
+      distance: 40,
       source: this.commentSource,
+    });
+
+    this.commentLayer = new VectorLayer({
+      source: clusterSource,
       properties: { name: 'comment-layer' }
     });
 

@@ -94,7 +94,7 @@ export class MapViewComponent implements AfterViewInit, OnDestroy {
   }
 
   private checkInstanceBoundary(): void {
-    if (!this.currentInstance?.bbox) return;
+    if (!this.currentInstance?.bbox || this.currentInstance?.bbox?.length !== 4) return;
 
     const map = this.mapService.getMap();
     const view = map.getView();

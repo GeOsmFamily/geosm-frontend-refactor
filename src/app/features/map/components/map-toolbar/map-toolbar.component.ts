@@ -127,7 +127,7 @@ export class MapToolbarComponent implements OnInit, OnDestroy {
     const instance = this.instanceService.currentInstance$.value;
     const view = this.map.getView();
     if (instance) {
-      if (instance.bbox) {
+      if (instance?.bbox && instance?.bbox?.length === 4) {
         const extent = transformExtent(instance.bbox, 'EPSG:4326', 'EPSG:3857');
         view.fit(extent, { duration: 500, padding: [50, 50, 50, 50] });
       } else {

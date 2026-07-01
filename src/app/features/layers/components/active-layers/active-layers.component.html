@@ -4,7 +4,7 @@
       <div class="empty-state">
         <mat-icon>layers_clear</mat-icon>
         <p>{{ 'map.noActiveLayers' | translate }}</p>
-        <p class="hint">{{ 'map.addFromCatalog' | translate }}</p>
+        <span class="hint">{{ 'map.addFromCatalog' | translate }}</span>
       </div>
     } @else {
       <div cdkDropList (cdkDropListDropped)="onDrop($event)" class="layer-list">
@@ -17,20 +17,16 @@
             <div class="layer-info">
               <div class="layer-header">
                 <span class="layer-name" [matTooltip]="activeLayer.layer.name">
-                  {{ activeLayer.layer.name | truncate:30 }}
+                  {{ activeLayer.layer.name | truncate:28 }}
                 </span>
                 <div class="layer-actions">
-                  <button mat-icon-button
-                          [matTooltip]="'sharing.share' | translate"
-                          (click)="shareLayer(activeLayer)">
+                  <button [matTooltip]="'sharing.share' | translate" (click)="shareLayer(activeLayer)">
                     <mat-icon>share</mat-icon>
                   </button>
-                  <button mat-icon-button
-                          [matTooltip]="'map.visibility' | translate"
-                          (click)="toggleVisibility(activeLayer)">
+                  <button [matTooltip]="'map.visibility' | translate" (click)="toggleVisibility(activeLayer)">
                     <mat-icon>{{ activeLayer.visible ? 'visibility' : 'visibility_off' }}</mat-icon>
                   </button>
-                  <button mat-icon-button [matTooltip]="'common.delete' | translate" (click)="removeLayer(activeLayer)">
+                  <button class="danger" [matTooltip]="'common.delete' | translate" (click)="removeLayer(activeLayer)">
                     <mat-icon>close</mat-icon>
                   </button>
                 </div>
@@ -38,19 +34,17 @@
 
               <div class="opacity-control">
                 <mat-icon class="opacity-icon">opacity</mat-icon>
-                <input type="range"
-                       id="layer-opacity-{{ activeLayer.layer.id }}"
-                       aria-label="Opacité de la couche"
-                       min="0"
-                       max="100"
-                       [value]="activeLayer.opacity * 100"
-                       (input)="onOpacityChange(activeLayer, $event)"
-                       class="opacity-slider">
+                <input
+                  type="range"
+                  [id]="'layer-opacity-' + activeLayer.layer.id"
+                  aria-label="Opacité de la couche"
+                  min="0"
+                  max="100"
+                  [value]="activeLayer.opacity * 100"
+                  (input)="onOpacityChange(activeLayer, $event)"
+                  class="opacity-slider"
+                />
                 <span class="opacity-value">{{ (activeLayer.opacity * 100) | number:'1.0-0' }}%</span>
-              </div>
-
-              <div class="layer-legend">
-                <span class="legend-swatch" [style.background-color]="'#4CAF50'"></span>
               </div>
             </div>
           </div>
@@ -58,7 +52,7 @@
       </div>
 
       <div class="actions-bar">
-        <button mat-stroked-button color="warn" (click)="removeAll()">
+        <button (click)="removeAll()">
           <mat-icon>delete_sweep</mat-icon>
           {{ 'map.removeAll' | translate }}
         </button>

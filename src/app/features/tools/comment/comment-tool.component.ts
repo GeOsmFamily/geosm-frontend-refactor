@@ -15,7 +15,7 @@ import VectorSource from 'ol/source/Vector';
 import Feature from 'ol/Feature';
 import Point from 'ol/geom/Point';
 import { fromLonLat, toLonLat } from 'ol/proj';
-import { Fill, Stroke, Style, Icon, Text } from 'ol/style';
+import { Fill, Stroke, Style, Icon, Text, Circle as CircleStyle } from 'ol/style';
 
 import { MapService } from '../../map/services/map.service';
 import { ToolActionService } from '../../../core/services/tool-action.service';
@@ -78,7 +78,26 @@ export class CommentToolComponent implements OnInit, OnDestroy {
     this.vectorSource = this.mapService.commentSource;
 
     this.mapService.commentLayer.setStyle((feature) => {
-      const label = (feature.get('label') as string) || '';
+      const features = feature.get('features') || [];
+      const size = features.length;
+
+      if (size > 1) {
+        return new Style({
+          image: new CircleStyle({
+            radius: 15 + Math.min(size * 1.5, 12),
+            fill: new Fill({ color: '#00ada7' }),
+            stroke: new Stroke({ color: '#ffffff', width: 2.5 }),
+          }),
+          text: new Text({
+            text: size.toString(),
+            fill: new Fill({ color: '#ffffff' }),
+            font: 'bold 12px Roboto, sans-serif',
+          }),
+        });
+      }
+
+      const originalFeature = features[0] || feature;
+      const label = (originalFeature.get('label') as string) || '';
       return new Style({
         image: new Icon({
           anchor: [0.5, 1],

@@ -1,13 +1,7 @@
 import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { MatExpansionModule } from '@angular/material/expansion';
-import { MatListModule } from '@angular/material/list';
 import { MatIconModule } from '@angular/material/icon';
-import { MatButtonModule } from '@angular/material/button';
-import { MatInputModule } from '@angular/material/input';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatBadgeModule } from '@angular/material/badge';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { Subject, takeUntil } from 'rxjs';
 
@@ -15,7 +9,6 @@ import { InstanceService } from '../../../../core/services/instance.service';
 import { CatalogService } from '../../../../core/services/catalog.service';
 import { MapLayerService } from '../../../map/services/map-layer.service';
 import { Group, SubGroup, Layer } from '../../../../core/models/index';
-import { LoadingSpinnerComponent } from '../../../../shared/components/loading-spinner/loading-spinner.component';
 import { TruncatePipe } from '../../../../shared/pipes/truncate.pipe';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
@@ -31,18 +24,12 @@ interface CatalogSubGroup extends SubGroup {
 @Component({
   selector: 'app-catalog-browser',
   standalone: true,
-  imports: [TranslateModule, 
+  imports: [
+    TranslateModule,
     CommonModule,
     FormsModule,
-    MatExpansionModule,
-    MatListModule,
     MatIconModule,
-    MatButtonModule,
-    MatInputModule,
-    MatFormFieldModule,
-    MatBadgeModule,
     MatTooltipModule,
-    LoadingSpinnerComponent,
     TruncatePipe,
   ],
   templateUrl: './catalog-browser.component.html',
@@ -91,25 +78,21 @@ export class CatalogBrowserComponent implements OnInit, OnDestroy {
       bbox: l.bbox || null,
       tags: l.tags || [],
       instanceId,
-      subGroupId
+      subGroupId,
     };
   }
 
   private mapSubGroup(sg: any, instanceId: string): any {
     return {
       ...sg,
-      layers: (sg.layers || []).map((l: any) => this.mapLayer(l, instanceId, sg.id))
+      layers: (sg.layers || []).map((l: any) => this.mapLayer(l, instanceId, sg.id)),
     };
   }
 
   private mapGroup(group: any, instanceId: string): CatalogGroup {
     const subGroups = (group.subGroups || []).map((sg: any) => this.mapSubGroup(sg, instanceId));
     const layerCount = subGroups.reduce((acc: number, sg: any) => acc + sg.layers.length, 0);
-    return {
-      ...group,
-      subGroups,
-      layerCount
-    };
+    return { ...group, subGroups, layerCount };
   }
 
   private loadCatalog(slug: string): void {
@@ -137,7 +120,7 @@ export class CatalogBrowserComponent implements OnInit, OnDestroy {
         this.filteredGroups = [];
         this.selectedGroup = null;
         this.loading = false;
-      }
+      },
     });
   }
 
@@ -153,10 +136,11 @@ export class CatalogBrowserComponent implements OnInit, OnDestroy {
         const filteredSubGroups = group.subGroups
           .map(sg => ({
             ...sg,
-            layers: sg.layers.filter(l =>
-              l.name.toLowerCase().includes(q) ||
-              l.description?.toLowerCase().includes(q) ||
-              l.tags?.some(t => t.toLowerCase().includes(q))
+            layers: sg.layers.filter(
+              l =>
+                l.name.toLowerCase().includes(q) ||
+                l.description?.toLowerCase().includes(q) ||
+                l.tags?.some(t => t.toLowerCase().includes(q)),
             ),
           }))
           .filter(sg => sg.layers.length > 0 || sg.name.toLowerCase().includes(q));
@@ -170,10 +154,6 @@ export class CatalogBrowserComponent implements OnInit, OnDestroy {
       .filter(g => g.subGroups.length > 0 || g.name.toLowerCase().includes(q));
   }
 
-  addLayerToMap(layer: Layer): void {
-    this.mapLayerService.addLayer(layer);
-  }
-
   toggleLayer(layer: Layer, event: MouseEvent): void {
     event.stopPropagation();
     if (this.isLayerActive(layer.id)) {
@@ -183,26 +163,21 @@ export class CatalogBrowserComponent implements OnInit, OnDestroy {
     }
   }
 
-  getLayerIconUrl(layer: Layer): string | null {
-    if (layer.metadata?.icon) {
-      return layer.metadata.icon;
+  /**
+   * Returns the Material icon name to display for a layer.
+   * Checks metadata.icon first, then falls back to geometry type icon.
+   */
+  getMatIcon(layer: Layer): string {
+    const metaIcon = layer.metadata?.icon;
+    // Only use icon if it's a Material icon name (no dots, no slashes, no http)
+    if (metaIcon && !metaIcon.includes('.') && !metaIcon.includes('/') && !metaIcon.startsWith('http')) {
+      return metaIcon;
     }
-    if (layer.sourceType?.toUpperCase() === 'WMS') {
-      const baseUrl = layer.url;
-      const layerName = layer.sourceLayer || layer.tableName;
-      if (baseUrl && layerName) {
-        return `${baseUrl}?SERVICE=WMS&VERSION=1.1.1&REQUEST=GetLegendGraphic&LAYER=${layerName}&FORMAT=image/png`;
-      }
-    }
-    return null;
+    return this.getGeometryIcon(layer.geometryType || layer.sourceType);
   }
 
-  isLayerActive(layerId: string): boolean {
-    return this.mapLayerService.isLayerActive(layerId);
-  }
-
-  getGeometryIcon(sourceType: string): string {
-    switch (sourceType?.toLowerCase()) {
+  getGeometryIcon(type: string | null | undefined): string {
+    switch (type?.toLowerCase()) {
       case 'point': return 'place';
       case 'line':
       case 'linestring': return 'timeline';
@@ -212,24 +187,56 @@ export class CatalogBrowserComponent implements OnInit, OnDestroy {
     }
   }
 
+  getGeometryLabel(layer: Layer): string {
+    const type = (layer.geometryType || layer.metadata?.geometryType || '').toLowerCase();
+    switch (type) {
+      case 'point': return 'Point';
+      case 'linestring':
+      case 'line': return 'Ligne';
+      case 'polygon': return 'Polygone';
+      case 'raster': return 'Raster';
+      default: return 'WMS';
+    }
+  }
+
+  isLayerActive(layerId: string): boolean {
+    return this.mapLayerService.isLayerActive(layerId);
+  }
+
   selectGroup(group: CatalogGroup): void {
     this.selectedGroup = group;
   }
 
   isUrl(icon: string | null | undefined): boolean {
     if (!icon) return false;
-    return icon.startsWith('http://') || icon.startsWith('https://') || icon.startsWith('/') || icon.includes('.');
+    return (
+      icon.startsWith('http://') ||
+      icon.startsWith('https://') ||
+      icon.startsWith('assets/') ||
+      icon.includes('.') ||
+      icon.startsWith('/')
+    );
   }
 
-  getAlphaColor(hex: string, alpha: number): string {
-    if (!hex) return 'rgba(2, 63, 95, 0.1)';
-    // Check if color is hex
-    if (hex.startsWith('#')) {
-      const r = Number.parseInt(hex.slice(1, 3), 16);
-      const g = Number.parseInt(hex.slice(3, 5), 16);
-      const b = Number.parseInt(hex.slice(5, 7), 16);
+  /** Returns the resolved icon URL for a layer (null if it should fall back to mat-icon). */
+  getLayerSvgUrl(layer: Layer): string | null {
+    const icon = layer.metadata?.icon;
+    if (!icon) return null;
+    // SVG served by the backend API
+    if (icon.startsWith('api/v1/')) return `http://localhost:3005/${icon}`;
+    if (icon.startsWith('assets/')) return icon;
+    if (icon.startsWith('http://') || icon.startsWith('https://') || icon.startsWith('/')) return icon;
+    return null;
+  }
+
+  getAlphaColor(hex: string | null | undefined, alpha: number): string {
+    if (!hex) return `rgba(0, 173, 167, ${alpha})`;
+    if (hex.startsWith('#') && hex.length >= 7) {
+      const r = parseInt(hex.slice(1, 3), 16);
+      const g = parseInt(hex.slice(3, 5), 16);
+      const b = parseInt(hex.slice(5, 7), 16);
       return `rgba(${r}, ${g}, ${b}, ${alpha})`;
     }
-    return hex; // Fallback for named/variable colors
+    return hex;
   }
 }

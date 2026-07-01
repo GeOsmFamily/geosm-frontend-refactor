@@ -1,4 +1,4 @@
-import { Component, inject, signal, OnInit, OnDestroy } from '@angular/core';
+import { Component, inject, signal, OnInit, OnDestroy, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
@@ -7,7 +7,6 @@ import { TranslateModule } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import Overlay from 'ol/Overlay';
-import { toLonLat } from 'ol/proj';
 import TileLayer from 'ol/layer/Tile';
 import TileWMS from 'ol/source/TileWMS';
 
@@ -23,6 +22,7 @@ import { MapService } from '../../services/map.service';
 export class FeatureInfoComponent implements OnInit, OnDestroy {
   private readonly mapService = inject(MapService);
   private readonly http = inject(HttpClient);
+  private readonly elementRef = inject(ElementRef);
 
   readonly visible = signal(false);
   readonly loading = signal(false);
@@ -30,31 +30,29 @@ export class FeatureInfoComponent implements OnInit, OnDestroy {
   readonly properties = signal<Array<{ key: string; value: string }>>([]);
 
   private overlay!: Overlay;
-  private subscription!: Subscription;
-  private popupElement!: HTMLDivElement;
+  private readonly subscriptions = new Subscription();
 
   ngOnInit(): void {
-    this.subscription = this.mapService.mapReady$.subscribe((ready) => {
-      if (ready) {
-        this.setupOverlay();
-        this.setupClickHandler();
-      }
-    });
+    this.subscriptions.add(
+      this.mapService.mapReady$.subscribe((ready) => {
+        if (ready) {
+          this.setupOverlay();
+          this.setupClickHandler();
+        }
+      })
+    );
   }
 
   ngOnDestroy(): void {
-    this.subscription?.unsubscribe();
+    this.subscriptions.unsubscribe();
     if (this.overlay) {
       this.mapService.getMap()?.removeOverlay(this.overlay);
     }
   }
 
   private setupOverlay(): void {
-    this.popupElement = document.createElement('div');
-    this.popupElement.className = 'feature-info-overlay';
-
     this.overlay = new Overlay({
-      element: this.popupElement,
+      element: this.elementRef.nativeElement,
       autoPan: { animation: { duration: 250 } },
       positioning: 'bottom-center',
       offset: [0, -10],
@@ -64,7 +62,7 @@ export class FeatureInfoComponent implements OnInit, OnDestroy {
   }
 
   private setupClickHandler(): void {
-    this.subscription.add(
+    this.subscriptions.add(
       this.mapService.onClick$.subscribe((event) => {
         const map = this.mapService.getMap();
         const pixel = event.pixel;
@@ -98,10 +96,13 @@ export class FeatureInfoComponent implements OnInit, OnDestroy {
     this.visible.set(true);
     this.overlay.setPosition(coordinate);
 
-    const layer = layers[layers.length - 1];
+    const layer = layers.at(-1)!;
     const source = layer.getSource()!;
     const url = source.getFeatureInfoUrl(coordinate, resolution, 'EPSG:3857', {
       INFO_FORMAT: 'application/json',
+      FI_POINT_TOLERANCE: 16,
+      FI_LINE_TOLERANCE: 10,
+      FI_POLYGON_TOLERANCE: 4,
     });
 
     if (!url) {

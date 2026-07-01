@@ -1,27 +1,33 @@
 <div class="layer-panel">
-  <mat-tab-group animationDuration="200ms">
-    <mat-tab>
-      <ng-template mat-tab-label>
+  <!-- Panel Header with Tab Pills -->
+  <div class="panel-header">
+    <div class="tab-pills">
+      <button class="tab-pill" [class.active]="activeTab === 0" (click)="setTab(0)" id="tab-catalog">
+        <mat-icon>explore</mat-icon>
+        <span>{{ 'map.catalog' | translate }}</span>
+      </button>
+      <button class="tab-pill" [class.active]="activeTab === 1" (click)="setTab(1)" id="tab-active-layers">
         <mat-icon>layers</mat-icon>
-        <span class="tab-label">{{ 'map.catalog' | translate }}</span>
-      </ng-template>
-      <app-catalog-browser />
-    </mat-tab>
-
-    <mat-tab>
-      <ng-template mat-tab-label>
-        <mat-icon>visibility</mat-icon>
-        <span class="tab-label">{{ 'map.activeLayers' | translate }}</span>
-      </ng-template>
-      <app-active-layers />
-    </mat-tab>
-
-    <mat-tab>
-      <ng-template mat-tab-label>
+        <span>{{ 'map.activeLayers' | translate }}</span>
+        @if (activeLayerCount > 0) {
+          <span class="tab-badge">{{ activeLayerCount }}</span>
+        }
+      </button>
+      <button class="tab-pill" [class.active]="activeTab === 2" (click)="setTab(2)" id="tab-basemaps">
         <mat-icon>map</mat-icon>
-        <span class="tab-label">{{ 'map.baseMaps' | translate }}</span>
-      </ng-template>
+        <span>{{ 'map.baseMaps' | translate }}</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Tab Content -->
+  <div class="panel-content">
+    @if (activeTab === 0) {
+      <app-catalog-browser />
+    } @else if (activeTab === 1) {
+      <app-active-layers />
+    } @else if (activeTab === 2) {
       <app-base-map-switcher />
-    </mat-tab>
-  </mat-tab-group>
+    }
+  </div>
 </div>

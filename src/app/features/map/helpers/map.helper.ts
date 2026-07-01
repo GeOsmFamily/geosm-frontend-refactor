@@ -8,7 +8,6 @@ import { Feature } from 'ol';
 import { GeoJSON } from 'ol/format';
 import { Style, Fill, Stroke, Circle as CircleStyle, Text } from 'ol/style';
 import { transform } from 'ol/proj';
-import { getArea, getLength } from 'ol/sphere';
 import { Geometry } from 'ol/geom';
 import Map from 'ol/Map';
 import { Extent } from 'ol/extent';
@@ -53,27 +52,39 @@ export function createVectorLayer(
 export function createClusterLayer(
   source: VectorSource,
   distance: number = 40,
-  style?: Style,
+  style?: Style | ((feature: any) => Style),
 ): VectorLayer<Cluster> {
   const clusterSource = new Cluster({
     distance,
     source,
   });
 
+  const styleCache: Record<number, Style> = {};
+
+  const defaultStyleFunction = (feature: any) => {
+    const size = feature.get('features')?.length || 0;
+    let cachedStyle = styleCache[size];
+    if (!cachedStyle) {
+      cachedStyle = new Style({
+        image: new CircleStyle({
+          radius: 15 + Math.min(size * 1.5, 12),
+          fill: new Fill({ color: '#00ada7' }),
+          stroke: new Stroke({ color: '#ffffff', width: 2.5 }),
+        }),
+        text: new Text({
+          text: size.toString(),
+          fill: new Fill({ color: '#ffffff' }),
+          font: 'bold 12px Roboto, sans-serif',
+        }),
+      });
+      styleCache[size] = cachedStyle;
+    }
+    return cachedStyle;
+  };
+
   return new VectorLayer({
     source: clusterSource,
-    style: style || new Style({
-      image: new CircleStyle({
-        radius: 10,
-        fill: new Fill({ color: '#035a8a' }),
-        stroke: new Stroke({ color: '#ffffff', width: 2 }),
-      }),
-      text: new Text({
-        text: '',
-        fill: new Fill({ color: '#ffffff' }),
-        font: 'bold 12px Roboto',
-      }),
-    }),
+    style: style || defaultStyleFunction,
   });
 }
 
@@ -185,8 +196,8 @@ export function fitExtent(
 }
 
 function hexToRgba(hex: string, alpha: number): string {
-  const r = parseInt(hex.slice(1, 3), 16);
-  const g = parseInt(hex.slice(3, 5), 16);
-  const b = parseInt(hex.slice(5, 7), 16);
+  const r = Number.parseInt(hex.slice(1, 3), 16);
+  const g = Number.parseInt(hex.slice(3, 5), 16);
+  const b = Number.parseInt(hex.slice(5, 7), 16);
   return `rgba(${r}, ${g}, ${b}, ${alpha})`;
 }

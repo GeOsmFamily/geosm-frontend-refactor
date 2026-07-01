@@ -73,6 +73,7 @@ export interface Layer {
   name: string;
   sourceType: string;
   url: string;
+  sourceUrl?: string | null;
   tableName: string;
   description: string;
   bbox: [number, number, number, number] | null;
@@ -80,7 +81,16 @@ export interface Layer {
   instanceId: string;
   subGroupId: string;
   sourceLayer?: string | null;
-  metadata?: any;
+  geometryType?: string | null;
+  metadata?: {
+    icon?: string | null;
+    color?: string | null;
+    geometryType?: string | null;
+    featureCount?: number | null;
+    totalArea?: number | null;
+    importedAt?: string | null;
+    [key: string]: any;
+  } | null;
 }
 
 export interface Feature {
