@@ -4,6 +4,11 @@ import { Observable } from 'rxjs';
 import { ApiService } from './api.service';
 import { Feature, Layer, PaginatedResponse } from '../models/index';
 
+export interface FeatureCollectionResponse {
+  type: 'FeatureCollection';
+  features: Feature[];
+}
+
 @Injectable({ providedIn: 'root' })
 export class LayerService {
   private readonly api = inject(ApiService);
@@ -28,7 +33,12 @@ export class LayerService {
     return this.api.delete<void>(`/instances/${instanceId}/layers/${id}`);
   }
 
-  getFeatures(layerId: string, params?: Record<string, any>): Observable<PaginatedResponse<Feature>> {
-    return this.api.getPaginated<Feature>(`/layers/${layerId}/features`, params);
+  /**
+   * Retourne une vraie GeoJSON FeatureCollection (pas une pagination classique
+   * {data, meta}) - le backend renvoie {type, features}. Accepte bbox (chaîne
+   * "minLon,minLat,maxLon,maxLat"), limit, offset en params.
+   */
+  getFeatures(layerId: string, params?: Record<string, any>): Observable<FeatureCollectionResponse> {
+    return this.api.get<FeatureCollectionResponse>(`/layers/${layerId}/features`, params);
   }
 }

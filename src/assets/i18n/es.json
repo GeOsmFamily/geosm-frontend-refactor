@@ -265,6 +265,7 @@
   "tools": {
     "drawing": "Dibujo",
     "statistics": "Estadísticas",
+    "planLocalisation": "Plano de localización",
     "measure": {
       "distance": "Distancia",
       "area": "Area",
@@ -386,7 +387,12 @@
     "title": "Informacion",
     "noData": "No hay datos disponibles",
     "close": "Cerrar",
-    "loading": "Cargando..."
+    "loading": "Cargando...",
+    "zoom": "Zoom",
+    "directions": "Direcciones",
+    "download": "Descargar",
+    "showDetails": "Ver mas",
+    "hideDetails": "Ver menos"
   },
   "common": {
     "save": "Guardar",

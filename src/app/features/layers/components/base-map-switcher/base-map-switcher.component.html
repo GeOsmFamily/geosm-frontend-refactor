@@ -9,7 +9,7 @@
           (click)="applyBaseMap(bm.id)">
           <div class="thumbnail">
             @if (bm.thumbnail) {
-              <img [src]="bm.thumbnail" [alt]="bm.name">
+              <img [src]="bm.thumbnail" [alt]="bm.name" (error)="onThumbnailError(bm)">
             } @else if (bm.id === 'none') {
               <mat-icon class="placeholder-icon">block</mat-icon>
             } @else {

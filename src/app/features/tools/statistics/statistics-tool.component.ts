@@ -59,9 +59,9 @@ export class StatisticsToolComponent implements OnInit {
     this.stats = null;
     this.selectedProperty = null;
 
-    this.layerService.getFeatures(this.selectedLayerId).subscribe({
-      next: (response: any) => {
-        const features = response?.data || response || [];
+    this.layerService.getFeatures(this.selectedLayerId, { limit: 10000 }).subscribe({
+      next: (response) => {
+        const features = response?.features || [];
         this.stats = this.computeStats(Array.isArray(features) ? features : []);
         if (this.stats.properties.length > 0) {
           this.selectedProperty = this.stats.properties[0];

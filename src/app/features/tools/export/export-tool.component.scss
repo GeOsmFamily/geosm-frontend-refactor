@@ -15,6 +15,25 @@
     width: 100%;
   }
 
+  .mode-toggle {
+    margin-bottom: 12px;
+    display: flex;
+
+    ::ng-deep .mat-button-toggle {
+      flex: 1;
+      text-align: center;
+    }
+  }
+
+  .bulk-icon {
+    font-size: 14px;
+    width: 14px;
+    height: 14px;
+    vertical-align: middle;
+    margin-left: 4px;
+    color: var(--text-secondary, rgba(0, 0, 0, 0.54));
+  }
+
   .hint {
     font-size: 12px;
     color: rgba(0, 0, 0, 0.54);

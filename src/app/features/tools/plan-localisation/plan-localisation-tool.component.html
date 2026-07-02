@@ -1,0 +1,51 @@
+<div class="plan-localisation-tool">
+  <h3>Plan de localisation</h3>
+  <p class="hint">Choisissez un point sur la carte, puis générez un plan de localisation professionnel en PDF.</p>
+
+  <button mat-stroked-button
+          color="primary"
+          class="full-width pick-btn"
+          [class.active]="picking()"
+          (click)="togglePicking()">
+    <mat-icon>{{ picking() ? 'close' : 'my_location' }}</mat-icon>
+    {{ picking() ? 'Cliquez sur la carte...' : (hasPoint() ? 'Changer le point' : 'Choisir un point sur la carte') }}
+  </button>
+
+  @if (hasPoint() && pickedLonLat()) {
+    <p class="picked-coords">
+      <mat-icon>place</mat-icon>
+      {{ pickedLonLat()![1].toFixed(6) }}, {{ pickedLonLat()![0].toFixed(6) }}
+    </p>
+  }
+
+  <mat-form-field appearance="outline" class="full-width">
+    <mat-label>Titre</mat-label>
+    <input matInput [(ngModel)]="title" placeholder="Titre du plan">
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="full-width">
+    <mat-label>Description</mat-label>
+    <textarea matInput [(ngModel)]="description" rows="2" placeholder="Description optionnelle"></textarea>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="full-width">
+    <mat-label>Point de repère</mat-label>
+    <input matInput [(ngModel)]="landmark" placeholder="Ex: face à la mairie">
+  </mat-form-field>
+
+  <button mat-flat-button
+          color="primary"
+          class="full-width"
+          [disabled]="!hasPoint() || generating()"
+          (click)="generatePdf()">
+    @if (generating()) {
+      <app-loading-spinner [diameter]="20" message="" />
+    } @else {
+      <ng-container><mat-icon>picture_as_pdf</mat-icon> Générer le PDF</ng-container>
+    }
+  </button>
+
+  <!-- Conteneur du médaillon "plan de situation" (ol/control/OverviewMap),
+       rendu hors du panneau visible pour la capture PDF. -->
+  <div #overviewContainer class="overview-container"></div>
+</div>

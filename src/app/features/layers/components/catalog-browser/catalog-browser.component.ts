@@ -11,6 +11,7 @@ import { MapLayerService } from '../../../map/services/map-layer.service';
 import { Group, SubGroup, Layer } from '../../../../core/models/index';
 import { TruncatePipe } from '../../../../shared/pipes/truncate.pipe';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { resolveLayerIconUrl, getGeometryIcon } from '../../../../core/utils/layer-icon.util';
 
 interface CatalogGroup extends Group {
   subGroups: CatalogSubGroup[];
@@ -177,14 +178,7 @@ export class CatalogBrowserComponent implements OnInit, OnDestroy {
   }
 
   getGeometryIcon(type: string | null | undefined): string {
-    switch (type?.toLowerCase()) {
-      case 'point': return 'place';
-      case 'line':
-      case 'linestring': return 'timeline';
-      case 'polygon': return 'pentagon';
-      case 'raster': return 'grid_on';
-      default: return 'layers';
-    }
+    return getGeometryIcon(type);
   }
 
   getGeometryLabel(layer: Layer): string {
@@ -220,13 +214,7 @@ export class CatalogBrowserComponent implements OnInit, OnDestroy {
 
   /** Returns the resolved icon URL for a layer (null if it should fall back to mat-icon). */
   getLayerSvgUrl(layer: Layer): string | null {
-    const icon = layer.metadata?.icon;
-    if (!icon) return null;
-    // SVG served by the backend API
-    if (icon.startsWith('api/v1/')) return `http://localhost:3005/${icon}`;
-    if (icon.startsWith('assets/')) return icon;
-    if (icon.startsWith('http://') || icon.startsWith('https://') || icon.startsWith('/')) return icon;
-    return null;
+    return resolveLayerIconUrl(layer);
   }
 
   getAlphaColor(hex: string | null | undefined, alpha: number): string {

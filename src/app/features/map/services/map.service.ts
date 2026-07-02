@@ -126,6 +126,7 @@ export class MapService {
   }
 
   zoomTo(coordinate: [number, number], zoom: number = 16): void {
+    if (!this.map) return;
     this.map.getView().animate({
       center: fromLonLat(coordinate),
       zoom,
@@ -134,6 +135,7 @@ export class MapService {
   }
 
   fitExtent(extent: Extent, padding: number[] = [50, 50, 50, 50]): void {
+    if (!this.map) return;
     this.map.getView().fit(extent, { padding, duration: 500 });
   }
 
@@ -183,6 +185,7 @@ export class MapService {
   }
 
   setCenter(coords: [number, number]): void {
+    if (!this.map) return;
     this.map.getView().animate({
       center: fromLonLat(coords),
       duration: 500,
@@ -194,6 +197,7 @@ export class MapService {
   }
 
   setZoom(level: number): void {
+    if (!this.map) return;
     this.map.getView().animate({ zoom: level, duration: 300 });
   }
 

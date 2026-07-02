@@ -47,6 +47,7 @@ import { AltimetryToolComponent } from '../../../../features/tools/altimetry/alt
 import { MapillaryToolComponent } from '../../../../features/tools/mapillary/mapillary-tool.component';
 import { CompareToolComponent } from '../../../../features/tools/compare/compare-tool.component';
 import { StatisticsToolComponent } from '../../../../features/tools/statistics/statistics-tool.component';
+import { PlanLocalisationToolComponent } from '../../../../features/tools/plan-localisation/plan-localisation-tool.component';
 
 @Component({
   selector: 'app-map-layout',
@@ -83,6 +84,7 @@ import { StatisticsToolComponent } from '../../../../features/tools/statistics/s
     MapillaryToolComponent,
     CompareToolComponent,
     StatisticsToolComponent,
+    PlanLocalisationToolComponent,
     BaseMapSwitcherComponent,
     SettingsComponent,
   ],
@@ -135,6 +137,7 @@ export class MapLayoutComponent implements OnInit {
     { id: 'mapillary', icon: 'streetview', label: 'naviguation_tools.mappilary' },
     { id: 'compare', icon: 'compare', label: 'compare_maps.compare' },
     { id: 'statistics', icon: 'bar_chart', label: 'tools.statistics' },
+    { id: 'plan-localisation', icon: 'my_location', label: 'tools.planLocalisation' },
   ];
 
   constructor() {
@@ -261,14 +264,25 @@ export class MapLayoutComponent implements OnInit {
     this.apiService.get<Instance>(`/instances/slug/${slug}`).subscribe({
       next: (instance) => {
         this.instanceService.setCurrentInstance(instance);
-        if (instance?.bbox && instance?.bbox?.length === 4) {
-          this.mapService.fitExtent(
-            transformExtent(instance.bbox, 'EPSG:4326', 'EPSG:3857'),
-            [50, 50, 50, 50]
-          );
-        } else {
-          this.mapService.zoomTo([instance.centerLon, instance.centerLat], instance.defaultZoom);
-        }
+        // La carte OpenLayers n'est créée que dans MapViewComponent.ngAfterViewInit(),
+        // qui s'exécute APRÈS ce ngOnInit parent. Comme cet appel HTTP local peut
+        // répondre avant que la carte existe, on attend mapReady$ (même pattern que
+        // le flux lat/lon ci-dessus) pour éviter un recentrage silencieusement perdu.
+        this.mapService.mapReady$
+          .pipe(
+            filter((ready) => ready === true),
+            take(1)
+          )
+          .subscribe(() => {
+            if (instance?.bbox && instance?.bbox?.length === 4) {
+              this.mapService.fitExtent(
+                transformExtent(instance.bbox, 'EPSG:4326', 'EPSG:3857'),
+                [50, 50, 50, 50]
+              );
+            } else {
+              this.mapService.zoomTo([instance.centerLon, instance.centerLat], instance.defaultZoom);
+            }
+          });
       },
       error: () => {},
     });

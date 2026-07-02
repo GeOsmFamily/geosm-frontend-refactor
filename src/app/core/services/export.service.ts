@@ -11,8 +11,12 @@ export class ExportService {
   private readonly api = inject(ApiService);
   private readonly http = inject(HttpClient);
 
-  create(dto: { format: string; layerId: string }): Observable<Export> {
+  create(dto: { format: string; layerId: string; featureId?: string }): Observable<Export> {
     return this.api.post<Export>('/exports', dto);
+  }
+
+  createBulk(dto: { format: string; layerIds: string[] }): Observable<Export> {
+    return this.api.post<Export>('/exports/bulk', dto);
   }
 
   list(params?: Record<string, any>): Observable<PaginatedResponse<Export>> {

@@ -104,13 +104,13 @@ export interface BaseMap {
   id: string;
   name: string;
   slug: string;
-  type: 'xyz' | 'wms' | 'wmts';
+  type: 'xyz' | 'wms' | 'wmts' | 'mapbox';
   url: string;
   thumbnail: string | null;
   attribution: string;
   isDefault: boolean;
   order: number;
-  config: Record<string, unknown>;
+  config: Record<string, unknown> | null;
 }
 
 export interface Drawing {
@@ -144,7 +144,9 @@ export interface MapComposition {
 export interface Export {
   id: string;
   format: string;
-  layerId: string;
+  layerId: string | null;
+  layerIds?: string[] | null;
+  isBulk?: boolean;
   status: string;
   filePath: string;
   createdAt: string;

@@ -308,6 +308,7 @@
   "tools": {
     "drawing": "Dessin",
     "statistics": "Statistiques",
+    "planLocalisation": "Plan de localisation",
     "measure": {
       "distance": "Distance",
       "area": "Surface",
@@ -445,7 +446,12 @@
     "title": "Informations",
     "noData": "Aucune donnee disponible",
     "close": "Fermer",
-    "loading": "Chargement..."
+    "loading": "Chargement...",
+    "zoom": "Zoomer",
+    "directions": "Itineraire",
+    "download": "Telecharger",
+    "showDetails": "Voir plus",
+    "hideDetails": "Voir moins"
   },
   "common": {
     "save": "Enregistrer",

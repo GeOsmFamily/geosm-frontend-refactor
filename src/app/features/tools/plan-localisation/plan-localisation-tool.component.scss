@@ -1,0 +1,58 @@
+.plan-localisation-tool {
+  h3 {
+    margin: 0 0 8px;
+    font-size: 16px;
+    font-weight: 500;
+  }
+
+  .hint {
+    font-size: 12px;
+    color: rgba(0, 0, 0, 0.54);
+    margin: 0 0 12px;
+  }
+
+  .full-width {
+    width: 100%;
+  }
+
+  .pick-btn {
+    margin-bottom: 10px;
+
+    &.active {
+      background: rgba(231, 76, 60, 0.08);
+      border-color: #e74c3c;
+      color: #e74c3c;
+    }
+  }
+
+  .picked-coords {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 12px;
+    color: var(--text-secondary, rgba(0, 0, 0, 0.6));
+    margin: 0 0 12px;
+
+    mat-icon {
+      font-size: 16px;
+      width: 16px;
+      height: 16px;
+      color: #e74c3c;
+    }
+  }
+
+  button mat-icon {
+    margin-right: 4px;
+  }
+}
+
+// Le médaillon "plan de situation" doit avoir une taille réelle pour
+// qu'OpenLayers y rende ses tuiles, mais reste hors du flux visible du panneau.
+.overview-container {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  width: 260px;
+  height: 260px;
+  pointer-events: none;
+}

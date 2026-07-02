@@ -56,7 +56,15 @@ export class PrintToolComponent {
     this.generating = true;
 
     try {
-      const mapElement = this.mapService.getMap().getTargetElement() as HTMLElement;
+      const map = this.mapService.getMap();
+      const mapElement = map.getTargetElement() as HTMLElement;
+
+      // Attend que toutes les tuiles soient chargées avant la capture, sinon
+      // le PDF peut contenir des tuiles manquantes/partiellement chargées.
+      await new Promise<void>((resolve) => {
+        map.once('rendercomplete', () => resolve());
+        map.renderSync();
+      });
 
       const domtoimage = await import('dom-to-image-more');
       const dataUrl = await domtoimage.toPng(mapElement, { quality: 0.95 });

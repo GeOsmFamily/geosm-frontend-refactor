@@ -48,10 +48,50 @@ export class BaseMapSwitcherComponent implements OnInit, OnDestroy {
   selectedBaseMapId = 'osm';
   loading = true;
 
+  // Tuile représentative (Afrique centrale, zoom 4) utilisée pour générer un
+  // aperçu cohérent par fond de carte à partir de sa propre source de tuiles.
+  private static readonly THUMB_Z = 4;
+  private static readonly THUMB_X = 8;
+  private static readonly THUMB_Y = 7;
+
   private readonly defaultBaseMaps: BaseMapOption[] = [
-    { id: 'osm', name: 'OpenStreetMap', thumbnail: null, baseMap: null },
+    { id: 'osm', name: 'OpenStreetMap', thumbnail: `https://a.tile.openstreetmap.org/${BaseMapSwitcherComponent.THUMB_Z}/${BaseMapSwitcherComponent.THUMB_X}/${BaseMapSwitcherComponent.THUMB_Y}.png`, baseMap: null },
     { id: 'none', name: 'Aucun fond de carte', thumbnail: null, baseMap: null },
   ];
+
+  /** Construit une URL de vignette à partir de la propre source de tuiles du fond de carte. */
+  private buildThumbnailUrl(bm: BaseMap): string | null {
+    if (bm.thumbnail) return bm.thumbnail;
+
+    const { THUMB_Z: z, THUMB_X: x, THUMB_Y: y } = BaseMapSwitcherComponent;
+    const type = (bm.type || '').toString().toLowerCase();
+
+    if (type === 'xyz' || type === 'mapbox') {
+      return bm.url
+        .replace('{z}', String(z))
+        .replace('{x}', String(x))
+        .replace('{y}', String(y))
+        .replace('{a-c}', 'a')
+        .replace('{r}', '');
+    }
+
+    if (type === 'wmts') {
+      const cfg = bm.config || {};
+      const layer = (cfg['layer'] as string) || '';
+      const matrixSet = (cfg['matrixSet'] as string) || 'PM';
+      const format = (cfg['format'] as string) || 'image/png';
+      const style = (cfg['style'] as string) || 'normal';
+      const params = new URLSearchParams({
+        SERVICE: 'WMTS', REQUEST: 'GetTile', VERSION: '1.0.0',
+        LAYER: layer, STYLE: style, TILEMATRIXSET: matrixSet,
+        TILEMATRIX: String(z), TILEROW: String(y), TILECOL: String(x),
+        FORMAT: format,
+      });
+      return `${bm.url}?${params.toString()}`;
+    }
+
+    return null;
+  }
 
   ngOnInit(): void {
     this.instanceService.currentInstance$
@@ -93,7 +133,7 @@ export class BaseMapSwitcherComponent implements OnInit, OnDestroy {
           ...[...filtered].sort((a, b) => a.order - b.order).map(bm => ({
             id: bm.id,
             name: bm.name,
-            thumbnail: bm.thumbnail,
+            thumbnail: this.buildThumbnailUrl(bm),
             baseMap: bm,
           })),
         ];
@@ -112,6 +152,10 @@ export class BaseMapSwitcherComponent implements OnInit, OnDestroy {
         this.loading = false;
       },
     });
+  }
+
+  onThumbnailError(bm: BaseMapOption): void {
+    bm.thumbnail = null;
   }
 
   applyBaseMap(id: string): void {

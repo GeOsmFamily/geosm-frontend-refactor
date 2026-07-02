@@ -12,18 +12,83 @@
           <mat-spinner diameter="24"></mat-spinner>
           <span>{{ 'featureInfo.loading' | translate }}</span>
         </div>
-      } @else if (properties().length === 0) {
-        <p class="no-data">{{ 'featureInfo.noData' | translate }}</p>
       } @else {
-        <table class="properties-table">
-          @for (prop of properties(); track prop.key) {
-            <tr>
-              <td class="prop-key">{{ prop.key }}</td>
-              <td class="prop-value">{{ prop.value }}</td>
-            </tr>
+        <div class="info-rows">
+          @if (openingHours()) {
+            <div class="info-row">
+              <mat-icon>schedule</mat-icon>
+              <span>{{ openingHours() }}</span>
+            </div>
           }
-        </table>
+          @if (phone()) {
+            <div class="info-row">
+              <mat-icon>call</mat-icon>
+              <a [href]="'tel:' + phone()">{{ phone() }}</a>
+            </div>
+          }
+          @if (website()) {
+            <div class="info-row">
+              <mat-icon>language</mat-icon>
+              <a [href]="website()" target="_blank" rel="noopener">{{ website() }}</a>
+            </div>
+          }
+          @if (address()) {
+            <div class="info-row">
+              <mat-icon>place</mat-icon>
+              <span>{{ address() }}</span>
+            </div>
+          }
+        </div>
+
+        @if (!openingHours() && !phone() && !website() && !address() && otherProperties().length === 0) {
+          <p class="no-data">{{ 'featureInfo.noData' | translate }}</p>
+        }
+
+        @if (otherProperties().length > 0) {
+          <button mat-button class="toggle-more" (click)="toggleAllProperties()">
+            <mat-icon>{{ showAllProperties() ? 'expand_less' : 'expand_more' }}</mat-icon>
+            {{ (showAllProperties() ? 'featureInfo.hideDetails' : 'featureInfo.showDetails') | translate }}
+          </button>
+          @if (showAllProperties()) {
+            <table class="properties-table">
+              @for (prop of otherProperties(); track prop.key) {
+                <tr>
+                  <td class="prop-key">{{ prop.key }}</td>
+                  <td class="prop-value">{{ prop.value }}</td>
+                </tr>
+              }
+            </table>
+          }
+        }
       }
     </div>
+
+    @if (!loading()) {
+      <div class="popup-actions">
+        <button mat-button (click)="zoomToFeature()">
+          <mat-icon>center_focus_strong</mat-icon>
+          {{ 'featureInfo.zoom' | translate }}
+        </button>
+        <button mat-button (click)="setAsRouteDestination()">
+          <mat-icon>directions</mat-icon>
+          {{ 'featureInfo.directions' | translate }}
+        </button>
+        @if (canDownload()) {
+          <button mat-button [matMenuTriggerFor]="downloadMenu" [disabled]="downloading()">
+            @if (downloading()) {
+              <mat-spinner diameter="16"></mat-spinner>
+            } @else {
+              <mat-icon>download</mat-icon>
+            }
+            {{ 'featureInfo.download' | translate }}
+          </button>
+          <mat-menu #downloadMenu="matMenu">
+            @for (fmt of downloadFormats; track fmt.value) {
+              <button mat-menu-item (click)="downloadFeature(fmt.value)">{{ fmt.label }}</button>
+            }
+          </mat-menu>
+        }
+      </div>
+    }
   </div>
 }
