@@ -59,14 +59,17 @@
   </mat-form-field>
 
   <div class="actions">
-    <button mat-flat-button
-            color="primary"
-            [disabled]="!startCoord || !endCoord || loading"
-            (click)="calculateRoute()">
-      <mat-icon>directions</mat-icon> {{ 'tools.routing.calculate' | translate }}
+    <button
+      class="calculate-btn"
+      mat-flat-button
+      color="primary"
+      [disabled]="!startCoord || !endCoord || loading"
+      (click)="calculateRoute()">
+      <mat-icon>directions</mat-icon>
+      <span>{{ 'tools.routing.calculate' | translate }}</span>
     </button>
-    <button mat-stroked-button (click)="clearRoute()">
-      <mat-icon>clear</mat-icon> {{ 'tools.routing.clear' | translate }}
+    <button class="clear-btn" mat-stroked-button (click)="clearRoute()" [matTooltip]="'tools.routing.clear' | translate">
+      <mat-icon>clear</mat-icon>
     </button>
   </div>
 

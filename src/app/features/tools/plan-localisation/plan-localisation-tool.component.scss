@@ -44,15 +44,67 @@
   button mat-icon {
     margin-right: 4px;
   }
-}
 
-// Le médaillon "plan de situation" doit avoir une taille réelle pour
-// qu'OpenLayers y rende ses tuiles, mais reste hors du flux visible du panneau.
-.overview-container {
-  position: absolute;
-  left: -9999px;
-  top: 0;
-  width: 260px;
-  height: 260px;
-  pointer-events: none;
+  // Aperçu réel (pas hors-écran) du médaillon "plan de situation" - plus fiable
+  // pour la capture PDF (dom-to-image) et donne un retour visuel à l'utilisateur.
+  .overview-preview {
+    height: 0;
+    overflow: hidden;
+    opacity: 0;
+    margin-bottom: 0;
+    transition: all 0.25s ease;
+
+    &.visible {
+      height: 160px;
+      opacity: 1;
+      margin-bottom: 14px;
+    }
+
+    .overview-label {
+      display: block;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-secondary, rgba(0, 0, 0, 0.54));
+      margin-bottom: 6px;
+    }
+
+    .overview-container {
+      width: 100%;
+      height: 130px;
+      border-radius: 10px;
+      border: 1px solid var(--border-light, #e2e8f0);
+      overflow: hidden;
+    }
+  }
+
+  .generate-pdf-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    height: 46px;
+    border-radius: 10px;
+    font-size: 14.5px;
+    font-weight: 600;
+    letter-spacing: 0.2px;
+    background: linear-gradient(135deg, #023f5f 0%, #00ada7 100%) !important;
+    box-shadow: 0 4px 14px rgba(0, 173, 167, 0.3);
+    transition: box-shadow 0.2s ease, transform 0.2s ease;
+
+    mat-icon { margin: 0; }
+
+    &:not([disabled]):hover {
+      box-shadow: 0 6px 18px rgba(0, 173, 167, 0.4);
+      transform: translateY(-1px);
+    }
+
+    &:not([disabled]):active {
+      transform: translateY(0);
+    }
+
+    &[disabled] {
+      background: #cbd5e1 !important;
+      box-shadow: none;
+    }
+  }
 }

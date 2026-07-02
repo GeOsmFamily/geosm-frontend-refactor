@@ -1,11 +1,10 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatCardModule } from '@angular/material/card';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
@@ -13,7 +12,6 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { Router } from '@angular/router';
 
 import { AuthService } from '../../../../core/services/auth.service';
-import { ThemeService } from '../../../../core/services/theme.service';
 
 @Component({
   selector: 'app-settings',
@@ -26,7 +24,6 @@ import { ThemeService } from '../../../../core/services/theme.service';
     MatInputModule,
     MatButtonModule,
     MatIconModule,
-    MatSlideToggleModule,
     MatCardModule,
     MatDividerModule,
     MatSnackBarModule,
@@ -41,18 +38,13 @@ export class SettingsComponent implements OnInit {
   private readonly translate = inject(TranslateService);
   private readonly snackBar = inject(MatSnackBar);
   private readonly router = inject(Router);
-  readonly themeService = inject(ThemeService);
 
   readonly currentUser = this.authService.currentUser$;
-  readonly isDarkTheme = signal(false);
 
   profileForm!: FormGroup;
   passwordForm!: FormGroup;
 
   ngOnInit(): void {
-    // Sync toggle with current theme from ThemeService
-    this.isDarkTheme.set(this.themeService.isDark);
-
     this.profileForm = this.fb.group({
       firstName: ['', Validators.required],
       lastName: ['', Validators.required],
@@ -71,11 +63,6 @@ export class SettingsComponent implements OnInit {
         });
       }
     });
-  }
-
-  toggleTheme(checked: boolean): void {
-    this.isDarkTheme.set(checked);
-    this.themeService.toggle(checked);
   }
 
   saveProfile(): void {

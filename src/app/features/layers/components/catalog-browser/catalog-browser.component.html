@@ -17,6 +17,17 @@
         </button>
       }
     </div>
+
+    @if (!selectedGroup && !searchQuery) {
+      <div class="view-mode-toggle">
+        <button [class.active]="viewMode === 'list'" (click)="setViewMode('list')" matTooltip="Vue liste">
+          <mat-icon>view_list</mat-icon>
+        </button>
+        <button [class.active]="viewMode === 'grid'" (click)="setViewMode('grid')" matTooltip="Vue grille">
+          <mat-icon>grid_view</mat-icon>
+        </button>
+      </div>
+    }
   </div>
 
   <!-- Loading -->
@@ -116,7 +127,7 @@
     </div>
   } @else {
     <!-- Themes Grid -->
-    <div class="themes-grid animate-in">
+    <div class="themes-grid animate-in" [class.grid-mode]="viewMode === 'grid'">
       @for (group of filteredGroups; track group.id) {
         <div class="theme-card"
              tabindex="0"

@@ -159,6 +159,7 @@ export class RoutingToolComponent implements OnInit, OnDestroy {
   pickOnMap(target: PickTarget): void {
     this.removeClickListener();
     this.pickTarget = target;
+    this.mapService.isPicking = true;
 
     this.clickListener = (evt: any) => {
       const lonLat = toLonLat(evt.coordinate) as [number, number];
@@ -188,6 +189,7 @@ export class RoutingToolComponent implements OnInit, OnDestroy {
       this.clickListener = null;
     }
     this.pickTarget = null;
+    this.mapService.isPicking = false;
   }
 
   addWaypoint(): void {

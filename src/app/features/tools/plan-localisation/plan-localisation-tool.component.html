@@ -18,6 +18,14 @@
     </p>
   }
 
+  <!-- Médaillon "plan de situation" (ol/control/OverviewMap) - affiché en aperçu
+       réel (pas hors-écran) : plus fiable pour la capture PDF et donne un retour
+       visuel immédiat à l'utilisateur. -->
+  <div class="overview-preview" [class.visible]="hasPoint()">
+    <span class="overview-label">Aperçu du plan de situation</span>
+    <div #overviewContainer class="overview-container"></div>
+  </div>
+
   <mat-form-field appearance="outline" class="full-width">
     <mat-label>Titre</mat-label>
     <input matInput [(ngModel)]="title" placeholder="Titre du plan">
@@ -35,13 +43,13 @@
 
   <button mat-flat-button
           color="primary"
-          class="full-width"
+          class="full-width generate-pdf-btn"
           [disabled]="!hasPoint() || generating()"
           (click)="generatePdf()">
     @if (generating()) {
       <app-loading-spinner [diameter]="20" message="" />
     } @else {
-      <ng-container><mat-icon>picture_as_pdf</mat-icon> Générer le PDF</ng-container>
+      <ng-container><mat-icon>picture_as_pdf</mat-icon><span>Générer le PDF</span></ng-container>
     }
   </button>
 

@@ -40,6 +40,15 @@ export class MapService {
   private readonly clickSubject = new Subject<any>();
   readonly onClick$: Observable<any> = this.clickSubject.asObservable();
   readonly mousePosition$ = new BehaviorSubject<[number, number]>([0, 0]);
+
+  /**
+   * Vrai pendant qu'un outil (itinéraire, plan de localisation...) attend un clic sur la
+   * carte pour choisir un point. Consulté par FeatureInfoComponent pour ne pas ouvrir la
+   * fiche descriptive par-dessus l'outil actif - sans ce garde-fou, le popup "Feature"
+   * apparaît sur chaque clic de sélection de point et se retrouve même capturé dans les
+   * PDF générés (plan de localisation).
+   */
+  isPicking = false;
   readonly mapReady$ = new BehaviorSubject<boolean>(false);
 
   initMap(target: string | HTMLElement, center: [number, number] = [0, 0], zoom: number = 2): Map {

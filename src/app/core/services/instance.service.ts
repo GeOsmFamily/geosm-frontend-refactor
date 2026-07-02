@@ -18,6 +18,11 @@ export class InstanceService {
     return this.api.get<Instance>(`/instances/${id}`);
   }
 
+  /** Route publique (pas d'authentification requise) - utilisée par les liens de partage. */
+  getBySlug(slug: string): Observable<Instance> {
+    return this.api.get<Instance>(`/instances/slug/${slug}`);
+  }
+
   create(dto: Partial<Instance>): Observable<Instance> {
     return this.api.post<Instance>('/instances', dto);
   }

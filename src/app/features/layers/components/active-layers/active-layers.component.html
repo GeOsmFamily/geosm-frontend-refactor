@@ -41,6 +41,7 @@
                   min="0"
                   max="100"
                   [value]="activeLayer.opacity * 100"
+                  [style.--fill.%]="activeLayer.opacity * 100"
                   (input)="onOpacityChange(activeLayer, $event)"
                   class="opacity-slider"
                 />

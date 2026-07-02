@@ -33,6 +33,16 @@ RUN echo 'server { \
         proxy_set_header X-Forwarded-Proto $scheme; \
     } \
     \
+    location /ows { \
+        proxy_pass http://qgis-server:8080/ows; \
+        proxy_set_header Host $host; \
+        proxy_set_header X-Real-IP $remote_addr; \
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for; \
+        proxy_set_header X-Forwarded-Proto $scheme; \
+        proxy_connect_timeout 60s; \
+        proxy_read_timeout 60s; \
+    } \
+    \
     location ~* \.(js|css|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|eot)$ { \
         expires 1y; \
         add_header Cache-Control "public, immutable"; \

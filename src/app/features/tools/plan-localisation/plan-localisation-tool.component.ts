@@ -5,6 +5,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { TranslateModule } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
 
@@ -20,6 +21,7 @@ import { Style, Circle as CircleStyle, Fill, Stroke } from 'ol/style';
 
 import { MapService } from '../../map/services/map.service';
 import { LoadingSpinnerComponent } from '../../../shared/components/loading-spinner/loading-spinner.component';
+import { fitImageContain } from '../../../core/utils/pdf-image-fit.util';
 
 @Component({
   selector: 'app-plan-localisation-tool',
@@ -32,6 +34,7 @@ import { LoadingSpinnerComponent } from '../../../shared/components/loading-spin
     MatIconModule,
     MatInputModule,
     MatFormFieldModule,
+    MatSnackBarModule,
     LoadingSpinnerComponent,
   ],
   templateUrl: './plan-localisation-tool.component.html',
@@ -41,6 +44,7 @@ export class PlanLocalisationToolComponent implements OnDestroy {
   @ViewChild('overviewContainer', { static: true }) overviewContainer!: ElementRef<HTMLDivElement>;
 
   private readonly mapService = inject(MapService);
+  private readonly snackBar = inject(MatSnackBar);
 
   title = '';
   description = '';
@@ -77,6 +81,7 @@ export class PlanLocalisationToolComponent implements OnDestroy {
     }
     this.ensureMarkerLayer();
     this.picking.set(true);
+    this.mapService.isPicking = true;
     this.clickSub = this.mapService.onClick$.subscribe((event) => {
       this.setPoint(event.coordinate);
       this.stopPicking();
@@ -85,6 +90,7 @@ export class PlanLocalisationToolComponent implements OnDestroy {
 
   private stopPicking(): void {
     this.picking.set(false);
+    this.mapService.isPicking = false;
     this.clickSub?.unsubscribe();
     this.clickSub = null;
   }
@@ -97,6 +103,10 @@ export class PlanLocalisationToolComponent implements OnDestroy {
     source.addFeature(this.markerFeature);
     this.hasPoint.set(true);
     this.pickedLonLat.set(toLonLat(coordinate3857) as [number, number]);
+    // Prépare le médaillon dès le choix du point (visible dans le panneau) plutôt
+    // qu'à la génération du PDF : donne un retour visuel immédiat et laisse le
+    // temps aux tuiles de charger avant la capture.
+    this.setupOverviewMap();
   }
 
   private loadImg(src: string): Promise<HTMLImageElement> {
@@ -130,6 +140,19 @@ export class PlanLocalisationToolComponent implements OnDestroy {
     return control;
   }
 
+  /** Attend que le médaillon (carte interne du contrôle OverviewMap) ait fini de charger ses tuiles. */
+  private waitOverviewRenderComplete(control: OverviewMap): Promise<void> {
+    const overviewMap = control.getOverviewMap();
+    if (!overviewMap) return Promise.resolve();
+    return new Promise((resolve) => {
+      overviewMap.once('rendercomplete', () => resolve());
+      overviewMap.renderSync();
+      // Garde-fou : si rendercomplete ne se déclenche jamais (tuiles bloquées...),
+      // ne pas bloquer indéfiniment la génération du PDF.
+      setTimeout(resolve, 2500);
+    });
+  }
+
   private toUtm(lonLat: [number, number]): string {
     // Conversion UTM simplifiée non disponible sans dépendance dédiée (proj4) -
     // on reste en degrés décimaux, suffisant pour la majorité des usages.
@@ -143,17 +166,19 @@ export class PlanLocalisationToolComponent implements OnDestroy {
     this.generating.set(true);
     try {
       const map = this.mapService.getMap();
-      this.setupOverviewMap();
+      const overview = this.setupOverviewMap();
 
-      await this.waitRenderComplete(map);
+      await Promise.all([
+        this.waitRenderComplete(map),
+        this.waitOverviewRenderComplete(overview),
+      ]);
 
       const domtoimage = await import('dom-to-image-more');
       const mapElement = map.getTargetElement() as HTMLElement;
       const mainMapDataUrl = await domtoimage.toPng(mapElement, { quality: 0.95 });
-
-      // Laisse le temps au médaillon de charger ses tuiles avant capture.
-      await new Promise((r) => setTimeout(r, 600));
       const overviewDataUrl = await domtoimage.toPng(this.overviewContainer.nativeElement, { quality: 0.95 });
+      const mainMapImg = await this.loadImg(mainMapDataUrl);
+      const overviewImg = await this.loadImg(overviewDataUrl);
 
       const { jsPDF } = await import('jspdf');
       const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
@@ -196,11 +221,15 @@ export class PlanLocalisationToolComponent implements OnDestroy {
         yPos += lines.length * 4.5 + 4;
       }
 
-      // Carte principale
+      // Carte principale - ajustée en "contain" pour ne jamais déformer l'aspect
+      // ratio réel de la capture (qui dépend de la taille de l'écran, pas du format A4).
       const mapWidth = pageWidth - margin * 2;
       const footerSpace = 55;
       const mapHeight = pageHeight - yPos - footerSpace;
-      pdf.addImage(mainMapDataUrl, 'PNG', margin, yPos, mapWidth, mapHeight);
+      const mainFit = fitImageContain(mainMapImg.naturalWidth, mainMapImg.naturalHeight, mapWidth, mapHeight);
+      pdf.setFillColor(241, 245, 249); // Slate-100, comble les bandes laissées par le "contain"
+      pdf.rect(margin, yPos, mapWidth, mapHeight, 'F');
+      pdf.addImage(mainMapDataUrl, 'PNG', margin + mainFit.offsetX, yPos + mainFit.offsetY, mainFit.width, mainFit.height);
       pdf.setDrawColor(2, 63, 95);
       pdf.setLineWidth(0.5);
       pdf.rect(margin, yPos, mapWidth, mapHeight);
@@ -209,9 +238,10 @@ export class PlanLocalisationToolComponent implements OnDestroy {
       const insetSize = 32;
       const insetX = margin + mapWidth - insetSize - 3;
       const insetY = yPos + mapHeight - insetSize - 3;
+      const insetFit = fitImageContain(overviewImg.naturalWidth, overviewImg.naturalHeight, insetSize, insetSize);
       pdf.setFillColor(255, 255, 255);
       pdf.rect(insetX - 1, insetY - 1, insetSize + 2, insetSize + 2, 'F');
-      pdf.addImage(overviewDataUrl, 'PNG', insetX, insetY, insetSize, insetSize);
+      pdf.addImage(overviewDataUrl, 'PNG', insetX + insetFit.offsetX, insetY + insetFit.offsetY, insetFit.width, insetFit.height);
       pdf.setDrawColor(2, 63, 95);
       pdf.setLineWidth(0.4);
       pdf.rect(insetX, insetY, insetSize, insetSize);
@@ -277,6 +307,7 @@ export class PlanLocalisationToolComponent implements OnDestroy {
       pdf.save(`${fileTitle}-${Date.now()}.pdf`);
     } catch (err) {
       console.error('[PlanLocalisation] PDF generation failed:', err);
+      this.snackBar.open('Échec de la génération du PDF. Réessayez.', 'OK', { duration: 4000 });
     } finally {
       this.generating.set(false);
     }

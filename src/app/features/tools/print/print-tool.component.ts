@@ -12,6 +12,7 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MapService } from '../../map/services/map.service';
 import { LoadingSpinnerComponent } from '../../../shared/components/loading-spinner/loading-spinner.component';
 import { TranslateModule } from '@ngx-translate/core';
+import { fitImageContain } from '../../../core/utils/pdf-image-fit.util';
 
 @Component({
   selector: 'app-print-tool',
@@ -68,6 +69,7 @@ export class PrintToolComponent {
 
       const domtoimage = await import('dom-to-image-more');
       const dataUrl = await domtoimage.toPng(mapElement, { quality: 0.95 });
+      const mapImg = await this.loadImg(dataUrl);
 
       const { jsPDF } = await import('jspdf');
 
@@ -127,13 +129,17 @@ export class PrintToolComponent {
         yPos += lines.length * 4.5 + 4;
       }
 
-      // 4. Map Image
-      const mapWidth = pageWidth - margin * 2;
+      // 4. Map Image - ajustée en "contain" pour ne jamais déformer l'aspect ratio
+      // réel de la capture (qui dépend de la taille de l'écran, pas du format PDF).
+      const boxWidth = pageWidth - margin * 2;
       const footerSpace = this.includeLegend ? 40 : 25;
-      const mapHeight = pageHeight - yPos - footerSpace;
-      
-      pdf.addImage(dataUrl, 'PNG', margin, yPos, mapWidth, mapHeight);
-      yPos += mapHeight + 6;
+      const boxHeight = pageHeight - yPos - footerSpace;
+      const fit = fitImageContain(mapImg.naturalWidth, mapImg.naturalHeight, boxWidth, boxHeight);
+
+      pdf.setFillColor(241, 245, 249); // Slate-100, comble les bandes laissées par le "contain"
+      pdf.rect(margin, yPos, boxWidth, boxHeight, 'F');
+      pdf.addImage(dataUrl, 'PNG', margin + fit.offsetX, yPos + fit.offsetY, fit.width, fit.height);
+      yPos += boxHeight + 6;
 
       // 5. Scale representation
       const scaleElement = document.querySelector('.ol-scale-line-inner') as HTMLElement;

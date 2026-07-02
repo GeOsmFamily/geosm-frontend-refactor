@@ -83,20 +83,4 @@
     </div>
   }
 
-  <!-- Geoportail Preferences -->
-  <div class="settings-section">
-    <div class="section-title">
-      <mat-icon>tune</mat-icon>
-      <span>{{ 'settings.preferences' | translate }}</span>
-    </div>
-    <div class="pref-list glass">
-      <div class="pref-item">
-        <div class="pref-info">
-          <div class="pref-name">{{ 'settings.darkMode' | translate }}</div>
-          <div class="pref-desc">{{ 'settings.darkModeDesc' | translate }}</div>
-        </div>
-        <mat-slide-toggle [checked]="isDarkTheme()" (change)="toggleTheme($event.checked)"></mat-slide-toggle>
-      </div>
-    </div>
-  </div>
 </div>

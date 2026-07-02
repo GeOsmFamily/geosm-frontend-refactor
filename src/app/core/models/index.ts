@@ -124,10 +124,12 @@ export interface Drawing {
 }
 
 export interface ShareMap {
-  code: string;
+  id: string;
+  shortCode: string;
   instanceId: string;
+  instanceSlug: string | null;
   mapState: Record<string, unknown>;
-  expiresAt: string;
+  expiresAt: string | null;
 }
 
 export interface MapComposition {

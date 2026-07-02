@@ -104,6 +104,8 @@ export class FeatureInfoComponent implements OnInit, OnDestroy {
   private setupClickHandler(): void {
     this.subscriptions.add(
       this.mapService.onClick$.subscribe((event) => {
+        if (this.mapService.isPicking) return;
+
         const map = this.mapService.getMap();
         const pixel = event.pixel;
 

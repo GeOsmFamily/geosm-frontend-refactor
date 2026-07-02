@@ -13,6 +13,7 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { SharingService } from '../../../../core/services/sharing.service';
 import { InstanceService } from '../../../../core/services/instance.service';
 import { MapService } from '../../../map/services/map.service';
+import { toLonLat } from 'ol/proj';
 
 @Component({
   selector: 'app-active-layers',
@@ -67,7 +68,12 @@ export class ActiveLayersComponent {
   shareLayer(activeLayer: ActiveLayer): void {
     const instance = this.instanceService.currentInstance$.value;
     const map = this.mapService.getMap();
-    const center = map.getView().getCenter();
+    const mapCenter = map.getView().getCenter();
+    // mapService.zoomTo() (utilisé côté carte partagée) attend des coordonnées
+    // EPSG:4326 et applique fromLonLat() lui-même - stocker le centre déjà projeté
+    // (EPSG:3857) produisait un second fromLonLat() en aval, donc un Y = NaN et
+    // une vue invalide (carte totalement blanche sur le lien de partage).
+    const center = mapCenter ? toLonLat(mapCenter) : mapCenter;
     const zoom = map.getView().getZoom();
 
     const layersState = this.mapLayerService.getActiveLayers().map(al => ({
@@ -87,7 +93,7 @@ export class ActiveLayersComponent {
       mapState
     }).subscribe({
       next: (res) => {
-        const shareUrl = `${globalThis.location.origin}/share/${res.code}`;
+        const shareUrl = `${globalThis.location.origin}/share/${res.shortCode}`;
         navigator.clipboard.writeText(shareUrl).then(() => {
           this.snackBar.open(
             this.translate.instant('sharing.copied') || 'Lien copié dans le presse-papiers !',

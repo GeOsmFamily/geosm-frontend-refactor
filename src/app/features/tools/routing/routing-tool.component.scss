@@ -77,13 +77,44 @@
     display: flex;
     gap: 8px;
     margin-bottom: 12px;
+    align-items: stretch;
 
-    button {
+    .calculate-btn {
       flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      height: 44px;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: 0.2px;
+      box-shadow: 0 3px 10px rgba(0, 173, 167, 0.25);
+      transition: all 0.2s ease;
 
-      mat-icon {
-        margin-right: 4px;
+      mat-icon { margin: 0; }
+
+      &:not([disabled]):hover {
+        box-shadow: 0 5px 14px rgba(0, 173, 167, 0.35);
+        transform: translateY(-1px);
       }
+
+      &[disabled] { box-shadow: none; }
+    }
+
+    .clear-btn {
+      flex: 0 0 44px;
+      width: 44px;
+      height: 44px;
+      min-width: 44px;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 10px;
+
+      mat-icon { margin: 0; }
     }
   }
 

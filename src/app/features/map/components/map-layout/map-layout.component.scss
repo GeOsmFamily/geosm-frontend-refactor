@@ -41,17 +41,9 @@
 }
 
 .logo-icon {
-  font-size: 26px;
-  width: 26px;
-  height: 26px;
-  color: var(--accent);
-}
-
-.logo-text {
-  font-family: 'Avenir Next Rounded Pro Bold', 'Roboto', sans-serif;
-  font-size: 20px;
-  font-weight: 700;
-  letter-spacing: 1.5px;
+  height: 28px;
+  width: auto;
+  object-fit: contain;
 }
 
 .header-center {
@@ -279,8 +271,6 @@
 // Responsive
 @media (max-width: 768px) {
   .header-center { display: none; }
-
-  .logo-text { display: none; }
 
   .left-panel {
     position: absolute;

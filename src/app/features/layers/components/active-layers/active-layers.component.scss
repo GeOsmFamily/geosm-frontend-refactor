@@ -176,34 +176,69 @@
     }
 
     .opacity-slider {
+      // --fill (0-100, posé en inline style) pilote un dégradé qui matérialise
+      // visuellement le niveau actuel - un simple accent-color ne suffisait pas
+      // à distinguer la partie "remplie" de la partie vide sur tous les navigateurs.
+      --fill: 100;
       flex: 1;
-      height: 4px;
-      accent-color: var(--accent, #00ada7);
+      height: 6px;
       cursor: pointer;
-      background: var(--border-light, #e2e8f0);
-      border-radius: 2px;
+      border-radius: 3px;
       outline: none;
       -webkit-appearance: none;
+      appearance: none;
+      background: linear-gradient(
+        to right,
+        var(--accent, #00ada7) 0%,
+        var(--accent, #00ada7) calc(var(--fill) * 1%),
+        var(--border, #cbd5e1) calc(var(--fill) * 1%),
+        var(--border, #cbd5e1) 100%
+      );
 
       &::-webkit-slider-runnable-track {
-        height: 4px;
-        border-radius: 2px;
+        height: 6px;
+        border-radius: 3px;
+        background: transparent;
+      }
+
+      &::-moz-range-track {
+        height: 6px;
+        border-radius: 3px;
+        background: var(--border, #cbd5e1);
+      }
+
+      &::-moz-range-progress {
+        height: 6px;
+        border-radius: 3px;
+        background: var(--accent, #00ada7);
       }
 
       &::-webkit-slider-thumb {
         -webkit-appearance: none;
-        width: 12px;
-        height: 12px;
+        width: 16px;
+        height: 16px;
         border-radius: 50%;
         background: var(--accent, #00ada7);
+        border: 2px solid #ffffff;
         cursor: pointer;
-        margin-top: -4px;
-        box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+        margin-top: -5px;
+        box-shadow: 0 1px 4px rgba(0,0,0,0.3);
         transition: transform 0.1s;
 
-        &:hover {
-          transform: scale(1.2);
-        }
+        &:hover { transform: scale(1.2); }
+      }
+
+      &::-moz-range-thumb {
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        background: var(--accent, #00ada7);
+        border: 2px solid #ffffff;
+        cursor: pointer;
+        box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+        transition: transform 0.1s;
+
+        &:hover { transform: scale(1.2); }
       }
     }
 

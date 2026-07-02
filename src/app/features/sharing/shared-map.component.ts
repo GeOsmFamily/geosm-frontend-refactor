@@ -53,8 +53,16 @@ export class SharedMapComponent implements OnInit {
   }
 
   private loadInstanceAndApply(share: ShareMap): void {
-    // Get instance slug from instanceId
-    this.instanceService.getById(share.instanceId).subscribe({
+    if (!share.instanceSlug) {
+      this.error.set("Cette carte partagée fait référence à une instance introuvable.");
+      this.loading.set(false);
+      return;
+    }
+
+    // Route publique (GET /instances/slug/:slug) - un visiteur non connecté doit pouvoir
+    // ouvrir un lien de partage sans être redirigé vers /login (GET /instances/:id exige
+    // une authentification et ne doit donc jamais être appelée depuis cette page).
+    this.instanceService.getBySlug(share.instanceSlug).subscribe({
       next: (instance: Instance) => {
         this.instanceService.setCurrentInstance(instance);
         // Load the catalog to resolve layers

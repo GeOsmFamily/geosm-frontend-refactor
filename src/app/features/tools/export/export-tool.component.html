@@ -2,8 +2,14 @@
   <h3>Export de données</h3>
 
   <mat-button-toggle-group class="full-width mode-toggle" [(ngModel)]="exportMode" (change)="setMode($event.value)">
-    <mat-button-toggle value="single">Une couche</mat-button-toggle>
-    <mat-button-toggle value="all">Toutes les couches actives</mat-button-toggle>
+    <mat-button-toggle value="single" matTooltip="Exporter une seule couche">
+      <mat-icon>layers</mat-icon>
+      <span>Une couche</span>
+    </mat-button-toggle>
+    <mat-button-toggle value="all" matTooltip="Exporter toutes les couches actives dans un zip">
+      <mat-icon>dynamic_feed</mat-icon>
+      <span>Toutes les couches</span>
+    </mat-button-toggle>
   </mat-button-toggle-group>
 
   @if (exportMode === 'single') {

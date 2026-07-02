@@ -35,13 +35,13 @@
 
   <button mat-flat-button
           color="primary"
-          class="full-width"
+          class="full-width generate-pdf-btn"
           [disabled]="generating"
           (click)="generatePdf()">
     @if (generating) {
       <app-loading-spinner [diameter]="20" message="" />
     } @else {
-      <ng-container><mat-icon>picture_as_pdf</mat-icon> Générer le PDF</ng-container>
+      <ng-container><mat-icon>picture_as_pdf</mat-icon><span>Générer le PDF</span></ng-container>
     }
   </button>
 </div>

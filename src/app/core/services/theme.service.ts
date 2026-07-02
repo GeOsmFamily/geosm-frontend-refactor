@@ -28,15 +28,19 @@ export class ThemeService {
 
   /**
    * Bascule le thème et notifie tous les abonnés.
+   * Mode sombre temporairement désactivé (à la demande) - no-op tant que ce
+   * n'est pas réactivé, quel que soit l'appelant.
    */
   toggle(dark: boolean): void {
-    this._isDark$.next(dark);
-    this.applyToDOM(dark);
-    localStorage.setItem(THEME_KEY, dark ? 'dark' : 'light');
+    this._isDark$.next(false);
+    this.applyToDOM(false);
+    localStorage.removeItem(THEME_KEY);
   }
 
   private loadFromStorage(): boolean {
-    return localStorage.getItem(THEME_KEY) === 'dark';
+    // Mode sombre temporairement désactivé - toujours clair, on ignore une
+    // éventuelle préférence déjà stockée dans le navigateur.
+    return false;
   }
 
   private applyToDOM(dark: boolean): void {
