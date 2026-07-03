@@ -2,20 +2,23 @@ import { Injectable, NgZone, inject } from '@angular/core';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import Map from 'ol/Map';
 import View from 'ol/View';
-import { fromLonLat, toLonLat } from 'ol/proj';
+import { fromLonLat, toLonLat, get as getProjection } from 'ol/proj';
 import TileLayer from 'ol/layer/Tile';
 import Overlay from 'ol/Overlay';
 import OSM from 'ol/source/OSM';
 import XYZ from 'ol/source/XYZ';
 import TileWMS from 'ol/source/TileWMS';
+import WMTS from 'ol/source/WMTS';
+import WMTSTileGrid from 'ol/tilegrid/WMTS';
 import VectorLayer from 'ol/layer/Vector';
 import VectorSource from 'ol/source/Vector';
 import Cluster from 'ol/source/Cluster';
 import { Feature } from 'ol';
 import { Style } from 'ol/style';
 import { Coordinate } from 'ol/coordinate';
-import { Extent } from 'ol/extent';
+import { Extent, getWidth } from 'ol/extent';
 import BaseLayer from 'ol/layer/Base';
+import { BaseMap } from '../../../core/models/index';
 
 /** URL du fond de carte sombre (CartoDB Dark Matter) */
 const DARK_BASEMAP_URL = 'https://{a-c}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png';
@@ -113,6 +116,96 @@ export class MapService {
     this.map.removeLayer(this.baseLayer);
     this.baseLayer = layer;
     this.map.getLayers().insertAt(0, this.baseLayer);
+  }
+
+  /**
+   * Construit et applique le fond de carte correspondant à un BaseMap donné, quel que
+   * soit son type (XYZ/Mapbox/WMS/WMTS). Point d'entrée UNIQUE à utiliser par tous les
+   * sélecteurs de fond de carte de l'app - avoir deux implémentations séparées (une par
+   * composant) a précédemment causé un bug où le sélecteur de la barre d'outils ignorait
+   * le cas WMTS et traitait "France Topo" comme une simple URL XYZ (donc sans les
+   * paramètres de requête WMTS), cassant le fond de carte.
+   */
+  applyBaseMap(baseMap: BaseMap): void {
+    let layer: TileLayer<any>;
+
+    // Le backend renvoie le type d'enum Prisma en majuscules (XYZ/WMS/WMTS/MAPBOX) ;
+    // on normalise ici pour ne pas dépendre de la casse exacte.
+    const type = (baseMap.type || '').toString().toLowerCase();
+
+    switch (type) {
+      case 'xyz':
+      case 'mapbox':
+        layer = new TileLayer({
+          source: new XYZ({
+            url: baseMap.url,
+            attributions: baseMap.attribution,
+          }),
+          properties: { name: baseMap.name },
+        });
+        break;
+      case 'wms':
+        layer = new TileLayer({
+          source: new TileWMS({
+            url: baseMap.url,
+            params: { LAYERS: (baseMap.config?.['layers'] as string) || '', TILED: true },
+            attributions: baseMap.attribution,
+          }),
+          properties: { name: baseMap.name },
+        });
+        break;
+      case 'wmts':
+        layer = new TileLayer({
+          source: this.createWmtsSource(baseMap),
+          properties: { name: baseMap.name },
+        });
+        break;
+      default:
+        layer = new TileLayer({
+          source: new OSM(),
+          properties: { name: 'OpenStreetMap' },
+        });
+        break;
+    }
+
+    this.setBaseLayer(layer);
+  }
+
+  /**
+   * Construit une source WMTS générique à partir de la config stockée en base (utilisé
+   * notamment pour le fond "France Topo" de l'IGN, dont la grille de tuiles Web Mercator
+   * "PM_0_19" n'est pas adressable en XYZ naïf).
+   */
+  private createWmtsSource(baseMap: BaseMap): WMTS {
+    const projection = getProjection('EPSG:3857')!;
+    const tileSizePixels = 256;
+    const maxResolution = getWidth(projection.getExtent()) / tileSizePixels;
+    const matrixLevels = 20;
+
+    const resolutions: number[] = [];
+    const matrixIds: string[] = [];
+    for (let i = 0; i < matrixLevels; i++) {
+      matrixIds[i] = i.toString();
+      resolutions[i] = maxResolution / Math.pow(2, i);
+    }
+
+    const tileGrid = new WMTSTileGrid({
+      origin: [-20037508, 20037508],
+      resolutions,
+      matrixIds,
+    });
+
+    const cfg = baseMap.config || {};
+    return new WMTS({
+      url: baseMap.url,
+      layer: (cfg['layer'] as string) || baseMap.slug,
+      matrixSet: (cfg['matrixSet'] as string) || 'PM',
+      format: (cfg['format'] as string) || 'image/png',
+      style: (cfg['style'] as string) || 'normal',
+      projection,
+      tileGrid,
+      attributions: baseMap.attribution,
+    });
   }
 
   /**

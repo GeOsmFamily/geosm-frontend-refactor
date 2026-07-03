@@ -2,18 +2,11 @@ import { Component, ElementRef, OnDestroy, ViewChild, AfterViewInit, inject, sig
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Subject, takeUntil } from 'rxjs';
-import TileLayer from 'ol/layer/Tile';
-import OSM from 'ol/source/OSM';
-import XYZ from 'ol/source/XYZ';
-import TileWMS from 'ol/source/TileWMS';
-import WMTS from 'ol/source/WMTS';
-import WMTSTileGrid from 'ol/tilegrid/WMTS';
 import ScaleLine from 'ol/control/ScaleLine';
 import GeoJSON from 'ol/format/GeoJSON';
 import { Polygon } from 'ol/geom';
 import Feature from 'ol/Feature';
 import { Style, Fill } from 'ol/style';
-
 
 import { MapService } from '../../services/map.service';
 import { InstanceService } from '../../../../core/services/instance.service';
@@ -21,8 +14,7 @@ import { BaseMapService } from '../../../../core/services/base-map.service';
 import { ThemeService } from '../../../../core/services/theme.service';
 import { BaseMap, Instance } from '../../../../core/models/index';
 import { environment } from '../../../../../environments/environment';
-import { transformExtent, get as getProjection } from 'ol/proj';
-import { getWidth } from 'ol/extent';
+import { transformExtent } from 'ol/proj';
 
 @Component({
   selector: 'app-map-view',
@@ -142,7 +134,7 @@ export class MapViewComponent implements AfterViewInit, OnDestroy {
         this.baseMaps.set(basemaps);
         const defaultMap = basemaps.find((bm) => bm.isDefault);
         if (defaultMap) {
-          this.switchBaseMap(defaultMap);
+          this.mapService.applyBaseMap(defaultMap);
         }
       },
       error: () => {
@@ -212,85 +204,4 @@ export class MapViewComponent implements AfterViewInit, OnDestroy {
     });
   }
 
-  switchBaseMap(baseMap: BaseMap): void {
-    let layer: TileLayer<any>;
-
-    // Le backend renvoie le type d'enum Prisma en majuscules (XYZ/WMS/WMTS/MAPBOX) ;
-    // on normalise ici pour ne pas dépendre de la casse exacte.
-    const type = (baseMap.type || '').toString().toLowerCase();
-
-    switch (type) {
-      case 'xyz':
-      case 'mapbox':
-        layer = new TileLayer({
-          source: new XYZ({
-            url: baseMap.url,
-            attributions: baseMap.attribution,
-          }),
-          properties: { name: baseMap.name },
-        });
-        break;
-      case 'wms':
-        layer = new TileLayer({
-          source: new TileWMS({
-            url: baseMap.url,
-            params: { LAYERS: (baseMap.config?.['layers'] as string) || '', TILED: true },
-            attributions: baseMap.attribution,
-          }),
-          properties: { name: baseMap.name },
-        });
-        break;
-      case 'wmts':
-        layer = new TileLayer({
-          source: this.createWmtsSource(baseMap),
-          properties: { name: baseMap.name },
-        });
-        break;
-      default:
-        layer = new TileLayer({
-          source: new OSM(),
-          properties: { name: 'OpenStreetMap' },
-        });
-        break;
-    }
-
-    this.mapService.setBaseLayer(layer);
-  }
-
-  /**
-   * Construit une source WMTS générique à partir de la config stockée en base
-   * (utilisé notamment pour le fond "France Topo" de l'IGN, dont la grille de
-   * tuiles Web Mercator "PM" n'est pas adressable en XYZ naïf).
-   */
-  private createWmtsSource(baseMap: BaseMap): WMTS {
-    const projection = getProjection('EPSG:3857')!;
-    const tileSizePixels = 256;
-    const maxResolution = getWidth(projection.getExtent()) / tileSizePixels;
-    const matrixLevels = 20;
-
-    const resolutions: number[] = [];
-    const matrixIds: string[] = [];
-    for (let i = 0; i < matrixLevels; i++) {
-      matrixIds[i] = i.toString();
-      resolutions[i] = maxResolution / Math.pow(2, i);
-    }
-
-    const tileGrid = new WMTSTileGrid({
-      origin: [-20037508, 20037508],
-      resolutions,
-      matrixIds,
-    });
-
-    const cfg = baseMap.config || {};
-    return new WMTS({
-      url: baseMap.url,
-      layer: (cfg['layer'] as string) || baseMap.slug,
-      matrixSet: (cfg['matrixSet'] as string) || 'PM',
-      format: (cfg['format'] as string) || 'image/png',
-      style: (cfg['style'] as string) || 'normal',
-      projection,
-      tileGrid,
-      attributions: baseMap.attribution,
-    });
-  }
 }

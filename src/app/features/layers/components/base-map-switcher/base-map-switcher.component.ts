@@ -7,7 +7,6 @@ import { FormsModule } from '@angular/forms';
 import { Subject, takeUntil } from 'rxjs';
 import TileLayer from 'ol/layer/Tile';
 import OSM from 'ol/source/OSM';
-import XYZ from 'ol/source/XYZ';
 
 import { BaseMapService } from '../../../../core/services/base-map.service';
 import { InstanceService } from '../../../../core/services/instance.service';
@@ -171,13 +170,13 @@ export class BaseMapSwitcherComponent implements OnInit, OnDestroy {
       return;
     }
 
+    // Délègue à MapService.applyBaseMap() pour gérer correctement chaque type de fond
+    // de carte (XYZ/Mapbox/WMS/WMTS) - reconstruire une source XYZ nue ici pour tous
+    // les types (comme c'était fait avant) casse les fonds WMTS tel que "France Topo",
+    // dont l'URL n'a pas de template {z}/{x}/{y} et nécessite les paramètres WMTS.
     const option = this.baseMaps.find(bm => bm.id === id);
     if (option?.baseMap) {
-      const source = new XYZ({
-        url: option.baseMap.url,
-        attributions: option.baseMap.attribution,
-      });
-      this.mapService.setBaseLayer(new TileLayer({ source }));
+      this.mapService.applyBaseMap(option.baseMap);
     }
   }
 }
