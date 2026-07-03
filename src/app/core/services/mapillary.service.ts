@@ -14,26 +14,11 @@ export interface MapillaryImage {
 
 @Injectable({ providedIn: 'root' })
 export class MapillaryService {
-  private readonly defaultToken = environment.mapillaryToken || 'MLY|YOUR_ACCESS_TOKEN';
   private readonly http = inject(HttpClient);
 
+  // Token applicatif fourni par GeOSM - les utilisateurs n'ont pas à fournir le leur.
   getToken(): string {
-    const savedToken = localStorage.getItem('mapillary_access_token');
-    if (savedToken) return savedToken;
-    return this.defaultToken;
-  }
-
-  setToken(token: string): void {
-    if (token) {
-      localStorage.setItem('mapillary_access_token', token.trim());
-    } else {
-      localStorage.removeItem('mapillary_access_token');
-    }
-  }
-
-  hasValidToken(): boolean {
-    const token = this.getToken();
-    return !!token && token.trim().length > 0 && token !== 'MLY|YOUR_ACCESS_TOKEN';
+    return environment.mapillaryToken;
   }
 
   getImagesNearPoint(lon: number, lat: number, radius = 0.001): Observable<MapillaryImage[]> {

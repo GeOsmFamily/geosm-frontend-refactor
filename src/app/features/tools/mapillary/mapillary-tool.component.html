@@ -1,46 +1,19 @@
 <div class="mapillary-tool">
   <div class="tool-header">
     <h4>Mapillary Street View</h4>
-    @if (hasToken) {
-      <button mat-icon-button class="token-btn" (click)="removeToken()" matTooltip="Modifier le Token d'accès">
-        <mat-icon>vpn_key</mat-icon>
-      </button>
-    }
   </div>
-  
+
   <p class="description">Explorez les images de rue Mapillary sur la carte.</p>
 
-  <!-- TOKEN CONFIGURATION CARD -->
-  @if (!hasToken) {
-    <div class="token-config-card glass">
-      <mat-icon class="config-icon">vpn_key</mat-icon>
-      <h5>Configuration requise</h5>
-      <p class="config-text">
-        Mapillary requiert un Token d'accès client.
-      </p>
-      <ol class="config-steps">
-        <li>Créez un compte sur le portail <a href="https://www.mapillary.com/dashboard/developer" target="_blank" class="link">Mapillary Developer</a>.</li>
-        <li>Générez un <strong>token d'accès client (Client Token)</strong> dans vos applications.</li>
-        <li>Collez ce token ci-dessous pour l'enregistrer.</li>
-      </ol>
-      <div class="token-input-row">
-        <label for="mapillary-token-input" class="visually-hidden">Token d'accès client Mapillary</label>
-        <input type="text" id="mapillary-token-input" #tokenInput placeholder="MLY|..." class="token-input">
-        <button mat-flat-button color="primary" class="save-btn" (click)="saveToken(tokenInput.value)">
-          Enregistrer
-        </button>
-      </div>
-    </div>
-  } @else {
-    <!-- MAIN INTERFACE -->
-    <div class="control-actions">
-      <button mat-raised-button [color]="active ? 'warn' : 'primary'" class="toggle-btn" (click)="toggle()">
-        <mat-icon>{{ active ? 'close' : 'streetview' }}</mat-icon>
-        <span>{{ active ? 'Désactiver Mapillary' : 'Activer Mapillary' }}</span>
-      </button>
-    </div>
+  <!-- MAIN INTERFACE -->
+  <div class="control-actions">
+    <button mat-raised-button [color]="active ? 'warn' : 'primary'" class="toggle-btn" (click)="toggle()">
+      <mat-icon>{{ active ? 'close' : 'streetview' }}</mat-icon>
+      <span>{{ active ? 'Désactiver Mapillary' : 'Activer Mapillary' }}</span>
+    </button>
+  </div>
 
-    @if (active) {
+  @if (active) {
       <div class="images-info-card glass" style="margin-bottom: 8px;">
         <mat-icon>info</mat-icon>
         <span>Zoomez à un niveau >= 14 pour afficher les points de vue (points verts). Survolez ou cliquez sur un point pour charger la photo.</span>
@@ -165,5 +138,4 @@
         </div>
       }
     }
-  }
 </div>

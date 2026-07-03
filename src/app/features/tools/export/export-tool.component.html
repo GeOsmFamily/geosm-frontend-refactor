@@ -1,5 +1,5 @@
 <div class="export-tool">
-  <h3>Export de données</h3>
+  <h3>Télécharger des données</h3>
 
   <mat-button-toggle-group class="full-width mode-toggle" [(ngModel)]="exportMode" (change)="setMode($event.value)">
     <mat-button-toggle value="single" matTooltip="Exporter une seule couche">
@@ -8,73 +8,98 @@
     </mat-button-toggle>
     <mat-button-toggle value="all" matTooltip="Exporter toutes les couches actives dans un zip">
       <mat-icon>dynamic_feed</mat-icon>
-      <span>Toutes les couches</span>
+      <span>Toutes</span>
     </mat-button-toggle>
   </mat-button-toggle-group>
 
-  @if (exportMode === 'single') {
+  @if (activeLayers.length === 0) {
+    <div class="empty-state">
+      <mat-icon>layers_clear</mat-icon>
+      <p>Ajoutez des couches à la carte pour pouvoir les exporter.</p>
+    </div>
+  } @else {
+    @if (exportMode === 'single') {
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Couche à exporter</mat-label>
+        <mat-select [(ngModel)]="selectedLayerId">
+          @for (al of activeLayers; track al.layer.id) {
+            <mat-option [value]="al.layer.id">{{ al.layer.name }}</mat-option>
+          }
+        </mat-select>
+        <mat-icon matPrefix>layers</mat-icon>
+      </mat-form-field>
+    } @else {
+      <div class="layers-preview">
+        <mat-icon>dynamic_feed</mat-icon>
+        <span>
+          <strong>{{ activeLayers.length }}</strong> couche{{ activeLayers.length > 1 ? 's' : '' }} active{{ activeLayers.length > 1 ? 's' : '' }} seront exportées dans un fichier zip, chacune séparément.
+        </span>
+      </div>
+    }
+
     <mat-form-field appearance="outline" class="full-width">
-      <mat-label>Couche</mat-label>
-      <mat-select [(ngModel)]="selectedLayerId">
-        @for (al of activeLayers; track al.layer.id) {
-          <mat-option [value]="al.layer.id">{{ al.layer.name }}</mat-option>
+      <mat-label>Format de fichier</mat-label>
+      <mat-select [(ngModel)]="selectedFormat">
+        @for (f of formats; track f.value) {
+          <mat-option [value]="f.value">
+            <mat-icon class="option-icon">{{ formatIcons[f.value] }}</mat-icon>
+            {{ f.label }}
+          </mat-option>
         }
       </mat-select>
+      <mat-icon matPrefix>description</mat-icon>
     </mat-form-field>
-  } @else {
-    <p class="hint" *ngIf="activeLayers.length > 0">
-      {{ activeLayers.length }} couche(s) active(s) seront exportées dans un fichier zip.
-    </p>
-  }
 
-  @if (activeLayers.length === 0) {
-    <p class="hint">Ajoutez des couches à la carte pour les exporter.</p>
-  }
-
-  <mat-form-field appearance="outline" class="full-width">
-    <mat-label>Format</mat-label>
-    <mat-select [(ngModel)]="selectedFormat">
-      @for (f of formats; track f.value) {
-        <mat-option [value]="f.value">{{ f.label }}</mat-option>
+    <button mat-flat-button
+            color="primary"
+            class="full-width export-btn"
+            [disabled]="(exportMode === 'single' && !selectedLayerId) || (exportMode === 'all' && activeLayers.length === 0) || exporting"
+            (click)="startExport()">
+      @if (exporting) {
+        <app-loading-spinner [diameter]="20" message="" />
+      } @else {
+        <span class="btn-content"><mat-icon>download</mat-icon><span>Exporter et télécharger</span></span>
       }
-    </mat-select>
-  </mat-form-field>
-
-  <button mat-flat-button
-          color="primary"
-          class="full-width"
-          [disabled]="(exportMode === 'single' && !selectedLayerId) || (exportMode === 'all' && activeLayers.length === 0) || exporting"
-          (click)="startExport()">
-    @if (exporting) {
-      <app-loading-spinner [diameter]="20" message="" />
-    } @else {
-      <ng-container><mat-icon>download</mat-icon> Exporter</ng-container>
-    }
-  </button>
+    </button>
+  }
 
   @if (exports.length > 0) {
     <mat-divider></mat-divider>
 
     <div class="export-history">
       <h4>Historique</h4>
-      @for (exp of exports; track exp.id) {
+      @for (exp of visibleExports; track exp.id) {
         <div class="export-item">
+          <div class="export-icon-wrapper" [class.bulk]="exp.isBulk">
+            <mat-icon>{{ exp.isBulk ? 'folder_zip' : (formatIcons[exp.format] || 'description') }}</mat-icon>
+          </div>
           <div class="export-info">
-            <span class="export-format">
-              {{ exp.format | uppercase }}
-              @if (exp.isBulk) { <mat-icon class="bulk-icon" title="Export groupé (zip)">folder_zip</mat-icon> }
+            <span class="export-name" [matTooltip]="getExportDisplayName(exp)">{{ getExportDisplayName(exp) }}</span>
+            <span class="export-meta">
+              <span class="format-tag">{{ exp.format | uppercase }}</span>
+              @if (exp.isBulk) { <span class="bulk-tag">ZIP</span> }
+              <span class="export-date">{{ exp.createdAt | date:'short' }}</span>
             </span>
-            <span class="export-date">{{ exp.createdAt | date:'short' }}</span>
           </div>
           <div class="export-actions">
+            @if (isExportPending(exp)) {
+              <app-loading-spinner [diameter]="16" message="" />
+            }
             <mat-chip [color]="getStatusColor(exp.status)">{{ getStatusLabel(exp.status) }}</mat-chip>
             @if (isExportReady(exp)) {
-              <button mat-icon-button (click)="downloadExport(exp)">
+              <button mat-icon-button class="download-icon-btn" (click)="downloadExport(exp)" matTooltip="Télécharger">
                 <mat-icon>download</mat-icon>
               </button>
             }
           </div>
         </div>
+      }
+
+      @if (exports.length > historyLimit) {
+        <button mat-button class="full-width toggle-history-btn" (click)="toggleHistoryExpanded()">
+          <mat-icon>{{ showAllHistory ? 'expand_less' : 'expand_more' }}</mat-icon>
+          <span>{{ showAllHistory ? 'Réduire' : 'Voir tout l\'historique (' + exports.length + ')' }}</span>
+        </button>
       }
     </div>
   }

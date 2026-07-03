@@ -20,12 +20,6 @@
       color: var(--text, #ffffff);
       font-family: 'Avenir Next Rounded Pro', sans-serif;
     }
-
-    .token-btn {
-      color: var(--accent, #00ada7) !important;
-      background: rgba(255, 255, 255, 0.05);
-      border-radius: 50%;
-    }
   }
 
   .description {
@@ -43,87 +37,6 @@
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 12px;
     padding: 12px;
-  }
-
-  /* CONFIG CARD */
-  .token-config-card {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    margin-top: 8px;
-
-    .config-icon {
-      font-size: 32px;
-      width: 32px;
-      height: 32px;
-      color: var(--accent, #00ada7);
-      margin: 0 auto 4px;
-    }
-
-    h5 {
-      margin: 0;
-      font-size: 14px;
-      font-weight: 600;
-      text-align: center;
-      color: var(--text, #ffffff);
-    }
-
-    .config-text {
-      font-size: 12px;
-      color: var(--text-light, rgba(255, 255, 255, 0.7));
-      text-align: center;
-      margin: 0;
-    }
-
-    .config-steps {
-      font-size: 11px;
-      color: var(--text-light, rgba(255, 255, 255, 0.7));
-      margin: 4px 0;
-      padding-left: 18px;
-      line-height: 1.5;
-
-      li {
-        margin-bottom: 6px;
-      }
-
-      .link {
-        color: var(--accent, #00ada7);
-        text-decoration: none;
-        font-weight: 500;
-        
-        &:hover {
-          text-decoration: underline;
-        }
-      }
-    }
-
-    .token-input-row {
-      display: flex;
-      gap: 8px;
-      margin-top: 8px;
-
-      .token-input {
-        flex: 1;
-        background: rgba(255, 255, 255, 0.08);
-        border: 1px solid rgba(255, 255, 255, 0.15);
-        border-radius: 8px;
-        padding: 8px 12px;
-        font-size: 12px;
-        color: white;
-        outline: none;
-        transition: border-color 0.2s;
-
-        &:focus {
-          border-color: var(--accent, #00ada7);
-        }
-      }
-
-      .save-btn {
-        height: 36px;
-        font-size: 12px;
-        border-radius: 8px;
-      }
-    }
   }
 
   /* CONTROL ACTIONS */

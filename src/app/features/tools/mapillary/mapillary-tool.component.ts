@@ -52,7 +52,6 @@ export class MapillaryToolComponent implements OnInit, OnDestroy {
   private popupElement!: HTMLElement;
 
   active = false;
-  hasToken = false;
   loadingSelected = false;
 
   selectedImage: MapillaryImage | null = null;
@@ -75,7 +74,6 @@ export class MapillaryToolComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.map = this.mapService.getMap();
-    this.hasToken = this.mapillaryService.hasValidToken();
 
     // Listen to fullscreen changes to sync state (ESC key exit)
     document.addEventListener('fullscreenchange', this.onFullscreenChange);
@@ -177,27 +175,6 @@ export class MapillaryToolComponent implements OnInit, OnDestroy {
     if (this.popupOverlay && this.map) {
       this.map.removeOverlay(this.popupOverlay);
     }
-  }
-
-  saveToken(token: string): void {
-    if (token && token.trim().length > 0) {
-      this.mapillaryService.setToken(token);
-      this.hasToken = true;
-      if (this.active) {
-        // Recreate the source with the new token
-        this.vectorTileLayer.setSource(new VectorTileSource({
-          format: new MVT(),
-          url: `https://tiles.mapillary.com/maps/vtp/mly1_public/2/{z}/{x}/{y}?access_token=${this.mapillaryService.getToken()}`,
-          cacheSize: 128 // Limit OpenLayers tile cache size
-        }));
-      }
-    }
-  }
-
-  removeToken(): void {
-    this.mapillaryService.setToken('');
-    this.hasToken = false;
-    this.deactivate();
   }
 
   toggle(): void {

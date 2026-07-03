@@ -33,8 +33,13 @@ export class ApiService {
         }
       });
     }
-    return this.http.get<ApiResponse<PaginatedResponse<T>>>(`${this.baseUrl}${path}`, { params: httpParams }).pipe(
-      map((res) => res.data),
+    // Le backend (voir paginatedResponse() côté API) renvoie { success, data: T[],
+    // meta: { pagination: {...}, timestamp } } - "data" est le tableau lui-même, pas un
+    // objet { data, meta } imbriqué comme le suggérerait ApiResponse<PaginatedResponse<T>>.
+    return this.http.get<{ success: boolean; data: T[]; meta: { pagination: { page: number; limit: number; total: number; totalPages: number } } }>(
+      `${this.baseUrl}${path}`, { params: httpParams },
+    ).pipe(
+      map((res) => ({ data: res.data, meta: res.meta.pagination })),
     );
   }
 
