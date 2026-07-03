@@ -117,6 +117,9 @@
   "naviguation_tools": {
     "compare_maps": "Comparer des cartes",
     "general_vieuw": "Vue générale",
+    "locate_me": "Zoomer sur ma position actuelle",
+    "locate_me_clear": "Effacer ma position",
+    "locate_me_denied": "Localisation refusée ou indisponible.",
     "mappilary": "Activer Mappilary",
     "next_view": "Vue suivante",
     "past_view": "Vue passée",

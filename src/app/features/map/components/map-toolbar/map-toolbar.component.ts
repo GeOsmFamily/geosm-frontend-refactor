@@ -1,15 +1,23 @@
-import { Component, OnInit, OnDestroy, inject, output, NgZone } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, output, signal, NgZone } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import Map from 'ol/Map';
+import Feature from 'ol/Feature';
+import Point from 'ol/geom/Point';
+import VectorLayer from 'ol/layer/Vector';
+import VectorSource from 'ol/source/Vector';
+import { Circle as CircleStyle, Fill, Stroke, Style } from 'ol/style';
 import { fromLonLat, transformExtent } from 'ol/proj';
 import { MapService } from '../../services/map.service';
 import { InstanceService } from '../../../../core/services/instance.service';
 import { ZoomModalComponent } from '../zoom-modal/zoom-modal.component';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
+
+const GEOLOCATION_LAYER_NAME = 'geolocation-marker';
 
 interface MapPosition {
   center: [number, number];
@@ -28,11 +36,16 @@ export class MapToolbarComponent implements OnInit, OnDestroy {
   private readonly dialog = inject(MatDialog);
   private readonly ngZone = inject(NgZone);
   private readonly instanceService = inject(InstanceService);
+  private readonly snackBar = inject(MatSnackBar);
+  private readonly translate = inject(TranslateService);
   private map!: Map;
   private history: MapPosition[] = [];
   private historyIndex = -1;
   private navigating = false;
   private moveEndListener: any;
+
+  readonly locating = signal(false);
+  readonly hasLocationMarker = signal(false);
 
   compareMode = output<boolean>();
   private isCompareMode = false;
@@ -155,5 +168,87 @@ export class MapToolbarComponent implements OnInit, OnDestroy {
   toggleCompare(): void {
     this.isCompareMode = !this.isCompareMode;
     this.compareMode.emit(this.isCompareMode);
+  }
+
+  locateMe(): void {
+    // Le bouton fait office de bascule : un second clic une fois la position affichée
+    // l'efface plutôt que de relancer une géolocalisation.
+    if (this.hasLocationMarker()) {
+      this.clearLocationMarker();
+      return;
+    }
+
+    if (!navigator.geolocation) {
+      this.showLocationError();
+      return;
+    }
+
+    this.locating.set(true);
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        this.locating.set(false);
+        const lonLat: [number, number] = [position.coords.longitude, position.coords.latitude];
+        this.showPositionMarker(lonLat, position.coords.accuracy);
+        this.hasLocationMarker.set(true);
+        this.map.getView().animate({ center: fromLonLat(lonLat), zoom: 16, duration: 500 });
+      },
+      () => {
+        this.locating.set(false);
+        this.showLocationError();
+      },
+      { enableHighAccuracy: true, timeout: 10000 },
+    );
+  }
+
+  private clearLocationMarker(): void {
+    const layer = this.mapService.getLayerByName(GEOLOCATION_LAYER_NAME) as VectorLayer<VectorSource> | undefined;
+    layer?.getSource()?.clear();
+    this.hasLocationMarker.set(false);
+  }
+
+  private showLocationError(): void {
+    this.snackBar.open(
+      this.translate.instant('naviguation_tools.locate_me_denied'),
+      'OK',
+      { duration: 4000 },
+    );
+  }
+
+  private showPositionMarker(lonLat: [number, number], accuracyMeters: number): void {
+    const center = fromLonLat(lonLat);
+    const accuracyRadiusPx = this.metersToMapUnits(accuracyMeters);
+
+    const markerFeature = new Feature(new Point(center));
+    markerFeature.setStyle(new Style({
+      image: new CircleStyle({
+        radius: 8,
+        fill: new Fill({ color: '#1a73e8' }),
+        stroke: new Stroke({ color: '#ffffff', width: 3 }),
+      }),
+    }));
+
+    const accuracyFeature = new Feature(new Point(center));
+    accuracyFeature.setStyle(new Style({
+      image: new CircleStyle({
+        radius: accuracyRadiusPx,
+        fill: new Fill({ color: 'rgba(26, 115, 232, 0.15)' }),
+        stroke: new Stroke({ color: 'rgba(26, 115, 232, 0.4)', width: 1 }),
+      }),
+    }));
+
+    const existingLayer = this.mapService.getLayerByName(GEOLOCATION_LAYER_NAME) as VectorLayer<VectorSource> | undefined;
+    if (existingLayer) {
+      const source = existingLayer.getSource();
+      source?.clear();
+      source?.addFeatures([accuracyFeature, markerFeature]);
+    } else {
+      this.mapService.addVectorLayer(GEOLOCATION_LAYER_NAME, [accuracyFeature, markerFeature]);
+    }
+  }
+
+  /** Convertit un rayon en mètres en pixels-carte à la résolution courante (approximation suffisante pour un cercle de précision). */
+  private metersToMapUnits(meters: number): number {
+    const resolution = this.map.getView().getResolution() ?? 1;
+    return Math.max(6, meters / resolution);
   }
 }

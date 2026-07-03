@@ -17,6 +17,15 @@
   margin: 2px 4px;
 }
 
+.spin {
+  animation: toolbar-spin 1s linear infinite;
+}
+
+@keyframes toolbar-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
 .toolbar-btn {
   width: 36px !important;
   height: 36px !important;

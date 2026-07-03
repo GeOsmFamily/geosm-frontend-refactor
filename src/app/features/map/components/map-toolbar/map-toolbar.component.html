@@ -23,6 +23,14 @@
   <button mat-mini-fab class="toolbar-btn" (click)="openZoomModal()" [matTooltip]="'naviguation_tools.zoom_to_coordinates' | translate" matTooltipPosition="left">
     <mat-icon>my_location</mat-icon>
   </button>
+  <button mat-mini-fab class="toolbar-btn"
+          [class.primary]="hasLocationMarker()"
+          (click)="locateMe()"
+          [disabled]="locating()"
+          [matTooltip]="(hasLocationMarker() ? 'naviguation_tools.locate_me_clear' : 'naviguation_tools.locate_me') | translate"
+          matTooltipPosition="left">
+    <mat-icon [class.spin]="locating()">{{ locating() ? 'refresh' : (hasLocationMarker() ? 'location_off' : 'near_me') }}</mat-icon>
+  </button>
   <button mat-mini-fab class="toolbar-btn" (click)="toggleCompare()" [matTooltip]="'naviguation_tools.compare_maps' | translate" matTooltipPosition="left">
     <mat-icon>compare</mat-icon>
   </button>

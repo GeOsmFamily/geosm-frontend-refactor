@@ -154,6 +154,25 @@ export interface Export {
   createdAt: string;
 }
 
+export interface LocationPlan {
+  id: string;
+  userId: string;
+  instanceId: string;
+  status: string;
+  title: string;
+  description: string | null;
+  landmark: string | null;
+  lon: number;
+  lat: number;
+  scale: number | null;
+  paperSize: string;
+  orientation: string;
+  filePath: string | null;
+  fileSize: number | null;
+  errorMessage: string | null;
+  createdAt: string;
+}
+
 export interface Document {
   id: string;
   name: string;

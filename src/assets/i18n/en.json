@@ -111,6 +111,9 @@
   "naviguation_tools": {
     "compare_maps": "Compare maps",
     "general_vieuw": "General view",
+    "locate_me": "Zoom to my current location",
+    "locate_me_clear": "Clear my location",
+    "locate_me_denied": "Location access denied or unavailable.",
     "mappilary": "Activate Mappilary",
     "next_view": "Next view",
     "past_view": "Past view",

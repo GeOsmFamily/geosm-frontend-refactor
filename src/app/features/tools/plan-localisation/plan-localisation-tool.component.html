@@ -1,6 +1,6 @@
 <div class="plan-localisation-tool">
   <h3>Plan de localisation</h3>
-  <p class="hint">Choisissez un point sur la carte, puis générez un plan de localisation professionnel en PDF.</p>
+  <p class="hint">Choisissez un point sur la carte, puis générez un plan de localisation professionnel en PDF (généré par QGIS : échelle, grille de coordonnées, flèche du nord, carte de situation, légende).</p>
 
   <button mat-stroked-button
           color="primary"
@@ -18,14 +18,6 @@
     </p>
   }
 
-  <!-- Médaillon "plan de situation" (ol/control/OverviewMap) - affiché en aperçu
-       réel (pas hors-écran) : plus fiable pour la capture PDF et donne un retour
-       visuel immédiat à l'utilisateur. -->
-  <div class="overview-preview" [class.visible]="hasPoint()">
-    <span class="overview-label">Aperçu du plan de situation</span>
-    <div #overviewContainer class="overview-container"></div>
-  </div>
-
   <mat-form-field appearance="outline" class="full-width">
     <mat-label>Titre</mat-label>
     <input matInput [(ngModel)]="title" placeholder="Titre du plan">
@@ -41,6 +33,34 @@
     <input matInput [(ngModel)]="landmark" placeholder="Ex: face à la mairie">
   </mat-form-field>
 
+  <mat-form-field appearance="outline" class="full-width">
+    <mat-label>Échelle</mat-label>
+    <mat-select [(ngModel)]="scale">
+      <mat-option value="auto">Automatique</mat-option>
+      @for (s of scaleOptions; track s) {
+        <mat-option [value]="s">1:{{ s | number }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+
+  <div class="row">
+    <mat-form-field appearance="outline" class="half-width">
+      <mat-label>Format</mat-label>
+      <mat-select [(ngModel)]="paperSize">
+        <mat-option value="A4">A4</mat-option>
+        <mat-option value="A3">A3</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="half-width">
+      <mat-label>Orientation</mat-label>
+      <mat-select [(ngModel)]="orientation">
+        <mat-option value="PORTRAIT">Portrait</mat-option>
+        <mat-option value="LANDSCAPE">Paysage</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+
   <button mat-flat-button
           color="primary"
           class="full-width generate-pdf-btn"
@@ -52,8 +72,4 @@
       <ng-container><mat-icon>picture_as_pdf</mat-icon><span>Générer le PDF</span></ng-container>
     }
   </button>
-
-  <!-- Conteneur du médaillon "plan de situation" (ol/control/OverviewMap),
-       rendu hors du panneau visible pour la capture PDF. -->
-  <div #overviewContainer class="overview-container"></div>
 </div>
