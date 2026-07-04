@@ -266,20 +266,17 @@ export interface RouteWaypoint {
   location: [number, number];
 }
 
+// Forme réelle renvoyée par POST /geoportail/elevation-profile (voir
+// PostGISService.drapeElevationProfile()) : un tableau plat de points {distance, altitude}
+// (distance en mètres depuis le début de la ligne). Ni lat/lon ni statistiques agrégées ne
+// sont renvoyées par le backend - la position sur la ligne se retrouve côté client via
+// LineString.getCoordinateAt(fraction), et les statistiques (min/max/dénivelé) sont
+// calculées côté client à partir de ces points.
 export interface ElevationProfile {
-  points: ElevationPoint[];
-  statistics: {
-    minElevation: number;
-    maxElevation: number;
-    totalAscent: number;
-    totalDescent: number;
-    totalDistance: number;
-  };
+  profile: ElevationPoint[];
 }
 
 export interface ElevationPoint {
   distance: number;
-  elevation: number;
-  lat: number;
-  lon: number;
+  altitude: number;
 }

@@ -109,8 +109,16 @@ export class FeatureInfoComponent implements OnInit, OnDestroy {
         const map = this.mapService.getMap();
         const pixel = event.pixel;
 
-        // Check vector features first
-        const features = map.getFeaturesAtPixel(pixel);
+        // Check vector features first - en excluant la couche "instance-boundary" : c'est un
+        // polygone de masquage purement décoratif (assombrit tout ce qui est hors de l'emprise
+        // de l'instance, voir MapViewComponent.loadCameroonBoundary()), pas une couche de
+        // données. Sa géométrie couvre la totalité du globe SAUF le pays (anneau extérieur =
+        // le monde entier, anneau intérieur = le pays) : sans cette exclusion, getFeaturesAtPixel
+        // la retournait comme "feature" pour absolument tout clic en dehors du pays, ouvrant une
+        // fiche vide ("Aucune donnée disponible").
+        const features = map.getFeaturesAtPixel(pixel, {
+          layerFilter: (layer) => layer.get('name') !== 'instance-boundary',
+        });
         if (features && features.length > 0) {
           const feature = features[0];
 
@@ -136,9 +144,19 @@ export class FeatureInfoComponent implements OnInit, OnDestroy {
           return;
         }
 
-        // Check WMS layers
+        // Check WMS layers - uniquement celles de type point (icônes/POI dont le nombre de
+        // features dépasse VECTOR_MODE_FEATURE_CAP et qui retombent donc en rendu WMS au lieu
+        // du cluster vectoriel client). Les couches polygones/lignes (limites administratives,
+        // zones, parcs...) sont des fonds de contexte, pas des fiches cliquables : sans ce
+        // filtre, n'importe quel clic À L'INTÉRIEUR de leur emprise (même loin de tout symbole
+        // visible) ouvrait la fiche descriptive, car le serveur QGIS y trouve bien un polygone -
+        // ce n'est simplement pas "un point d'une couche" au sens attendu par l'utilisateur.
+        const activeLayers = this.mapLayerService.getActiveLayers();
         const wmsLayers = map.getLayers().getArray().filter((l): l is TileLayer<TileWMS> => {
-          return l instanceof TileLayer && l.getSource() instanceof TileWMS && l.getVisible();
+          if (!(l instanceof TileLayer) || !(l.getSource() instanceof TileWMS) || !l.getVisible()) return false;
+          const activeLayer = activeLayers.find((al) => al.olLayer === l);
+          const geometryType = (activeLayer?.layer.geometryType || activeLayer?.layer.metadata?.geometryType || '').toLowerCase();
+          return geometryType === 'point' || geometryType === 'multipoint';
         });
 
         if (wmsLayers.length > 0) {

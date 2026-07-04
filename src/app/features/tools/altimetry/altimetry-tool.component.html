@@ -1,27 +1,63 @@
 <div class="altimetry-tool">
-  <h4>Altimétrie</h4>
-  <p class="description">Cliquez sur la carte pour obtenir l'altitude d'un point.</p>
+  <h3>Profil altimétrique</h3>
+  <p class="hint">Tracez une ligne sur la carte pour obtenir son profil altimétrique (double-clic pour terminer le tracé).</p>
 
-  <div class="actions">
-    <button mat-raised-button color="primary" (click)="startPicking()" [disabled]="picking">
-      <mat-icon>terrain</mat-icon>
-      {{ picking ? 'Cliquez sur la carte...' : 'Mesurer l\'altitude' }}
-    </button>
-    <button mat-button (click)="clear()" *ngIf="altitude !== null">
+  <button mat-stroked-button
+          color="primary"
+          class="full-width pick-btn"
+          [class.active]="picking()"
+          [disabled]="loading()"
+          (click)="togglePicking()">
+    <mat-icon>{{ picking() ? 'close' : 'timeline' }}</mat-icon>
+    {{ picking() ? 'Cliquez sur la carte, double-clic pour terminer...' : (hasProfile() ? 'Tracer une nouvelle ligne' : 'Tracer une ligne') }}
+  </button>
+
+  @if (loading()) {
+    <div class="loading-row">
+      <app-loading-spinner [diameter]="22" message="" />
+      <span>Calcul du profil altimétrique...</span>
+    </div>
+  }
+
+  @if (hasProfile()) {
+    <mat-divider></mat-divider>
+
+    <div class="chart-wrapper">
+      <canvas #chartCanvas class="elevation-chart"></canvas>
+    </div>
+
+    @if (stats(); as s) {
+      <div class="stats-grid">
+        <div class="stat-card">
+          <mat-icon>straighten</mat-icon>
+          <span class="stat-value">{{ s.distanceM >= 1000 ? (s.distanceM / 1000).toFixed(2) + ' km' : s.distanceM.toFixed(0) + ' m' }}</span>
+          <span class="stat-label">Distance</span>
+        </div>
+        <div class="stat-card">
+          <mat-icon>trending_up</mat-icon>
+          <span class="stat-value">+{{ s.ascent.toFixed(0) }} m</span>
+          <span class="stat-label">Dénivelé +</span>
+        </div>
+        <div class="stat-card">
+          <mat-icon>trending_down</mat-icon>
+          <span class="stat-value">-{{ s.descent.toFixed(0) }} m</span>
+          <span class="stat-label">Dénivelé -</span>
+        </div>
+        <div class="stat-card">
+          <mat-icon>vertical_align_bottom</mat-icon>
+          <span class="stat-value">{{ s.minAltitude.toFixed(0) }} m</span>
+          <span class="stat-label">Altitude min</span>
+        </div>
+        <div class="stat-card">
+          <mat-icon>vertical_align_top</mat-icon>
+          <span class="stat-value">{{ s.maxAltitude.toFixed(0) }} m</span>
+          <span class="stat-label">Altitude max</span>
+        </div>
+      </div>
+    }
+
+    <button mat-button class="full-width clear-btn" (click)="clear()">
       <mat-icon>clear</mat-icon> Effacer
     </button>
-  </div>
-
-  <app-loading-spinner *ngIf="loading"></app-loading-spinner>
-
-  <div class="result" *ngIf="altitude !== null && !loading">
-    <mat-divider></mat-divider>
-    <div class="altitude-display">
-      <mat-icon>landscape</mat-icon>
-      <span class="value">{{ altitude }} m</span>
-    </div>
-    <div class="coords-display" *ngIf="coordinates">
-      <small>Lon: {{ coordinates[0] | number:'1.5-5' }} | Lat: {{ coordinates[1] | number:'1.5-5' }}</small>
-    </div>
-  </div>
+  }
 </div>

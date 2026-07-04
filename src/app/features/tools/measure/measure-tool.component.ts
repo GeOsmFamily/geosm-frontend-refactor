@@ -102,6 +102,10 @@ export class MeasureToolComponent implements OnInit, OnDestroy {
 
   private activate(): void {
     this.isActive = true;
+    // Empêche la fiche descriptive de s'ouvrir sur les clics de tracé (chaque sommet, et le
+    // double-clic final) tant que l'outil de mesure est actif - voir FeatureInfoComponent
+    // qui ignore les clics quand ce flag est vrai.
+    this.mapService.isPicking = true;
 
     let olType = 'Polygon';
     if (this.mode === 'distance') {
@@ -162,6 +166,7 @@ export class MeasureToolComponent implements OnInit, OnDestroy {
       this.drawInteraction = null;
     }
     this.isActive = false;
+    this.mapService.isPicking = false;
   }
 
   private formatLength(geom: LineString): string {

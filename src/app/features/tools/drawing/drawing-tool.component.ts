@@ -123,6 +123,10 @@ export class DrawingToolComponent implements OnInit, OnDestroy {
 
     this.deactivateDrawing();
     this.activeDrawType = type;
+    // Empêche la fiche descriptive de s'ouvrir sur les clics de tracé (chaque sommet, et le
+    // double-clic final) tant que l'outil de dessin est actif - voir FeatureInfoComponent qui
+    // ignore les clics quand ce flag est vrai.
+    this.mapService.isPicking = true;
 
     const olType: GeometryType = type === 'Text' ? 'Point' : type as GeometryType;
 
@@ -162,6 +166,7 @@ export class DrawingToolComponent implements OnInit, OnDestroy {
       this.drawInteraction = null;
     }
     this.activeDrawType = null;
+    this.mapService.isPicking = false;
   }
 
   selectColor(color: string): void {

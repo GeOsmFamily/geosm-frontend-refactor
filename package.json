@@ -23,6 +23,7 @@
     "@ngx-translate/core": "^16.0.4",
     "@ngx-translate/http-loader": "^16.0.1",
     "@turf/turf": "^7.3.5",
+    "chart.js": "^4.5.1",
     "dom-to-image-more": "^3.10.0",
     "jspdf": "^4.2.1",
     "material-icons": "^1.13.14",
