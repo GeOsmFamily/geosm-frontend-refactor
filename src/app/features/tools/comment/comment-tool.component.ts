@@ -144,6 +144,9 @@ export class CommentToolComponent implements OnInit, OnDestroy {
   startPlacing(): void {
     this.stopPlacing();
     this.isPlacing = true;
+    // Empêche la fiche descriptive de s'ouvrir sur le clic de placement du commentaire - voir
+    // FeatureInfoComponent qui ignore les clics quand ce flag est vrai.
+    this.mapService.isPicking = true;
 
     this.clickListener = (evt: any) => {
       const lonLat = toLonLat(evt.coordinate) as [number, number];
@@ -153,6 +156,7 @@ export class CommentToolComponent implements OnInit, OnDestroy {
         this.map.un('singleclick', this.clickListener);
         this.clickListener = null;
       }
+      this.mapService.isPicking = false;
     };
 
     this.map.on('singleclick', this.clickListener);
@@ -164,6 +168,7 @@ export class CommentToolComponent implements OnInit, OnDestroy {
       this.clickListener = null;
     }
     this.isPlacing = false;
+    this.mapService.isPicking = false;
   }
 
   addComment(): void {

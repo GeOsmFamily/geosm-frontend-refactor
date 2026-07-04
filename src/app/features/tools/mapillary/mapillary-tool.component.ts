@@ -187,6 +187,9 @@ export class MapillaryToolComponent implements OnInit, OnDestroy {
 
   private activate(): void {
     this.active = true;
+    // Empêche la fiche descriptive de s'ouvrir sur les clics destinés à la sélection d'une
+    // image Mapillary - voir FeatureInfoComponent qui ignore les clics quand ce flag est vrai.
+    this.mapService.isPicking = true;
     this.map.addLayer(this.vectorTileLayer);
 
     // Map click selection
@@ -299,6 +302,7 @@ export class MapillaryToolComponent implements OnInit, OnDestroy {
 
   private deactivate(): void {
     this.active = false;
+    this.mapService.isPicking = false;
     this.stopPlayback();
 
     if (this.clickListener) {

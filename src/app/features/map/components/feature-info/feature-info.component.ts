@@ -109,15 +109,19 @@ export class FeatureInfoComponent implements OnInit, OnDestroy {
         const map = this.mapService.getMap();
         const pixel = event.pixel;
 
-        // Check vector features first - en excluant la couche "instance-boundary" : c'est un
-        // polygone de masquage purement décoratif (assombrit tout ce qui est hors de l'emprise
-        // de l'instance, voir MapViewComponent.loadCameroonBoundary()), pas une couche de
-        // données. Sa géométrie couvre la totalité du globe SAUF le pays (anneau extérieur =
-        // le monde entier, anneau intérieur = le pays) : sans cette exclusion, getFeaturesAtPixel
-        // la retournait comme "feature" pour absolument tout clic en dehors du pays, ouvrant une
-        // fiche vide ("Aucune donnée disponible").
+        // Liste blanche plutôt que liste noire : seules les couches enregistrées comme
+        // couches actives du catalogue (MapLayerService.getActiveLayers()) sont éligibles au
+        // clic "fiche descriptive". Le fond de carte porte de nombreuses autres couches
+        // vectorielles purement décoratives/outils (dessin, mesure, commentaires, altimétrie,
+        // marqueur de localisation, géolocalisation, résultat de recherche, surbrillance de
+        // la fiche elle-même, masque d'emprise "instance-boundary"...) qui ne représentent pas
+        // "un point d'une couche" au sens attendu par l'utilisateur. Énumérer chaque couche à
+        // exclure par son nom serait une liste noire fragile, vite incomplète à chaque nouvel
+        // outil ajouté - la liste blanche est correcte par construction et n'a jamais besoin
+        // d'être mise à jour.
+        const activeLayers = this.mapLayerService.getActiveLayers();
         const features = map.getFeaturesAtPixel(pixel, {
-          layerFilter: (layer) => layer.get('name') !== 'instance-boundary',
+          layerFilter: (layer) => activeLayers.some((al) => al.olLayer === layer),
         });
         if (features && features.length > 0) {
           const feature = features[0];
@@ -151,7 +155,6 @@ export class FeatureInfoComponent implements OnInit, OnDestroy {
         // filtre, n'importe quel clic À L'INTÉRIEUR de leur emprise (même loin de tout symbole
         // visible) ouvrait la fiche descriptive, car le serveur QGIS y trouve bien un polygone -
         // ce n'est simplement pas "un point d'une couche" au sens attendu par l'utilisateur.
-        const activeLayers = this.mapLayerService.getActiveLayers();
         const wmsLayers = map.getLayers().getArray().filter((l): l is TileLayer<TileWMS> => {
           if (!(l instanceof TileLayer) || !(l.getSource() instanceof TileWMS) || !l.getVisible()) return false;
           const activeLayer = activeLayers.find((al) => al.olLayer === l);
