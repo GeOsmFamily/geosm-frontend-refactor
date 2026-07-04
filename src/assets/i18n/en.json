@@ -263,11 +263,14 @@
     "legend": "Legend",
     "addToMap": "Add to map",
     "removeFromMap": "Remove from map",
-    "addFromCatalog": "Add layers from the catalog"
+    "addFromCatalog": "Add layers from the catalog",
+    "viewHeatmap": "Heatmap view",
+    "viewCluster": "Cluster view"
   },
   "tools": {
     "drawing": "Drawing",
     "statistics": "Statistics",
+    "spatialAnalysis": "Spatial analysis",
     "planLocalisation": "Location plan",
     "measure": {
       "distance": "Distance",
@@ -374,6 +377,19 @@
     "loginRequiredDesc": "Please log in to your account to save and share your bookmarks.",
     "loginBtn": "Log in",
     "share": "Share"
+  },
+  "myMaps": {
+    "title": "My maps",
+    "helpText": "Save the current view (active layers, center, zoom) under a name to find it again later.",
+    "save": "Save current map",
+    "name": "Map name",
+    "noMaps": "No maps saved",
+    "delete": "Delete",
+    "load": "Load this map",
+    "layerCount": "{{count}} layer(s)",
+    "loginRequired": "Login required",
+    "loginRequiredDesc": "Please log in to your account to save and find your maps.",
+    "loginBtn": "Log in"
   },
   "comment": {
     "placeComment": "Place a comment",

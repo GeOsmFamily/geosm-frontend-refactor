@@ -1,0 +1,78 @@
+@if (currentUser | async) {
+  <div class="my-maps">
+    <div class="info-bubble glass">
+      <mat-icon class="info-icon">info</mat-icon>
+      <div class="info-text">
+        {{ 'myMaps.helpText' | translate }}
+      </div>
+    </div>
+
+    <div class="save-form">
+      <div class="input-wrapper">
+        <mat-icon class="input-icon">save</mat-icon>
+        <input type="text"
+               id="map-name-input"
+               aria-label="Nom de la carte"
+               [placeholder]="'myMaps.name' | translate"
+               [(ngModel)]="mapName"
+               (keyup.enter)="saveCurrentMap()"
+               class="custom-input" />
+      </div>
+      <button mat-flat-button color="primary" class="save-btn" (click)="saveCurrentMap()" [disabled]="!mapName.trim() || saving()">
+        <mat-icon>{{ saving() ? 'hourglass_empty' : 'save' }}</mat-icon>
+        <span>{{ 'myMaps.save' | translate }}</span>
+      </button>
+    </div>
+
+    @if (maps().length === 0) {
+      <div class="empty-state">
+        <mat-icon class="empty-icon">map</mat-icon>
+        <p class="no-maps">{{ 'myMaps.noMaps' | translate }}</p>
+      </div>
+    } @else {
+      <div class="map-list">
+        @for (m of maps(); track m.id) {
+          <div class="map-card glass">
+            <button class="map-info" type="button" (click)="loadMap(m)" [disabled]="loadingMapId() === m.id">
+              <mat-icon class="map-icon">{{ loadingMapId() === m.id ? 'hourglass_empty' : 'map' }}</mat-icon>
+              <div class="map-details">
+                <span class="map-name" [matTooltip]="'myMaps.load' | translate">
+                  {{ m.name }}
+                </span>
+                <span class="map-meta">
+                  {{ 'myMaps.layerCount' | translate:{ count: m.layers.length } }}
+                </span>
+              </div>
+            </button>
+
+            <div class="map-actions">
+              <button mat-icon-button class="delete-btn" (click)="delete(m)" [matTooltip]="'myMaps.delete' | translate">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </div>
+          </div>
+        }
+      </div>
+    }
+  </div>
+} @else {
+  <div class="login-required-container">
+    <mat-card class="login-card glass">
+      <mat-card-header>
+        <div mat-card-avatar class="lock-avatar">
+          <mat-icon>lock</mat-icon>
+        </div>
+        <mat-card-title>{{ 'myMaps.loginRequired' | translate }}</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <p>{{ 'myMaps.loginRequiredDesc' | translate }}</p>
+      </mat-card-content>
+      <mat-card-actions>
+        <button mat-flat-button color="primary" class="login-btn" (click)="navigateToLogin()">
+          <mat-icon>login</mat-icon>
+          <span>{{ 'myMaps.loginBtn' | translate }}</span>
+        </button>
+      </mat-card-actions>
+    </mat-card>
+  </div>
+}

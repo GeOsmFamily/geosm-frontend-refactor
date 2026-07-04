@@ -241,11 +241,11 @@ export class MapService {
     this.map.getView().fit(extent, { padding, duration: 500 });
   }
 
-  addLayer(layer: VectorLayer<VectorSource> | TileLayer<any>): void {
+  addLayer(layer: BaseLayer): void {
     this.map.addLayer(layer);
   }
 
-  removeLayer(layer: VectorLayer<VectorSource> | TileLayer<any>): void {
+  removeLayer(layer: BaseLayer): void {
     this.map.removeLayer(layer);
   }
 

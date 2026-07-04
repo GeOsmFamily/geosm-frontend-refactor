@@ -132,15 +132,26 @@ export interface ShareMap {
   expiresAt: string | null;
 }
 
+export interface MapCompositionLayerRef {
+  layerId: string;
+  style?: string;
+  opacity?: number;
+  visible?: boolean;
+}
+
 export interface MapComposition {
   id: string;
   name: string;
   slug: string;
-  description: string;
-  layers: string[];
-  center: [number, number];
+  description: string | null;
+  instanceId: string;
+  layers: MapCompositionLayerRef[];
+  center: { lat: number; lon: number };
   zoom: number;
   isPublic: boolean;
+  userId: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface Export {

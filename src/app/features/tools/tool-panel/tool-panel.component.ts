@@ -13,6 +13,7 @@ import { AltimetryToolComponent } from '../altimetry/altimetry-tool.component';
 import { MapillaryToolComponent } from '../mapillary/mapillary-tool.component';
 import { CompareToolComponent } from '../compare/compare-tool.component';
 import { StatisticsToolComponent } from '../statistics/statistics-tool.component';
+import { SpatialAnalysisToolComponent } from '../spatial-analysis/spatial-analysis-tool.component';
 import { TranslateModule } from '@ngx-translate/core';
 
 interface ToolItem {
@@ -39,6 +40,7 @@ interface ToolItem {
     MapillaryToolComponent,
     CompareToolComponent,
     StatisticsToolComponent,
+    SpatialAnalysisToolComponent,
   ],
   templateUrl: './tool-panel.component.html',
   styleUrl: './tool-panel.component.scss',
@@ -57,6 +59,7 @@ export class ToolPanelComponent {
     { id: 'mapillary', icon: 'streetview', label: 'naviguation_tools.mappilary' },
     { id: 'compare', icon: 'compare', label: 'compare_maps.compare' },
     { id: 'statistics', icon: 'bar_chart', label: 'tools.statistics' },
+    { id: 'spatial-analysis', icon: 'blur_circular', label: 'tools.spatialAnalysis' },
   ];
 
   toggleTool(toolId: string): void {

@@ -65,6 +65,11 @@ export class ActiveLayersComponent {
     this.mapLayerService.reorder(event.previousIndex, event.currentIndex);
   }
 
+  toggleHeatmap(layer: ActiveLayer): void {
+    const next = layer.viewMode === 'heatmap' ? 'cluster' : 'heatmap';
+    this.mapLayerService.setViewMode(layer.layer.id, next);
+  }
+
   shareLayer(activeLayer: ActiveLayer): void {
     const instance = this.instanceService.currentInstance$.value;
     const map = this.mapService.getMap();

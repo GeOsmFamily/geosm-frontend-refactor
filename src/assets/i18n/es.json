@@ -263,11 +263,14 @@
     "legend": "Leyenda",
     "addToMap": "Agregar al mapa",
     "removeFromMap": "Quitar del mapa",
-    "addFromCatalog": "Agregue capas desde el catálogo"
+    "addFromCatalog": "Agregue capas desde el catálogo",
+    "viewHeatmap": "Vista de mapa de calor",
+    "viewCluster": "Vista de agrupación"
   },
   "tools": {
     "drawing": "Dibujo",
     "statistics": "Estadísticas",
+    "spatialAnalysis": "Análisis espacial",
     "planLocalisation": "Plano de localización",
     "measure": {
       "distance": "Distancia",
@@ -358,6 +361,19 @@
     "loginRequiredDesc": "Inicie sesión en su cuenta para guardar y compartir sus marcadores.",
     "loginBtn": "Iniciar sesión",
     "share": "Compartir"
+  },
+  "myMaps": {
+    "title": "Mis mapas",
+    "helpText": "Guarde la vista actual (capas activas, centro, zoom) con un nombre para encontrarla más tarde.",
+    "save": "Guardar mapa actual",
+    "name": "Nombre del mapa",
+    "noMaps": "Ningún mapa guardado",
+    "delete": "Eliminar",
+    "load": "Cargar este mapa",
+    "layerCount": "{{count}} capa(s)",
+    "loginRequired": "Inicio de sesión requerido",
+    "loginRequiredDesc": "Inicie sesión en su cuenta para guardar y encontrar sus mapas.",
+    "loginBtn": "Iniciar sesión"
   },
   "comment": {
     "placeComment": "Colocar un comentario",

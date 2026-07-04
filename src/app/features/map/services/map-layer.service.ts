@@ -3,6 +3,7 @@ import { BehaviorSubject } from 'rxjs';
 import VectorLayer from 'ol/layer/Vector';
 import VectorSource from 'ol/source/Vector';
 import Cluster from 'ol/source/Cluster';
+import Heatmap from 'ol/layer/Heatmap';
 import TileLayer from 'ol/layer/Tile';
 import TileWMS from 'ol/source/TileWMS';
 import { bbox as bboxLoadingStrategy } from 'ol/loadingstrategy';
@@ -27,6 +28,11 @@ export interface ActiveLayer {
   olLayer: TileLayer<TileWMS> | VectorLayer<Cluster>;
   visible: boolean;
   opacity: number;
+  // Couche heatmap alternative, partageant la même VectorSource que le cluster (pas de
+  // rechargement des données au changement de mode) - présente seulement pour les couches
+  // de points rendues côté client (voir isPointLayer/underCap dans addLayer()).
+  heatmapLayer?: Heatmap;
+  viewMode?: 'cluster' | 'heatmap';
 }
 
 @Injectable({ providedIn: 'root' })
@@ -50,14 +56,37 @@ export class MapLayerService {
     const isPointLayer = geometryType === 'point' || geometryType === 'multipoint';
     const underCap = featureCount == null || featureCount <= VECTOR_MODE_FEATURE_CAP;
 
-    const olLayer = isPointLayer && underCap
-      ? this.createVectorClusterLayer(layer)
-      : this.createWmsLayer(layer);
+    let activeLayer: ActiveLayer;
+    if (isPointLayer && underCap) {
+      const { clusterLayer, heatmapLayer } = this.createVectorClusterAndHeatmapLayers(layer);
+      this.mapService.addLayer(clusterLayer);
+      this.mapService.addLayer(heatmapLayer);
+      activeLayer = { layer, olLayer: clusterLayer, heatmapLayer, viewMode: 'cluster', visible: true, opacity: 1 };
+    } else {
+      const olLayer = this.createWmsLayer(layer);
+      this.mapService.addLayer(olLayer);
+      activeLayer = { layer, olLayer, visible: true, opacity: 1 };
+    }
 
-    this.mapService.addLayer(olLayer);
-
-    const activeLayer: ActiveLayer = { layer, olLayer, visible: true, opacity: 1 };
     this.activeLayersSubject.next([...this.activeLayersSubject.value, activeLayer]);
+  }
+
+  /**
+   * Bascule une couche de points entre rendu cluster (par défaut) et carte de chaleur -
+   * les deux couches OL existent déjà en parallèle (créées dans addLayer()) et partagent la
+   * même VectorSource ; on ne fait donc que basculer leur visibilité, sans recharger les
+   * données ni recréer de couche.
+   */
+  setViewMode(layerId: string, mode: 'cluster' | 'heatmap'): void {
+    const current = this.activeLayersSubject.value.map((al) => {
+      if (al.layer.id !== layerId || !al.heatmapLayer) return al;
+      const clusterVisible = mode === 'cluster' && al.visible;
+      const heatmapVisible = mode === 'heatmap' && al.visible;
+      al.olLayer.setVisible(clusterVisible);
+      al.heatmapLayer.setVisible(heatmapVisible);
+      return { ...al, viewMode: mode };
+    });
+    this.activeLayersSubject.next(current);
   }
 
   private createWmsLayer(layer: Layer): TileLayer<TileWMS> {
@@ -87,7 +116,7 @@ export class MapLayerService {
    * tuiles WMS, ceci ne se découpe pas aux frontières de tuile et permet un
    * style de cluster personnalisé (icône de la couche + badge de comptage).
    */
-  private createVectorClusterLayer(layer: Layer): VectorLayer<Cluster> {
+  private createVectorClusterAndHeatmapLayers(layer: Layer): { clusterLayer: VectorLayer<Cluster>; heatmapLayer: Heatmap } {
     const source = new VectorSource({
       strategy: bboxLoadingStrategy,
       loader: (extent, _resolution, projection, success, failure) => {
@@ -124,7 +153,19 @@ export class MapLayerService {
     clusterLayer.setProperties({ name: layer.name, layerId: layer.id });
     clusterLayer.setOpacity(1);
     clusterLayer.setVisible(true);
-    return clusterLayer;
+
+    // Heatmap alternatif sur la MÊME source brute (pas le Cluster) : Heatmap calcule sa
+    // propre densité à partir des points individuels, un cluster ferait doublon. Masqué par
+    // défaut (visible: false) - basculé via setViewMode().
+    const heatmapLayer = new Heatmap({
+      source,
+      visible: false,
+      blur: 20,
+      radius: 10,
+      properties: { name: `${layer.name} (heatmap)`, layerId: layer.id },
+    });
+
+    return { clusterLayer, heatmapLayer };
   }
 
   removeLayer(layerId: string): void {
@@ -132,6 +173,7 @@ export class MapLayerService {
     const found = current.find(al => al.layer.id === layerId);
     if (found) {
       this.mapService.removeLayer(found.olLayer);
+      if (found.heatmapLayer) this.mapService.removeLayer(found.heatmapLayer);
       this.activeLayersSubject.next(current.filter(al => al.layer.id !== layerId));
     }
   }
@@ -139,6 +181,7 @@ export class MapLayerService {
   removeAll(): void {
     for (const al of this.activeLayersSubject.value) {
       this.mapService.removeLayer(al.olLayer);
+      if (al.heatmapLayer) this.mapService.removeLayer(al.heatmapLayer);
     }
     this.activeLayersSubject.next([]);
   }
@@ -147,7 +190,7 @@ export class MapLayerService {
     const current = this.activeLayersSubject.value.map(al => {
       if (al.layer.id === layerId) {
         const visible = !al.visible;
-        al.olLayer.setVisible(visible);
+        this.applyVisibility(al, visible);
         return { ...al, visible };
       }
       return al;
@@ -158,7 +201,7 @@ export class MapLayerService {
   setVisibility(layerId: string, visible: boolean): void {
     const current = this.activeLayersSubject.value.map(al => {
       if (al.layer.id === layerId) {
-        al.olLayer.setVisible(visible);
+        this.applyVisibility(al, visible);
         return { ...al, visible };
       }
       return al;
@@ -166,11 +209,23 @@ export class MapLayerService {
     this.activeLayersSubject.next(current);
   }
 
+  // Applique la visibilité à la couche OL réellement affichée (cluster OU heatmap selon
+  // viewMode) - une couche en mode heatmap dont on décoche "visible" ne doit pas réafficher
+  // le cluster par erreur.
+  private applyVisibility(al: ActiveLayer, visible: boolean): void {
+    if (al.heatmapLayer) {
+      al.olLayer.setVisible(visible && al.viewMode !== 'heatmap');
+      al.heatmapLayer.setVisible(visible && al.viewMode === 'heatmap');
+    } else {
+      al.olLayer.setVisible(visible);
+    }
+  }
 
   setOpacity(layerId: string, opacity: number): void {
     const current = this.activeLayersSubject.value.map(al => {
       if (al.layer.id === layerId) {
         al.olLayer.setOpacity(opacity);
+        al.heatmapLayer?.setOpacity(opacity);
         return { ...al, opacity };
       }
       return al;

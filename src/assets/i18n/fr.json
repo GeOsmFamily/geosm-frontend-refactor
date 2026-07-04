@@ -306,11 +306,14 @@
     "legend": "Legende",
     "addToMap": "Ajouter a la carte",
     "removeFromMap": "Retirer de la carte",
-    "addFromCatalog": "Ajoutez des couches depuis le catalogue"
+    "addFromCatalog": "Ajoutez des couches depuis le catalogue",
+    "viewHeatmap": "Vue carte de chaleur",
+    "viewCluster": "Vue cluster"
   },
   "tools": {
     "drawing": "Dessin",
     "statistics": "Statistiques",
+    "spatialAnalysis": "Analyse spatiale",
     "planLocalisation": "Plan de localisation",
     "measure": {
       "distance": "Distance",
@@ -417,6 +420,19 @@
     "loginRequiredDesc": "Veuillez vous connecter à votre compte pour sauvegarder et partager vos géosignets.",
     "loginBtn": "Se connecter",
     "share": "Partager"
+  },
+  "myMaps": {
+    "title": "Mes cartes",
+    "helpText": "Sauvegardez la vue actuelle (couches actives, centre, zoom) sous un nom pour la retrouver plus tard.",
+    "save": "Sauvegarder la carte",
+    "name": "Nom de la carte",
+    "noMaps": "Aucune carte enregistrée",
+    "delete": "Supprimer",
+    "load": "Charger cette carte",
+    "layerCount": "{{count}} couche(s)",
+    "loginRequired": "Connexion requise",
+    "loginRequiredDesc": "Veuillez vous connecter à votre compte pour sauvegarder et retrouver vos cartes.",
+    "loginBtn": "Se connecter"
   },
   "comment": {
     "placeComment": "Placer un commentaire",

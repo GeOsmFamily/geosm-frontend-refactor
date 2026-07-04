@@ -55,6 +55,9 @@
       <button mat-icon-button (click)="toggleGeosignets()" [matTooltip]="'geosignets.title' | translate" class="header-action" [class.active]="geosignetsOpen()">
         <mat-icon>bookmarks</mat-icon>
       </button>
+      <button mat-icon-button (click)="toggleMyMaps()" [matTooltip]="'myMaps.title' | translate" class="header-action" [class.active]="myMapsOpen()">
+        <mat-icon>dashboard_customize</mat-icon>
+      </button>
       <button mat-icon-button (click)="toggleBaseMaps()" [matTooltip]="'map.baseMaps' | translate" class="header-action" [class.active]="baseMapsOpen()">
         <mat-icon>map</mat-icon>
       </button>
@@ -106,6 +109,23 @@
           </div>
           <div class="panel-body">
             <app-geosignets></app-geosignets>
+          </div>
+        </div>
+      }
+
+      @if (myMapsOpen()) {
+        <div class="floating-panel geosignets-panel glass animate-in">
+          <div class="panel-header">
+            <div class="panel-title-group">
+              <mat-icon class="panel-icon">dashboard_customize</mat-icon>
+              <h3>{{ 'myMaps.title' | translate }}</h3>
+            </div>
+            <button mat-icon-button (click)="closeMyMaps()" class="panel-close">
+              <mat-icon>close</mat-icon>
+            </button>
+          </div>
+          <div class="panel-body">
+            <app-my-maps></app-my-maps>
           </div>
         </div>
       }
@@ -242,6 +262,7 @@
               @case ('compare') { <app-compare-tool /> }
               @case ('statistics') { <app-statistics-tool /> }
               @case ('plan-localisation') { <app-plan-localisation-tool /> }
+              @case ('spatial-analysis') { <app-spatial-analysis-tool /> }
             }
           </div>
         </div>

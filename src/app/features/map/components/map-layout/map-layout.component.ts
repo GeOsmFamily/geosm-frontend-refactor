@@ -27,6 +27,7 @@ import { environment } from '../../../../../environments/environment';
 import { FeatureInfoComponent } from '../feature-info/feature-info.component';
 import { ContextMenuComponent } from '../context-menu/context-menu.component';
 import { GeosignetsComponent } from '../geosignets/geosignets.component';
+import { MyMapsComponent } from '../my-maps/my-maps.component';
 import { LegendComponent } from '../../../../features/layers/components/legend/legend.component';
 
 import { MapToolbarComponent } from '../map-toolbar/map-toolbar.component';
@@ -48,6 +49,7 @@ import { MapillaryToolComponent } from '../../../../features/tools/mapillary/map
 import { CompareToolComponent } from '../../../../features/tools/compare/compare-tool.component';
 import { StatisticsToolComponent } from '../../../../features/tools/statistics/statistics-tool.component';
 import { PlanLocalisationToolComponent } from '../../../../features/tools/plan-localisation/plan-localisation-tool.component';
+import { SpatialAnalysisToolComponent } from '../../../../features/tools/spatial-analysis/spatial-analysis-tool.component';
 
 @Component({
   selector: 'app-map-layout',
@@ -71,6 +73,7 @@ import { PlanLocalisationToolComponent } from '../../../../features/tools/plan-l
     FeatureInfoComponent,
     ContextMenuComponent,
     GeosignetsComponent,
+    MyMapsComponent,
     LegendComponent,
 
     MapToolbarComponent,
@@ -85,6 +88,7 @@ import { PlanLocalisationToolComponent } from '../../../../features/tools/plan-l
     CompareToolComponent,
     StatisticsToolComponent,
     PlanLocalisationToolComponent,
+    SpatialAnalysisToolComponent,
     BaseMapSwitcherComponent,
     SettingsComponent,
   ],
@@ -110,6 +114,7 @@ export class MapLayoutComponent implements OnInit {
 
   readonly leftPanelOpen = signal(true);
   readonly geosignetsOpen = signal(false);
+  readonly myMapsOpen = signal(false);
   readonly shareOpen = signal(false);
   readonly toolsMenuOpen = signal(false);
   readonly baseMapsOpen = signal(false);
@@ -138,6 +143,7 @@ export class MapLayoutComponent implements OnInit {
     { id: 'compare', icon: 'compare', label: 'compare_maps.compare' },
     { id: 'statistics', icon: 'bar_chart', label: 'tools.statistics' },
     { id: 'plan-localisation', icon: 'my_location', label: 'tools.planLocalisation' },
+    { id: 'spatial-analysis', icon: 'blur_circular', label: 'tools.spatialAnalysis' },
   ];
 
   constructor() {
@@ -202,6 +208,7 @@ export class MapLayoutComponent implements OnInit {
         }
         this.activeTool.set(action.tool);
         this.geosignetsOpen.set(false);
+        this.myMapsOpen.set(false);
         this.shareOpen.set(false);
         this.toolsMenuOpen.set(false);
         this.baseMapsOpen.set(false);
@@ -217,6 +224,7 @@ export class MapLayoutComponent implements OnInit {
     this.locationInfoOpen.set(true);
     this.activeTool.set(null);
     this.geosignetsOpen.set(false);
+    this.myMapsOpen.set(false);
     this.shareOpen.set(false);
     this.toolsMenuOpen.set(false);
     this.baseMapsOpen.set(false);
@@ -297,6 +305,7 @@ export class MapLayoutComponent implements OnInit {
     const open = !this.geosignetsOpen();
     this.geosignetsOpen.set(open);
     if (open) {
+      this.myMapsOpen.set(false);
       this.shareOpen.set(false);
       this.toolsMenuOpen.set(false);
       this.baseMapsOpen.set(false);
@@ -310,11 +319,30 @@ export class MapLayoutComponent implements OnInit {
     this.geosignetsOpen.set(false);
   }
 
+  toggleMyMaps(): void {
+    const open = !this.myMapsOpen();
+    this.myMapsOpen.set(open);
+    if (open) {
+      this.geosignetsOpen.set(false);
+      this.shareOpen.set(false);
+      this.toolsMenuOpen.set(false);
+      this.baseMapsOpen.set(false);
+      this.settingsOpen.set(false);
+      this.locationInfoOpen.set(false);
+      this.activeTool.set(null);
+    }
+  }
+
+  closeMyMaps(): void {
+    this.myMapsOpen.set(false);
+  }
+
   toggleShare(): void {
     const open = !this.shareOpen();
     this.shareOpen.set(open);
     if (open) {
       this.geosignetsOpen.set(false);
+      this.myMapsOpen.set(false);
       this.toolsMenuOpen.set(false);
       this.baseMapsOpen.set(false);
       this.settingsOpen.set(false);
@@ -332,6 +360,7 @@ export class MapLayoutComponent implements OnInit {
     this.toolsMenuOpen.set(open);
     if (open) {
       this.geosignetsOpen.set(false);
+      this.myMapsOpen.set(false);
       this.shareOpen.set(false);
       this.baseMapsOpen.set(false);
       this.settingsOpen.set(false);
@@ -349,6 +378,7 @@ export class MapLayoutComponent implements OnInit {
     this.baseMapsOpen.set(open);
     if (open) {
       this.geosignetsOpen.set(false);
+      this.myMapsOpen.set(false);
       this.shareOpen.set(false);
       this.toolsMenuOpen.set(false);
       this.settingsOpen.set(false);
@@ -366,6 +396,7 @@ export class MapLayoutComponent implements OnInit {
     this.settingsOpen.set(open);
     if (open) {
       this.geosignetsOpen.set(false);
+      this.myMapsOpen.set(false);
       this.shareOpen.set(false);
       this.toolsMenuOpen.set(false);
       this.baseMapsOpen.set(false);
@@ -445,6 +476,7 @@ export class MapLayoutComponent implements OnInit {
     this.activeTool.set(toolId);
     this.toolsMenuOpen.set(false);
     this.geosignetsOpen.set(false);
+    this.myMapsOpen.set(false);
     this.shareOpen.set(false);
     this.baseMapsOpen.set(false);
     this.settingsOpen.set(false);

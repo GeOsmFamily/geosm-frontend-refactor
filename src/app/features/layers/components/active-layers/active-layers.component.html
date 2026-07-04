@@ -20,6 +20,13 @@
                   {{ activeLayer.layer.name | truncate:28 }}
                 </span>
                 <div class="layer-actions">
+                  @if (activeLayer.heatmapLayer) {
+                    <button [matTooltip]="(activeLayer.viewMode === 'heatmap' ? 'map.viewCluster' : 'map.viewHeatmap') | translate"
+                            [class.active]="activeLayer.viewMode === 'heatmap'"
+                            (click)="toggleHeatmap(activeLayer)">
+                      <mat-icon>{{ activeLayer.viewMode === 'heatmap' ? 'grain' : 'whatshot' }}</mat-icon>
+                    </button>
+                  }
                   <button [matTooltip]="'sharing.share' | translate" (click)="shareLayer(activeLayer)">
                     <mat-icon>share</mat-icon>
                   </button>
