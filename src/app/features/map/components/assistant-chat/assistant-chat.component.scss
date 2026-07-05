@@ -1,0 +1,306 @@
+.assistant-chat {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 360px;
+
+  .conversation-tabs {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    padding: 6px 6px 0;
+    border-bottom: 1px solid var(--border-light, #e2e8f0);
+    flex-shrink: 0;
+
+    .tabs-scroll {
+      flex: 1;
+      display: flex;
+      gap: 2px;
+      overflow-x: auto;
+      scrollbar-width: none;
+
+      &::-webkit-scrollbar { display: none; }
+    }
+
+    .tab {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      max-width: 140px;
+      padding: 6px 8px;
+      border: none;
+      background: transparent;
+      border-radius: 8px 8px 0 0;
+      font-size: 11.5px;
+      color: var(--text-secondary, #64748b);
+      cursor: pointer;
+      flex-shrink: 0;
+      font-family: inherit;
+
+      .tab-title {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .tab-close {
+        font-size: 13px;
+        width: 13px;
+        height: 13px;
+        flex-shrink: 0;
+        opacity: 0.5;
+
+        &:hover { opacity: 1; }
+      }
+
+      &.active {
+        background: var(--surface-2, #f1f5f9);
+        color: var(--primary, #023f5f);
+        font-weight: 600;
+      }
+
+      &:hover:not(.active) {
+        background: rgba(0, 0, 0, 0.03);
+      }
+    }
+
+    .new-tab-btn {
+      width: 30px;
+      height: 30px;
+      flex-shrink: 0;
+      // width/height forcés plus petits que la taille par défaut de mat-icon-button (40px) :
+      // sans display:flex/align-items/justify-content explicites, le modèle de boîte MDC
+      // interne décentre visuellement l'icône (même cause que .panel-close, voir
+      // map-layout.component.scss).
+      display: inline-flex !important;
+      align-items: center;
+      justify-content: center;
+      padding: 0 !important;
+
+      mat-icon {
+        font-size: 18px;
+        width: 18px;
+        height: 18px;
+      }
+    }
+  }
+
+  .loading-conversation {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    justify-content: center;
+    padding: 20px;
+    font-size: 12px;
+    color: var(--text-light, #999);
+
+    .spin {
+      animation: spin 1.2s linear infinite;
+    }
+  }
+
+  .messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .message {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    max-width: 90%;
+
+    .avatar {
+      font-size: 18px;
+      width: 18px;
+      height: 18px;
+      color: var(--accent, #00ada7);
+      flex-shrink: 0;
+      margin-top: 4px;
+    }
+
+    .bubble-wrapper {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      min-width: 0;
+    }
+
+    .bubble {
+      font-size: 13px;
+      line-height: 1.45;
+      padding: 8px 12px;
+      border-radius: 12px;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    &.model {
+      align-self: flex-start;
+
+      .bubble {
+        background: var(--surface-2, #f1f5f9);
+        color: var(--text, #1e293b);
+        border-top-left-radius: 4px;
+      }
+    }
+
+    &.user {
+      align-self: flex-end;
+
+      .bubble {
+        background: var(--primary, #023f5f);
+        color: #ffffff;
+        border-top-right-radius: 4px;
+      }
+    }
+  }
+
+  .attachment-card {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #ffffff;
+    border: 1px solid var(--border-light, #e2e8f0);
+    border-radius: 10px;
+    padding: 8px 10px;
+
+    .attachment-icon {
+      color: #e74c3c;
+      font-size: 22px;
+      width: 22px;
+      height: 22px;
+      flex-shrink: 0;
+    }
+
+    .attachment-info {
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+      flex: 1;
+
+      .attachment-title {
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--text, #1e293b);
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .attachment-status {
+        font-size: 10.5px;
+        color: var(--text-light, #94a3b8);
+      }
+    }
+  }
+
+  .typing {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+    padding: 10px 12px;
+
+    span {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--text-light, #94a3b8);
+      animation: typing-bounce 1.2s infinite ease-in-out;
+
+      &:nth-child(2) { animation-delay: 0.15s; }
+      &:nth-child(3) { animation-delay: 0.3s; }
+    }
+  }
+
+  .map-result-banner {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    font-size: 11.5px;
+    color: var(--text-secondary, #64748b);
+    background: rgba(0, 173, 167, 0.06);
+    border-top: 1px solid var(--border-light, #e2e8f0);
+    flex-shrink: 0;
+
+    .ai-icon {
+      font-size: 14px;
+      width: 14px;
+      height: 14px;
+      color: var(--accent, #00ada7);
+      flex-shrink: 0;
+    }
+
+    span {
+      flex: 1;
+    }
+
+    .clear-result-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 2px;
+      border: none;
+      background: transparent;
+      color: var(--text-secondary, #64748b);
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      padding: 3px 6px;
+      border-radius: 6px;
+      font-family: inherit;
+
+      mat-icon {
+        font-size: 13px;
+        width: 13px;
+        height: 13px;
+      }
+
+      &:hover {
+        background: rgba(239, 68, 68, 0.08);
+        color: #ef4444;
+      }
+    }
+  }
+
+  .input-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 12px;
+    border-top: 1px solid var(--border-light, #e2e8f0);
+    flex-shrink: 0;
+
+    .chat-input {
+      flex: 1;
+      border: 1px solid var(--border, #cbd5e1);
+      border-radius: 20px;
+      padding: 9px 14px;
+      font-size: 13px;
+      outline: none;
+      font-family: inherit;
+
+      &:focus {
+        border-color: var(--accent, #00ada7);
+      }
+
+      &:disabled {
+        background: var(--surface-2, #f8fafc);
+      }
+    }
+  }
+}
+
+@keyframes typing-bounce {
+  0%, 60%, 100% { transform: translateY(0); opacity: 0.5; }
+  30% { transform: translateY(-4px); opacity: 1; }
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}

@@ -58,6 +58,9 @@
       <button mat-icon-button (click)="toggleMyMaps()" [matTooltip]="'myMaps.title' | translate" class="header-action" [class.active]="myMapsOpen()">
         <mat-icon>dashboard_customize</mat-icon>
       </button>
+      <button mat-icon-button (click)="toggleAssistant()" matTooltip="Assistant IA" class="header-action" [class.active]="assistantOpen()">
+        <mat-icon>auto_awesome</mat-icon>
+      </button>
       <button mat-icon-button (click)="toggleBaseMaps()" [matTooltip]="'map.baseMaps' | translate" class="header-action" [class.active]="baseMapsOpen()">
         <mat-icon>map</mat-icon>
       </button>
@@ -126,6 +129,23 @@
           </div>
           <div class="panel-body">
             <app-my-maps></app-my-maps>
+          </div>
+        </div>
+      }
+
+      @if (assistantOpen()) {
+        <div class="floating-panel assistant-panel glass animate-in">
+          <div class="panel-header">
+            <div class="panel-title-group">
+              <mat-icon class="panel-icon">auto_awesome</mat-icon>
+              <h3>Assistant IA</h3>
+            </div>
+            <button (click)="closeAssistant()" class="panel-close">
+              <mat-icon>close</mat-icon>
+            </button>
+          </div>
+          <div class="panel-body">
+            <app-assistant-chat></app-assistant-chat>
           </div>
         </div>
       }
