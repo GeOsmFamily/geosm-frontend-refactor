@@ -201,11 +201,28 @@
   color: var(--primary);
 }
 
+// Bouton simple (pas mat-icon-button, voir le html) : la directive impose son propre
+// modèle de boîte MDC pensé pour sa taille par défaut (40px), incompatible avec la taille
+// réduite forcée ici (32px) et décentrait visuellement l'icône (constaté sur les 8 boutons
+// de fermeture de panneaux flottants qui partagent cette classe).
 .panel-close {
   color: var(--text-secondary) !important;
   width: 32px !important;
   height: 32px !important;
-  line-height: 32px !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border: none;
+  background: transparent;
+  border-radius: 50%;
+  cursor: pointer;
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-fast);
+
+  &:hover {
+    background: rgba(0, 0, 0, 0.06);
+  }
 
   mat-icon {
     font-size: 20px;

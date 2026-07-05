@@ -1,0 +1,69 @@
+<div class="nearest-search-tool">
+  <h3>Le plus proche</h3>
+  <p class="hint">Choisissez une couche active, puis cliquez sur la carte pour trouver les éléments les plus proches (distance routière réelle).</p>
+
+  @if (activeLayers().length === 0) {
+    <div class="empty-state">
+      <mat-icon>layers_clear</mat-icon>
+      <p>Activez d'abord une couche depuis le catalogue.</p>
+    </div>
+  } @else {
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Couche à rechercher</mat-label>
+      <mat-select [value]="selectedLayerId()" (selectionChange)="selectLayer($event.value)">
+        @for (al of activeLayers(); track al.layer.id) {
+          <mat-option [value]="al.layer.id">{{ al.layer.name }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <button mat-stroked-button
+            color="primary"
+            class="full-width pick-btn"
+            [class.active]="picking()"
+            [disabled]="!selectedLayerId() || loading()"
+            (click)="togglePicking()">
+      <mat-icon>{{ picking() ? 'close' : 'my_location' }}</mat-icon>
+      {{ picking() ? 'Cliquez sur la carte...' : 'Choisir un point de départ' }}
+    </button>
+
+    @if (loading()) {
+      <div class="loading-row">
+        <app-loading-spinner [diameter]="22" message="" />
+        <span>Recherche en cours...</span>
+      </div>
+    }
+
+    @if (results().length > 0) {
+      <mat-divider></mat-divider>
+      <div class="results-list">
+        @for (result of results(); track result.id; let i = $index) {
+          <div class="result-card">
+            <div class="result-rank">{{ i + 1 }}</div>
+            <div class="result-detail">
+              <span class="result-name">{{ result.name || 'Sans nom' }}</span>
+              <span class="result-meta">
+                <mat-icon>{{ result.routed ? 'directions_car' : 'straighten' }}</mat-icon>
+                {{ formatDistance(result.distance) }}
+                @if (result.duration) { · {{ formatDuration(result.duration) }} }
+                @if (!result.routed) { (à vol d'oiseau) }
+              </span>
+            </div>
+            <div class="result-actions">
+              <button mat-icon-button (click)="zoomToResult(result)" matTooltip="Zoomer">
+                <mat-icon>center_focus_strong</mat-icon>
+              </button>
+              <button mat-icon-button (click)="routeToResult(result)" matTooltip="Itinéraire">
+                <mat-icon>directions</mat-icon>
+              </button>
+            </div>
+          </div>
+        }
+      </div>
+
+      <button mat-button class="full-width clear-btn" (click)="clear()">
+        <mat-icon>clear</mat-icon> Effacer
+      </button>
+    }
+  }
+</div>

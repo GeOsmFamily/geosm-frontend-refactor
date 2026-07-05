@@ -25,12 +25,23 @@ import { CommentService } from '../../../core/services/comment.service';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
 
+interface MapReply {
+  id: string;
+  text: string;
+  authorName?: string;
+  createdAt: string;
+}
+
 interface MapComment {
   id: string;
   text: string;
   lon: number;
   lat: number;
   feature: Feature;
+  resolved: boolean;
+  authorName?: string;
+  createdAt: string;
+  replies: MapReply[];
 }
 
 @Component({
@@ -73,6 +84,10 @@ export class CommentToolComponent implements OnInit, OnDestroy {
   isPlacing = false;
   pendingCoord: [number, number] | null = null;
 
+  readonly expandedIds = new Set<string>();
+  replyingId: string | null = null;
+  replyText = '';
+
   ngOnInit(): void {
     this.map = this.mapService.getMap();
     this.vectorSource = this.mapService.commentSource;
@@ -98,11 +113,18 @@ export class CommentToolComponent implements OnInit, OnDestroy {
 
       const originalFeature = features[0] || feature;
       const label = (originalFeature.get('label') as string) || '';
+      // Épingle verte pour un commentaire marqué résolu, rouge sinon - repère visuel rapide
+      // pour distinguer les fils encore actifs de ceux déjà traités. Le "#" doit rester
+      // littéral ici (pas pré-encodé en "%23") : toute la chaîne SVG passe par
+      // encodeURIComponent() juste en dessous, qui se charge de l'encoder une seule fois -
+      // un "%23" pré-encodé serait ré-échappé en "%2523", produisant une couleur invalide
+      // (fill="%23e53935" au lieu de fill="#e53935") et un pin rendu noir par défaut.
+      const pinColor = originalFeature.get('resolved') ? '#00ada7' : '#e53935';
       return new Style({
         image: new Icon({
           anchor: [0.5, 1],
           src: 'data:image/svg+xml,' + encodeURIComponent(
-            '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="%23e53935" d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>'
+            `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="${pinColor}" d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>`
           ),
           scale: 1.5,
         }),
@@ -187,6 +209,7 @@ export class CommentToolComponent implements OnInit, OnDestroy {
       next: (savedComment) => {
         const feature = new Feature(new Point(fromLonLat(this.pendingCoord!)));
         feature.set('label', text);
+        feature.set('resolved', false);
         feature.setId(`comment-${savedComment.id}`);
         this.vectorSource.addFeature(feature);
 
@@ -196,6 +219,10 @@ export class CommentToolComponent implements OnInit, OnDestroy {
           lon,
           lat,
           feature,
+          resolved: false,
+          authorName: savedComment.authorName,
+          createdAt: savedComment.createdAt,
+          replies: [],
         });
 
         this.commentText = '';
@@ -245,6 +272,86 @@ export class CommentToolComponent implements OnInit, OnDestroy {
     this.router.navigate(['/login']);
   }
 
+  toggleExpanded(comment: MapComment): void {
+    if (this.expandedIds.has(comment.id)) {
+      this.expandedIds.delete(comment.id);
+    } else {
+      this.expandedIds.add(comment.id);
+    }
+  }
+
+  isExpanded(comment: MapComment): boolean {
+    return this.expandedIds.has(comment.id);
+  }
+
+  startReply(comment: MapComment): void {
+    this.replyingId = comment.id;
+    this.replyText = '';
+    this.expandedIds.add(comment.id);
+  }
+
+  cancelReply(): void {
+    this.replyingId = null;
+    this.replyText = '';
+  }
+
+  submitReply(comment: MapComment): void {
+    const text = this.replyText.trim();
+    if (!text) return;
+
+    this.commentService.reply(comment.id, text).subscribe({
+      next: (saved) => {
+        comment.replies.push({
+          id: saved.id,
+          text: saved.text,
+          authorName: saved.authorName,
+          createdAt: saved.createdAt,
+        });
+        this.replyingId = null;
+        this.replyText = '';
+      },
+      error: () => {
+        this.snackBar.open(
+          this.translate.instant('shared.error') || 'Une erreur est survenue',
+          'OK',
+          { duration: 3000 }
+        );
+      }
+    });
+  }
+
+  toggleResolved(comment: MapComment): void {
+    const nextResolved = !comment.resolved;
+    this.commentService.setResolved(comment.id, nextResolved).subscribe({
+      next: () => {
+        comment.resolved = nextResolved;
+        comment.feature.set('resolved', nextResolved);
+      },
+      error: () => {
+        this.snackBar.open(
+          this.translate.instant('shared.error') || 'Une erreur est survenue',
+          'OK',
+          { duration: 3000 }
+        );
+      }
+    });
+  }
+
+  deleteReply(comment: MapComment, reply: MapReply): void {
+    this.commentService.delete(reply.id).subscribe({
+      next: () => {
+        comment.replies = comment.replies.filter((r) => r.id !== reply.id);
+      },
+      error: () => {
+        this.snackBar.open(
+          this.translate.instant('shared.error') || 'Une erreur est survenue',
+          'OK',
+          { duration: 3000 }
+        );
+      }
+    });
+  }
+
   private loadComments(): void {
     const instance = this.instanceService.currentInstance$.value;
     if (!instance) return;
@@ -256,6 +363,7 @@ export class CommentToolComponent implements OnInit, OnDestroy {
         data.forEach(c => {
           const feature = new Feature(new Point(fromLonLat([c.lon, c.lat])));
           feature.set('label', c.text);
+          feature.set('resolved', c.resolved);
           feature.setId(`comment-${c.id}`);
           this.vectorSource.addFeature(feature);
 
@@ -265,6 +373,15 @@ export class CommentToolComponent implements OnInit, OnDestroy {
             lon: c.lon,
             lat: c.lat,
             feature,
+            resolved: c.resolved,
+            authorName: c.authorName,
+            createdAt: c.createdAt,
+            replies: (c.replies || []).map((r) => ({
+              id: r.id,
+              text: r.text,
+              authorName: r.authorName,
+              createdAt: r.createdAt,
+            })),
           });
         });
       },

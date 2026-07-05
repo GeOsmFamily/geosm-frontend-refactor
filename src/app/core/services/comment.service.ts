@@ -12,7 +12,11 @@ export interface Comment {
   text: string;
   lat: number;
   lon: number;
+  parentId: string | null;
+  resolved: boolean;
   createdAt: string;
+  authorName?: string;
+  replies?: Comment[];
 }
 
 @Injectable({ providedIn: 'root' })
@@ -28,6 +32,14 @@ export class CommentService {
 
   create(dto: { instanceId: string; text: string; lat: number; lon: number }): Observable<Comment> {
     return this.api.post<Comment>('/comments', dto);
+  }
+
+  reply(commentId: string, text: string): Observable<Comment> {
+    return this.api.post<Comment>(`/comments/${commentId}/reply`, { text });
+  }
+
+  setResolved(commentId: string, resolved: boolean): Observable<Comment> {
+    return this.api.patch<Comment>(`/comments/${commentId}/resolve`, { resolved });
   }
 
   delete(id: string): Observable<void> {

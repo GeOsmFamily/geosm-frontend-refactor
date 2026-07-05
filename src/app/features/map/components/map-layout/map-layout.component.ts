@@ -50,6 +50,7 @@ import { CompareToolComponent } from '../../../../features/tools/compare/compare
 import { StatisticsToolComponent } from '../../../../features/tools/statistics/statistics-tool.component';
 import { PlanLocalisationToolComponent } from '../../../../features/tools/plan-localisation/plan-localisation-tool.component';
 import { SpatialAnalysisToolComponent } from '../../../../features/tools/spatial-analysis/spatial-analysis-tool.component';
+import { NearestSearchToolComponent } from '../../../../features/tools/nearest-search/nearest-search-tool.component';
 
 @Component({
   selector: 'app-map-layout',
@@ -89,6 +90,7 @@ import { SpatialAnalysisToolComponent } from '../../../../features/tools/spatial
     StatisticsToolComponent,
     PlanLocalisationToolComponent,
     SpatialAnalysisToolComponent,
+    NearestSearchToolComponent,
     BaseMapSwitcherComponent,
     SettingsComponent,
   ],
@@ -144,6 +146,7 @@ export class MapLayoutComponent implements OnInit {
     { id: 'statistics', icon: 'bar_chart', label: 'tools.statistics' },
     { id: 'plan-localisation', icon: 'my_location', label: 'tools.planLocalisation' },
     { id: 'spatial-analysis', icon: 'blur_circular', label: 'tools.spatialAnalysis' },
+    { id: 'nearest-search', icon: 'social_distance', label: 'tools.nearestSearch' },
   ];
 
   constructor() {

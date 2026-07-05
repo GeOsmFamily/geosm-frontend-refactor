@@ -33,6 +33,12 @@ export class LayerService {
     return this.api.delete<void>(`/instances/${instanceId}/layers/${id}`);
   }
 
+  // Recharge une couche par défaut depuis les données OSM déjà importées (pas un nouveau
+  // téléchargement) - voir ResyncLayerUseCase côté backend. Réservé SUPER_ADMIN/ADMIN_INSTANCE.
+  resync(instanceId: string, id: string): Observable<Layer> {
+    return this.api.post<Layer>(`/instances/${instanceId}/layers/${id}/resync`, {});
+  }
+
   /**
    * Retourne une vraie GeoJSON FeatureCollection (pas une pagination classique
    * {data, meta}) - le backend renvoie {type, features}. Accepte bbox (chaîne

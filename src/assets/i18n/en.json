@@ -265,12 +265,16 @@
     "removeFromMap": "Remove from map",
     "addFromCatalog": "Add layers from the catalog",
     "viewHeatmap": "Heatmap view",
-    "viewCluster": "Cluster view"
+    "viewCluster": "Cluster view",
+    "lastSynced": "Updated on",
+    "resync": "Resync",
+    "resyncSuccess": "Layer resynced successfully"
   },
   "tools": {
     "drawing": "Drawing",
     "statistics": "Statistics",
     "spatialAnalysis": "Spatial analysis",
+    "nearestSearch": "Nearest search",
     "planLocalisation": "Location plan",
     "measure": {
       "distance": "Distance",

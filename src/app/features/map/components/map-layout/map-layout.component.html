@@ -77,7 +77,7 @@
             <mat-icon class="panel-icon">layers</mat-icon>
             <h3>{{ 'map.layers' | translate }}</h3>
           </div>
-          <button mat-icon-button (click)="toggleLeftPanel()" class="panel-close">
+          <button (click)="toggleLeftPanel()" class="panel-close">
             <mat-icon>chevron_left</mat-icon>
           </button>
         </div>
@@ -103,7 +103,7 @@
               <mat-icon class="panel-icon">bookmarks</mat-icon>
               <h3>{{ 'geosignets.title' | translate }}</h3>
             </div>
-            <button mat-icon-button (click)="closeGeosignets()" class="panel-close">
+            <button (click)="closeGeosignets()" class="panel-close">
               <mat-icon>close</mat-icon>
             </button>
           </div>
@@ -120,7 +120,7 @@
               <mat-icon class="panel-icon">dashboard_customize</mat-icon>
               <h3>{{ 'myMaps.title' | translate }}</h3>
             </div>
-            <button mat-icon-button (click)="closeMyMaps()" class="panel-close">
+            <button (click)="closeMyMaps()" class="panel-close">
               <mat-icon>close</mat-icon>
             </button>
           </div>
@@ -137,7 +137,7 @@
               <mat-icon class="panel-icon">map</mat-icon>
               <h3>{{ 'map.baseMaps' | translate }}</h3>
             </div>
-            <button mat-icon-button (click)="closeBaseMaps()" class="panel-close">
+            <button (click)="closeBaseMaps()" class="panel-close">
               <mat-icon>close</mat-icon>
             </button>
           </div>
@@ -154,7 +154,7 @@
               <mat-icon class="panel-icon">settings</mat-icon>
               <h3>{{ 'common.settings' | translate }}</h3>
             </div>
-            <button mat-icon-button (click)="closeSettings()" class="panel-close">
+            <button (click)="closeSettings()" class="panel-close">
               <mat-icon>close</mat-icon>
             </button>
           </div>
@@ -171,7 +171,7 @@
               <mat-icon class="panel-icon">info</mat-icon>
               <h3>{{ 'contextMenu.info' | translate }}</h3>
             </div>
-            <button mat-icon-button (click)="closeLocationInfo()" class="panel-close">
+            <button (click)="closeLocationInfo()" class="panel-close">
               <mat-icon>close</mat-icon>
             </button>
           </div>
@@ -217,7 +217,7 @@
               <mat-icon class="panel-icon">handyman</mat-icon>
               <h3>{{ 'map.tools' | translate }}</h3>
             </div>
-            <button mat-icon-button (click)="closeToolsMenu()" class="panel-close">
+            <button (click)="closeToolsMenu()" class="panel-close">
               <mat-icon>close</mat-icon>
             </button>
           </div>
@@ -245,7 +245,7 @@
               <mat-icon class="panel-icon">{{ getActiveToolIcon() }}</mat-icon>
               <h3>{{ getActiveToolLabel() | translate }}</h3>
             </div>
-            <button mat-icon-button (click)="closeActiveTool()" class="panel-close">
+            <button (click)="closeActiveTool()" class="panel-close">
               <mat-icon>close</mat-icon>
             </button>
           </div>
@@ -263,6 +263,7 @@
               @case ('statistics') { <app-statistics-tool /> }
               @case ('plan-localisation') { <app-plan-localisation-tool /> }
               @case ('spatial-analysis') { <app-spatial-analysis-tool /> }
+              @case ('nearest-search') { <app-nearest-search-tool /> }
             }
           </div>
         </div>

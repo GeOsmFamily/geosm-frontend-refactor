@@ -88,7 +88,9 @@ export interface Layer {
     geometryType?: string | null;
     featureCount?: number | null;
     totalArea?: number | null;
+    totalLength?: number | null;
     importedAt?: string | null;
+    lastSyncedAt?: string | null;
     [key: string]: any;
   } | null;
 }
@@ -178,6 +180,10 @@ export interface LocationPlan {
   scale: number | null;
   paperSize: string;
   orientation: string;
+  includeLegend?: boolean;
+  includeScale?: boolean;
+  includeGrid?: boolean;
+  includeNorthArrow?: boolean;
   filePath: string | null;
   fileSize: number | null;
   errorMessage: string | null;

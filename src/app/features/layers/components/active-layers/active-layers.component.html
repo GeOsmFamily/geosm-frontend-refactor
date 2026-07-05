@@ -54,6 +54,22 @@
                 />
                 <span class="opacity-value">{{ (activeLayer.opacity * 100) | number:'1.0-0' }}%</span>
               </div>
+
+              @if (canResync()) {
+                <div class="freshness-row">
+                  @if (activeLayer.layer.metadata?.lastSyncedAt || activeLayer.layer.metadata?.importedAt) {
+                    <span class="freshness-date">
+                      <mat-icon>schedule</mat-icon>
+                      {{ 'map.lastSynced' | translate }}
+                      {{ (activeLayer.layer.metadata?.lastSyncedAt || activeLayer.layer.metadata?.importedAt) | date:'dd/MM/yyyy HH:mm' }}
+                    </span>
+                  }
+                  <button class="resync-btn" type="button" [disabled]="isResyncing(activeLayer)" (click)="resyncLayer(activeLayer)">
+                    <mat-icon>{{ isResyncing(activeLayer) ? 'hourglass_empty' : 'sync' }}</mat-icon>
+                    {{ 'map.resync' | translate }}
+                  </button>
+                </div>
+              }
             </div>
           </div>
         }

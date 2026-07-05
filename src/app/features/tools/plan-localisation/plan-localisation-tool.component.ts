@@ -7,6 +7,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { TranslateModule } from '@ngx-translate/core';
 import { Subscription, timer } from 'rxjs';
@@ -41,6 +42,7 @@ const POLL_TIMEOUT_MS = 90000;
     MatFormFieldModule,
     MatSelectModule,
     MatButtonToggleModule,
+    MatCheckboxModule,
     MatSnackBarModule,
     LoadingSpinnerComponent,
   ],
@@ -59,6 +61,10 @@ export class PlanLocalisationToolComponent implements OnDestroy {
   scale: number | 'auto' = 'auto';
   paperSize: 'A4' | 'A3' = 'A4';
   orientation: 'PORTRAIT' | 'LANDSCAPE' = 'PORTRAIT';
+  includeLegend = true;
+  includeScale = true;
+  includeGrid = true;
+  includeNorthArrow = true;
   readonly scaleOptions = SCALE_OPTIONS;
 
   readonly picking = signal(false);
@@ -131,6 +137,10 @@ export class PlanLocalisationToolComponent implements OnDestroy {
       scale: this.scale === 'auto' ? undefined : this.scale,
       paperSize: this.paperSize,
       orientation: this.orientation,
+      includeLegend: this.includeLegend,
+      includeScale: this.includeScale,
+      includeGrid: this.includeGrid,
+      includeNorthArrow: this.includeNorthArrow,
     }).subscribe({
       next: (plan) => this.pollUntilDone(plan.id),
       error: (err) => {

@@ -3,6 +3,18 @@
 
 @include mat.core();
 
+// Correctif global : quand un composant redéfinit font-size/width/height sur un <mat-icon>
+// (très fréquent dans l'app pour des boutons compacts) sans aussi redéfinir line-height,
+// le glyphe de la police d'icônes reste vertical-centré sur l'ancien line-height (souvent
+// plus grand), pas sur la nouvelle taille réduite - il apparaît alors décalé vers le
+// haut/coin dans son propre cadre, même si ce cadre est lui bien centré dans le bouton.
+// line-height: 1 (sans unité, donc relatif à la taille de police EN VIGUEUR à chaque
+// endroit) corrige ça partout d'un coup, sans avoir à dupliquer une valeur en pixels dans
+// chaque fichier de style de bouton.
+mat-icon {
+  line-height: 1;
+}
+
 // GeOSM custom palettes
 $geosm-primary-map: (
   50: #e0ecf2, 100: #b3cfe0, 200: #80afc9, 300: #4d8fb2, 400: #2677a1,

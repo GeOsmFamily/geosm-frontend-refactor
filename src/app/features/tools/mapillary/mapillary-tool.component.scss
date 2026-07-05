@@ -164,10 +164,17 @@
         }
       }
 
+      // width/height forcés (24px) plus petits que la taille par défaut de mat-icon-button
+      // (40px) : sans display:flex/align-items/justify-content explicites, le modèle de
+      // boîte MDC interne décentre visuellement l'icône (même cause que .panel-close,
+      // voir map-layout.component.scss).
       .close-btn, .download-btn {
         width: 24px;
         height: 24px;
-        line-height: 24px;
+        padding: 0 !important;
+        display: inline-flex !important;
+        align-items: center;
+        justify-content: center;
         color: var(--text-light, rgba(255, 255, 255, 0.5)) !important;
 
         &:hover {

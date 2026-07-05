@@ -113,7 +113,7 @@ src/app/
 
 ## Fonctionnalites
 
-L'application comprend **27 composants** organises en modules fonctionnels :
+L'application comprend **38 composants** organises en modules fonctionnels :
 
 ### Carte interactive
 - Carte OpenLayers avec controles de navigation
@@ -121,10 +121,15 @@ L'application comprend **27 composants** organises en modules fonctionnels :
 - Menu contextuel (clic droit)
 - Zoom aux coordonnees GPS
 - Geosignets (bookmarks localStorage)
+- Mes cartes (compositions de couches + vue sauvegardees, `MapCompositionService`)
+- Mapillary (vues panoramiques street-level)
+- Comparaison de cartes (swipe)
 
 ### Catalogue et couches
 - Catalogue hierarchique (Groupes > Sous-groupes > Couches)
 - Couches actives avec drag-drop, opacite, visibilite
+- Vue chaleur (heatmap) en plus de la vue cluster, bascule instantanee sur la meme source de donnees
+- Fraicheur des donnees (date de derniere synchronisation) + bouton "Resynchroniser" (visible SUPER_ADMIN/ADMIN_INSTANCE)
 - Fonds de carte (OSM, satellite, etc.)
 - Legende WMS GetLegendGraphic
 - Fiche descriptive avec liens Wikipedia/Wikidata/OSM
@@ -133,13 +138,16 @@ L'application comprend **27 composants** organises en modules fonctionnels :
 - Dessin (points, lignes, polygones)
 - Mesure (distance, surface)
 - Itineraire
+- Recherche du plus proche par distance routiere reelle (OSRM), pas a vol d'oiseau
+- Analyse spatiale (buffer, intersection, union, difference)
 - Export de donnees
-- Impression PDF (jsPDF + dom-to-image-more)
-- Commentaires
+- Plan de localisation PDF (QGIS) avec constructeur de mise en page personnalisee (legende/echelle/grille/fleche nord activables independamment)
+- Commentaires geolocalises avec fils de discussion (reponses) et statut resolu/non resolu
 - Altimetrie
 
 ### Recherche et geocodage
 - Barre de recherche avec geocodage Nominatim
+- Historique de recherche (localStorage, par type : adresse, limite administrative, couche)
 
 ### Partage
 - Partage social (Facebook, Twitter, WhatsApp, LinkedIn)

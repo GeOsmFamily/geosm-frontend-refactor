@@ -16,6 +16,10 @@ export interface CreateLocationPlanDTO {
   scale?: number;
   paperSize?: 'A4' | 'A3';
   orientation?: 'PORTRAIT' | 'LANDSCAPE';
+  includeLegend?: boolean;
+  includeScale?: boolean;
+  includeGrid?: boolean;
+  includeNorthArrow?: boolean;
 }
 
 @Injectable({ providedIn: 'root' })

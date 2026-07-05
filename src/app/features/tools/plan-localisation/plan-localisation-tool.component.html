@@ -61,6 +61,14 @@
     </mat-form-field>
   </div>
 
+  <p class="section-label">Éléments de mise en page</p>
+  <div class="layout-options">
+    <mat-checkbox [(ngModel)]="includeLegend">Légende</mat-checkbox>
+    <mat-checkbox [(ngModel)]="includeScale">Échelle</mat-checkbox>
+    <mat-checkbox [(ngModel)]="includeGrid">Grille</mat-checkbox>
+    <mat-checkbox [(ngModel)]="includeNorthArrow">Flèche du nord</mat-checkbox>
+  </div>
+
   <button mat-flat-button
           color="primary"
           class="full-width generate-pdf-btn"

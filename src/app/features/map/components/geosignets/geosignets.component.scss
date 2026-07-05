@@ -192,21 +192,25 @@
     align-items: center;
   }
 
-  .share-btn {
-    color: var(--text-secondary);
+  // .share-btn/.delete-btn : boutons simples (pas mat-icon-button, voir le html) - le
+  // directive mat-icon-button apporte son propre modèle de boîte MDC interne pensé pour sa
+  // taille par défaut (40/48px), qui entre en conflit avec la taille réduite forcée ici
+  // (32px) et décentre visuellement l'icône. Reproduit ici le même reset manuel déjà
+  // utilisé et vérifié pour .layer-actions button (active-layers.component.scss).
+  .share-btn,
+  .delete-btn {
     width: 32px;
     height: 32px;
+    padding: 0;
+    border: none;
+    background: transparent;
+    border-radius: 50%;
+    cursor: pointer;
     display: inline-flex;
     align-items: center;
     justify-content: center;
     opacity: 0.8;
     transition: all var(--transition-fast);
-
-    &:hover {
-      color: var(--accent);
-      opacity: 1;
-      background: rgba(0, 173, 167, 0.08);
-    }
 
     mat-icon {
       font-size: 18px;
@@ -215,26 +219,23 @@
     }
   }
 
+  .share-btn {
+    color: var(--text-secondary);
+
+    &:hover {
+      color: var(--accent);
+      opacity: 1;
+      background: rgba(0, 173, 167, 0.08);
+    }
+  }
+
   .delete-btn {
     color: var(--text-secondary);
-    width: 32px;
-    height: 32px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    opacity: 0.8;
-    transition: all var(--transition-fast);
 
     &:hover {
       color: var(--warn);
       opacity: 1;
       background: rgba(244, 67, 54, 0.08);
-    }
-
-    mat-icon {
-      font-size: 18px;
-      width: 18px;
-      height: 18px;
     }
   }
 }

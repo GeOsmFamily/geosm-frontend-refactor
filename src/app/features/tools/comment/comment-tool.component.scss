@@ -37,10 +37,23 @@
     overflow-y: auto;
 
     .comment-item {
-      display: flex;
-      align-items: center;
       padding: 8px 0;
       border-bottom: 1px solid #f0f0f0;
+
+      &.resolved {
+        .pin-icon {
+          color: var(--accent, #00ada7);
+        }
+        .comment-text {
+          color: rgba(0, 0, 0, 0.45);
+          text-decoration: line-through;
+        }
+      }
+
+      .comment-item-row {
+        display: flex;
+        align-items: center;
+      }
 
       .comment-content {
         flex: 1;
@@ -77,10 +90,9 @@
             transition: color 0.2s;
           }
 
-          .comment-coords {
+          .comment-meta {
             font-size: 11px;
             color: rgba(0, 0, 0, 0.4);
-            font-family: monospace;
           }
         }
       }
@@ -92,6 +104,116 @@
 
         mat-icon {
           font-size: 18px;
+        }
+      }
+
+      .comment-actions {
+        display: flex;
+        gap: 4px;
+        margin: 6px 0 0 28px;
+
+        .thread-btn {
+          display: inline-flex;
+          align-items: center;
+          gap: 4px;
+          font-size: 11px;
+          color: var(--text-secondary, rgba(0, 0, 0, 0.55));
+          background: rgba(2, 63, 95, 0.04);
+          border: none;
+          border-radius: 12px;
+          padding: 4px 10px;
+          cursor: pointer;
+          width: auto;
+          height: auto;
+
+          mat-icon {
+            font-size: 14px;
+            width: 14px;
+            height: 14px;
+          }
+
+          &:hover {
+            background: rgba(2, 63, 95, 0.08);
+            color: var(--text, #1e293b);
+          }
+
+          &.resolve-btn:hover {
+            background: rgba(0, 173, 167, 0.1);
+            color: var(--accent, #00ada7);
+          }
+        }
+      }
+
+      .replies-list {
+        margin: 8px 0 0 28px;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+
+        .reply-item {
+          display: flex;
+          align-items: flex-start;
+          justify-content: space-between;
+          gap: 6px;
+          padding: 6px 8px;
+          border-radius: 8px;
+          background: rgba(2, 63, 95, 0.03);
+
+          .reply-detail {
+            display: flex;
+            flex-direction: column;
+            gap: 1px;
+
+            .reply-author {
+              font-size: 10.5px;
+              font-weight: 600;
+              color: var(--primary, #023f5f);
+            }
+
+            .reply-text {
+              font-size: 12px;
+              color: var(--text, #1e293b);
+            }
+          }
+
+          // Bouton simple (pas mat-icon-button, voir le html) - la directive impose son
+          // propre modèle de boîte MDC pensé pour sa taille par défaut, incompatible avec
+          // une taille aussi réduite (22px) et décentrait visuellement l'icône.
+          .reply-delete-btn {
+            width: 22px;
+            height: 22px;
+            padding: 0;
+            border: none;
+            background: transparent;
+            border-radius: 50%;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            color: var(--text-secondary, rgba(0, 0, 0, 0.5));
+
+            &:hover {
+              background: rgba(239, 68, 68, 0.08);
+              color: #ef4444;
+            }
+
+            mat-icon {
+              font-size: 13px;
+              width: 13px;
+              height: 13px;
+            }
+          }
+        }
+      }
+
+      .reply-form {
+        margin: 8px 0 0 28px;
+
+        .reply-form-actions {
+          display: flex;
+          justify-content: flex-end;
+          gap: 6px;
         }
       }
     }

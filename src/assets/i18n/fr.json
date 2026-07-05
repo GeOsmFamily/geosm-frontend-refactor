@@ -308,12 +308,16 @@
     "removeFromMap": "Retirer de la carte",
     "addFromCatalog": "Ajoutez des couches depuis le catalogue",
     "viewHeatmap": "Vue carte de chaleur",
-    "viewCluster": "Vue cluster"
+    "viewCluster": "Vue cluster",
+    "lastSynced": "Mis à jour le",
+    "resync": "Resynchroniser",
+    "resyncSuccess": "Couche resynchronisée avec succès"
   },
   "tools": {
     "drawing": "Dessin",
     "statistics": "Statistiques",
     "spatialAnalysis": "Analyse spatiale",
+    "nearestSearch": "Le plus proche",
     "planLocalisation": "Plan de localisation",
     "measure": {
       "distance": "Distance",

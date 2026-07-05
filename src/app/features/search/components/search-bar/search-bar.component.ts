@@ -33,6 +33,13 @@ interface SearchResultItem {
   data: any;
 }
 
+// Historique des recherches - stocké côté navigateur uniquement (pas d'API dédiée côté
+// backend pour l'instant, voir le plan de fonctionnalités). Une seule clé globale (pas de
+// scope par utilisateur) : cohérent avec le reste de l'app qui n'a pas non plus de
+// préférences utilisateur persistées serveur à ce jour.
+const SEARCH_HISTORY_KEY = 'geosm_search_history';
+const MAX_HISTORY_ITEMS = 8;
+
 @Component({
   selector: 'app-search-bar',
   standalone: true,
@@ -72,8 +79,10 @@ export class SearchBarComponent implements OnInit, OnDestroy {
 
   readonly activeBoundary = signal<SearchResultItem | null>(null);
   readonly downloadingBoundary = signal<boolean>(false);
+  readonly history = signal<SearchResultItem[]>([]);
 
   ngOnInit(): void {
+    this.history.set(this.loadHistory());
     this.markerLayer = new VectorLayer({
       source: this.markerSource,
       style: (feature) => {
@@ -261,6 +270,54 @@ export class SearchBarComponent implements OnInit, OnDestroy {
 
     this.searchQuery = item.label;
     this.results = [];
+    this.addToHistory(item);
+  }
+
+  private loadHistory(): SearchResultItem[] {
+    try {
+      const raw = localStorage.getItem(SEARCH_HISTORY_KEY);
+      return raw ? JSON.parse(raw) : [];
+    } catch {
+      return [];
+    }
+  }
+
+  private addToHistory(item: SearchResultItem): void {
+    // On ne garde que les champs nécessaires pour rejouer la sélection (voir selectResult()),
+    // pas la réponse brute complète (un résultat "boundary" Nominatim peut embarquer un
+    // polygone GeoJSON volumineux) - évite de saturer le quota localStorage.
+    const trimmed: SearchResultItem = {
+      type: item.type,
+      label: item.label,
+      data: item.type === 'geocoding'
+        ? { lat: item.data.lat, lon: item.data.lon }
+        : item.type === 'boundary'
+          ? { boundingbox: item.data.boundingbox, osm_id: item.data.osm_id, osm_type: item.data.osm_type }
+          : item.data,
+    };
+
+    const withoutDuplicate = this.history().filter((h) => h.label !== item.label);
+    const updated = [trimmed, ...withoutDuplicate].slice(0, MAX_HISTORY_ITEMS);
+    this.history.set(updated);
+    try {
+      localStorage.setItem(SEARCH_HISTORY_KEY, JSON.stringify(updated));
+    } catch {
+      // Quota dépassé ou navigation privée : l'historique reste fonctionnel pour la session
+      // en cours (signal en mémoire) mais ne persiste pas - non bloquant.
+    }
+  }
+
+  removeHistoryItem(item: SearchResultItem, event: Event): void {
+    event.stopPropagation();
+    const updated = this.history().filter((h) => h.label !== item.label);
+    this.history.set(updated);
+    localStorage.setItem(SEARCH_HISTORY_KEY, JSON.stringify(updated));
+  }
+
+  clearHistory(event: Event): void {
+    event.stopPropagation();
+    this.history.set([]);
+    localStorage.removeItem(SEARCH_HISTORY_KEY);
   }
 
   clearSearch(): void {

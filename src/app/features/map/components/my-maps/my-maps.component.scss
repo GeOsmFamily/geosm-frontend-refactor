@@ -196,10 +196,19 @@
     align-items: center;
   }
 
+  // Bouton simple (pas mat-icon-button, voir le html) : la directive apporte son propre
+  // modèle de boîte MDC pensé pour sa taille par défaut (40/48px), qui décentre visuellement
+  // l'icône une fois la taille forcée à 32px (voir active-layers.component.scss pour le
+  // même correctif déjà vérifié).
   .delete-btn {
     color: var(--text-secondary);
     width: 32px;
     height: 32px;
+    padding: 0;
+    border: none;
+    background: transparent;
+    border-radius: 50%;
+    cursor: pointer;
     display: inline-flex;
     align-items: center;
     justify-content: center;

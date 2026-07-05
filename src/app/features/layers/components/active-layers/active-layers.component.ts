@@ -13,6 +13,9 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { SharingService } from '../../../../core/services/sharing.service';
 import { InstanceService } from '../../../../core/services/instance.service';
 import { MapService } from '../../../map/services/map.service';
+import { AuthService } from '../../../../core/services/auth.service';
+import { LayerService } from '../../../../core/services/layer.service';
+import { Role } from '../../../../core/models/index';
 import { toLonLat } from 'ol/proj';
 
 @Component({
@@ -40,9 +43,11 @@ export class ActiveLayersComponent {
   private readonly mapService = inject(MapService);
   private readonly snackBar = inject(MatSnackBar);
   private readonly translate = inject(TranslateService);
-
+  private readonly authService = inject(AuthService);
+  private readonly layerService = inject(LayerService);
 
   readonly activeLayers$ = this.mapLayerService.activeLayers$;
+  readonly resyncingIds = new Set<string>();
 
   toggleVisibility(layer: ActiveLayer): void {
     this.mapLayerService.toggleVisibility(layer.layer.id);
@@ -68,6 +73,41 @@ export class ActiveLayersComponent {
   toggleHeatmap(layer: ActiveLayer): void {
     const next = layer.viewMode === 'heatmap' ? 'cluster' : 'heatmap';
     this.mapLayerService.setViewMode(layer.layer.id, next);
+  }
+
+  // Le bouton de resynchronisation n'a de sens que pour SUPER_ADMIN/ADMIN_INSTANCE (même
+  // restriction que côté backend, voir layer.routes.ts) - inutile de l'exposer à un simple
+  // visiteur qui n'a de toute façon pas les droits de l'utiliser.
+  canResync(): boolean {
+    const role = this.authService.currentUser$.value?.role;
+    return role === Role.SUPER_ADMIN || role === Role.ADMIN_INSTANCE;
+  }
+
+  isResyncing(layer: ActiveLayer): boolean {
+    return this.resyncingIds.has(layer.layer.id);
+  }
+
+  resyncLayer(layer: ActiveLayer): void {
+    const instance = this.instanceService.currentInstance$.value;
+    if (!instance || this.isResyncing(layer)) return;
+
+    this.resyncingIds.add(layer.layer.id);
+    this.layerService.resync(instance.id, layer.layer.id).subscribe({
+      next: (updated) => {
+        this.resyncingIds.delete(layer.layer.id);
+        layer.layer.metadata = updated.metadata;
+        this.snackBar.open(
+          this.translate.instant('map.resyncSuccess') || 'Couche resynchronisée avec succès',
+          'OK',
+          { duration: 3000 }
+        );
+      },
+      error: (err) => {
+        this.resyncingIds.delete(layer.layer.id);
+        const message = err?.error?.error?.message || this.translate.instant('shared.error') || 'Une erreur est survenue';
+        this.snackBar.open(message, 'OK', { duration: 4000 });
+      },
+    });
   }
 
   shareLayer(activeLayer: ActiveLayer): void {

@@ -265,12 +265,16 @@
     "removeFromMap": "Quitar del mapa",
     "addFromCatalog": "Agregue capas desde el catálogo",
     "viewHeatmap": "Vista de mapa de calor",
-    "viewCluster": "Vista de agrupación"
+    "viewCluster": "Vista de agrupación",
+    "lastSynced": "Actualizado el",
+    "resync": "Resincronizar",
+    "resyncSuccess": "Capa resincronizada con éxito"
   },
   "tools": {
     "drawing": "Dibujo",
     "statistics": "Estadísticas",
     "spatialAnalysis": "Análisis espacial",
+    "nearestSearch": "El más cercano",
     "planLocalisation": "Plano de localización",
     "measure": {
       "distance": "Distancia",
