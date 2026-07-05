@@ -65,6 +65,7 @@ export class PlanLocalisationToolComponent implements OnDestroy {
   includeScale = true;
   includeGrid = true;
   includeNorthArrow = true;
+  autoFillWithAI = false;
   readonly scaleOptions = SCALE_OPTIONS;
 
   readonly picking = signal(false);
@@ -141,6 +142,7 @@ export class PlanLocalisationToolComponent implements OnDestroy {
       includeScale: this.includeScale,
       includeGrid: this.includeGrid,
       includeNorthArrow: this.includeNorthArrow,
+      autoFillWithAI: this.autoFillWithAI,
     }).subscribe({
       next: (plan) => this.pollUntilDone(plan.id),
       error: (err) => {

@@ -23,6 +23,12 @@
       </mat-card-content>
     </mat-card>
 
+    @if (narrativeLoading) {
+      <p class="narrative-loading"><mat-icon class="ai-icon">auto_awesome</mat-icon> Génération de la synthèse...</p>
+    } @else if (narrative) {
+      <p class="narrative"><mat-icon class="ai-icon">auto_awesome</mat-icon> {{ narrative }}</p>
+    }
+
     @if (stats.properties.length > 0) {
       <mat-form-field appearance="outline" class="full-width">
         <mat-label>Propriété</mat-label>

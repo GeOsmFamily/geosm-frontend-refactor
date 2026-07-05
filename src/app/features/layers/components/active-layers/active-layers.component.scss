@@ -40,6 +40,33 @@
     }
   }
 
+  .view-summary {
+    display: flex;
+    align-items: flex-start;
+    gap: 6px;
+    font-size: 12px;
+    line-height: 1.4;
+    color: var(--text-secondary, #555);
+    background: rgba(0, 173, 167, 0.06);
+    border-radius: 8px;
+    padding: 8px 10px;
+    margin: 12px 12px 0;
+
+    &.loading {
+      font-style: italic;
+      color: var(--text-light, #999);
+    }
+
+    .ai-icon {
+      font-size: 15px;
+      width: 15px;
+      height: 15px;
+      color: var(--accent, #00ada7);
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+  }
+
   .layer-list {
     flex: 1;
     overflow-y: auto;

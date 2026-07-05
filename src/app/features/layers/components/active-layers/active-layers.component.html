@@ -7,6 +7,12 @@
         <span class="hint">{{ 'map.addFromCatalog' | translate }}</span>
       </div>
     } @else {
+      @if (viewSummaryLoading) {
+        <p class="view-summary loading"><mat-icon class="ai-icon">auto_awesome</mat-icon> Analyse de la vue en cours...</p>
+      } @else if (viewSummary?.narrative) {
+        <p class="view-summary"><mat-icon class="ai-icon">auto_awesome</mat-icon> {{ viewSummary!.narrative }}</p>
+      }
+
       <div cdkDropList (cdkDropListDropped)="onDrop($event)" class="layer-list">
         @for (activeLayer of layers; track activeLayer.layer.id) {
           <div class="layer-item" cdkDrag>

@@ -102,6 +102,21 @@ export interface Feature {
   layerId: string;
 }
 
+export interface LayerStats {
+  featureCount: number;
+  totalArea: number | null;
+  totalLength: number | null;
+  bbox: [number, number, number, number] | null;
+  narrative?: string;
+}
+
+export interface ViewportSummary {
+  layerCount: number;
+  totalFeatureCount: number;
+  perLayer: { name: string; featureCount: number }[];
+  narrative?: string;
+}
+
 export interface BaseMap {
   id: string;
   name: string;

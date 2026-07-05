@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatListModule } from '@angular/material/list';
 import { MatIconModule } from '@angular/material/icon';
@@ -15,7 +15,8 @@ import { InstanceService } from '../../../../core/services/instance.service';
 import { MapService } from '../../../map/services/map.service';
 import { AuthService } from '../../../../core/services/auth.service';
 import { LayerService } from '../../../../core/services/layer.service';
-import { Role } from '../../../../core/models/index';
+import { GeoportailService } from '../../../../core/services/geoportail.service';
+import { Role, ViewportSummary } from '../../../../core/models/index';
 import { toLonLat } from 'ol/proj';
 
 @Component({
@@ -36,7 +37,7 @@ import { toLonLat } from 'ol/proj';
   templateUrl: './active-layers.component.html',
   styleUrl: './active-layers.component.scss',
 })
-export class ActiveLayersComponent {
+export class ActiveLayersComponent implements OnInit {
   private readonly mapLayerService = inject(MapLayerService);
   private readonly sharingService = inject(SharingService);
   private readonly instanceService = inject(InstanceService);
@@ -45,9 +46,32 @@ export class ActiveLayersComponent {
   private readonly translate = inject(TranslateService);
   private readonly authService = inject(AuthService);
   private readonly layerService = inject(LayerService);
+  private readonly geoportailService = inject(GeoportailService);
 
   readonly activeLayers$ = this.mapLayerService.activeLayers$;
   readonly resyncingIds = new Set<string>();
+
+  viewSummary: ViewportSummary | null = null;
+  viewSummaryLoading = false;
+
+  ngOnInit(): void {
+    // Résumé IA de la vue courante généré une seule fois à l'ouverture du panneau (pas à
+    // chaque ajout/suppression de couche, pour éviter de spammer l'API Gemini).
+    const layerIds = this.mapLayerService.getActiveLayers().map((al) => al.layer.id);
+    if (layerIds.length === 0) return;
+
+    this.viewSummaryLoading = true;
+    this.geoportailService.summarizeView(layerIds).subscribe({
+      next: (summary) => {
+        this.viewSummary = summary;
+        this.viewSummaryLoading = false;
+      },
+      error: () => {
+        this.viewSummary = null;
+        this.viewSummaryLoading = false;
+      },
+    });
+  }
 
   toggleVisibility(layer: ActiveLayer): void {
     this.mapLayerService.toggleVisibility(layer.layer.id);

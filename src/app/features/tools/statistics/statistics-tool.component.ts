@@ -10,6 +10,7 @@ import { FormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { MapLayerService } from '../../map/services/map-layer.service';
 import { LayerService } from '../../../core/services/layer.service';
+import { GeoportailService } from '../../../core/services/geoportail.service';
 import { LoadingSpinnerComponent } from '../../../shared/components/loading-spinner/loading-spinner.component';
 
 interface ChartBar {
@@ -35,12 +36,15 @@ interface LayerStats {
 export class StatisticsToolComponent implements OnInit {
   private readonly mapLayerService = inject(MapLayerService);
   private readonly layerService = inject(LayerService);
+  private readonly geoportailService = inject(GeoportailService);
 
   activeLayers: any[] = [];
   selectedLayerId: string | null = null;
   selectedProperty: string | null = null;
   loading = false;
   stats: LayerStats | null = null;
+  narrative: string | null = null;
+  narrativeLoading = false;
 
   private readonly colors = [
     '#023f5f', '#00ada7', '#f44336', '#FF9800', '#4CAF50',
@@ -58,6 +62,7 @@ export class StatisticsToolComponent implements OnInit {
     this.loading = true;
     this.stats = null;
     this.selectedProperty = null;
+    this.narrative = null;
 
     this.layerService.getFeatures(this.selectedLayerId, { limit: 10000 }).subscribe({
       next: (response) => {
@@ -71,6 +76,23 @@ export class StatisticsToolComponent implements OnInit {
       error: () => {
         this.stats = { totalFeatures: 0, properties: [], propertyDistribution: {} };
         this.loading = false;
+      },
+    });
+
+    this.loadNarrative(this.selectedLayerId);
+  }
+
+  /** Synthèse IA (Gemini) en complément des graphiques calculés côté client - jamais bloquant. */
+  private loadNarrative(layerId: string): void {
+    this.narrativeLoading = true;
+    this.geoportailService.getLayerStats(layerId, true).subscribe({
+      next: (result) => {
+        this.narrative = result.narrative ?? null;
+        this.narrativeLoading = false;
+      },
+      error: () => {
+        this.narrative = null;
+        this.narrativeLoading = false;
       },
     });
   }

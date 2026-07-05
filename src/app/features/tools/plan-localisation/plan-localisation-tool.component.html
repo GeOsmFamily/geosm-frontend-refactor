@@ -33,6 +33,11 @@
     <input matInput [(ngModel)]="landmark" placeholder="Ex: face à la mairie">
   </mat-form-field>
 
+  <mat-checkbox [(ngModel)]="autoFillWithAI" class="ai-autofill-checkbox">
+    <mat-icon class="ai-icon">auto_awesome</mat-icon>
+    Rédiger avec l'IA les champs laissés vides
+  </mat-checkbox>
+
   <mat-form-field appearance="outline" class="full-width">
     <mat-label>Échelle</mat-label>
     <mat-select [(ngModel)]="scale">
