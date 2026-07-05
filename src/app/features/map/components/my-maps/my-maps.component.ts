@@ -19,6 +19,7 @@ import { MapCompositionService } from '../../../../core/services/map-composition
 import { LayerService } from '../../../../core/services/layer.service';
 import { InstanceService } from '../../../../core/services/instance.service';
 import { AuthService } from '../../../../core/services/auth.service';
+import { AnalyticsService } from '../../../../core/services/analytics.service';
 import { MapComposition } from '../../../../core/models/index';
 
 @Component({
@@ -38,6 +39,7 @@ export class MyMapsComponent implements OnInit {
   private readonly layerService = inject(LayerService);
   private readonly instanceService = inject(InstanceService);
   private readonly authService = inject(AuthService);
+  private readonly analyticsService = inject(AnalyticsService);
   private readonly router = inject(Router);
   private readonly snackBar = inject(MatSnackBar);
   private readonly translate = inject(TranslateService);
@@ -85,6 +87,7 @@ export class MyMapsComponent implements OnInit {
         this.saving.set(false);
         this.maps.update((m) => [composition, ...m]);
         this.mapName = '';
+        this.analyticsService.trackEvent({ instanceId: instance.id, eventType: 'map_composition_saved' }).subscribe({ error: () => {} });
         this.snackBar.open(
           this.translate.instant('shared.savedSuccessfully') || 'Enregistré avec succès',
           'OK',
@@ -106,6 +109,7 @@ export class MyMapsComponent implements OnInit {
     const instance = this.instanceService.currentInstance$.value;
     if (!instance) return;
     this.loadingMapId.set(composition.id);
+    this.analyticsService.trackEvent({ instanceId: instance.id, eventType: 'map_composition_loaded' }).subscribe({ error: () => {} });
 
     this.mapLayerService.removeAll();
 

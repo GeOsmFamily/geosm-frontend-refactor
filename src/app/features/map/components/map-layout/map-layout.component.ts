@@ -52,6 +52,7 @@ import { StatisticsToolComponent } from '../../../../features/tools/statistics/s
 import { PlanLocalisationToolComponent } from '../../../../features/tools/plan-localisation/plan-localisation-tool.component';
 import { SpatialAnalysisToolComponent } from '../../../../features/tools/spatial-analysis/spatial-analysis-tool.component';
 import { NearestSearchToolComponent } from '../../../../features/tools/nearest-search/nearest-search-tool.component';
+import { AnalyticsService } from '../../../../core/services/analytics.service';
 
 @Component({
   selector: 'app-map-layout',
@@ -111,6 +112,7 @@ export class MapLayoutComponent implements OnInit {
   private readonly geocodingService = inject(GeocodingService);
   private readonly snackBar = inject(MatSnackBar);
   private readonly routingService = inject(RoutingService);
+  private readonly analyticsService = inject(AnalyticsService);
 
   readonly locationInfoLoading = signal(false);
   readonly shareModalOpen = signal(false);
@@ -515,6 +517,13 @@ export class MapLayoutComponent implements OnInit {
     this.baseMapsOpen.set(false);
     this.settingsOpen.set(false);
     this.locationInfoOpen.set(false);
+    this.trackToolOpened(toolId);
+  }
+
+  private trackToolOpened(toolId: string): void {
+    const instanceId = this.instanceService.currentInstance$.value?.id;
+    if (!instanceId) return;
+    this.analyticsService.trackEvent({ instanceId, eventType: 'tool_opened', metadata: { toolId } }).subscribe({ error: () => {} });
   }
 
   closeActiveTool(): void {

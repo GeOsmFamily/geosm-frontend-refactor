@@ -11,6 +11,8 @@ import { transformExtent } from 'ol/proj';
 import { Layer } from '../../../core/models/index';
 import { MapService } from './map.service';
 import { LayerService } from '../../../core/services/layer.service';
+import { AnalyticsService } from '../../../core/services/analytics.service';
+import { InstanceService } from '../../../core/services/instance.service';
 import { createClusterLayer, geoJsonToFeatures } from '../helpers/map.helper';
 import { resolveLayerIconUrlOrDefault } from '../../../core/utils/layer-icon.util';
 
@@ -39,12 +41,24 @@ export interface ActiveLayer {
 export class MapLayerService {
   private readonly mapService = inject(MapService);
   private readonly layerService = inject(LayerService);
+  private readonly analyticsService = inject(AnalyticsService);
+  private readonly instanceService = inject(InstanceService);
 
   private readonly activeLayersSubject = new BehaviorSubject<ActiveLayer[]>([]);
   readonly activeLayers$ = this.activeLayersSubject.asObservable();
 
   getActiveLayers(): ActiveLayer[] {
     return this.activeLayersSubject.value;
+  }
+
+  /**
+   * Best-effort, jamais bloquant : une erreur de tracking (réseau, backend indisponible...)
+   * ne doit jamais empêcher l'action réelle (activer/désactiver une couche) de se produire.
+   */
+  private trackLayerEvent(eventType: string, layerId: string): void {
+    const instanceId = this.instanceService.currentInstance$.value?.id;
+    if (!instanceId) return;
+    this.analyticsService.trackEvent({ instanceId, eventType, layerId }).subscribe({ error: () => {} });
   }
 
   addLayer(layer: Layer): void {
@@ -69,6 +83,7 @@ export class MapLayerService {
     }
 
     this.activeLayersSubject.next([...this.activeLayersSubject.value, activeLayer]);
+    this.trackLayerEvent('layer_activated', layer.id);
   }
 
   /**
@@ -175,6 +190,7 @@ export class MapLayerService {
       this.mapService.removeLayer(found.olLayer);
       if (found.heatmapLayer) this.mapService.removeLayer(found.heatmapLayer);
       this.activeLayersSubject.next(current.filter(al => al.layer.id !== layerId));
+      this.trackLayerEvent('layer_deactivated', layerId);
     }
   }
 

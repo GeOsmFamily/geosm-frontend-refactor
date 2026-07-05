@@ -12,8 +12,10 @@ import { MatMenuModule } from '@angular/material/menu';
 import { Subject, debounceTime, distinctUntilChanged, switchMap, forkJoin, of, takeUntil, catchError } from 'rxjs';
 
 import { GeocodingService } from '../../../../core/services/geocoding.service';
-import { SearchService } from '../../../../core/services/search.service';
+import { SearchService, LayerSuggestion } from '../../../../core/services/search.service';
 import { InstanceService } from '../../../../core/services/instance.service';
+import { AnalyticsService } from '../../../../core/services/analytics.service';
+import { LayerService } from '../../../../core/services/layer.service';
 import { MapService } from '../../../map/services/map.service';
 import { MapLayerService } from '../../../map/services/map-layer.service';
 import { GeocodingResult } from '../../../../core/models/index';
@@ -65,6 +67,8 @@ export class SearchBarComponent implements OnInit, OnDestroy {
   private readonly instanceService = inject(InstanceService);
   private readonly mapService = inject(MapService);
   private readonly mapLayerService = inject(MapLayerService);
+  private readonly analyticsService = inject(AnalyticsService);
+  private readonly layerService = inject(LayerService);
   private readonly destroy$ = new Subject<void>();
   private readonly searchInput$ = new Subject<string>();
 
@@ -80,9 +84,20 @@ export class SearchBarComponent implements OnInit, OnDestroy {
   readonly activeBoundary = signal<SearchResultItem | null>(null);
   readonly downloadingBoundary = signal<boolean>(false);
   readonly history = signal<SearchResultItem[]>([]);
+  readonly suggestions = signal<SearchResultItem[]>([]);
 
   ngOnInit(): void {
     this.history.set(this.loadHistory());
+    // Abonnement réactif (et non lecture ponctuelle de .value) : au premier rendu de ce
+    // composant (dans l'en-tête, monté avant que l'instance courante ait fini de se résoudre),
+    // currentInstance$.value pouvait encore valoir null, ce qui faisait échouer silencieusement
+    // le chargement des suggestions - jamais réessayé ensuite. Voir CatalogBrowserComponent qui
+    // suit déjà ce pattern réactif.
+    this.instanceService.currentInstance$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((instance) => {
+        if (instance) this.loadSuggestions();
+      });
     this.markerLayer = new VectorLayer({
       source: this.markerSource,
       style: (feature) => {
@@ -195,6 +210,7 @@ export class SearchBarComponent implements OnInit, OnDestroy {
   }
 
   selectResult(item: SearchResultItem): void {
+    this.trackSearchSelection(item);
     this.markerSource.clear();
 
     if (item.type === 'boundary') {
@@ -263,14 +279,48 @@ export class SearchBarComponent implements OnInit, OnDestroy {
       this.mapService.zoomTo([Number(geo.lon), Number(geo.lat)], 16);
       this.activeBoundary.set(null);
     } else if (item.type === 'layer') {
-      this.mapLayerService.addLayer(item.data);
-      this.mapLayerService.setVisibility(item.data.id, true);
+      // item.data ne contient que {id, name, description} (résultat MeiliSearch ou suggestion
+      // contextuelle, voir SearchService) - il manque sourceUrl/sourceLayer/geometryType etc.
+      // nécessaires au rendu. Sans ce fetch, la couche s'ajoutait à la liste "actives" mais
+      // rien ne s'affichait sur la carte (MapLayerService.addLayer() ne peut rien dessiner
+      // à partir d'un objet incomplet).
+      const instanceId = this.instanceService.currentInstance$.value?.id;
+      if (instanceId) {
+        this.layerService.getById(instanceId, item.data.id).subscribe({
+          next: (layer) => {
+            this.mapLayerService.addLayer(layer);
+            this.mapLayerService.setVisibility(layer.id, true);
+          },
+        });
+      }
       this.activeBoundary.set(null);
     }
 
     this.searchQuery = item.label;
     this.results = [];
     this.addToHistory(item);
+  }
+
+  private trackSearchSelection(item: SearchResultItem): void {
+    const instanceId = this.instanceService.currentInstance$.value?.id;
+    if (!instanceId) return;
+    this.analyticsService.trackEvent({
+      instanceId,
+      eventType: 'search_performed',
+      layerId: item.type === 'layer' ? item.data?.id : undefined,
+      metadata: { resultType: item.type, query: this.searchQuery },
+    }).subscribe({ error: () => {} });
+  }
+
+  private loadSuggestions(): void {
+    const instance = this.instanceService.currentInstance$.value;
+    if (!instance) return;
+    this.searchService.getSuggestions(instance.id, 5).subscribe({
+      next: (layers: LayerSuggestion[]) => {
+        this.suggestions.set(layers.map((l) => ({ type: 'layer' as const, label: l.name, data: l })));
+      },
+      error: () => this.suggestions.set([]),
+    });
   }
 
   private loadHistory(): SearchResultItem[] {

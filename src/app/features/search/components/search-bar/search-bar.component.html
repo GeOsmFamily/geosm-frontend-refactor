@@ -34,6 +34,17 @@
       </mat-optgroup>
     }
 
+    @if (!searchQuery && suggestions().length > 0) {
+      <mat-optgroup label="Suggestions pour vous">
+        @for (item of suggestions(); track item.label) {
+          <mat-option [value]="item">
+            <mat-icon class="result-icon suggestion">auto_awesome</mat-icon>
+            <span class="result-label">{{ item.label }}</span>
+          </mat-option>
+        }
+      </mat-optgroup>
+    }
+
     @if (boundaryResults.length > 0) {
       <mat-optgroup label="Limites administratives">
         @for (item of boundaryResults; track item.label) {

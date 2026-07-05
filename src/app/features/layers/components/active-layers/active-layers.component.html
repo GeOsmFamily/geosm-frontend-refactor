@@ -81,6 +81,20 @@
         }
       </div>
 
+      @if (recommendations.length > 0) {
+        <div class="recommendations">
+          <p class="recommendations-title"><mat-icon class="ai-icon">auto_awesome</mat-icon> Vous pourriez aussi aimer</p>
+          @for (rec of recommendations; track rec.id) {
+            <div class="recommendation-card">
+              <span class="recommendation-name" [matTooltip]="rec.name">{{ rec.name | truncate:24 }}</span>
+              <button class="add-recommendation-btn" type="button" [disabled]="addingRecommendationId === rec.id" (click)="addRecommendedLayer(rec)">
+                <mat-icon>{{ addingRecommendationId === rec.id ? 'hourglass_empty' : 'add' }}</mat-icon>
+              </button>
+            </div>
+          }
+        </div>
+      }
+
       <div class="actions-bar">
         <button (click)="removeAll()">
           <mat-icon>delete_sweep</mat-icon>

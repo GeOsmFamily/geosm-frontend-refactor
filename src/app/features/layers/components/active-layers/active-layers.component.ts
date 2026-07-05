@@ -16,6 +16,7 @@ import { MapService } from '../../../map/services/map.service';
 import { AuthService } from '../../../../core/services/auth.service';
 import { LayerService } from '../../../../core/services/layer.service';
 import { GeoportailService } from '../../../../core/services/geoportail.service';
+import { SearchService, LayerRecommendation } from '../../../../core/services/search.service';
 import { Role, ViewportSummary } from '../../../../core/models/index';
 import { toLonLat } from 'ol/proj';
 
@@ -47,12 +48,15 @@ export class ActiveLayersComponent implements OnInit {
   private readonly authService = inject(AuthService);
   private readonly layerService = inject(LayerService);
   private readonly geoportailService = inject(GeoportailService);
+  private readonly searchService = inject(SearchService);
 
   readonly activeLayers$ = this.mapLayerService.activeLayers$;
   readonly resyncingIds = new Set<string>();
 
   viewSummary: ViewportSummary | null = null;
   viewSummaryLoading = false;
+  recommendations: LayerRecommendation[] = [];
+  addingRecommendationId: string | null = null;
 
   ngOnInit(): void {
     // Résumé IA de la vue courante généré une seule fois à l'ouverture du panneau (pas à
@@ -69,6 +73,43 @@ export class ActiveLayersComponent implements OnInit {
       error: () => {
         this.viewSummary = null;
         this.viewSummaryLoading = false;
+      },
+    });
+
+    this.loadRecommendations(layerIds);
+  }
+
+  // Recommandations basées sur la dernière couche activée ("les utilisateurs qui ont activé
+  // X ont aussi activé Y") - comme le résumé de vue, chargées une seule fois à l'ouverture
+  // du panneau plutôt qu'à chaque ajout de couche.
+  private loadRecommendations(activeLayerIds: string[]): void {
+    const instance = this.instanceService.currentInstance$.value;
+    const referenceLayerId = activeLayerIds.at(-1);
+    if (!instance || !referenceLayerId) return;
+
+    this.searchService.getLayerRecommendations(referenceLayerId, instance.id, 4).subscribe({
+      next: (recs) => {
+        const activeSet = new Set(activeLayerIds);
+        this.recommendations = recs.filter((r) => !activeSet.has(r.id));
+      },
+      error: () => {
+        this.recommendations = [];
+      },
+    });
+  }
+
+  addRecommendedLayer(rec: LayerRecommendation): void {
+    const instance = this.instanceService.currentInstance$.value;
+    if (!instance || this.addingRecommendationId) return;
+    this.addingRecommendationId = rec.id;
+    this.layerService.getById(instance.id, rec.id).subscribe({
+      next: (layer) => {
+        this.mapLayerService.addLayer(layer);
+        this.recommendations = this.recommendations.filter((r) => r.id !== rec.id);
+        this.addingRecommendationId = null;
+      },
+      error: () => {
+        this.addingRecommendationId = null;
       },
     });
   }

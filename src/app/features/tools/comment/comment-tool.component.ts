@@ -21,6 +21,7 @@ import { MapService } from '../../map/services/map.service';
 import { ToolActionService } from '../../../core/services/tool-action.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { InstanceService } from '../../../core/services/instance.service';
+import { AnalyticsService } from '../../../core/services/analytics.service';
 import { CommentService } from '../../../core/services/comment.service';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
@@ -68,6 +69,7 @@ export class CommentToolComponent implements OnInit, OnDestroy {
   private readonly toolActionService = inject(ToolActionService);
   private readonly authService = inject(AuthService);
   private readonly instanceService = inject(InstanceService);
+  private readonly analyticsService = inject(AnalyticsService);
   private readonly commentService = inject(CommentService);
   private readonly snackBar = inject(MatSnackBar);
   private readonly translate = inject(TranslateService);
@@ -207,6 +209,7 @@ export class CommentToolComponent implements OnInit, OnDestroy {
       lon,
     }).subscribe({
       next: (savedComment) => {
+        this.analyticsService.trackEvent({ instanceId: instance.id, eventType: 'comment_created' }).subscribe({ error: () => {} });
         const feature = new Feature(new Point(fromLonLat(this.pendingCoord!)));
         feature.set('label', text);
         feature.set('resolved', false);

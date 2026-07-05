@@ -12,6 +12,7 @@ import { Style, Stroke, Fill, Circle as CircleStyle } from 'ol/style';
 
 import { AssistantService, AssistantChatTurn, AssistantClientAction, AssistantAttachment, AssistantConversationSummary } from '../../../../core/services/assistant.service';
 import { InstanceService } from '../../../../core/services/instance.service';
+import { AnalyticsService } from '../../../../core/services/analytics.service';
 import { LayerService } from '../../../../core/services/layer.service';
 import { LocationPlanService } from '../../../../core/services/location-plan.service';
 import { MapLayerService } from '../../services/map-layer.service';
@@ -37,6 +38,7 @@ export class AssistantChatComponent implements OnInit, OnDestroy {
   private readonly locationPlanService = inject(LocationPlanService);
   private readonly mapLayerService = inject(MapLayerService);
   private readonly mapService = inject(MapService);
+  private readonly analyticsService = inject(AnalyticsService);
 
   @ViewChild('messagesEnd') private messagesEnd?: ElementRef<HTMLDivElement>;
 
@@ -143,6 +145,7 @@ export class AssistantChatComponent implements OnInit, OnDestroy {
     this.inputText = '';
     this.sending.set(true);
     this.scrollToBottom();
+    this.analyticsService.trackEvent({ instanceId: instance.id, eventType: 'assistant_message_sent' }).subscribe({ error: () => {} });
 
     this.assistantService.chat(instance.id, conversationId, text).subscribe({
       next: (result) => {

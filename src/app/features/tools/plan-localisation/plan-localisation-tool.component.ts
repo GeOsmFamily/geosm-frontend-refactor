@@ -22,6 +22,7 @@ import { Style, Circle as CircleStyle, Fill, Stroke } from 'ol/style';
 
 import { MapService } from '../../map/services/map.service';
 import { InstanceService } from '../../../core/services/instance.service';
+import { AnalyticsService } from '../../../core/services/analytics.service';
 import { LocationPlanService } from '../../../core/services/location-plan.service';
 import { LoadingSpinnerComponent } from '../../../shared/components/loading-spinner/loading-spinner.component';
 
@@ -52,6 +53,7 @@ const POLL_TIMEOUT_MS = 90000;
 export class PlanLocalisationToolComponent implements OnDestroy {
   private readonly mapService = inject(MapService);
   private readonly instanceService = inject(InstanceService);
+  private readonly analyticsService = inject(AnalyticsService);
   private readonly locationPlanService = inject(LocationPlanService);
   private readonly snackBar = inject(MatSnackBar);
 
@@ -144,7 +146,10 @@ export class PlanLocalisationToolComponent implements OnDestroy {
       includeNorthArrow: this.includeNorthArrow,
       autoFillWithAI: this.autoFillWithAI,
     }).subscribe({
-      next: (plan) => this.pollUntilDone(plan.id),
+      next: (plan) => {
+        this.analyticsService.trackEvent({ instanceId: instance.id, eventType: 'location_plan_created' }).subscribe({ error: () => {} });
+        this.pollUntilDone(plan.id);
+      },
       error: (err) => {
         console.error('[PlanLocalisation] Échec de la création du plan', err);
         this.generating.set(false);
