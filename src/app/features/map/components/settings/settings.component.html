@@ -18,6 +18,48 @@
       </div>
     </div>
 
+    <!-- OpenStreetMap Account -->
+    @if (osmConfigured()) {
+      <div class="settings-section">
+        <div class="section-title">
+          <mat-icon>public</mat-icon>
+          <span>OpenStreetMap</span>
+        </div>
+        @if (osmLoading()) {
+          <p class="osm-loading">{{ 'settings.osm.loading' | translate }}</p>
+        } @else {
+          @if (osmProfile(); as osm) {
+            <div class="user-card glass osm-card">
+              @if (osm.avatarUrl) {
+                <img [src]="osm.avatarUrl" alt="" class="osm-avatar" />
+              } @else {
+                <div class="user-avatar"><mat-icon>face</mat-icon></div>
+              }
+              <div class="user-info">
+                <div class="user-fullname">{{ osm.displayName }}</div>
+                @if (osm.osmAccountCreatedAt) {
+                  <div class="user-email">{{ 'settings.osm.memberSince' | translate }} {{ osm.osmAccountCreatedAt | date:'dd/MM/yyyy' }}</div>
+                }
+                <div class="user-email">{{ osm.changesetCount }} {{ 'settings.osm.contributions' | translate }}</div>
+              </div>
+              <button mat-icon-button color="warn" (click)="unlinkOsmAccount()" [matTooltip]="'settings.osm.unlinkTooltip' | translate">
+                <mat-icon>link_off</mat-icon>
+              </button>
+            </div>
+          } @else {
+            <div class="auth-fallback-card glass">
+              <mat-icon class="fallback-icon">public</mat-icon>
+              <p class="fallback-text">{{ 'settings.osm.notLinked' | translate }}</p>
+              <button mat-flat-button color="primary" (click)="linkOsmAccount()" [disabled]="linkingOsm()">
+                <mat-icon>link</mat-icon>
+                {{ 'settings.osm.linkButton' | translate }}
+              </button>
+            </div>
+          }
+        }
+      </div>
+    }
+
     <!-- Edit Profile Form -->
     <div class="settings-section">
       <div class="section-title">

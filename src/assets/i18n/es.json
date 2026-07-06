@@ -1,112 +1,13 @@
 {
-  "add_commentaire": {
-    "cancel": "CANCELAR",
-    "save": "GUARDAR",
-    "title": "Agregar un comentario",
-    "title_commentaire": "Su comentario :"
-  },
-  "ajout_signet": {
-    "cancel": "CANCELAR",
-    "placeholder": "Nombre su geo-marcador",
-    "save": "GUARDAR",
-    "title": "Agregar un geo-marcador"
-  },
-  "caracteristiques_lieu": {
-    "altitude": "Altitud",
-    "fermer": "Cerrar",
-    "partager": "Compartir este lugar",
-    "titre": "Características del lugar",
-    "titre_coord": "Coordenadas (WGS84)",
-    "zoomer": "Acercar"
-  },
-  "choose_signet": {
-    "no_signet": "No tienen ningún geo-marcador",
-    "title": "Clic en un marcador para acercarse sobre él : "
-  },
   "compare_maps": {
     "compare": "Comparar",
     "title": "Elija dos mapas :"
   },
-  "couche_en_cours": {
-    "information_couche": "Metadatos",
-    "partager_couche": "Compartir esta capa",
-    "supprimer_couche": "Eliminar esta capa",
-    "tout_partager": "Compartir",
-    "tout_partager_toolpit": "Compartir este catálogo",
-    "tout_supprimer": "Eliminar todo"
-  },
-  "dowload_data": {
-    "all": "todo",
-    "by": "Por",
-    "calculate": "Calcular",
-    "description": "Extraer datos específicos según un perímetro",
-    "draw": "Dibujar un perímetro",
-    "loading": "Cargando de",
-    "title_choose_emprise": "Exportar todas las capas",
-    "title_choose_layer": "Elija una capa",
-    "title_choose_one_emprise": "Seleccione un límite",
-    "title_choose_thematique": "Elija un tema",
-    "title_choose_type_emprise": "Su perímetro espacial",
-    "title_data_in": "Ingresar datos"
-  },
-  "draw_in_map": {
-    "apply_draw": "APPICAR",
-    "save": "GUARDAD",
-    "your_comment_placeholder": "Su comentario"
-  },
-  "header": {
-    "toolpit_info": "GeOsm ?"
-  },
-  "infos_plateform": {
-    "title": "GeoUganda"
-  },
-  "layer_properties": {
-    "click_url_text": "Clic aquí",
-    "download_gpkg": "Descargue el GEOPACKAGE aquí",
-    "download_problem": "ocurrió un problema en esta capa",
-    "title": "Planilla descriptiva sheet",
-    "title_download": "Descargando los archivos",
-    "toolpit_share": "Compartir este lugar"
-  },
   "left_menu": {
     "fonds_de_carte": "Todos los mapas base",
     "geobibliotheque": "Biblioteca",
-    "geothematiques": "Temas"
-  },
-  "loading": {
-    "loading": "Cargando...",
-    "loading_catalog": "Descarga de catálogo de datos...",
-    "loading_dowloads_data": "Cálculo en progreso...",
-    "loading_pdf_print": "Creación del mapa..."
-  },
-  "menu_contextuel": {
-    "ajouter_geosignet": "Agregar un geom-marcador en este lugar",
-    "caracteristique": "Características del lugar",
-    "commenter": "Comentar este lugar",
-    "partager": "Compartir este lugar",
-    "voir_geosignet": "Sus ge-marcadores"
-  },
-  "metadata": {
-    "area": "superficie total en m² del área",
-    "conditions_of_use": "Términos y condiciones de uso : ",
-    "coordinates_system": "Sistema de coordenadas : ",
-    "coucverture": "Cobertura : ",
-    "creation_date": "Fecha de creación : ",
-    "description": "Descripción",
-    "description_couche": "Descripción : ",
-    "key_osm": "Características del mapa OSM : ",
-    "key_words": "Claves : ",
-    "language": "Idioma : ",
-    "lenght": "longitud total el m.",
-    "number_entite": "entidad(es)",
-    "properties": "Propiedades",
-    "ressources": "Recursos",
-    "resume": "Resumen : ",
-    "scale": "Escala : ",
-    "shareholders": "Socios / proveedores : ",
-    "text_no_metadata": "TEl resumen de estos datos aún no está disponible.",
-    "title": "Planilla descriptiva : ",
-    "update_date": "Fecha de actualización : "
+    "geothematiques": "Temas",
+    "fonds": "Fondos de mapa"
   },
   "naviguation_tools": {
     "compare_maps": "Comparar mapas",
@@ -122,12 +23,6 @@
     "zoom_plus": "Alejat",
     "zoom_to_coordinates": "Acercar en una coordenada"
   },
-  "notifications": {
-    "click_on_map_itineraire": "Clic en el mapa para colocar su punto",
-    "comment_added": "Se agregó su comentario",
-    "signet_added_1": "El geo-marcador",
-    "signet_added_2": "se agregó"
-  },
   "right_menu": {
     "button": {
       "toolpit_download_data": "Descargando datos",
@@ -137,7 +32,9 @@
       "toolpit_tools": "Herramientas de edición"
     },
     "download_data": {
-      "title": "Descargando datos"
+      "title": "Descargando datos",
+      "downloadCompleteDataTooltip": "Descargar los datos completos (sin intersección geográfica)",
+      "downloadCompleteData": "Exportar todas las capas"
     },
     "legend": {
       "title": "Leyenda"
@@ -191,38 +88,6 @@
       }
     }
   },
-  "search": {
-    "placeholder": "Buscar un lugar, una capa...",
-    "noResults": "Sin resultados",
-    "places": "Lugares",
-    "layers": "Capas"
-  },
-  "zoom_to_coordinates": {
-    "cancel": "Cancelar",
-    "choose_projection": "Elija una proyección",
-    "latitude": "latitud",
-    "longitude": "longitud",
-    "save": "Guardar",
-    "title": "BUSCAR POR COORDENADAS"
-  },
-  "descriptive_sheet": {
-    "share": " Compatir",
-    "zoomTo": " Acercar a",
-    "displayAllAttributes": " Mostrar todo",
-    "displayLesAttributes": " Mostrar menos"
-  },
-  "geosm": {
-    "text": "GeOsm usea ",
-    "text1": " dato"
-  },
-  "infos": {
-    "p1": "GeOsm es una infraestructura abierta, colaborativa y compartida compuesta por datos, recursos y actores que juegan un papel de liderazgo en la implementación, mejora y mantenimiento de soluciones innovadoras basadas en datos geoespaciales accesibles y libres de regalías para todos.",
-    "p2": "Para informar una anomalía (error) en la aplicación :",
-    "p3": "Si tiene una idea de colaboración o tecnología de interés, o si tiene una fortaleza en alguna de nuestras áreas de interés, no dude en contactarnos.:"
-  },
-  "save": "Gradar",
-  "cancel": "Cancela",
-  "updatebd": "Última actualización de la base de datos de OSM :",
   "app": {
     "title": "GeOSM",
     "subtitle": "Plataforma Cartografica"
@@ -242,7 +107,14 @@
     "loginButton": "Iniciar sesion",
     "registerButton": "Registrarse",
     "loginError": "Correo o contrasena incorrectos",
-    "registerSuccess": "Cuenta creada con exito"
+    "registerSuccess": "Cuenta creada con exito",
+    "osmLinkedSuccess": "Cuenta de OpenStreetMap vinculada con éxito",
+    "osmLinkError": "Error al vincular la cuenta de OpenStreetMap",
+    "osmLoginFailed": "El inicio de sesión con OpenStreetMap falló. Inténtalo de nuevo.",
+    "osmUnavailable": "El inicio de sesión con OpenStreetMap no está disponible por ahora.",
+    "enterEmailPassword": "Por favor, introduce tu correo y contraseña.",
+    "loginFailedGeneric": "Error al iniciar sesión. Verifica tus credenciales.",
+    "osmLoginButton": "Iniciar sesión con OpenStreetMap"
   },
   "map": {
     "zoom": "Zoom",
@@ -310,7 +182,12 @@
       "pending": "Pendiente",
       "completed": "Completado",
       "failed": "Fallido",
-      "processing": "En proceso"
+      "processing": "En proceso",
+      "errors": {
+        "launchFailed": "Error al iniciar la exportación.",
+        "exportFailed": "La exportación falló. Inténtalo de nuevo.",
+        "downloadFailed": "El archivo está listo pero la descarga falló. Inténtalo de nuevo."
+      }
     },
     "print": {
       "title": "Titulo",
@@ -341,6 +218,23 @@
       "clear": "Borrar todo",
       "delete": "Eliminar",
       "edit": "Editar"
+    },
+    "altimetryErrors": {
+      "noData": "No hay datos de altitud disponibles para esta zona.",
+      "fetchFailed": "Error al obtener el perfil altimétrico. Inténtalo de nuevo."
+    },
+    "nearestSearchErrors": {
+      "noResult": "No se encontró ningún resultado para esta capa.",
+      "searchFailed": "Error al buscar el elemento más cercano."
+    },
+    "planLocalisationErrors": {
+      "generationFailed": "Error al generar el PDF. Inténtalo de nuevo.",
+      "generationTimeout": "La generación está tardando más de lo esperado. Inténtalo de nuevo en un momento.",
+      "downloadFailed": "El PDF está listo pero la descarga falló. Inténtalo de nuevo."
+    },
+    "spatialAnalysisErrors": {
+      "noResult": "Sin resultado (¿geometrías disjuntas?).",
+      "analysisFailed": "Error en el análisis espacial. Verifica las geometrías dibujadas."
     }
   },
   "sharing": {
@@ -351,7 +245,10 @@
     "twitter": "Twitter",
     "whatsapp": "WhatsApp",
     "linkedin": "LinkedIn",
-    "sharedMap": "Mapa compartido"
+    "sharedMap": "Mapa compartido",
+    "errors": {
+      "createFailed": "Error al crear el enlace para compartir."
+    }
   },
   "geosignets": {
     "title": "Marcadores",
@@ -415,7 +312,15 @@
     "directions": "Direcciones",
     "download": "Descargar",
     "showDetails": "Ver mas",
-    "hideDetails": "Ver menos"
+    "hideDetails": "Ver menos",
+    "errors": {
+      "noExportableData": "No hay datos exportables para este elemento.",
+      "createExportFailed": "Descarga fallida: no se pudo crear la exportación.",
+      "downloadExpired": "La descarga expiró, inténtalo de nuevo.",
+      "downloadFileFailed": "Error al descargar el archivo.",
+      "serverExportFailed": "La exportación falló en el servidor.",
+      "downloadFailed": "Descarga fallida."
+    }
   },
   "common": {
     "save": "Guardar",
@@ -456,5 +361,65 @@
     "results": "Resultados",
     "remove": "Eliminar medida",
     "clearAll": "Borrar todo"
+  },
+  "settings": {
+    "accountInfo": "Información de la cuenta",
+    "editProfile": "Editar perfil",
+    "changePassword": "Cambiar contraseña",
+    "currentPassword": "Contraseña actual",
+    "newPassword": "Nueva contraseña",
+    "updatePassword": "Actualizar contraseña",
+    "preferences": "Preferencias de la plataforma",
+    "darkMode": "Modo oscuro",
+    "darkModeDesc": "Activar el tema oscuro para la plataforma",
+    "profileUpdated": "Perfil actualizado con éxito",
+    "profileUpdateError": "Error al actualizar el perfil",
+    "passwordChanged": "Contraseña cambiada con éxito",
+    "passwordChangeError": "Error al cambiar la contraseña",
+    "osmLinkStartError": "No se pudo iniciar la vinculación con OpenStreetMap",
+    "osmUnlinked": "Cuenta de OpenStreetMap desvinculada",
+    "osmUnlinkError": "Error al desvincular",
+    "osm": {
+      "loading": "Cargando...",
+      "memberSince": "Miembro de OSM desde el",
+      "contributions": "contribución(es) OSM",
+      "unlinkTooltip": "Desvincular esta cuenta",
+      "notLinked": "Ninguna cuenta de OpenStreetMap vinculada.",
+      "linkButton": "Vincular mi cuenta de OpenStreetMap"
+    }
+  },
+  "infoPanel": {
+    "title": "Info",
+    "developer": {
+      "title": "Desarrollador"
+    },
+    "openSource": {
+      "title": "Proyecto de código abierto",
+      "description": "GeOSM es un proyecto de código abierto. El código fuente está disponible públicamente y las contribuciones son bienvenidas.",
+      "viewRepo": "Ver repositorio en GitHub"
+    },
+    "guide": {
+      "title": "Guía de usuario",
+      "description": "Descargue la guía completa de GeOSM en formato PDF, con una explicación detallada de cada funcionalidad y ejemplos de casos de uso.",
+      "download": "Descargar la guía (PDF)"
+    },
+    "feedback": {
+      "title": "Reportar un problema",
+      "description": "¿Encontró un error, tiene una sugerencia o una idea para una nueva funcionalidad? No dude en contárnoslo.",
+      "typeLabel": "Tipo de reporte",
+      "types": {
+        "bug": "Reportar un error",
+        "suggestion": "Hacer una sugerencia",
+        "featureRequest": "Proponer una funcionalidad"
+      },
+      "descriptionLabel": "Descripción",
+      "descriptionRequired": "La descripción es obligatoria",
+      "descriptionTooShort": "La descripción debe tener al menos 10 caracteres",
+      "emailLabel": "Correo de contacto (opcional)",
+      "emailInvalid": "Dirección de correo inválida",
+      "submit": "Enviar",
+      "success": "¡Gracias por sus comentarios!",
+      "error": "Ocurrió un error al enviar."
+    }
   }
 }

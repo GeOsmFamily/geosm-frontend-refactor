@@ -8,5 +8,8 @@ export const environment = {
   accentColor: '#00ada7',
   instanceName: 'GeOSM',
   qgisServerUrl: '/ows',
-  mapillaryToken: 'MLY|27232696753044973|162c805ddb2365b4a8765bb2cb346f2b',
+  // Placeholder injecté au build par le pipeline CI (secret MAPILLARY_TOKEN, voir ci.yml) -
+  // ne JAMAIS committer de vrai token ici (l'ancien token en dur committé doit être révoqué
+  // sur mapillary.com/dashboard et remplacé par un nouveau, seulement stocké en secret CI).
+  mapillaryToken: '__MAPILLARY_TOKEN__',
 };

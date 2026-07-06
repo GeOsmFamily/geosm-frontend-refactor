@@ -49,27 +49,40 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Vérifier la cohérence des traductions
+      - name: Vérifier la parité des clés entre fr/en/es
         run: |
-          echo "=== Vérification des fichiers i18n ==="
-          FAILED=0
-          for lang in fr en es; do
-            FILE="src/assets/i18n/${lang}.json"
-            if [ -f "$FILE" ]; then
-              COUNT=$(python3 -c "
-          import json
-          def count(obj):
-              c = 0
-              for v in obj.values():
-                  c += count(v) if isinstance(v, dict) else 1
-              return c
-          d = json.load(open('$FILE'))
-          print(count(d))
-          ")
-              echo "${lang}.json: ${COUNT} clés de traduction"
-            else
-              echo "⚠️ ${lang}.json manquant!"
-              FAILED=1
-            fi
-          done
-          exit $FAILED
+          # Ne se contente plus de compter les clés (deux fichiers pouvaient avoir le même
+          # nombre de clés tout en étant différentes - voir l'audit i18n qui a trouvé fr/en/es
+          # désynchronisés malgré des comptes proches) : diff réel des jeux de clés aplaties.
+          node -e "
+          const fs = require('fs');
+          function flatten(o, p = '') {
+            let k = [];
+            for (const x in o) {
+              const full = p ? p + '.' + x : x;
+              if (o[x] && typeof o[x] === 'object' && !Array.isArray(o[x])) k = k.concat(flatten(o[x], full));
+              else k.push(full);
+            }
+            return k;
+          }
+          const langs = ['fr', 'en', 'es'];
+          const keySets = {};
+          for (const lang of langs) {
+            const path = 'src/assets/i18n/' + lang + '.json';
+            if (!fs.existsSync(path)) { console.error('Manquant:', path); process.exit(1); }
+            keySets[lang] = new Set(flatten(JSON.parse(fs.readFileSync(path, 'utf8'))));
+            console.log(lang + '.json:', keySets[lang].size, 'clés');
+          }
+          let failed = false;
+          for (const lang of langs) {
+            for (const other of langs) {
+              if (lang === other) continue;
+              const missing = [...keySets[lang]].filter((k) => !keySets[other].has(k));
+              if (missing.length > 0) {
+                failed = true;
+                console.error('Clés présentes dans ' + lang + '.json mais absentes de ' + other + '.json:', missing);
+              }
+            }
+          }
+          process.exit(failed ? 1 : 0);
+          "

@@ -149,7 +149,7 @@ const clusterComboCache: Record<string, Style[]> = {};
 export function createClusterLayer(
   source: VectorSource,
   layerIconUrl: string = DEFAULT_CLUSTER_ICON,
-  distance: number = 40,
+  distance = 40,
   style?: Style | ((feature: any) => Style | Style[]),
   badgeColor: string = DEFAULT_BADGE_COLOR,
 ): VectorLayer<Cluster> {

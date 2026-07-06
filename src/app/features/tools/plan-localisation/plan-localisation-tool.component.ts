@@ -9,7 +9,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { Subscription, timer } from 'rxjs';
 import { switchMap, takeWhile } from 'rxjs/operators';
 
@@ -56,6 +56,7 @@ export class PlanLocalisationToolComponent implements OnDestroy {
   private readonly analyticsService = inject(AnalyticsService);
   private readonly locationPlanService = inject(LocationPlanService);
   private readonly snackBar = inject(MatSnackBar);
+  private readonly translate = inject(TranslateService);
 
   title = '';
   description = '';
@@ -153,7 +154,7 @@ export class PlanLocalisationToolComponent implements OnDestroy {
       error: (err) => {
         console.error('[PlanLocalisation] Échec de la création du plan', err);
         this.generating.set(false);
-        this.snackBar.open('Échec de la génération du PDF. Réessayez.', 'OK', { duration: 4000 });
+        this.snackBar.open(this.translate.instant('tools.planLocalisationErrors.generationFailed') || 'Échec de la génération du PDF. Réessayez.', 'OK', { duration: 4000 });
       },
     });
   }
@@ -180,13 +181,13 @@ export class PlanLocalisationToolComponent implements OnDestroy {
       },
       error: () => {
         this.generating.set(false);
-        this.snackBar.open('Échec de la génération du PDF. Réessayez.', 'OK', { duration: 4000 });
+        this.snackBar.open(this.translate.instant('tools.planLocalisationErrors.generationFailed') || 'Échec de la génération du PDF. Réessayez.', 'OK', { duration: 4000 });
       },
       complete: () => {
         // takeWhile a atteint le nombre max de tentatives sans COMPLETED/FAILED.
         if (this.generating()) {
           this.generating.set(false);
-          this.snackBar.open('La génération prend plus de temps que prévu. Réessayez dans un instant.', 'OK', { duration: 5000 });
+          this.snackBar.open(this.translate.instant('tools.planLocalisationErrors.generationTimeout') || 'La génération prend plus de temps que prévu. Réessayez dans un instant.', 'OK', { duration: 5000 });
         }
       },
     });
@@ -204,7 +205,7 @@ export class PlanLocalisationToolComponent implements OnDestroy {
         URL.revokeObjectURL(url);
       },
       error: () => {
-        this.snackBar.open('Le PDF est prêt mais le téléchargement a échoué. Réessayez.', 'OK', { duration: 4000 });
+        this.snackBar.open(this.translate.instant('tools.planLocalisationErrors.downloadFailed') || 'Le PDF est prêt mais le téléchargement a échoué. Réessayez.', 'OK', { duration: 4000 });
       },
     });
   }

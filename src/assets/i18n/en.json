@@ -1,112 +1,13 @@
 {
-  "add_commentaire": {
-    "cancel": "CANCEL",
-    "save": "SAVE",
-    "title": "Add a comment",
-    "title_commentaire": "Your comment :"
-  },
-  "ajout_signet": {
-    "cancel": "CANCEL",
-    "placeholder": "Name your geo-bookmark",
-    "save": "SAVE",
-    "title": "Add a geo-bookmark"
-  },
-  "caracteristiques_lieu": {
-    "altitude": "Altitude",
-    "fermer": "Close",
-    "partager": "Share this place",
-    "titre": "Characteristic of the place",
-    "titre_coord": "Coordinates (WGS84)",
-    "zoomer": "Zoom in"
-  },
-  "choose_signet": {
-    "no_signet": "You don't have any geo-bookmarks",
-    "title": "Click on a bookmark to zoom in on it : "
-  },
   "compare_maps": {
     "compare": "Compare",
     "title": "Choose two maps :"
   },
-  "couche_en_cours": {
-    "information_couche": "Metadata",
-    "partager_couche": "Share this layer",
-    "supprimer_couche": "Remove this layer",
-    "tout_partager": "Share",
-    "tout_partager_toolpit": "Share this catalog",
-    "tout_supprimer": "Remove all"
-  },
-  "dowload_data": {
-    "all": "all",
-    "by": "By",
-    "calculate": "Calculate",
-    "description": "Extract specific data according to an extent",
-    "draw": "Draw an extent",
-    "loading": "Loading of",
-    "title_choose_emprise": "Export All Layers",
-    "title_choose_layer": "Choose a layer",
-    "title_choose_one_emprise": "Select a limit",
-    "title_choose_thematique": "Choose a theme",
-    "title_choose_type_emprise": "Your spatial extent",
-    "title_data_in": "Input data"
-  },
-  "draw_in_map": {
-    "apply_draw": "APPLY",
-    "save": "SAVE",
-    "your_comment_placeholder": "Your Comment"
-  },
-  "header": {
-    "toolpit_info": "GeOsm ?"
-  },
-  "infos_plateform": {
-    "title": "GeoUganda"
-  },
-  "layer_properties": {
-    "click_url_text": "Click here",
-    "download_gpkg": "Download the GEOPACKAGE here",
-    "download_problem": "a problem occurred on this layer",
-    "title": "Descriptive sheet",
-    "title_download": "Downloading files",
-    "toolpit_share": "Share this place"
-  },
   "left_menu": {
     "fonds_de_carte": "All the basemaps",
     "geobibliotheque": "Library",
-    "geothematiques": "Themes"
-  },
-  "loading": {
-    "loading": "Loading...",
-    "loading_catalog": "Download of data catalogues...",
-    "loading_dowloads_data": "Calculation in progress...",
-    "loading_pdf_print": "Creation of the map..."
-  },
-  "menu_contextuel": {
-    "ajouter_geosignet": "Add a geo-bookmark on this place",
-    "caracteristique": "Characteristic of the place",
-    "commenter": "Comment this place",
-    "partager": "Share this place",
-    "voir_geosignet": "Your geo-bookmarks"
-  },
-  "metadata": {
-    "area": "m² of total surface area",
-    "conditions_of_use": "Terms and conditions of use : ",
-    "coordinates_system": "Coordinate system : ",
-    "coucverture": "Coverage : ",
-    "creation_date": "Creation date : ",
-    "description": "Description",
-    "description_couche": "Description : ",
-    "key_osm": "OSM Map features : ",
-    "key_words": "Keywords : ",
-    "language": "Language : ",
-    "lenght": "m of total lenght",
-    "number_entite": "entity(ies)",
-    "properties": "Properties",
-    "ressources": "Ressources",
-    "resume": "Summary : ",
-    "scale": "Scale : ",
-    "shareholders": "Partners / providers : ",
-    "text_no_metadata": "The summary of this data is not yet available",
-    "title": "Descriptive sheet : ",
-    "update_date": "Date of update : "
+    "geothematiques": "Themes",
+    "fonds": "Basemaps"
   },
   "naviguation_tools": {
     "compare_maps": "Compare maps",
@@ -122,12 +23,6 @@
     "zoom_plus": "Zoom out",
     "zoom_to_coordinates": "Zoom on a coordinate"
   },
-  "notifications": {
-    "click_on_map_itineraire": "Click on the map to place your point",
-    "comment_added": "Your comment has been added",
-    "signet_added_1": "The geo-bookmark",
-    "signet_added_2": "has been added"
-  },
   "right_menu": {
     "button": {
       "toolpit_download_data": "Downloading data",
@@ -137,7 +32,9 @@
       "toolpit_tools": "Editing tools"
     },
     "download_data": {
-      "title": "Downloading data"
+      "title": "Downloading data",
+      "downloadCompleteDataTooltip": "Download the complete dataset (without geographic intersection)",
+      "downloadCompleteData": "Export all layers"
     },
     "legend": {
       "title": "Legend"
@@ -191,38 +88,6 @@
       }
     }
   },
-  "search": {
-    "placeholder": "Search for a place, a layer...",
-    "noResults": "No results",
-    "places": "Places",
-    "layers": "Layers"
-  },
-  "zoom_to_coordinates": {
-    "cancel": "Cancel",
-    "choose_projection": "Choose a projection",
-    "latitude": "latitude",
-    "longitude": "longitude",
-    "save": "Save",
-    "title": "SEARCH BY COORDINATES"
-  },
-  "descriptive_sheet": {
-    "share": " Share",
-    "zoomTo": " Zoom To",
-    "displayAllAttributes": " Display All",
-    "displayLesAttributes": " Show Less"
-  },
-  "geosm": {
-    "text": "GeOsm uses ",
-    "text1": " data"
-  },
-  "infos": {
-    "p1": "GeOsm is an open, collaborative and shared infrastructure composed of data, resources and actors who all play a leading role in the deployment, improvement and maintenance of innovative solutions based on royalty-free and accessible geospatial data to all.",
-    "p2": "To report an anomaly (bug) in the application :",
-    "p3": "If you have a collaboration idea or technology of interest, or if you have a strength in one of our areas of interest, please do not hesitate to contact us:"
-  },
-  "save": "Save",
-  "cancel": "Cancel",
-  "updatebd": "Latest update of the OSM database :",
   "app": {
     "title": "GeOSM",
     "subtitle": "Mapping Platform"
@@ -242,7 +107,14 @@
     "loginButton": "Sign in",
     "registerButton": "Sign up",
     "loginError": "Incorrect email or password",
-    "registerSuccess": "Account created successfully"
+    "registerSuccess": "Account created successfully",
+    "osmLinkedSuccess": "OpenStreetMap account linked successfully",
+    "osmLinkError": "Error linking the OpenStreetMap account",
+    "osmLoginFailed": "The OpenStreetMap login failed. Please try again.",
+    "osmUnavailable": "OpenStreetMap login is currently unavailable.",
+    "enterEmailPassword": "Please enter your email and password.",
+    "loginFailedGeneric": "Login failed. Please check your credentials.",
+    "osmLoginButton": "Sign in with OpenStreetMap"
   },
   "map": {
     "zoom": "Zoom",
@@ -310,7 +182,12 @@
       "pending": "Pending",
       "completed": "Completed",
       "failed": "Failed",
-      "processing": "Processing"
+      "processing": "Processing",
+      "errors": {
+        "launchFailed": "Failed to start the export.",
+        "exportFailed": "The export failed. Please try again.",
+        "downloadFailed": "The file is ready but the download failed. Please try again."
+      }
     },
     "print": {
       "title": "Title",
@@ -341,6 +218,23 @@
       "clear": "Clear all",
       "delete": "Delete",
       "edit": "Edit"
+    },
+    "altimetryErrors": {
+      "noData": "No elevation data available for this area.",
+      "fetchFailed": "Failed to retrieve the elevation profile. Please try again."
+    },
+    "nearestSearchErrors": {
+      "noResult": "No result found for this layer.",
+      "searchFailed": "Failed to search for the nearest feature."
+    },
+    "planLocalisationErrors": {
+      "generationFailed": "Failed to generate the PDF. Please try again.",
+      "generationTimeout": "Generation is taking longer than expected. Please try again shortly.",
+      "downloadFailed": "The PDF is ready but the download failed. Please try again."
+    },
+    "spatialAnalysisErrors": {
+      "noResult": "No result (disjoint geometries?).",
+      "analysisFailed": "Spatial analysis failed. Check the drawn geometries."
     }
   },
   "sharing": {
@@ -351,7 +245,10 @@
     "twitter": "Twitter",
     "whatsapp": "WhatsApp",
     "linkedin": "LinkedIn",
-    "sharedMap": "Shared map"
+    "sharedMap": "Shared map",
+    "errors": {
+      "createFailed": "Failed to create the share link."
+    }
   },
   "settings": {
     "accountInfo": "Account Information",
@@ -366,9 +263,19 @@
     "profileUpdated": "Profile updated successfully",
     "profileUpdateError": "Failed to update profile",
     "passwordChanged": "Password changed successfully",
-    "passwordChangeError": "Incorrect current password"
+    "passwordChangeError": "Incorrect current password",
+    "osmLinkStartError": "Unable to start the OpenStreetMap link",
+    "osmUnlinked": "OpenStreetMap account unlinked",
+    "osmUnlinkError": "Error while unlinking",
+    "osm": {
+      "loading": "Loading...",
+      "memberSince": "OSM member since",
+      "contributions": "OSM contribution(s)",
+      "unlinkTooltip": "Unlink this account",
+      "notLinked": "No OpenStreetMap account linked.",
+      "linkButton": "Link my OpenStreetMap account"
+    }
   },
-
   "geosignets": {
     "title": "Bookmarks",
     "helpText": "Save your favorite map views and zoom levels to quickly jump back to them with a single click.",
@@ -431,7 +338,15 @@
     "directions": "Directions",
     "download": "Download",
     "showDetails": "Show more",
-    "hideDetails": "Show less"
+    "hideDetails": "Show less",
+    "errors": {
+      "noExportableData": "No exportable data for this item.",
+      "createExportFailed": "Download failed: unable to create the export.",
+      "downloadExpired": "The download expired, please try again.",
+      "downloadFileFailed": "Failed to download the file.",
+      "serverExportFailed": "The export failed on the server.",
+      "downloadFailed": "Download failed."
+    }
   },
   "common": {
     "save": "Save",
@@ -472,5 +387,39 @@
     "results": "Results",
     "remove": "Remove measurement",
     "clearAll": "Clear all"
+  },
+  "infoPanel": {
+    "title": "Info",
+    "developer": {
+      "title": "Developer"
+    },
+    "openSource": {
+      "title": "Open source project",
+      "description": "GeOSM is an open source project. The source code is publicly available and contributions are welcome.",
+      "viewRepo": "View repository on GitHub"
+    },
+    "guide": {
+      "title": "User guide",
+      "description": "Download the complete GeOSM guide as a PDF, with a detailed explanation of every feature and usage examples.",
+      "download": "Download the guide (PDF)"
+    },
+    "feedback": {
+      "title": "Report an issue",
+      "description": "Found a bug, or have a suggestion or an idea for a new feature? Feel free to let us know.",
+      "typeLabel": "Report type",
+      "types": {
+        "bug": "Report a bug",
+        "suggestion": "Make a suggestion",
+        "featureRequest": "Propose a feature"
+      },
+      "descriptionLabel": "Description",
+      "descriptionRequired": "Description is required",
+      "descriptionTooShort": "Description must be at least 10 characters long",
+      "emailLabel": "Contact email (optional)",
+      "emailInvalid": "Invalid email address",
+      "submit": "Submit",
+      "success": "Thank you for your feedback!",
+      "error": "An error occurred while submitting."
+    }
   }
 }

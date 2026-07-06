@@ -83,6 +83,25 @@
         <span>ou</span>
       </div>
 
+      @if (osmConfigured()) {
+        <button
+          mat-stroked-button
+          class="full-width osm-login-btn"
+          type="button"
+          [disabled]="osmLoading()"
+          (click)="loginWithOsm()"
+        >
+          @if (osmLoading()) {
+            <mat-spinner diameter="20"></mat-spinner>
+          } @else {
+            <ng-container>
+              <mat-icon>public</mat-icon>
+              {{ 'auth.osmLoginButton' | translate }}
+            </ng-container>
+          }
+        </button>
+      }
+
       <div class="register-prompt">
         Pas encore de compte ?
         <a routerLink="/register" class="register-link">Créer un compte</a>

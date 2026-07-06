@@ -18,7 +18,7 @@ import { MapLayerService, ActiveLayer } from '../../map/services/map-layer.servi
 import { ExportService } from '../../../core/services/export.service';
 import { Export } from '../../../core/models/index';
 import { LoadingSpinnerComponent } from '../../../shared/components/loading-spinner/loading-spinner.component';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { getExportFileExtension } from '../../../core/utils/export-format.util';
 
 type ExportMode = 'single' | 'all';
@@ -59,6 +59,7 @@ export class ExportToolComponent implements OnInit, OnDestroy {
   private readonly mapLayerService = inject(MapLayerService);
   private readonly exportService = inject(ExportService);
   private readonly snackBar = inject(MatSnackBar);
+  private readonly translate = inject(TranslateService);
 
   activeLayers: ActiveLayer[] = [];
   selectedLayerId = '';
@@ -156,7 +157,7 @@ export class ExportToolComponent implements OnInit, OnDestroy {
         error: (err) => {
           this.exporting = false;
           console.error('[ExportTool] Échec de la création de l\'export groupé', err);
-          this.snackBar.open('Échec du lancement de l\'export.', 'OK', { duration: 4000 });
+          this.snackBar.open(this.translate.instant('tools.export.errors.launchFailed') || 'Échec du lancement de l\'export.', 'OK', { duration: 4000 });
         },
       });
       return;
@@ -176,7 +177,7 @@ export class ExportToolComponent implements OnInit, OnDestroy {
       error: (err) => {
         this.exporting = false;
         console.error('[ExportTool] Échec de la création de l\'export', err);
-        this.snackBar.open('Échec du lancement de l\'export.', 'OK', { duration: 4000 });
+        this.snackBar.open(this.translate.instant('tools.export.errors.launchFailed') || 'Échec du lancement de l\'export.', 'OK', { duration: 4000 });
       },
     });
   }
@@ -207,7 +208,7 @@ export class ExportToolComponent implements OnInit, OnDestroy {
           if ((exp.status || '').toUpperCase() === 'COMPLETED' && autoDownload) {
             this.downloadExport(exp);
           } else if ((exp.status || '').toUpperCase() === 'FAILED') {
-            this.snackBar.open('L\'export a échoué. Réessayez.', 'OK', { duration: 4000 });
+            this.snackBar.open(this.translate.instant('tools.export.errors.exportFailed') || 'L\'export a échoué. Réessayez.', 'OK', { duration: 4000 });
           }
         }
       },
@@ -269,7 +270,7 @@ export class ExportToolComponent implements OnInit, OnDestroy {
       },
       error: (err) => {
         console.error('[ExportTool] Échec du téléchargement', err);
-        this.snackBar.open('Le fichier est prêt mais le téléchargement a échoué. Réessayez.', 'OK', { duration: 4000 });
+        this.snackBar.open(this.translate.instant('tools.export.errors.downloadFailed') || 'Le fichier est prêt mais le téléchargement a échoué. Réessayez.', 'OK', { duration: 4000 });
       },
     });
   }

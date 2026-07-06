@@ -7,7 +7,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import Map from 'ol/Map';
 import VectorLayer from 'ol/layer/Vector';
 import VectorSource from 'ol/source/Vector';
@@ -39,6 +39,7 @@ export class NearestSearchToolComponent implements AfterViewInit, OnDestroy {
   private readonly nearestFeatureService = inject(NearestFeatureService);
   private readonly toolAction = inject(ToolActionService);
   private readonly snackBar = inject(MatSnackBar);
+  private readonly translate = inject(TranslateService);
 
   private map!: Map;
   private markerLayer!: VectorLayer<VectorSource>;
@@ -116,12 +117,12 @@ export class NearestSearchToolComponent implements AfterViewInit, OnDestroy {
         this.results.set(results);
         this.updateMarkers(lon, lat, results);
         if (results.length === 0) {
-          this.snackBar.open('Aucun résultat trouvé pour cette couche.', 'OK', { duration: 3000 });
+          this.snackBar.open(this.translate.instant('tools.nearestSearchErrors.noResult') || 'Aucun résultat trouvé pour cette couche.', 'OK', { duration: 3000 });
         }
       },
       error: () => {
         this.loading.set(false);
-        this.snackBar.open('Échec de la recherche du plus proche.', 'OK', { duration: 4000 });
+        this.snackBar.open(this.translate.instant('tools.nearestSearchErrors.searchFailed') || 'Échec de la recherche du plus proche.', 'OK', { duration: 4000 });
       },
     });
   }

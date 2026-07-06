@@ -13,7 +13,7 @@ export class RoutingService {
 
   getRoute(
     coordinates: [number, number][],
-    profile: string = 'driving',
+    profile = 'driving',
     options?: Record<string, any>,
   ): Observable<RouteResult> {
     const coordsStr = coordinates.map((c) => `${c[0]},${c[1]}`).join(';');

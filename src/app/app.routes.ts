@@ -14,6 +14,11 @@ export const routes: Routes = [
       import('./features/auth/components/register/register.component').then((m) => m.RegisterComponent),
   },
   {
+    path: 'auth/callback',
+    loadComponent: () =>
+      import('./features/auth/components/auth-callback/auth-callback.component').then((m) => m.AuthCallbackComponent),
+  },
+  {
     path: 'map',
     loadComponent: () =>
       import('./features/map/components/map-layout/map-layout.component').then((m) => m.MapLayoutComponent),

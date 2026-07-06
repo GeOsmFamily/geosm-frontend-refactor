@@ -1,0 +1,114 @@
+.info-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 4px;
+}
+
+.info-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.section-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'Avenir Next Rounded Pro Demi', 'Roboto', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--primary);
+
+  mat-icon {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+    color: var(--accent);
+  }
+}
+
+.info-text {
+  font-size: 12px;
+  color: var(--text-secondary, #64748b);
+  margin: 0;
+}
+
+.developer-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px;
+  border-radius: var(--radius-md);
+  background: rgba(2, 63, 95, 0.05);
+
+  .developer-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: var(--primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    flex-shrink: 0;
+
+    mat-icon {
+      font-size: 28px;
+      width: 28px;
+      height: 28px;
+    }
+  }
+
+  .developer-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .developer-name {
+    font-family: 'Avenir Next Rounded Pro Demi', 'Roboto', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  .developer-email {
+    font-size: 12px;
+    color: var(--accent);
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+.full-width {
+  width: 100%;
+}
+
+a.full-width {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: 40px;
+  text-decoration: none;
+}
+
+.feedback-form {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 4px;
+
+  button[type='submit'] {
+    height: 40px;
+    margin-top: 8px;
+
+    mat-spinner {
+      display: inline-block;
+    }
+  }
+}

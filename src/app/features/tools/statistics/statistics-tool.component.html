@@ -11,7 +11,9 @@
     </mat-select>
   </mat-form-field>
 
-  <app-loading-spinner *ngIf="loading"></app-loading-spinner>
+  @if (loading) {
+    <app-loading-spinner></app-loading-spinner>
+  }
 
   @if (stats && !loading) {
     <mat-card class="stats-card">

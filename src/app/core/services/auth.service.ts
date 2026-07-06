@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
 
 import { ApiService } from './api.service';
-import { AuthTokens, LoginRequest, RegisterRequest, User } from '../models/index';
+import { AuthTokens, LoginRequest, RegisterRequest, User, OsmProfile } from '../models/index';
 
 const ACCESS_TOKEN_KEY = 'access_token';
 const REFRESH_TOKEN_KEY = 'refresh_token';
@@ -71,6 +71,33 @@ export class AuthService {
 
   getToken(): string | null {
     return localStorage.getItem(ACCESS_TOKEN_KEY);
+  }
+
+  // --- OpenStreetMap ---
+
+  getOsmStatus(): Observable<{ configured: boolean }> {
+    return this.api.get<{ configured: boolean }>('/auth/osm/status');
+  }
+
+  getOsmLoginUrl(): Observable<{ url: string }> {
+    return this.api.get<{ url: string }>('/auth/osm/login-url');
+  }
+
+  getOsmLinkUrl(): Observable<{ url: string }> {
+    return this.api.get<{ url: string }>('/auth/osm/link-url');
+  }
+
+  getOsmProfile(): Observable<OsmProfile | null> {
+    return this.api.get<OsmProfile | null>('/auth/osm/profile');
+  }
+
+  unlinkOsm(): Observable<void> {
+    return this.api.delete<void>('/auth/osm/link');
+  }
+
+  /** Utilisé par AuthCallbackComponent après un retour de connexion OpenStreetMap. */
+  storeTokensFromOsmCallback(tokens: AuthTokens): void {
+    this.storeTokens(tokens);
   }
 
   private storeTokens(tokens: AuthTokens): void {

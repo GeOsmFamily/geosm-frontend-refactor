@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="{{LANG}}">
+<head>
+<meta charset="UTF-8" />
+<style>
+  @page { margin: 0; }
+  * { box-sizing: border-box; }
+  body {
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    color: #1a2b3c;
+    margin: 0;
+    font-size: 11pt;
+    line-height: 1.5;
+  }
+  .cover {
+    height: 297mm;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #023f5f 0%, #00ada7 100%);
+    color: white;
+    page-break-after: always;
+    text-align: center;
+  }
+  .cover h1 { font-size: 42pt; margin: 0 0 8px; font-weight: 700; letter-spacing: 1px; }
+  .cover .subtitle { font-size: 16pt; font-weight: 300; margin-bottom: 40px; opacity: 0.95; }
+  .cover .meta { font-size: 11pt; opacity: 0.85; margin-top: 60px; }
+  .content { padding: 20mm 18mm; }
+  h2 {
+    color: #023f5f;
+    font-size: 20pt;
+    border-bottom: 3px solid #00ada7;
+    padding-bottom: 8px;
+    margin-top: 0;
+    page-break-before: always;
+  }
+  h2:first-of-type { page-break-before: avoid; }
+  h3 { color: #023f5f; font-size: 13pt; margin-top: 24px; }
+  p { margin: 8px 0; text-align: justify; }
+  .toc { padding: 20mm 18mm; page-break-after: always; }
+  .toc h2 { page-break-before: avoid; }
+  .toc ol { padding-left: 20px; }
+  .toc li { margin: 6px 0; font-size: 11pt; }
+  .use-case {
+    background: #f0f7f8;
+    border-left: 4px solid #00ada7;
+    padding: 10px 16px;
+    margin: 12px 0;
+    font-size: 10pt;
+  }
+  .use-case strong { color: #023f5f; }
+  footer { display: none; }
+</style>
+</head>
+<body>
+  <div class="cover">
+    <h1>GeOSM</h1>
+    <div class="subtitle">{{SUBTITLE}}</div>
+    <div class="meta">{{META}}</div>
+  </div>
+  <div class="toc">
+    <h2>{{TOC_TITLE}}</h2>
+    <ol>
+      {{TOC_ITEMS}}
+    </ol>
+  </div>
+  <div class="content">
+    {{CONTENT}}
+  </div>
+</body>
+</html>

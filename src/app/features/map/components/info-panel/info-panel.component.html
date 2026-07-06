@@ -1,0 +1,100 @@
+<div class="info-container">
+  <!-- Developer credits -->
+  <div class="info-section">
+    <div class="section-title">
+      <mat-icon>code</mat-icon>
+      <span>{{ 'infoPanel.developer.title' | translate }}</span>
+    </div>
+    <div class="developer-card glass">
+      <div class="developer-avatar">
+        <mat-icon>face</mat-icon>
+      </div>
+      <div class="developer-info">
+        <div class="developer-name">{{ developerName }}</div>
+        <a class="developer-email" [href]="'mailto:' + developerEmail">{{ developerEmail }}</a>
+      </div>
+    </div>
+  </div>
+
+  <mat-divider></mat-divider>
+
+  <!-- Open source mention -->
+  <div class="info-section">
+    <div class="section-title">
+      <mat-icon>public</mat-icon>
+      <span>{{ 'infoPanel.openSource.title' | translate }}</span>
+    </div>
+    <p class="info-text">{{ 'infoPanel.openSource.description' | translate }}</p>
+    <a mat-stroked-button [href]="repoUrl" target="_blank" rel="noopener noreferrer" class="full-width">
+      <mat-icon>open_in_new</mat-icon>
+      {{ 'infoPanel.openSource.viewRepo' | translate }}
+    </a>
+  </div>
+
+  <mat-divider></mat-divider>
+
+  <!-- PDF guide download -->
+  <div class="info-section">
+    <div class="section-title">
+      <mat-icon>menu_book</mat-icon>
+      <span>{{ 'infoPanel.guide.title' | translate }}</span>
+    </div>
+    <p class="info-text">{{ 'infoPanel.guide.description' | translate }}</p>
+    <a mat-flat-button color="primary" [href]="guidePdfUrl" target="_blank" download class="full-width">
+      <mat-icon>picture_as_pdf</mat-icon>
+      {{ 'infoPanel.guide.download' | translate }}
+    </a>
+  </div>
+
+  <mat-divider></mat-divider>
+
+  <!-- Feedback form -->
+  <div class="info-section">
+    <div class="section-title">
+      <mat-icon>feedback</mat-icon>
+      <span>{{ 'infoPanel.feedback.title' | translate }}</span>
+    </div>
+    <p class="info-text">{{ 'infoPanel.feedback.description' | translate }}</p>
+
+    <form [formGroup]="feedbackForm" (ngSubmit)="submitFeedback()" class="feedback-form">
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>{{ 'infoPanel.feedback.typeLabel' | translate }}</mat-label>
+        <mat-select formControlName="type">
+          @for (option of feedbackTypes; track option.value) {
+            <mat-option [value]="option.value">{{ option.label | translate }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>{{ 'infoPanel.feedback.descriptionLabel' | translate }}</mat-label>
+        <textarea matInput formControlName="description" rows="4" maxlength="5000"></textarea>
+        @if (feedbackForm.get('description')?.hasError('required') && feedbackForm.get('description')?.touched) {
+          <mat-error>{{ 'infoPanel.feedback.descriptionRequired' | translate }}</mat-error>
+        }
+        @if (feedbackForm.get('description')?.hasError('minlength') && feedbackForm.get('description')?.touched) {
+          <mat-error>{{ 'infoPanel.feedback.descriptionTooShort' | translate }}</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>{{ 'infoPanel.feedback.emailLabel' | translate }}</mat-label>
+        <input matInput type="email" formControlName="contactEmail" />
+        @if (feedbackForm.get('contactEmail')?.hasError('email') && feedbackForm.get('contactEmail')?.touched) {
+          <mat-error>{{ 'infoPanel.feedback.emailInvalid' | translate }}</mat-error>
+        }
+      </mat-form-field>
+
+      <button mat-flat-button color="primary" type="submit" class="full-width" [disabled]="submitting()">
+        @if (submitting()) {
+          <mat-spinner diameter="20"></mat-spinner>
+        } @else {
+          <ng-container>
+            <mat-icon>send</mat-icon>
+            {{ 'infoPanel.feedback.submit' | translate }}
+          </ng-container>
+        }
+      </button>
+    </form>
+  </div>
+</div>

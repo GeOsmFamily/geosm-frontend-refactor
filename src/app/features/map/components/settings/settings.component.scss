@@ -28,6 +28,20 @@
   }
 }
 
+.osm-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.osm-loading {
+  font-size: 13px;
+  color: var(--text-secondary, #64748b);
+  padding: 8px 0;
+}
+
 .user-card {
   display: flex;
   align-items: center;

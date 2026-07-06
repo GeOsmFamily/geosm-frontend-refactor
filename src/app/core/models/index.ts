@@ -37,6 +37,15 @@ export interface RegisterRequest {
   lastName: string;
 }
 
+export interface OsmProfile {
+  osmUserId: string;
+  displayName: string;
+  avatarUrl: string | null;
+  osmAccountCreatedAt: string | null;
+  changesetCount: number;
+  linkedAt: string;
+}
+
 export interface Instance {
   id: string;
   name: string;

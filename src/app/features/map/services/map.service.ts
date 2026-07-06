@@ -54,7 +54,7 @@ export class MapService {
   isPicking = false;
   readonly mapReady$ = new BehaviorSubject<boolean>(false);
 
-  initMap(target: string | HTMLElement, center: [number, number] = [0, 0], zoom: number = 2): Map {
+  initMap(target: string | HTMLElement, center: [number, number] = [0, 0], zoom = 2): Map {
     this.baseLayer = new TileLayer({ source: new OSM() });
 
     this.drawingLayer = new VectorLayer({
@@ -227,7 +227,7 @@ export class MapService {
     return this.baseLayer;
   }
 
-  zoomTo(coordinate: [number, number], zoom: number = 16): void {
+  zoomTo(coordinate: [number, number], zoom = 16): void {
     if (!this.map) return;
     this.map.getView().animate({
       center: fromLonLat(coordinate),

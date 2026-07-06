@@ -226,6 +226,24 @@
   }
 }
 
+.osm-login-btn {
+  height: 48px !important;
+  font-size: 14px !important;
+  font-family: 'Avenir Next Rounded Pro Demi', 'Roboto', sans-serif !important;
+  border-radius: var(--radius-md) !important;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 16px;
+
+  mat-icon {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+  }
+}
+
 .divider {
   display: flex;
   align-items: center;

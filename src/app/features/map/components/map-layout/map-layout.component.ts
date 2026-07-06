@@ -35,6 +35,7 @@ import { MapToolbarComponent } from '../map-toolbar/map-toolbar.component';
 import { ToolActionService } from '../../../../core/services/tool-action.service';
 import { BaseMapSwitcherComponent } from '../../../../features/layers/components/base-map-switcher/base-map-switcher.component';
 import { SettingsComponent } from '../settings/settings.component';
+import { InfoPanelComponent } from '../info-panel/info-panel.component';
 import { GeocodingService } from '../../../../core/services/geocoding.service';
 import { RoutingService } from '../../../../core/services/routing.service';
 
@@ -96,6 +97,7 @@ import { AnalyticsService } from '../../../../core/services/analytics.service';
     NearestSearchToolComponent,
     BaseMapSwitcherComponent,
     SettingsComponent,
+    InfoPanelComponent,
   ],
   templateUrl: './map-layout.component.html',
   styleUrl: './map-layout.component.scss',
@@ -126,6 +128,7 @@ export class MapLayoutComponent implements OnInit {
   readonly toolsMenuOpen = signal(false);
   readonly baseMapsOpen = signal(false);
   readonly settingsOpen = signal(false);
+  readonly infoOpen = signal(false);
   readonly locationInfoOpen = signal(false);
   readonly locationInfo = signal<GeocodingResult | null>(null);
   readonly activeTool = signal<string | null>(null);
@@ -197,6 +200,17 @@ export class MapLayoutComponent implements OnInit {
             }, 500);
           });
       }
+      // Retour du flux de liaison du compte OpenStreetMap (voir GET /auth/osm/callback côté
+      // backend, qui redirige vers /map?openSettings=1&osmLinked=1 après avoir lié le compte).
+      if (queryParams['openSettings']) {
+        this.settingsOpen.set(true);
+        if (queryParams['osmLinked']) {
+          this.snackBar.open(this.translate.instant('auth.osmLinkedSuccess') || 'Compte OpenStreetMap lié avec succès', 'OK', { duration: 3000 });
+        } else if (queryParams['osmError']) {
+          this.snackBar.open(this.translate.instant('auth.osmLinkError') || 'Erreur lors de la liaison du compte OpenStreetMap', 'OK', { duration: 4000 });
+        }
+        this.router.navigate([], { queryParams: {}, replaceUrl: true });
+      }
     });
 
     this.toolAction.action$.subscribe((action) => {
@@ -222,6 +236,7 @@ export class MapLayoutComponent implements OnInit {
         this.toolsMenuOpen.set(false);
         this.baseMapsOpen.set(false);
         this.settingsOpen.set(false);
+        this.infoOpen.set(false);
         this.locationInfoOpen.set(false);
       }
     });
@@ -321,6 +336,7 @@ export class MapLayoutComponent implements OnInit {
       this.toolsMenuOpen.set(false);
       this.baseMapsOpen.set(false);
       this.settingsOpen.set(false);
+      this.infoOpen.set(false);
       this.locationInfoOpen.set(false);
       this.activeTool.set(null);
     }
@@ -340,6 +356,7 @@ export class MapLayoutComponent implements OnInit {
       this.toolsMenuOpen.set(false);
       this.baseMapsOpen.set(false);
       this.settingsOpen.set(false);
+      this.infoOpen.set(false);
       this.locationInfoOpen.set(false);
       this.activeTool.set(null);
     }
@@ -359,6 +376,7 @@ export class MapLayoutComponent implements OnInit {
       this.toolsMenuOpen.set(false);
       this.baseMapsOpen.set(false);
       this.settingsOpen.set(false);
+      this.infoOpen.set(false);
       this.locationInfoOpen.set(false);
       this.activeTool.set(null);
     }
@@ -378,6 +396,7 @@ export class MapLayoutComponent implements OnInit {
       this.toolsMenuOpen.set(false);
       this.baseMapsOpen.set(false);
       this.settingsOpen.set(false);
+      this.infoOpen.set(false);
       this.locationInfoOpen.set(false);
       this.activeTool.set(null);
     }
@@ -397,6 +416,7 @@ export class MapLayoutComponent implements OnInit {
       this.shareOpen.set(false);
       this.baseMapsOpen.set(false);
       this.settingsOpen.set(false);
+      this.infoOpen.set(false);
       this.locationInfoOpen.set(false);
       this.activeTool.set(null);
     }
@@ -416,6 +436,7 @@ export class MapLayoutComponent implements OnInit {
       this.shareOpen.set(false);
       this.toolsMenuOpen.set(false);
       this.settingsOpen.set(false);
+      this.infoOpen.set(false);
       this.locationInfoOpen.set(false);
       this.activeTool.set(null);
     }
@@ -435,6 +456,7 @@ export class MapLayoutComponent implements OnInit {
       this.shareOpen.set(false);
       this.toolsMenuOpen.set(false);
       this.baseMapsOpen.set(false);
+      this.infoOpen.set(false);
       this.locationInfoOpen.set(false);
       this.activeTool.set(null);
     }
@@ -442,6 +464,26 @@ export class MapLayoutComponent implements OnInit {
 
   closeSettings(): void {
     this.settingsOpen.set(false);
+  }
+
+  toggleInfo(): void {
+    const open = !this.infoOpen();
+    this.infoOpen.set(open);
+    if (open) {
+      this.geosignetsOpen.set(false);
+      this.myMapsOpen.set(false);
+      this.assistantOpen.set(false);
+      this.shareOpen.set(false);
+      this.toolsMenuOpen.set(false);
+      this.baseMapsOpen.set(false);
+      this.settingsOpen.set(false);
+      this.locationInfoOpen.set(false);
+      this.activeTool.set(null);
+    }
+  }
+
+  closeInfo(): void {
+    this.infoOpen.set(false);
   }
 
   closeLocationInfo(): void {
@@ -489,6 +531,13 @@ export class MapLayoutComponent implements OnInit {
     this.shareModalOpen.set(false);
   }
 
+  // Déclenché par app-geosignets (shareRequested) - le lien a déjà été copié dans le
+  // presse-papiers côté enfant, ici on affiche juste la modale de confirmation.
+  openShareModal(url: string): void {
+    this.shareUrlText.set(url);
+    this.shareModalOpen.set(true);
+  }
+
   copyShareLinkFromInput(url: string): void {
     navigator.clipboard.writeText(url).then(() => {
       this.snackBar.open(
@@ -516,6 +565,7 @@ export class MapLayoutComponent implements OnInit {
     this.shareOpen.set(false);
     this.baseMapsOpen.set(false);
     this.settingsOpen.set(false);
+    this.infoOpen.set(false);
     this.locationInfoOpen.set(false);
     this.trackToolOpened(toolId);
   }

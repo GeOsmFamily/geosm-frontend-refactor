@@ -1,7 +1,7 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -10,7 +10,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 import { AuthService } from '../../../../core/services/auth.service';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-login',
@@ -29,19 +29,46 @@ import { TranslateModule } from '@ngx-translate/core';
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss',
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit {
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
+  private readonly translate = inject(TranslateService);
 
   email = '';
   password = '';
   hidePassword = true;
   readonly loading = signal(false);
   readonly errorMessage = signal('');
+  readonly osmConfigured = signal(false);
+  readonly osmLoading = signal(false);
+
+  ngOnInit(): void {
+    if (this.route.snapshot.queryParamMap.get('osmError')) {
+      this.errorMessage.set(this.translate.instant('auth.osmLoginFailed') || 'La connexion via OpenStreetMap a échoué. Veuillez réessayer.');
+    }
+    this.authService.getOsmStatus().subscribe({
+      next: (res) => this.osmConfigured.set(res.configured),
+      error: () => this.osmConfigured.set(false),
+    });
+  }
+
+  loginWithOsm(): void {
+    this.osmLoading.set(true);
+    this.authService.getOsmLoginUrl().subscribe({
+      next: (res) => {
+        globalThis.location.href = res.url;
+      },
+      error: () => {
+        this.osmLoading.set(false);
+        this.errorMessage.set(this.translate.instant('auth.osmUnavailable') || 'Connexion OpenStreetMap indisponible pour le moment.');
+      },
+    });
+  }
 
   login(): void {
     if (!this.email || !this.password) {
-      this.errorMessage.set('Please enter email and password.');
+      this.errorMessage.set(this.translate.instant('auth.enterEmailPassword') || 'Please enter email and password.');
       return;
     }
 
@@ -56,7 +83,7 @@ export class LoginComponent {
       error: (err) => {
         this.loading.set(false);
         this.errorMessage.set(
-          err.error?.message || 'Login failed. Please check your credentials.',
+          err.error?.error?.message || this.translate.instant('auth.loginFailedGeneric') || 'Login failed. Please check your credentials.',
         );
       },
     });

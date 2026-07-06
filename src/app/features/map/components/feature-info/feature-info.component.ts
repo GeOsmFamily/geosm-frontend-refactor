@@ -5,7 +5,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import Overlay from 'ol/Overlay';
@@ -29,7 +29,7 @@ const KNOWN_KEYS = new Set([
 
 // Les valeurs doivent correspondre à l'enum backend ExportFormat (majuscules),
 // sinon la validation Zod côté API rejette la requête ("impossible de créer l'export").
-const DOWNLOAD_FORMATS: Array<{ value: string; label: string }> = [
+const DOWNLOAD_FORMATS: { value: string; label: string }[] = [
   { value: 'GEOJSON', label: 'GeoJSON' },
   { value: 'KML', label: 'KML' },
   { value: 'GEOPACKAGE', label: 'GeoPackage' },
@@ -49,6 +49,7 @@ export class FeatureInfoComponent implements OnInit, OnDestroy {
   private readonly toolAction = inject(ToolActionService);
   private readonly exportService = inject(ExportService);
   private readonly snackBar = inject(MatSnackBar);
+  private readonly translate = inject(TranslateService);
   private readonly http = inject(HttpClient);
   private readonly elementRef = inject(ElementRef);
 
@@ -60,7 +61,7 @@ export class FeatureInfoComponent implements OnInit, OnDestroy {
   readonly phone = signal<string | null>(null);
   readonly website = signal<string | null>(null);
   readonly address = signal<string | null>(null);
-  readonly otherProperties = signal<Array<{ key: string; value: string }>>([]);
+  readonly otherProperties = signal<{ key: string; value: string }[]>([]);
   readonly showAllProperties = signal(false);
   readonly downloading = signal(false);
   readonly downloadFormats = DOWNLOAD_FORMATS;
@@ -268,7 +269,7 @@ export class FeatureInfoComponent implements OnInit, OnDestroy {
 
   downloadFeature(format: string): void {
     if (!this.lastLayerId || !this.lastFeatureId) {
-      this.snackBar.open('Aucune donnée exportable pour cet élément.', 'OK', { duration: 3000 });
+      this.snackBar.open(this.translate.instant('featureInfo.errors.noExportableData') || 'Aucune donnée exportable pour cet élément.', 'OK', { duration: 3000 });
       return;
     }
     this.downloading.set(true);
@@ -277,7 +278,7 @@ export class FeatureInfoComponent implements OnInit, OnDestroy {
       error: (err) => {
         this.downloading.set(false);
         console.error('[FeatureInfo] Échec de la création de l\'export', err);
-        this.snackBar.open('Échec du téléchargement : impossible de créer l\'export.', 'OK', { duration: 4000 });
+        this.snackBar.open(this.translate.instant('featureInfo.errors.createExportFailed') || 'Échec du téléchargement : impossible de créer l\'export.', 'OK', { duration: 4000 });
       },
     });
   }
@@ -285,7 +286,7 @@ export class FeatureInfoComponent implements OnInit, OnDestroy {
   private pollExportUntilReady(exportId: string, format: string, attempt = 0): void {
     if (attempt > 30) {
       this.downloading.set(false);
-      this.snackBar.open('Le téléchargement a expiré, réessayez.', 'OK', { duration: 4000 });
+      this.snackBar.open(this.translate.instant('featureInfo.errors.downloadExpired') || 'Le téléchargement a expiré, réessayez.', 'OK', { duration: 4000 });
       return;
     }
     this.exportService.getById(exportId).subscribe({
@@ -307,13 +308,13 @@ export class FeatureInfoComponent implements OnInit, OnDestroy {
             error: (err) => {
               this.downloading.set(false);
               console.error('[FeatureInfo] Échec du téléchargement du fichier', err);
-              this.snackBar.open('Échec du téléchargement du fichier.', 'OK', { duration: 4000 });
+              this.snackBar.open(this.translate.instant('featureInfo.errors.downloadFileFailed') || 'Échec du téléchargement du fichier.', 'OK', { duration: 4000 });
             },
           });
         } else if (status === 'FAILED') {
           this.downloading.set(false);
           console.error('[FeatureInfo] Export en échec côté serveur', exp);
-          this.snackBar.open('L\'export a échoué côté serveur.', 'OK', { duration: 4000 });
+          this.snackBar.open(this.translate.instant('featureInfo.errors.serverExportFailed') || 'L\'export a échoué côté serveur.', 'OK', { duration: 4000 });
         } else {
           setTimeout(() => this.pollExportUntilReady(exportId, format, attempt + 1), 1000);
         }
@@ -321,7 +322,7 @@ export class FeatureInfoComponent implements OnInit, OnDestroy {
       error: (err) => {
         this.downloading.set(false);
         console.error('[FeatureInfo] Échec de la vérification du statut de l\'export', err);
-        this.snackBar.open('Échec du téléchargement.', 'OK', { duration: 4000 });
+        this.snackBar.open(this.translate.instant('featureInfo.errors.downloadFailed') || 'Échec du téléchargement.', 'OK', { duration: 4000 });
       },
     });
   }

@@ -1,7 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
-import { Router } from '@angular/router';
 import { of, throwError } from 'rxjs';
 import { TranslateModule } from '@ngx-translate/core';
 
@@ -12,11 +11,10 @@ describe('LoginComponent', () => {
   let component: LoginComponent;
   let fixture: ComponentFixture<LoginComponent>;
   let authServiceSpy: jasmine.SpyObj<AuthService>;
-  let routerSpy: jasmine.SpyObj<Router>;
 
   beforeEach(async () => {
-    authServiceSpy = jasmine.createSpyObj('AuthService', ['login']);
-    routerSpy = jasmine.createSpyObj('Router', ['navigate']);
+    authServiceSpy = jasmine.createSpyObj('AuthService', ['login', 'getOsmStatus', 'getOsmLoginUrl']);
+    authServiceSpy.getOsmStatus.and.returnValue(of({ configured: false }));
 
     await TestBed.configureTestingModule({
       imports: [
@@ -63,12 +61,22 @@ describe('LoginComponent', () => {
     expect(component.loading()).toBeFalse(); // completed synchronously
   });
 
-  it('should show error on login failure', () => {
-    authServiceSpy.login.and.returnValue(throwError(() => ({ error: { message: 'Invalid credentials' } })));
+  it('should show the real backend error message on login failure (matches the actual API error envelope {success, error: {code, message}})', () => {
+    authServiceSpy.login.and.returnValue(
+      throwError(() => ({ error: { success: false, error: { code: 'UNAUTHORIZED', message: 'Invalid credentials' } } })),
+    );
     component.email = 'user@test.com';
     component.password = 'wrong';
     component.login();
     expect(component.errorMessage()).toContain('Invalid credentials');
+  });
+
+  it('should fall back to a generic message when the error body has no nested message', () => {
+    authServiceSpy.login.and.returnValue(throwError(() => ({ error: {} })));
+    component.email = 'user@test.com';
+    component.password = 'wrong';
+    component.login();
+    expect(component.errorMessage()).toBeTruthy();
   });
 
   it('should toggle password visibility', () => {

@@ -13,7 +13,7 @@
 
 **GeOSM** (Geographic OpenStreetMap) est un geoportail open-source qui permet de **visualiser, gerer et diffuser des donnees geographiques**, principalement issues d'**OpenStreetMap**. Concu pour l'Afrique, il offre une infrastructure SIG complete permettant aux organisations de creer des portails cartographiques multi-instances.
 
-Ce depot contient le **client web frontend** construit avec Angular 18. Il fournit une interface cartographique interactive basee sur OpenLayers, un catalogue hierarchique de couches, des outils de dessin/mesure/impression, et se connecte a l'[API backend GeOSM](https://github.com/GeOsmFamily/geosm-api-refactor) pour toutes les operations de donnees.
+Ce depot contient le **client web frontend** construit avec Angular 18. Il fournit une interface cartographique interactive basee sur OpenLayers, un catalogue hierarchique de couches, des outils de dessin/mesure/impression, un assistant IA conversationnel, la connexion via OpenStreetMap, et se connecte a l'[API backend GeOSM](https://github.com/GeOsmFamily/geosm-api-refactor) pour toutes les operations de donnees. Voir [`CHANGELOG.md`](CHANGELOG.md) pour l'historique des changements.
 
 ---
 
@@ -120,7 +120,7 @@ L'application comprend **38 composants** organises en modules fonctionnels :
 - Barre d'outils carte avec historique de navigation
 - Menu contextuel (clic droit)
 - Zoom aux coordonnees GPS
-- Geosignets (bookmarks localStorage)
+- Geosignets (positions de carte sauvegardees, persistees cote serveur - pas seulement en localStorage)
 - Mes cartes (compositions de couches + vue sauvegardees, `MapCompositionService`)
 - Mapillary (vues panoramiques street-level)
 - Comparaison de cartes (swipe)
@@ -156,6 +156,11 @@ L'application comprend **38 composants** organises en modules fonctionnels :
 ### Authentification
 - Authentification JWT avec refresh token automatique
 - Login et inscription
+- Connexion en un clic via OpenStreetMap (OAuth 2.0), liaison/deliaison de compte depuis les parametres
+
+### Assistant IA
+- Assistant conversationnel (Gemini, function-calling) pilotant recherche/analyse spatiale/plan de localisation en langage naturel
+- Historique de conversations persiste
 
 ### Internationalisation
 - 3 langues supportees (francais, anglais, espagnol)
@@ -203,7 +208,7 @@ L'application integre **15 services** qui communiquent avec l'API backend :
 
 ## Internationalisation
 
-L'application supporte 3 langues avec **304 cles de traduction** :
+L'application supporte 3 langues avec **325 cles de traduction** (parite complete verifiee en CI) :
 
 | Langue | Code | Fichier |
 |---|---|---|
@@ -215,6 +220,18 @@ La langue par defaut est le francais. L'utilisateur peut changer de langue via l
 
 ---
 
+## Guide PDF (bouton "Infos")
+
+Le bouton "Infos" du header ouvre un panneau avec les credits du developpeur, la mention open source, un formulaire de signalement (bug/suggestion/fonctionnalite), et le telechargement du guide complet au format PDF (`assets/docs/geosm-guide-fr.pdf` / `geosm-guide-en.pdf`).
+
+Ces PDF sont generes **statiquement** (pas a la demande) via un script Puppeteer, a partir d'un gabarit HTML (`scripts/guide-pdf/`) - a regenerer manuellement apres toute mise a jour du contenu :
+
+```bash
+npm run generate:guide
+```
+
+---
+
 ## Tests
 
 ```bash
@@ -223,6 +240,12 @@ ng test
 
 # Lancer les tests avec couverture de code
 ng test --code-coverage
+
+# Lancer la suite E2E (Playwright) - demarre automatiquement ng serve
+npm run e2e
+
+# Suite E2E en mode interactif
+npm run e2e:ui
 ```
 
 ---

@@ -126,7 +126,7 @@ export class SharedMapComponent implements OnInit {
 
     const state = share.mapState as Record<string, any>;
     if (state && Array.isArray(state['layers'])) {
-      const layersState = state['layers'] as Array<{ layerId: string; opacity: number; visible: boolean }>;
+      const layersState = state['layers'] as { layerId: string; opacity: number; visible: boolean }[];
       setTimeout(() => {
         for (const layerEntry of layersState) {
           const catalogLayer = catalogLayers.find(l => l.id === layerEntry.layerId);

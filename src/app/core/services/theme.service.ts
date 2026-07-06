@@ -31,7 +31,7 @@ export class ThemeService {
    * Mode sombre temporairement désactivé (à la demande) - no-op tant que ce
    * n'est pas réactivé, quel que soit l'appelant.
    */
-  toggle(dark: boolean): void {
+  toggle(_dark: boolean): void {
     this._isDark$.next(false);
     this.applyToDOM(false);
     localStorage.removeItem(THEME_KEY);

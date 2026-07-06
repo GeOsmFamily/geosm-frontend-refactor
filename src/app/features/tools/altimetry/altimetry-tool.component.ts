@@ -17,7 +17,7 @@ import { MapService } from '../../map/services/map.service';
 import { GeoportailService } from '../../../core/services/geoportail.service';
 import { ElevationPoint } from '../../../core/models/index';
 import { LoadingSpinnerComponent } from '../../../shared/components/loading-spinner/loading-spinner.component';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 interface ProfileStats {
   distanceM: number;
@@ -40,6 +40,7 @@ export class AltimetryToolComponent implements AfterViewInit, OnDestroy {
   private readonly mapService = inject(MapService);
   private readonly geoportailService = inject(GeoportailService);
   private readonly snackBar = inject(MatSnackBar);
+  private readonly translate = inject(TranslateService);
   private readonly injector = inject(Injector);
 
   private map!: Map;
@@ -136,7 +137,7 @@ export class AltimetryToolComponent implements AfterViewInit, OnDestroy {
         this.loading.set(false);
         const points = result?.profile || [];
         if (points.length === 0) {
-          this.snackBar.open('Aucune donnée d\'altitude disponible pour cette zone.', 'OK', { duration: 4000 });
+          this.snackBar.open(this.translate.instant('tools.altimetryErrors.noData') || 'Aucune donnée d\'altitude disponible pour cette zone.', 'OK', { duration: 4000 });
           return;
         }
         this.stats.set(this.computeStats(points));
@@ -148,7 +149,7 @@ export class AltimetryToolComponent implements AfterViewInit, OnDestroy {
       },
       error: () => {
         this.loading.set(false);
-        this.snackBar.open('Échec de la récupération du profil altimétrique. Réessayez.', 'OK', { duration: 4000 });
+        this.snackBar.open(this.translate.instant('tools.altimetryErrors.fetchFailed') || 'Échec de la récupération du profil altimétrique. Réessayez.', 'OK', { duration: 4000 });
       },
     });
   }

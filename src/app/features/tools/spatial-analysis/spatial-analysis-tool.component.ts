@@ -8,7 +8,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import Map from 'ol/Map';
 import Draw from 'ol/interaction/Draw';
 import VectorLayer from 'ol/layer/Vector';
@@ -41,6 +41,7 @@ export class SpatialAnalysisToolComponent implements AfterViewInit, OnDestroy {
   private readonly mapService = inject(MapService);
   private readonly spatialAnalysisService = inject(SpatialAnalysisService);
   private readonly snackBar = inject(MatSnackBar);
+  private readonly translate = inject(TranslateService);
 
   private map!: Map;
   private inputLayer!: VectorLayer<VectorSource>;
@@ -151,7 +152,7 @@ export class SpatialAnalysisToolComponent implements AfterViewInit, OnDestroy {
       next: (result) => {
         this.loading.set(false);
         if (!result.geometry) {
-          this.snackBar.open('Aucun résultat (géométries disjointes ?).', 'OK', { duration: 4000 });
+          this.snackBar.open(this.translate.instant('tools.spatialAnalysisErrors.noResult') || 'Aucun résultat (géométries disjointes ?).', 'OK', { duration: 4000 });
           return;
         }
         const resultGeom = format.readGeometry(result.geometry, { featureProjection: 'EPSG:3857', dataProjection: 'EPSG:4326' });
@@ -162,7 +163,7 @@ export class SpatialAnalysisToolComponent implements AfterViewInit, OnDestroy {
       },
       error: () => {
         this.loading.set(false);
-        this.snackBar.open('Échec de l\'analyse spatiale. Vérifiez les géométries tracées.', 'OK', { duration: 4000 });
+        this.snackBar.open(this.translate.instant('tools.spatialAnalysisErrors.analysisFailed') || 'Échec de l\'analyse spatiale. Vérifiez les géométries tracées.', 'OK', { duration: 4000 });
       },
     });
   }

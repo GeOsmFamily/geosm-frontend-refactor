@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -7,11 +7,13 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
 import { MatDividerModule } from '@angular/material/divider';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { Router } from '@angular/router';
 
 import { AuthService } from '../../../../core/services/auth.service';
+import { OsmProfile } from '../../../../core/models/index';
 
 @Component({
   selector: 'app-settings',
@@ -26,6 +28,7 @@ import { AuthService } from '../../../../core/services/auth.service';
     MatIconModule,
     MatCardModule,
     MatDividerModule,
+    MatTooltipModule,
     MatSnackBarModule,
     TranslateModule,
   ],
@@ -44,6 +47,11 @@ export class SettingsComponent implements OnInit {
   profileForm!: FormGroup;
   passwordForm!: FormGroup;
 
+  readonly osmConfigured = signal(false);
+  readonly osmProfile = signal<OsmProfile | null>(null);
+  readonly osmLoading = signal(false);
+  readonly linkingOsm = signal(false);
+
   ngOnInit(): void {
     this.profileForm = this.fb.group({
       firstName: ['', Validators.required],
@@ -61,7 +69,52 @@ export class SettingsComponent implements OnInit {
           firstName: user.firstName,
           lastName: user.lastName,
         });
+        this.loadOsmProfile();
       }
+    });
+
+    this.authService.getOsmStatus().subscribe({
+      next: (res) => this.osmConfigured.set(res.configured),
+      error: () => this.osmConfigured.set(false),
+    });
+  }
+
+  private loadOsmProfile(): void {
+    this.osmLoading.set(true);
+    this.authService.getOsmProfile().subscribe({
+      next: (profile) => {
+        this.osmProfile.set(profile);
+        this.osmLoading.set(false);
+      },
+      error: () => {
+        this.osmProfile.set(null);
+        this.osmLoading.set(false);
+      },
+    });
+  }
+
+  linkOsmAccount(): void {
+    this.linkingOsm.set(true);
+    this.authService.getOsmLinkUrl().subscribe({
+      next: (res) => {
+        globalThis.location.href = res.url;
+      },
+      error: () => {
+        this.linkingOsm.set(false);
+        this.snackBar.open(this.translate.instant('settings.osmLinkStartError') || 'Impossible de démarrer la liaison OpenStreetMap', 'OK', { duration: 3000 });
+      },
+    });
+  }
+
+  unlinkOsmAccount(): void {
+    this.authService.unlinkOsm().subscribe({
+      next: () => {
+        this.osmProfile.set(null);
+        this.snackBar.open(this.translate.instant('settings.osmUnlinked') || 'Compte OpenStreetMap délié', 'OK', { duration: 3000 });
+      },
+      error: () => {
+        this.snackBar.open(this.translate.instant('settings.osmUnlinkError') || 'Erreur lors de la déliaison', 'OK', { duration: 3000 });
+      },
     });
   }
 

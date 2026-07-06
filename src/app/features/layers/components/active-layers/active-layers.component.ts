@@ -213,7 +213,7 @@ export class ActiveLayersComponent implements OnInit {
         });
       },
       error: () => {
-        this.snackBar.open('Erreur lors de la création du partage.', 'OK', { duration: 3000 });
+        this.snackBar.open(this.translate.instant('sharing.errors.createFailed') || 'Erreur lors de la création du partage.', 'OK', { duration: 3000 });
       }
     });
   }

@@ -1,4 +1,4 @@
-import { Component, inject, signal, OnInit } from '@angular/core';
+import { Component, EventEmitter, Output, inject, signal, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
@@ -15,7 +15,6 @@ import { Router } from '@angular/router';
 import { MapService } from '../../services/map.service';
 import { GeosignetService, Geosignet } from '../../../../core/services/geosignet.service';
 import { AuthService } from '../../../../core/services/auth.service';
-import { MapLayoutComponent } from '../map-layout/map-layout.component';
 
 @Component({
   selector: 'app-geosignets',
@@ -35,7 +34,15 @@ export class GeosignetsComponent implements OnInit {
   private readonly router = inject(Router);
   private readonly snackBar = inject(MatSnackBar);
   private readonly translate = inject(TranslateService);
-  private readonly parentLayout = inject(MapLayoutComponent, { optional: true });
+  /**
+   * Émet l'URL à partager plutôt que d'injecter directement MapLayoutComponent (parent) : ce
+   * dernier est chargé en lazy via une route (`loadComponent`), et l'injecter depuis un de ses
+   * propres enfants créait un import circulaire enfant→parent qui cassait la compilation JIT au
+   * runtime sous `ng serve` (erreur "needs to be compiled using the JIT compiler" en naviguant
+   * vers /map - le composant se retrouvait dupliqué en deux identités de classe distinctes selon
+   * qu'il soit atteint via l'import() du router ou l'import statique de ce fichier).
+   */
+  @Output() readonly shareRequested = new EventEmitter<string>();
 
   readonly currentUser = this.authService.currentUser$;
   readonly bookmarks = signal<Geosignet[]>([]);
@@ -110,9 +117,8 @@ export class GeosignetsComponent implements OnInit {
     
     // Copy link to clipboard
     navigator.clipboard.writeText(url).then(() => {
-      if (this.parentLayout) {
-        this.parentLayout.shareUrlText.set(url);
-        this.parentLayout.shareModalOpen.set(true);
+      if (this.shareRequested.observed) {
+        this.shareRequested.emit(url);
       } else {
         this.snackBar.open(
           this.translate.instant('geosignets.share') || 'Lien copié !',

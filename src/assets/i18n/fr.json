@@ -1,118 +1,13 @@
 {
-  "add_commentaire": {
-    "cancel": "ANNULER",
-    "save": "ENREGISTRER",
-    "title": "Ajouter un commentaire",
-    "title_commentaire": " Votre Commentaire :"
-  },
-  "ajout_signet": {
-    "cancel": "ANNULER",
-    "placeholder": "Nommer votre géo-signet",
-    "save": "ENREGISTRER",
-    "title": "Ajouter un géo-signet"
-  },
-  "caracteristiques_lieu": {
-    "altitude": "Altitude",
-    "fermer": "Fermer",
-    "partager": "Partager ce lieu",
-    "titre": "Caractéristiques du lieu",
-    "titre_coord": "Coordonnées (WGS84)",
-    "zoomer": "Zoomer dessus"
-  },
-  "choose_signet": {
-    "no_signet": "Vous n'avez aucun géo-signet",
-    "title": "Cliquer sur un signet pour zoomer dessus :"
-  },
   "compare_maps": {
     "compare": "Comparer",
     "title": "Choisissez deux cartes : "
-  },
-  "couche_en_cours": {
-    "information_couche": "Métadonnée",
-    "partager_couche": "Partager cette couche",
-    "supprimer_couche": "Enlever la couche",
-    "tout_partager": "Partager",
-    "tout_partager_toolpit": "Partager ce catalogue",
-    "tout_supprimer": "Tout supprimer"
-  },
-  "dowload_data": {
-    "all": "tout",
-    "by": "Par",
-    "calculate": "Calculer",
-    "description": "Extraire des données spécifiques selon une emprise",
-    "draw": "Dessiner une emprise",
-    "loading": "Chargement des ",
-    "title_choose_emprise": "Exporter toutes les couches",
-    "title_choose_layer": "Pharmacie, bars, Cinéma",
-    "lable_choose_one_emprise": "Rechercher une limite",
-    "title_choose_one_emprise": "Nom d'une commune, région, etc...",
-    "title_choose_thematique": "Choisir une thématique",
-    "title_choose_type_emprise": "Votre emprise spatiale",
-    "title_data_in": "Données d'entrées",
-    "toolTipLoadLayersInTOC": "Charger les couches en cours",
-    "toolTipAddInput": "Ajouter une nouvelle couche",
-    "toolTipDownloadGpkg": "Afficher les GPKG en téléchargements",
-    "toolTipDownloadImage": "Télécharger cette image"
-  },
-  "draw_in_map": {
-    "apply_draw": "APPLIQUER",
-    "save": "SAUVEGARDER",
-    "your_comment_placeholder": "Votre Commentaire"
-  },
-  "header": {
-    "toolpit_info": "GeOsm ?"
-  },
-  "layer_properties": {
-    "click_url_text": "Cliquer ici",
-    "download_gpkg": "Télechargez le GEOPACKAGE ici",
-    "download_problem": " Un problème est survenu sur cette couche",
-    "title": "Fiche descriptive",
-    "title_download": "Téléchargement des fichiers",
-    "toolpit_share": "Partager ce lieu",
-    "adresse": "Adresse"
   },
   "left_menu": {
     "fonds_de_carte": "Tous les fonds de cartes",
     "geobibliotheque": "Bibliothèque",
     "geothematiques": "Thématiques",
-    "fonds": "Fonds",
-    "themes": "Thèmes",
-    "ressources": "Ressources"
-  },
-  "loading": {
-    "loading": "Chargement...",
-    "loading_catalog": "Téléchargement des catalogues de données...",
-    "loading_dowloads_data": " Calcul en cours...",
-    "loading_pdf_print": "Création de la carte..."
-  },
-  "menu_contextuel": {
-    "ajouter_geosignet": "Ajouter un géosignet sur ce lieu",
-    "caracteristique": "Caractéristiques du lieu",
-    "commenter": "Commenter ce lieu",
-    "partager": "Partager ce lieu",
-    "voir_geosignet": "Vos géosignets"
-  },
-  "metadata": {
-    "area": "m² de surface totale",
-    "conditions_of_use": "Condition d'utilisation :",
-    "coordinates_system": "Système de coordonnées : ",
-    "coucverture": "Couverture : ",
-    "creation_date": "Date de créaton : ",
-    "description": "Description",
-    "description_couche": "Description :",
-    "key_osm": "Eléments cartographiques OSM :",
-    "key_words": "Mots-clés : ",
-    "language": "Langue : ",
-    "lenght": "m de longueur totale",
-    "number_entite": " entité(s)",
-    "properties": "Propriétes",
-    "ressources": "Ressources",
-    "resume": "Résumé :",
-    "scale": "Echelle : ",
-    "shareholders": "Partenaires / producteurs : ",
-    "text_no_metadata": "Le résumé de cette donnée n'est pas encore disponible",
-    "title": "Fiche descriptive :",
-    "update_date": "Mise à jour: "
+    "fonds": "Fonds"
   },
   "naviguation_tools": {
     "compare_maps": "Comparer des cartes",
@@ -127,12 +22,6 @@
     "zoom_minus": "Zoomer en arrière",
     "zoom_plus": "Zoomer en avant",
     "zoom_to_coordinates": "Zoomer sur une coordonnée"
-  },
-  "notifications": {
-    "click_on_map_itineraire": "Cliquer sur la carte pour placer votre point",
-    "comment_added": " Votre commentaire a bien été ajouté",
-    "signet_added_1": "Le signet ",
-    "signet_added_2": " a bien été ajouté"
   },
   "right_menu": {
     "button": {
@@ -199,73 +88,6 @@
       }
     }
   },
-  "search": {
-    "placeholder": "Rechercher un lieu, une couche...",
-    "noResults": "Aucun resultat",
-    "places": "Lieux",
-    "layers": "Couches"
-  },
-  "zoom_to_coordinates": {
-    "cancel": "Annuler",
-    "choose_projection": "Choisissez une projection",
-    "latitude": "latitude",
-    "longitude": "longitude",
-    "save": "Valider",
-    "title": "RECHERCHE PAR COORDONNEES"
-  },
-  "ressourses": {
-    "no_ressourses": "Aucune ressouces disponibles",
-    "download": "Telecharger"
-  },
-  "geosm": {
-    "text": "GeOsm utilise les données",
-    "text1": ""
-  },
-  "dowloadLayers": {
-    "features": " entité(s)",
-    "download": "Télécharger",
-    "title": "Télécharger vos fichiers"
-  },
-  "descriptive_sheet": {
-    "share": " Partager",
-    "zoomTo": " Zoomer",
-    "displayAllAttributes": " Afficher tout",
-    "displayLesAttributes": " Afficher moins"
-  },
-  "login": {
-    "error": " Email ou mot de passe invalide",
-    "label_email": "Email ",
-    "label_password": "Mot de passe",
-    "error_password": "Champ vide",
-    "error_email": " Email incorrect",
-    "connect": " Se connecter",
-    "title": " Connecter vous"
-  },
-  "admin": {
-    "icon": {
-      "add_group": "Ajouter un groupe",
-      "add_icons": "Ajouter des icones",
-      "search_icons": "Rechercher une icone"
-    },
-    "lef_sidenav": {
-      "icons": "Icones"
-    }
-  },
-  "add_icon": {
-    "title": "Ajouter des icones",
-    "category": "Selectionnez la catégorie des icones",
-    "category_error": "Champ obligatoire",
-    "image_error": "Ajouter au moins une image",
-    "attribnution": "Attribution des images"
-  },
-  "infos": {
-    "p1": "GeOsm est une infrastructure ouverte, collaborative et mutualisée composée de données, de ressources et d'acteurs qui jouent tous un rôle de premier plan dans le déploiement, l'amélioration et le maintien de solutions innovantes basées sur des données géospatiales libres de droit et accessibles à tous.",
-    "p2": "Pour remonter une anormalie (bug) de l'application :",
-    "p3": "Si vous avez une idée de collaboration ou une technologie d'intérêt, ou si vous avez une force dans un de nos domaines d'intérêt, n'hésitez pas à communiquer avec nous:"
-  },
-  "save": "Valider",
-  "cancel": "Annuler",
-  "updatebd": "Dernière mise à jour de la BD OSM :",
   "app": {
     "title": "GeOSM",
     "subtitle": "Plateforme Cartographique"
@@ -285,7 +107,14 @@
     "loginButton": "Se connecter",
     "registerButton": "S'inscrire",
     "loginError": "Email ou mot de passe incorrect",
-    "registerSuccess": "Compte cree avec succes"
+    "registerSuccess": "Compte cree avec succes",
+    "osmLinkedSuccess": "Compte OpenStreetMap lié avec succès",
+    "osmLinkError": "Erreur lors de la liaison du compte OpenStreetMap",
+    "osmLoginFailed": "La connexion via OpenStreetMap a échoué. Veuillez réessayer.",
+    "osmUnavailable": "Connexion OpenStreetMap indisponible pour le moment.",
+    "enterEmailPassword": "Veuillez saisir votre email et votre mot de passe.",
+    "loginFailedGeneric": "Échec de la connexion. Vérifiez vos identifiants.",
+    "osmLoginButton": "Se connecter avec OpenStreetMap"
   },
   "map": {
     "layers": "Couches",
@@ -353,7 +182,12 @@
       "pending": "En attente",
       "completed": "Termine",
       "failed": "Echoue",
-      "processing": "En cours"
+      "processing": "En cours",
+      "errors": {
+        "launchFailed": "Échec du lancement de l'export.",
+        "exportFailed": "L'export a échoué. Réessayez.",
+        "downloadFailed": "Le fichier est prêt mais le téléchargement a échoué. Réessayez."
+      }
     },
     "print": {
       "title": "Titre",
@@ -384,6 +218,23 @@
       "clear": "Effacer tout",
       "delete": "Supprimer",
       "edit": "Modifier"
+    },
+    "altimetryErrors": {
+      "noData": "Aucune donnée d'altitude disponible pour cette zone.",
+      "fetchFailed": "Échec de la récupération du profil altimétrique. Réessayez."
+    },
+    "nearestSearchErrors": {
+      "noResult": "Aucun résultat trouvé pour cette couche.",
+      "searchFailed": "Échec de la recherche du plus proche."
+    },
+    "planLocalisationErrors": {
+      "generationFailed": "Échec de la génération du PDF. Réessayez.",
+      "generationTimeout": "La génération prend plus de temps que prévu. Réessayez dans un instant.",
+      "downloadFailed": "Le PDF est prêt mais le téléchargement a échoué. Réessayez."
+    },
+    "spatialAnalysisErrors": {
+      "noResult": "Aucun résultat (géométries disjointes ?).",
+      "analysisFailed": "Échec de l'analyse spatiale. Vérifiez les géométries tracées."
     }
   },
   "sharing": {
@@ -394,7 +245,10 @@
     "twitter": "Twitter",
     "whatsapp": "WhatsApp",
     "linkedin": "LinkedIn",
-    "sharedMap": "Carte partagee"
+    "sharedMap": "Carte partagee",
+    "errors": {
+      "createFailed": "Erreur lors de la création du partage."
+    }
   },
   "settings": {
     "accountInfo": "Informations du compte",
@@ -409,9 +263,19 @@
     "profileUpdated": "Profil mis à jour avec succès",
     "profileUpdateError": "Erreur lors de la mise à jour du profil",
     "passwordChanged": "Mot de passe changé avec succès",
-    "passwordChangeError": "Erreur lors du changement de mot de passe"
+    "passwordChangeError": "Erreur lors du changement de mot de passe",
+    "osmLinkStartError": "Impossible de démarrer la liaison OpenStreetMap",
+    "osmUnlinked": "Compte OpenStreetMap délié",
+    "osmUnlinkError": "Erreur lors de la déliaison",
+    "osm": {
+      "loading": "Chargement...",
+      "memberSince": "Membre OSM depuis le",
+      "contributions": "contribution(s) OSM",
+      "unlinkTooltip": "Délier ce compte",
+      "notLinked": "Aucun compte OpenStreetMap lié.",
+      "linkButton": "Lier mon compte OpenStreetMap"
+    }
   },
-
   "geosignets": {
     "title": "Geosignets",
     "helpText": "Enregistrez vos positions favorites et vos niveaux de zoom pour y revenir rapidement d'un simple clic.",
@@ -474,7 +338,15 @@
     "directions": "Itineraire",
     "download": "Telecharger",
     "showDetails": "Voir plus",
-    "hideDetails": "Voir moins"
+    "hideDetails": "Voir moins",
+    "errors": {
+      "noExportableData": "Aucune donnée exportable pour cet élément.",
+      "createExportFailed": "Échec du téléchargement : impossible de créer l'export.",
+      "downloadExpired": "Le téléchargement a expiré, réessayez.",
+      "downloadFileFailed": "Échec du téléchargement du fichier.",
+      "serverExportFailed": "L'export a échoué côté serveur.",
+      "downloadFailed": "Échec du téléchargement."
+    }
   },
   "common": {
     "save": "Enregistrer",
@@ -515,5 +387,39 @@
     "results": "Résultats",
     "remove": "Supprimer la mesure",
     "clearAll": "Tout effacer"
+  },
+  "infoPanel": {
+    "title": "Infos",
+    "developer": {
+      "title": "Développeur"
+    },
+    "openSource": {
+      "title": "Projet open source",
+      "description": "GeOSM est un projet open source. Le code source est disponible publiquement et les contributions sont les bienvenues.",
+      "viewRepo": "Voir le dépôt sur GitHub"
+    },
+    "guide": {
+      "title": "Guide d'utilisation",
+      "description": "Téléchargez le guide complet de GeOSM au format PDF, avec une explication détaillée de chaque fonctionnalité et des exemples de cas d'usage.",
+      "download": "Télécharger le guide (PDF)"
+    },
+    "feedback": {
+      "title": "Signaler un problème",
+      "description": "Vous avez trouvé un bug, ou vous avez une suggestion ou une idée de nouvelle fonctionnalité ? N'hésitez pas à nous en faire part.",
+      "typeLabel": "Type de signalement",
+      "types": {
+        "bug": "Signaler un bug",
+        "suggestion": "Faire une suggestion",
+        "featureRequest": "Proposer une fonctionnalité"
+      },
+      "descriptionLabel": "Description",
+      "descriptionRequired": "La description est requise",
+      "descriptionTooShort": "La description doit contenir au moins 10 caractères",
+      "emailLabel": "Email de contact (optionnel)",
+      "emailInvalid": "Adresse email invalide",
+      "submit": "Envoyer",
+      "success": "Merci pour votre retour !",
+      "error": "Une erreur est survenue lors de l'envoi."
+    }
   }
 }

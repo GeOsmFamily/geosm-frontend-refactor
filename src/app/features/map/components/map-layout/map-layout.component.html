@@ -67,6 +67,9 @@
       <button mat-icon-button (click)="toggleToolsMenu()" [matTooltip]="'map.tools' | translate" class="header-action tools-btn" [class.active]="toolsMenuOpen() || activeTool()">
         <mat-icon>handyman</mat-icon>
       </button>
+      <button mat-icon-button (click)="toggleInfo()" [matTooltip]="'infoPanel.title' | translate" class="header-action" [class.active]="infoOpen()">
+        <mat-icon>info</mat-icon>
+      </button>
     </div>
   </header>
 
@@ -111,7 +114,7 @@
             </button>
           </div>
           <div class="panel-body">
-            <app-geosignets></app-geosignets>
+            <app-geosignets (shareRequested)="openShareModal($event)"></app-geosignets>
           </div>
         </div>
       }
@@ -180,6 +183,23 @@
           </div>
           <div class="panel-body">
             <app-settings></app-settings>
+          </div>
+        </div>
+      }
+
+      @if (infoOpen()) {
+        <div class="floating-panel active-tool-panel glass animate-in">
+          <div class="panel-header">
+            <div class="panel-title-group">
+              <mat-icon class="panel-icon">info</mat-icon>
+              <h3>{{ 'infoPanel.title' | translate }}</h3>
+            </div>
+            <button (click)="closeInfo()" class="panel-close">
+              <mat-icon>close</mat-icon>
+            </button>
+          </div>
+          <div class="panel-body">
+            <app-info-panel></app-info-panel>
           </div>
         </div>
       }
