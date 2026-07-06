@@ -1,5 +1,7 @@
 import { Routes } from '@angular/router';
 import { authGuard } from './core/guards/auth.guard';
+import { roleGuard } from './core/guards/role.guard';
+import { Role } from './core/models/index';
 
 export const routes: Routes = [
   { path: '', redirectTo: '/map', pathMatch: 'full' },
@@ -34,6 +36,11 @@ export const routes: Routes = [
     path: 'share/:code',
     loadComponent: () =>
       import('./features/sharing/shared-map.component').then((m) => m.SharedMapComponent),
+  },
+  {
+    path: 'admin',
+    canActivate: [roleGuard([Role.SUPER_ADMIN, Role.ADMIN_INSTANCE])],
+    loadChildren: () => import('./features/admin/admin.routes').then((m) => m.ADMIN_ROUTES),
   },
   { path: '**', redirectTo: '/map' },
 ];

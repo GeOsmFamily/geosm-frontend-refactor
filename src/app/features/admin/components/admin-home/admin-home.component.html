@@ -1,0 +1,28 @@
+<h2 class="page-title">{{ 'admin.home.title' | translate }}</h2>
+
+<div class="stats-grid">
+  <app-stat-card
+    [label]="'admin.home.users' | translate"
+    [value]="stats()?.userCount ?? null"
+    icon="group"
+    [loading]="loading()"
+  ></app-stat-card>
+  <app-stat-card
+    [label]="'admin.home.instances' | translate"
+    [value]="stats()?.instanceCount ?? null"
+    icon="public"
+    [loading]="loading()"
+  ></app-stat-card>
+  <app-stat-card
+    [label]="'admin.home.exports' | translate"
+    [value]="stats()?.exportCount ?? null"
+    icon="download"
+    [loading]="loading()"
+  ></app-stat-card>
+  <app-stat-card
+    [label]="'admin.home.themes' | translate"
+    [value]="stats()?.themeCount ?? null"
+    icon="palette"
+    [loading]="loading()"
+  ></app-stat-card>
+</div>

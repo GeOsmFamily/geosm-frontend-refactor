@@ -337,7 +337,34 @@
     "ok": "OK",
     "language": "Idioma",
     "myAccount": "Mi cuenta",
-    "settings": "Configuración"
+    "settings": "Configuración",
+    "administration": "Administración"
+  },
+  "admin": {
+    "title": "Administración",
+    "backToMap": "Volver al mapa",
+    "quickLinks": "Enlaces rápidos",
+    "nav": {
+      "users": "Usuarios",
+      "instances": "Instancias",
+      "catalog": "Catálogo",
+      "content": "Contenido y moderación",
+      "feedback": "Reportes",
+      "jobs": "Tareas y copias de seguridad",
+      "observability": "Observabilidad",
+      "infra": "Infraestructura",
+      "systemTools": "Herramientas del sistema"
+    },
+    "common": {
+      "noResults": "Sin resultados"
+    },
+    "home": {
+      "title": "Resumen",
+      "users": "Usuarios",
+      "instances": "Instancias",
+      "exports": "Exportaciones",
+      "themes": "Temas predeterminados"
+    }
   },
   "drawing": {
     "noInstance": "Ninguna instancia activa",

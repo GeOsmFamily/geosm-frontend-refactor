@@ -1,0 +1,11 @@
+.page-title {
+  margin: 0 0 20px;
+  font-family: 'Avenir Next Rounded Pro Demi', 'Roboto', sans-serif;
+  color: var(--primary);
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 16px;
+}

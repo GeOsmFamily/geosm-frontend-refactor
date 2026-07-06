@@ -1,0 +1,15 @@
+<div class="chart-card glass">
+  @if (title) {
+    <h4 class="chart-title">{{ title }}</h4>
+  }
+  <div class="chart-canvas-wrapper">
+    @if (loading) {
+      <div class="chart-loading">
+        <mat-progress-spinner diameter="28" mode="indeterminate"></mat-progress-spinner>
+      </div>
+    } @else if (datasets.length === 0) {
+      <p class="chart-empty">—</p>
+    }
+    <canvas #chartCanvas [class.hidden]="loading || datasets.length === 0"></canvas>
+  </div>
+</div>

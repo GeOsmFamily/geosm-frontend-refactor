@@ -363,7 +363,34 @@
     "ok": "OK",
     "language": "Language",
     "myAccount": "My account",
-    "settings": "Settings"
+    "settings": "Settings",
+    "administration": "Administration"
+  },
+  "admin": {
+    "title": "Administration",
+    "backToMap": "Back to map",
+    "quickLinks": "Quick links",
+    "nav": {
+      "users": "Users",
+      "instances": "Instances",
+      "catalog": "Catalog",
+      "content": "Content & moderation",
+      "feedback": "Feedback",
+      "jobs": "Jobs & backups",
+      "observability": "Observability",
+      "infra": "Infrastructure",
+      "systemTools": "System tools"
+    },
+    "common": {
+      "noResults": "No results"
+    },
+    "home": {
+      "title": "Overview",
+      "users": "Users",
+      "instances": "Instances",
+      "exports": "Exports",
+      "themes": "Default themes"
+    }
   },
   "drawing": {
     "noInstance": "No active instance",

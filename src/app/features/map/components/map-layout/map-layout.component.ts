@@ -22,7 +22,7 @@ import { MapService } from '../../services/map.service';
 import { AuthService } from '../../../../core/services/auth.service';
 import { InstanceService } from '../../../../core/services/instance.service';
 import { ApiService } from '../../../../core/services/api.service';
-import { Instance, GeocodingResult } from '../../../../core/models/index';
+import { Instance, GeocodingResult, Role } from '../../../../core/models/index';
 import { environment } from '../../../../../environments/environment';
 import { FeatureInfoComponent } from '../feature-info/feature-info.component';
 import { ContextMenuComponent } from '../context-menu/context-menu.component';
@@ -608,6 +608,15 @@ export class MapLayoutComponent implements OnInit {
 
   navigateToProfile(): void {
     this.toggleSettings();
+  }
+
+  get isAdmin(): boolean {
+    const role = this.currentUser.value?.role;
+    return role === Role.SUPER_ADMIN || role === Role.ADMIN_INSTANCE;
+  }
+
+  navigateToAdmin(): void {
+    this.router.navigate(['/admin']);
   }
 }
 

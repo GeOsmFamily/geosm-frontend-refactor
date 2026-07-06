@@ -363,7 +363,34 @@
     "ok": "OK",
     "language": "Langue",
     "myAccount": "Mon compte",
-    "settings": "Paramètres"
+    "settings": "Paramètres",
+    "administration": "Administration"
+  },
+  "admin": {
+    "title": "Administration",
+    "backToMap": "Retour à la carte",
+    "quickLinks": "Liens rapides",
+    "nav": {
+      "users": "Utilisateurs",
+      "instances": "Instances",
+      "catalog": "Catalogue",
+      "content": "Contenu & modération",
+      "feedback": "Signalements",
+      "jobs": "Jobs & sauvegardes",
+      "observability": "Observabilité",
+      "infra": "Infrastructure",
+      "systemTools": "Outils système"
+    },
+    "common": {
+      "noResults": "Aucun résultat"
+    },
+    "home": {
+      "title": "Vue d'ensemble",
+      "users": "Utilisateurs",
+      "instances": "Instances",
+      "exports": "Exports",
+      "themes": "Thèmes par défaut"
+    }
   },
   "drawing": {
     "noInstance": "Aucune instance active",

@@ -1,0 +1,13 @@
+<div class="stat-card glass">
+  <div class="stat-icon" [style.color]="'var(' + accentVar + ')'">
+    <mat-icon>{{ icon }}</mat-icon>
+  </div>
+  <div class="stat-body">
+    <span class="stat-label">{{ label }}</span>
+    @if (loading) {
+      <mat-progress-spinner diameter="20" mode="indeterminate"></mat-progress-spinner>
+    } @else {
+      <span class="stat-value">{{ value ?? '—' }}</span>
+    }
+  </div>
+</div>

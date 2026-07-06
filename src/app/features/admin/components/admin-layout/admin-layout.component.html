@@ -1,0 +1,45 @@
+<div class="admin-shell">
+  <aside class="admin-sidebar glass">
+    <div class="sidebar-header">
+      <button mat-icon-button [matTooltip]="'admin.backToMap' | translate" (click)="backToMap()">
+        <mat-icon>arrow_back</mat-icon>
+      </button>
+      <span class="sidebar-title">{{ 'admin.title' | translate }}</span>
+    </div>
+
+    <nav class="sidebar-nav">
+      @for (item of navItems; track item.path) {
+        <a
+          class="nav-item"
+          [routerLink]="item.path"
+          routerLinkActive="active"
+        >
+          <mat-icon>{{ item.icon }}</mat-icon>
+          <span>{{ item.labelKey | translate }}</span>
+        </a>
+      }
+    </nav>
+
+    <div class="sidebar-footer">
+      <span class="footer-label">{{ 'admin.quickLinks' | translate }}</span>
+      @for (link of observabilityLinks; track link.key) {
+        <a class="quick-link" [href]="link.url" target="_blank" rel="noopener">
+          <mat-icon>{{ link.icon }}</mat-icon>
+          <span>{{ link.key }}</span>
+        </a>
+      }
+    </div>
+  </aside>
+
+  <div class="admin-content">
+    <header class="admin-topbar glass">
+      @if (currentUser | async; as user) {
+        <span class="role-badge">{{ user.role }}</span>
+        <span class="user-name">{{ user.firstName }} {{ user.lastName }}</span>
+      }
+    </header>
+    <main class="admin-main">
+      <router-outlet></router-outlet>
+    </main>
+  </div>
+</div>
