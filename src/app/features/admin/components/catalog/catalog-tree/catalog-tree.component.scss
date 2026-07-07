@@ -1,0 +1,35 @@
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-bottom: 12px;
+
+  button {
+    &.active {
+      color: var(--accent);
+      font-weight: 600;
+    }
+  }
+
+  mat-icon {
+    color: var(--text-secondary, #64748b);
+  }
+
+  .crumb-current {
+    font-weight: 600;
+    color: var(--primary);
+    padding: 0 8px;
+  }
+}
+
+.toolbar {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 12px;
+}
+
+.row-actions {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}

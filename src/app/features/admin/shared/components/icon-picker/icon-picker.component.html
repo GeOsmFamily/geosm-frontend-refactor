@@ -1,0 +1,28 @@
+<div class="categories">
+  @for (cat of categories(); track cat) {
+    <button
+      mat-stroked-button
+      [color]="activeCategory() === cat ? 'primary' : undefined"
+      (click)="activeCategory.set(cat)"
+    >
+      {{ cat === 'all' ? ('admin.catalog.allCategories' | translate) : cat }}
+    </button>
+  }
+</div>
+
+@if (loading()) {
+  <mat-progress-spinner mode="indeterminate" diameter="28"></mat-progress-spinner>
+} @else {
+  <div class="icon-grid">
+    @for (tile of visibleTiles(); track tile.key) {
+      <button
+        type="button"
+        class="icon-tile"
+        [class.selected]="selectedKey === tile.key"
+        [matTooltip]="tile.label"
+        (click)="select(tile.key)"
+        [innerHTML]="tile.svg"
+      ></button>
+    }
+  </div>
+}

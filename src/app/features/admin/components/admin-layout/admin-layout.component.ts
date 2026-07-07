@@ -18,8 +18,8 @@ interface AdminNavItem {
 }
 
 const NAV_ITEMS: AdminNavItem[] = [
-  { path: 'users', icon: 'group', labelKey: 'admin.nav.users' },
-  { path: 'instances', icon: 'public', labelKey: 'admin.nav.instances', superAdminOnly: true },
+  { path: 'users', icon: 'group', labelKey: 'admin.nav.users', superAdminOnly: true },
+  { path: 'instances', icon: 'public', labelKey: 'admin.nav.instances' },
   { path: 'catalog', icon: 'layers', labelKey: 'admin.nav.catalog' },
   { path: 'content', icon: 'forum', labelKey: 'admin.nav.content' },
   { path: 'feedback', icon: 'flag', labelKey: 'admin.nav.feedback' },

@@ -25,7 +25,7 @@ export interface AdminTableColumn {
   templateUrl: './admin-data-table.component.html',
   styleUrl: './admin-data-table.component.scss',
 })
-export class AdminDataTableComponent<T extends Record<string, unknown>> {
+export class AdminDataTableComponent<T> {
   @Input() columns: AdminTableColumn[] = [];
   @Input() rows: T[] = [];
   @Input() loading = false;

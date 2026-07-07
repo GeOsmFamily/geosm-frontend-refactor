@@ -24,7 +24,7 @@ import { getExportFileExtension } from '../../../../core/utils/export-format.uti
 const KNOWN_KEYS = new Set([
   'id', 'geometry', 'tags', 'layerId', 'name', 'name:fr',
   'opening_hours', 'phone', 'contact:phone', 'website', 'contact:website',
-  'addr:street', 'addr:housenumber', 'addr:city',
+  'addr:street', 'addr:housenumber', 'addr:city', 'image', 'wikimedia_commons',
 ]);
 
 // Les valeurs doivent correspondre à l'enum backend ExportFormat (majuscules),
@@ -61,6 +61,8 @@ export class FeatureInfoComponent implements OnInit, OnDestroy {
   readonly phone = signal<string | null>(null);
   readonly website = signal<string | null>(null);
   readonly address = signal<string | null>(null);
+  readonly imageUrl = signal<string | null>(null);
+  readonly imageFailed = signal(false);
   readonly otherProperties = signal<{ key: string; value: string }[]>([]);
   readonly showAllProperties = signal(false);
   readonly downloading = signal(false);
@@ -145,7 +147,14 @@ export class FeatureInfoComponent implements OnInit, OnDestroy {
           delete props['geometry'];
           this.lastLayerId = (props['layerId'] as string) || null;
           this.lastFeatureId = props['id'] != null ? String(props['id']) : null;
-          this.showProperties((targetFeature.get('name') as string) || 'Feature', props, event.coordinate);
+          // Repli sur le nom de la couche (ex. "Hôpitaux") quand l'entité OSM n'a pas de nom -
+          // même logique que le chemin WMS ci-dessous (queryWmsLayers) ; le mot littéral
+          // "Feature" utilisé auparavant n'était ni traduit ni utile à l'utilisateur.
+          const activeLayer = this.lastLayerId
+            ? this.mapLayerService.getActiveLayers().find((al) => al.layer.id === this.lastLayerId)
+            : undefined;
+          const fallbackTitle = activeLayer?.layer.name || this.translate.instant('map.featureInfo.genericFeature');
+          this.showProperties((targetFeature.get('name') as string) || fallbackTitle, props, event.coordinate);
           return;
         }
 
@@ -203,7 +212,7 @@ export class FeatureInfoComponent implements OnInit, OnDestroy {
         if (response.features && response.features.length > 0) {
           const props = response.features[0].properties || {};
           this.lastFeatureId = props['osm_id'] != null ? String(props['osm_id']) : null;
-          this.showProperties(layer.get('name') || 'WMS Layer', props, coordinate);
+          this.showProperties(layer.get('name') || this.translate.instant('map.featureInfo.genericFeature'), props, coordinate);
         } else {
           this.close();
         }
@@ -236,6 +245,8 @@ export class FeatureInfoComponent implements OnInit, OnDestroy {
     this.phone.set(get('phone') || get('contact:phone'));
     this.website.set(get('website') || get('contact:website'));
     this.address.set(address);
+    this.imageUrl.set(this.resolveImageUrl(merged));
+    this.imageFailed.set(false);
 
     this.otherProperties.set(
       Object.entries(merged)
@@ -248,6 +259,31 @@ export class FeatureInfoComponent implements OnInit, OnDestroy {
     this.lastCoordinate = coordinate;
     this.visible.set(true);
     this.overlay.setPosition(coordinate);
+  }
+
+  /**
+   * Certaines contributions OSM renseignent une vraie image (tag `image`, parfois une simple
+   * page Wikimedia Commons via `wikimedia_commons`) - on ne l'affiche que si on peut en tirer une
+   * URL d'image directe ; sinon on se tait plutôt que d'afficher un lien cassé ou une capture
+   * d'écran Google Maps (valeurs `image=` non standard rencontrées dans les données réelles).
+   */
+  private resolveImageUrl(merged: Record<string, any>): string | null {
+    const image = typeof merged['image'] === 'string' ? merged['image'].trim() : '';
+    if (/^https?:\/\//i.test(image) || image.startsWith('data:image/')) {
+      return image;
+    }
+
+    const commons = typeof merged['wikimedia_commons'] === 'string' ? merged['wikimedia_commons'].trim() : '';
+    if (/^file:/i.test(commons)) {
+      const filename = commons.slice(commons.indexOf(':') + 1);
+      return `https://commons.wikimedia.org/wiki/Special:FilePath/${encodeURIComponent(filename)}?width=480`;
+    }
+
+    return null;
+  }
+
+  onImageError(): void {
+    this.imageFailed.set(true);
   }
 
   toggleAllProperties(): void {
@@ -333,5 +369,7 @@ export class FeatureInfoComponent implements OnInit, OnDestroy {
     this.lastLayerId = null;
     this.lastFeatureId = null;
     this.canDownload.set(false);
+    this.imageUrl.set(null);
+    this.imageFailed.set(false);
   }
 }

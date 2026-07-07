@@ -1,0 +1,52 @@
+.full-width {
+  width: 100%;
+}
+
+mat-dialog-content {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 400px;
+}
+
+.coords-row {
+  display: flex;
+  gap: 12px;
+
+  mat-form-field {
+    flex: 1;
+  }
+}
+
+.boundary-section {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  margin: 8px 0 16px;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid rgba(128, 128, 128, 0.2);
+}
+
+.boundary-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--primary);
+}
+
+.boundary-hint {
+  font-size: 12px;
+  color: var(--text-secondary, #64748b);
+  margin: 0;
+}
+
+.boundary-chip {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 4px 4px 12px;
+  border-radius: 999px;
+  background: rgba(0, 173, 166, 0.12);
+  font-size: 12px;
+}

@@ -56,34 +56,72 @@ export interface Instance {
   centerLat: number;
   centerLon: number;
   defaultZoom: number;
+  boundaryTable: string | null;
+  boundaryId: number | null;
+  boundaryGeomCol: string | null;
+  adminLevel: number | null;
   isActive: boolean;
+}
+
+export interface BoundarySearchResult {
+  id: number;
+  name: string;
+  adminLevel: number | null;
+}
+
+export interface BoundaryDetail {
+  id: number;
+  name: string;
+  adminLevel: number | null;
+  geojson: unknown;
+}
+
+/** Voir InstanceUserRecord côté backend (domain/repositories/instance.repository.ts). */
+export interface InstanceUser {
+  id: string;
+  userId: string;
+  instanceId: string;
+  role: Role;
+  user?: { id: string; email: string; firstName: string; lastName: string };
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface Group {
   id: string;
   name: string;
+  slug: string;
   description: string;
   order: number;
   instanceId: string;
   icon?: string | null;
   color?: string | null;
+  isActive?: boolean;
 }
 
 export interface SubGroup {
   id: string;
   name: string;
+  slug: string;
   description: string;
   order: number;
   groupId: string;
+  icon?: string | null;
+  isActive?: boolean;
 }
+
+export type GeometryTypeEnum = 'POINT' | 'LINESTRING' | 'POLYGON' | 'MULTIPOINT' | 'MULTILINESTRING' | 'MULTIPOLYGON';
+export type LayerSourceType = 'WMS' | 'WFS' | 'WMTS' | 'GEOJSON' | 'MVT' | 'XYZ';
 
 export interface Layer {
   id: string;
   name: string;
+  slug?: string;
   sourceType: string;
   url: string;
   sourceUrl?: string | null;
   tableName: string;
+  schemaName?: string | null;
   description: string;
   bbox: [number, number, number, number] | null;
   tags: string[];
@@ -91,6 +129,12 @@ export interface Layer {
   subGroupId: string;
   sourceLayer?: string | null;
   geometryType?: string | null;
+  minZoom?: number;
+  maxZoom?: number;
+  isVisible?: boolean;
+  isQueryable?: boolean;
+  opacity?: number;
+  order?: number;
   metadata?: {
     icon?: string | null;
     color?: string | null;
@@ -109,6 +153,32 @@ export interface Feature {
   geometry: GeoJSON.Geometry;
   properties: Record<string, unknown>;
   layerId: string;
+}
+
+/** Réponse de l'import d'un fichier (GeoJSON/KML/GPKG/Shapefile zippé/...) en table de staging,
+ * avant publication définitive - voir l'assistant de création de couche, source "Fichier". */
+export interface StagedFileImport {
+  stagingTable: string;
+  featureCount: number;
+  geometryType: string;
+  fields: string[];
+  preview: GeoJSON.FeatureCollection;
+}
+
+export interface OsmTagCondition {
+  key: string;
+  value: string;
+}
+
+export interface QgisProjectLayerInfo {
+  name: string;
+  title: string;
+}
+
+export interface IconCatalogEntry {
+  key: string;
+  label: string;
+  category: string;
 }
 
 export interface LayerStats {
@@ -231,6 +301,37 @@ export interface DefaultTheme {
   color: string;
   order: number;
   tags?: string[];
+}
+
+export interface DefaultTag {
+  id: string;
+  name: string;
+  slug: string;
+  themeId: string;
+}
+
+/** Voir LayerStyle (schema.prisma) - un layer peut avoir plusieurs styles nommés, GET /layers/:layerId/style renvoie un tableau. */
+export interface LayerStyleModel {
+  id: string;
+  name: string;
+  sldBody: string | null;
+  mapboxStyle: Record<string, unknown> | null;
+  isDefault: boolean;
+  layerId: string;
+}
+
+export interface QgisProjectModel {
+  id: string;
+  name: string;
+  filePath: string;
+  description: string | null;
+  instanceId: string;
+}
+
+export interface RasterImportResult {
+  layer: Layer;
+  tableName: string;
+  postgisImportWarning: string | null;
 }
 
 export interface AnalyticsEvent {

@@ -13,6 +13,11 @@
           <span>{{ 'featureInfo.loading' | translate }}</span>
         </div>
       } @else {
+        @if (imageUrl() && !imageFailed()) {
+          <a class="feature-image-link" [href]="imageUrl()" target="_blank" rel="noopener">
+            <img class="feature-image" [src]="imageUrl()" (error)="onImageError()" [alt]="title()" />
+          </a>
+        }
         <div class="info-rows">
           @if (openingHours()) {
             <div class="info-row">
@@ -40,7 +45,7 @@
           }
         </div>
 
-        @if (!openingHours() && !phone() && !website() && !address() && otherProperties().length === 0) {
+        @if (!openingHours() && !phone() && !website() && !address() && !imageUrl() && otherProperties().length === 0) {
           <p class="no-data">{{ 'featureInfo.noData' | translate }}</p>
         }
 

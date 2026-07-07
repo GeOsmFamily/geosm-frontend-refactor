@@ -1,0 +1,64 @@
+@if (!currentTheme()) {
+  <div class="toolbar">
+    <button mat-stroked-button (click)="confirmSeed()" [disabled]="seeding()">
+      <mat-icon>auto_awesome</mat-icon>
+      {{ 'admin.catalog.seedThemes' | translate }}
+    </button>
+    <button mat-flat-button color="primary" (click)="create()">
+      <mat-icon>add</mat-icon>
+      {{ 'admin.catalog.createThemeTitle' | translate }}
+    </button>
+  </div>
+
+  <app-admin-data-table
+    [columns]="columns"
+    [rows]="themes()"
+    [loading]="loading()"
+    [total]="themes().length"
+    [pageSize]="100"
+    [hasActions]="true"
+  >
+    <ng-template #actions let-theme>
+      <div class="row-actions">
+        <button mat-icon-button (click)="openTags(theme)" [matTooltip]="'admin.catalog.tags' | translate">
+          <mat-icon>sell</mat-icon>
+        </button>
+        <button mat-icon-button (click)="edit(theme)" [matTooltip]="'common.save' | translate">
+          <mat-icon>edit</mat-icon>
+        </button>
+        <button mat-icon-button (click)="confirmDelete(theme)" [matTooltip]="'common.delete' | translate">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </div>
+    </ng-template>
+  </app-admin-data-table>
+} @else {
+  <div class="breadcrumb">
+    <button mat-button (click)="backToThemes()">{{ 'admin.catalog.themesTab' | translate }}</button>
+    <mat-icon>chevron_right</mat-icon>
+    <span class="crumb-current">{{ currentTheme()!.name }}</span>
+  </div>
+
+  <form [formGroup]="tagForm" (ngSubmit)="addTag()" class="tag-form">
+    <mat-form-field appearance="outline">
+      <mat-label>{{ 'admin.catalog.name' | translate }}</mat-label>
+      <input matInput formControlName="name" required />
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>{{ 'admin.catalog.slug' | translate }}</mat-label>
+      <input matInput formControlName="slug" required />
+    </mat-form-field>
+    <button mat-flat-button color="primary" type="submit" [disabled]="tagForm.invalid">
+      <mat-icon>add</mat-icon>
+      {{ 'admin.catalog.addTag' | translate }}
+    </button>
+  </form>
+
+  <app-admin-data-table
+    [columns]="tagColumns"
+    [rows]="tags()"
+    [loading]="loadingTags()"
+    [total]="tags().length"
+    [pageSize]="100"
+  ></app-admin-data-table>
+}

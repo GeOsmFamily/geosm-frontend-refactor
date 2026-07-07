@@ -1,0 +1,26 @@
+<div class="toolbar">
+  <button mat-flat-button color="primary" (click)="create()">
+    <mat-icon>add</mat-icon>
+    {{ 'admin.catalog.createBaseMapTitle' | translate }}
+  </button>
+</div>
+
+<app-admin-data-table
+  [columns]="columns"
+  [rows]="baseMaps()"
+  [loading]="loading()"
+  [total]="baseMaps().length"
+  [pageSize]="100"
+  [hasActions]="true"
+>
+  <ng-template #actions let-baseMap>
+    <div class="row-actions">
+      <button mat-icon-button (click)="edit(baseMap)" [matTooltip]="'common.save' | translate">
+        <mat-icon>edit</mat-icon>
+      </button>
+      <button mat-icon-button (click)="confirmDelete(baseMap)" [matTooltip]="'common.delete' | translate">
+        <mat-icon>delete</mat-icon>
+      </button>
+    </div>
+  </ng-template>
+</app-admin-data-table>

@@ -24,8 +24,9 @@ export class GroupService {
     return this.api.delete<void>(`/instances/${instanceId}/groups/${id}`);
   }
 
-  reorderGroups(instanceId: string, orderedIds: string[]): Observable<Group[]> {
-    return this.api.post<Group[]>(`/instances/${instanceId}/groups/reorder`, { orderedIds });
+  /** PATCH /instances/:instanceId/groups/reorder attend { orders: [{ id, order }] }, pas une simple liste d'ids. */
+  reorderGroups(instanceId: string, orders: { id: string; order: number }[]): Observable<void> {
+    return this.api.patch<void>(`/instances/${instanceId}/groups/reorder`, { orders });
   }
 
   listSubGroups(groupId: string): Observable<SubGroup[]> {

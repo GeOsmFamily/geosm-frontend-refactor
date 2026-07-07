@@ -1,0 +1,110 @@
+<h2 mat-dialog-title>{{ 'admin.instances.boundaryPickerTitle' | translate }}</h2>
+
+<mat-dialog-content>
+  <div class="picker-layout">
+    <div class="picker-list">
+      <mat-form-field appearance="outline" subscriptSizing="dynamic" class="full-width">
+        <mat-label>{{ 'admin.instances.boundaryTableLabel' | translate }}</mat-label>
+        <input matInput [(ngModel)]="table" (ngModelChange)="onTableOrQueryChange()" />
+        <mat-hint>{{ 'admin.instances.boundaryTableHint' | translate }}</mat-hint>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" subscriptSizing="dynamic" class="full-width">
+        <mat-label>{{ 'admin.common.search' | translate }}</mat-label>
+        <input matInput [(ngModel)]="searchQuery" (ngModelChange)="onTableOrQueryChange()" />
+      </mat-form-field>
+
+      <div class="results-list">
+        @if (loading()) {
+          <div class="centered"><mat-progress-spinner diameter="28" mode="indeterminate"></mat-progress-spinner></div>
+        } @else if (results().length === 0) {
+          <p class="hint">{{ 'admin.common.noResults' | translate }}</p>
+        } @else {
+          <mat-selection-list [multiple]="false">
+            @for (result of results(); track result.id) {
+              <mat-list-option
+                [selected]="selected()?.id === result.id"
+                (click)="selectResult(result)"
+              >
+                <span>{{ result.name }}</span>
+                @if (result.adminLevel !== null) {
+                  <span class="admin-level"> (niveau {{ result.adminLevel }})</span>
+                }
+              </mat-list-option>
+            }
+          </mat-selection-list>
+        }
+      </div>
+    </div>
+
+    <div class="picker-preview">
+      @if (previewLoading()) {
+        <div class="centered"><mat-progress-spinner diameter="28" mode="indeterminate"></mat-progress-spinner></div>
+      } @else if (previewError()) {
+        <p class="hint">{{ 'admin.instances.boundaryPreviewError' | translate }}</p>
+      } @else if (!selected()) {
+        <p class="hint">{{ 'admin.instances.boundaryPreviewHint' | translate }}</p>
+      }
+      <div #previewMap class="preview-map" [class.hidden]="!selected() || previewLoading() || previewError()"></div>
+    </div>
+  </div>
+
+  <mat-expansion-panel class="import-panel">
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        <mat-icon>upload_file</mat-icon>
+        {{ 'admin.instances.boundaryImportTitle' | translate }}
+      </mat-panel-title>
+    </mat-expansion-panel-header>
+
+    <p class="hint">{{ 'admin.instances.boundaryImportHint' | translate }}</p>
+
+    <input
+      type="file"
+      accept=".zip,.geojson,.json"
+      (change)="onFileSelected($event)"
+      [attr.aria-label]="'admin.instances.boundaryImportTitle' | translate"
+    />
+
+    <div class="import-fields">
+      <mat-form-field appearance="outline" subscriptSizing="dynamic">
+        <mat-label>{{ 'admin.instances.boundaryImportNameField' | translate }}</mat-label>
+        <input matInput [(ngModel)]="importNameField" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" subscriptSizing="dynamic">
+        <mat-label>{{ 'admin.instances.boundaryImportAdminLevel' | translate }}</mat-label>
+        <input matInput type="number" [(ngModel)]="importAdminLevel" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" subscriptSizing="dynamic">
+        <mat-label>{{ 'admin.instances.boundaryImportMode' | translate }}</mat-label>
+        <mat-select [(ngModel)]="importMode">
+          <mat-option value="append">{{ 'admin.instances.boundaryImportModeAppend' | translate }}</mat-option>
+          <mat-option value="replace">{{ 'admin.instances.boundaryImportModeReplace' | translate }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <button
+        mat-flat-button
+        color="primary"
+        type="button"
+        [disabled]="!importFileRef || importing()"
+        (click)="runImport()"
+      >
+        @if (importing()) {
+          <mat-progress-spinner diameter="18" mode="indeterminate"></mat-progress-spinner>
+        } @else {
+          {{ 'admin.instances.boundaryImportSubmit' | translate }}
+        }
+      </button>
+    </div>
+  </mat-expansion-panel>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button type="button" (click)="onCancel()">{{ 'common.cancel' | translate }}</button>
+  <button mat-flat-button color="primary" [disabled]="!selected()" (click)="confirm()">
+    {{ 'common.save' | translate }}
+  </button>
+</mat-dialog-actions>

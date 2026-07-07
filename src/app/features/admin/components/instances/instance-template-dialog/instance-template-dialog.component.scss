@@ -1,0 +1,16 @@
+.full-width {
+  width: 100%;
+}
+
+mat-dialog-content {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 400px;
+}
+
+.hint {
+  font-size: 12px;
+  color: var(--text-secondary, #64748b);
+  margin: 0 0 8px;
+}

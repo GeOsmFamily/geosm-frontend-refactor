@@ -1,0 +1,68 @@
+<h2 mat-dialog-title>
+  {{ (isCreate ? 'admin.instances.createTitle' : 'admin.instances.editTitle') | translate }}
+</h2>
+
+<form [formGroup]="form" (ngSubmit)="onSubmit()">
+  <mat-dialog-content>
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>{{ 'admin.instances.name' | translate }}</mat-label>
+      <input matInput formControlName="name" required />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>{{ 'admin.instances.slug' | translate }}</mat-label>
+      <input matInput formControlName="slug" required />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>{{ 'admin.instances.description' | translate }}</mat-label>
+      <textarea matInput formControlName="description" rows="2"></textarea>
+    </mat-form-field>
+
+    <div class="coords-row">
+      <mat-form-field appearance="outline">
+        <mat-label>{{ 'admin.instances.centerLat' | translate }}</mat-label>
+        <input matInput type="number" formControlName="centerLat" required />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>{{ 'admin.instances.centerLon' | translate }}</mat-label>
+        <input matInput type="number" formControlName="centerLon" required />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>{{ 'admin.instances.defaultZoom' | translate }}</mat-label>
+        <input matInput type="number" formControlName="defaultZoom" min="0" max="22" required />
+      </mat-form-field>
+    </div>
+
+    <div class="boundary-section">
+      <span class="boundary-label">{{ 'admin.instances.boundary' | translate }}</span>
+      @if (boundary(); as b) {
+        <div class="boundary-chip">
+          <span>{{ b.boundaryTable }} — id {{ b.boundaryId }}</span>
+          <button mat-icon-button type="button" (click)="clearBoundary()" [attr.aria-label]="'common.delete' | translate">
+            <mat-icon>close</mat-icon>
+          </button>
+        </div>
+      } @else {
+        <p class="boundary-hint">{{ 'admin.instances.boundaryNone' | translate }}</p>
+      }
+      <button mat-stroked-button type="button" (click)="openBoundaryPicker()">
+        <mat-icon>my_location</mat-icon>
+        {{ 'admin.instances.boundaryChoose' | translate }}
+      </button>
+    </div>
+
+    @if (!isCreate) {
+      <mat-slide-toggle formControlName="isActive">{{ 'admin.instances.active' | translate }}</mat-slide-toggle>
+    }
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button mat-button type="button" (click)="onCancel()">{{ 'common.cancel' | translate }}</button>
+    <button mat-flat-button color="primary" type="submit" [disabled]="form.invalid">
+      {{ 'common.save' | translate }}
+    </button>
+  </mat-dialog-actions>
+</form>

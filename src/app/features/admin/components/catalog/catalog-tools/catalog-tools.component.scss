@@ -1,0 +1,80 @@
+.tool-panel {
+  margin-bottom: 16px;
+
+  mat-panel-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+}
+
+.full-width {
+  width: 100%;
+}
+
+.row {
+  display: flex;
+  gap: 12px;
+
+  mat-form-field {
+    flex: 1;
+  }
+}
+
+.empty {
+  color: var(--text-secondary, #64748b);
+  font-size: 13px;
+}
+
+.qgis-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 12px;
+
+  li {
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border-color, #e2e8f0);
+
+    .path {
+      display: block;
+      font-size: 12px;
+      color: var(--text-secondary, #64748b);
+      font-family: 'Courier New', monospace;
+    }
+
+    p {
+      margin: 4px 0 0;
+      font-size: 13px;
+    }
+  }
+}
+
+.qgis-list-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.actions-row {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin: 12px 0;
+
+  button mat-progress-spinner {
+    display: inline-block;
+    margin-right: 4px;
+  }
+}
+
+input[type='file'] {
+  margin: 8px 0;
+}
+
+.raster-result {
+  background: var(--surface-alt, #f1f5f9);
+  border-radius: 6px;
+  padding: 8px 12px;
+  font-size: 13px;
+}

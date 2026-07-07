@@ -1,0 +1,227 @@
+<h2 mat-dialog-title>{{ 'admin.catalog.wizard.title' | translate }}</h2>
+
+<mat-dialog-content>
+  <mat-stepper [orientation]="(stepperOrientation | async) ?? 'horizontal'" linear #stepper>
+    <!-- Étape 1 : source -->
+    <mat-step [label]="'admin.catalog.wizard.step1' | translate">
+      <div class="source-choice">
+        <mat-radio-group [ngModel]="sourceType()" (ngModelChange)="chooseSource($event)">
+          <mat-radio-button value="file">{{ 'admin.catalog.wizard.sourceFile' | translate }}</mat-radio-button>
+          <mat-radio-button value="osm">{{ 'admin.catalog.wizard.sourceOsm' | translate }}</mat-radio-button>
+          <mat-radio-button value="qgis">{{ 'admin.catalog.wizard.sourceQgis' | translate }}</mat-radio-button>
+        </mat-radio-group>
+      </div>
+      <div class="step-actions">
+        <button mat-flat-button color="primary" matStepperNext>{{ 'admin.catalog.wizard.next' | translate }}</button>
+      </div>
+    </mat-step>
+
+    <!-- Étape 2 : configuration + aperçu -->
+    <mat-step [label]="'admin.catalog.wizard.step2' | translate">
+      @if (sourceType() === 'file') {
+        <input type="file" accept=".geojson,.json,.kml,.gpkg,.zip" (change)="onFileSelected($event)" />
+        <button mat-stroked-button (click)="uploadFile()" [disabled]="stagingLoading()">
+          @if (stagingLoading()) { <mat-progress-spinner mode="indeterminate" diameter="18"></mat-progress-spinner> }
+          {{ 'admin.catalog.wizard.upload' | translate }}
+        </button>
+        @if (staging(); as s) {
+          <p class="preview-info">
+            {{ s.featureCount }} {{ 'admin.catalog.wizard.features' | translate }} — {{ s.geometryType }}
+          </p>
+        }
+      }
+
+      @if (sourceType() === 'osm') {
+        <mat-form-field appearance="outline">
+          <mat-label>{{ 'admin.catalog.geometryType' | translate }}</mat-label>
+          <mat-select [ngModel]="osmGeometryType()" (ngModelChange)="onOsmGeometryTypeChange($event)">
+            <mat-option value="point">POINT</mat-option>
+            <mat-option value="line">LINESTRING</mat-option>
+            <mat-option value="polygon">POLYGON</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <p class="hint-text">{{ 'admin.catalog.wizard.osmTagHint' | translate }}</p>
+
+        <div class="row osm-condition-row">
+          <mat-form-field appearance="outline">
+            <mat-label>{{ 'admin.catalog.wizard.osmKey' | translate }}</mat-label>
+            <mat-select [(ngModel)]="osmKeyInput" (selectionChange)="onOsmKeyInput()">
+              @for (k of osmTagKeys(); track k) {
+                <mat-option [value]="k">{{ k }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>{{ 'admin.catalog.wizard.osmValue' | translate }}</mat-label>
+            <mat-select [(ngModel)]="osmValueInput" [disabled]="!osmKeyInput">
+              @for (v of osmTagValues(); track v) {
+                <mat-option [value]="v">{{ v }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+          <button mat-icon-button (click)="addOsmCondition()" [disabled]="!osmKeyInput || !osmValueInput">
+            <mat-icon>add</mat-icon>
+          </button>
+        </div>
+
+        <div class="conditions">
+          @for (c of osmConditions(); track c.key + c.value; let i = $index) {
+            <span class="condition-chip">
+              {{ c.key }}={{ c.value }}
+              <button mat-icon-button (click)="removeOsmCondition(i)"><mat-icon>close</mat-icon></button>
+            </span>
+          }
+        </div>
+
+        <button mat-stroked-button (click)="previewOsm()" [disabled]="osmConditions().length === 0 || osmLoading()">
+          @if (osmLoading()) { <mat-progress-spinner mode="indeterminate" diameter="18"></mat-progress-spinner> }
+          {{ 'admin.catalog.wizard.preview' | translate }}
+        </button>
+        @if (osmPreview(); as p) {
+          <p class="preview-info">{{ p.features.length }} {{ 'admin.catalog.wizard.features' | translate }}</p>
+        }
+      }
+
+      @if (sourceType() === 'qgis') {
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>{{ 'admin.catalog.name' | translate }}</mat-label>
+          <input matInput [(ngModel)]="qgisProjectName" />
+        </mat-form-field>
+        <input type="file" accept=".qgz,.qgs,.zip" (change)="onQgisFileSelected($event)" />
+        <button mat-stroked-button (click)="uploadQgisProject()" [disabled]="qgisUploading() || !qgisProjectName.trim()">
+          @if (qgisUploading()) { <mat-progress-spinner mode="indeterminate" diameter="18"></mat-progress-spinner> }
+          {{ 'admin.catalog.wizard.upload' | translate }}
+        </button>
+
+        @if (qgisLayers().length > 0) {
+          <div class="qgis-layers">
+            @for (l of qgisLayers(); track l.name) {
+              <div class="qgis-layer-row">
+                <mat-checkbox
+                  [checked]="qgisSelected()[l.name]?.selected"
+                  (change)="toggleQgisLayer(l.name, $event.checked)"
+                ></mat-checkbox>
+                <input
+                  matInput
+                  [value]="qgisSelected()[l.name]?.displayName"
+                  (input)="updateQgisDisplayName(l.name, $any($event.target).value)"
+                />
+                <mat-select
+                  [value]="qgisSelected()[l.name]?.geometryType"
+                  (selectionChange)="updateQgisGeometryType(l.name, $event.value)"
+                >
+                  @for (gt of geometryTypes; track gt) {
+                    <mat-option [value]="gt">{{ gt }}</mat-option>
+                  }
+                </mat-select>
+              </div>
+            }
+          </div>
+        }
+      }
+
+      <div #previewMap class="preview-map"></div>
+
+      <div class="step-actions">
+        <button mat-button matStepperPrevious>{{ 'admin.catalog.wizard.back' | translate }}</button>
+        <button mat-flat-button color="primary" matStepperNext [disabled]="!canPublish()">
+          {{ 'admin.catalog.wizard.next' | translate }}
+        </button>
+      </div>
+    </mat-step>
+
+    <!-- Étape 3 : publication -->
+    <mat-step [label]="'admin.catalog.wizard.step3' | translate">
+      @if (sourceType() !== 'qgis') {
+        <form [formGroup]="publishForm">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>{{ 'admin.catalog.name' | translate }}</mat-label>
+            <input matInput formControlName="name" required />
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>{{ 'admin.catalog.description' | translate }}</mat-label>
+            <textarea matInput formControlName="description" rows="2"></textarea>
+          </mat-form-field>
+          <mat-checkbox formControlName="isVisible">{{ 'admin.catalog.isVisible' | translate }}</mat-checkbox>
+        </form>
+      } @else {
+        <p>{{ 'admin.catalog.wizard.qgisPublishHint' | translate }}</p>
+      }
+
+      @if (!createdLayer() && createdLayers().length === 0) {
+        <div class="step-actions">
+          <button mat-button matStepperPrevious>{{ 'admin.catalog.wizard.back' | translate }}</button>
+          <button mat-flat-button color="primary" (click)="publish()" [disabled]="publishing() || (sourceType() !== 'qgis' && publishForm.invalid)">
+            @if (publishing()) { <mat-progress-spinner mode="indeterminate" diameter="18"></mat-progress-spinner> }
+            {{ 'admin.catalog.wizard.publish' | translate }}
+          </button>
+        </div>
+      } @else {
+        <div class="step-actions">
+          <button mat-flat-button color="primary" matStepperNext>{{ 'admin.catalog.wizard.next' | translate }}</button>
+        </div>
+      }
+    </mat-step>
+
+    <!-- Étape 4 : style -->
+    <mat-step [label]="'admin.catalog.wizard.step4' | translate">
+      @if (sourceType() === 'qgis') {
+        <p>{{ 'admin.catalog.wizard.qgisStyleHint' | translate }}</p>
+      } @else if (createdLayer()) {
+        <mat-radio-group [ngModel]="styleMode()" (ngModelChange)="styleMode.set($event)">
+          <mat-radio-button value="color-icon">{{ 'admin.catalog.wizard.styleColorIcon' | translate }}</mat-radio-button>
+          <mat-radio-button value="kml">{{ 'admin.catalog.wizard.styleKml' | translate }}</mat-radio-button>
+        </mat-radio-group>
+
+        @if (styleMode() === 'color-icon') {
+          <div class="row style-controls">
+            <div class="color-control">
+              <label for="wizard-style-color">{{ 'admin.catalog.color' | translate }}</label>
+              <input id="wizard-style-color" type="color" [ngModel]="styleColor()" (ngModelChange)="styleColor.set($event)" />
+            </div>
+            <div class="shape-control">
+              <span class="shape-label">{{ 'admin.catalog.wizard.shape' | translate }}</span>
+              <div class="shape-buttons">
+                @for (s of shapes; track s) {
+                  <button
+                    type="button"
+                    mat-mini-fab
+                    [color]="styleShape() === s ? 'primary' : undefined"
+                    [matTooltip]="s"
+                    (click)="styleShape.set(s)"
+                  >
+                    <mat-icon>{{ s === 'circle' ? 'circle' : s === 'square' ? 'square' : s === 'triangle' ? 'change_history' : s === 'star' ? 'star' : 'location_on' }}</mat-icon>
+                  </button>
+                }
+              </div>
+            </div>
+          </div>
+          <app-icon-picker
+            [color]="styleColor()"
+            [shape]="styleShape()"
+            [selectedKey]="styleIconKey()"
+            (selectedKeyChange)="styleIconKey.set($event)"
+          ></app-icon-picker>
+        } @else {
+          <input type="file" accept=".kml" (change)="onKmlStyleSelected($event)" />
+        }
+
+        <div class="step-actions">
+          <button mat-stroked-button (click)="applyStyle()" [disabled]="applyingStyle()">
+            @if (applyingStyle()) { <mat-progress-spinner mode="indeterminate" diameter="18"></mat-progress-spinner> }
+            {{ 'admin.catalog.wizard.applyStyle' | translate }}
+          </button>
+        </div>
+      }
+
+      <div class="step-actions">
+        <button mat-flat-button color="primary" (click)="finish()">{{ 'admin.catalog.wizard.finish' | translate }}</button>
+      </div>
+    </mat-step>
+  </mat-stepper>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="close()">{{ 'common.close' | translate }}</button>
+</mat-dialog-actions>

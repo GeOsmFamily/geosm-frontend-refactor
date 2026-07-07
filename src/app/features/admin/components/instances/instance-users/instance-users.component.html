@@ -1,0 +1,63 @@
+<div class="page-header">
+  <button mat-icon-button (click)="backToInstances()" [matTooltip]="'admin.backToMap' | translate">
+    <mat-icon>arrow_back</mat-icon>
+  </button>
+  <h2 class="page-title">
+    {{ 'admin.instances.usersTitle' | translate }}
+    @if (instance(); as inst) {
+      — {{ inst.name }}
+    }
+  </h2>
+</div>
+
+@if (canSearchUsers) {
+  <div class="add-user-form glass">
+    <mat-form-field appearance="outline" subscriptSizing="dynamic">
+      <mat-label>{{ 'admin.instances.userIdHint' | translate }}</mat-label>
+      <input matInput [(ngModel)]="newUserId" placeholder="uuid" />
+    </mat-form-field>
+    <mat-form-field appearance="outline" subscriptSizing="dynamic">
+      <mat-label>{{ 'admin.users.role' | translate }}</mat-label>
+      <mat-select [(ngModel)]="newUserRole">
+        @for (role of roles; track role) {
+          <mat-option [value]="role">{{ role }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+    <button mat-flat-button color="primary" (click)="addUser()" [disabled]="!newUserId.trim()">
+      <mat-icon>person_add</mat-icon>
+      {{ 'admin.instances.addUser' | translate }}
+    </button>
+  </div>
+} @else {
+  <p class="hint">{{ 'admin.instances.addUserRestricted' | translate }}</p>
+}
+
+<div class="users-list glass">
+  @if (loading()) {
+    <p class="hint">{{ 'common.loading' | translate }}</p>
+  } @else if (users().length === 0) {
+    <p class="hint">{{ 'admin.common.noResults' | translate }}</p>
+  } @else {
+    @for (instanceUser of users(); track instanceUser.id) {
+      <div class="user-row">
+        <div class="user-info">
+          <span class="user-email">{{ instanceUser.user?.email ?? instanceUser.userId }}</span>
+          @if (instanceUser.user) {
+            <span class="user-name">{{ instanceUser.user.firstName }} {{ instanceUser.user.lastName }}</span>
+          }
+        </div>
+        <mat-form-field appearance="outline" subscriptSizing="dynamic" class="role-select">
+          <mat-select [ngModel]="instanceUser.role" (ngModelChange)="changeRole(instanceUser, $event)">
+            @for (role of roles; track role) {
+              <mat-option [value]="role">{{ role }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+        <button mat-icon-button (click)="confirmRemove(instanceUser)" [matTooltip]="'admin.instances.removeUser' | translate">
+          <mat-icon>person_remove</mat-icon>
+        </button>
+      </div>
+    }
+  }
+</div>

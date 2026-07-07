@@ -1,0 +1,47 @@
+.categories {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 12px;
+
+  button {
+    font-size: 12px;
+    padding: 0 10px;
+    line-height: 28px;
+  }
+}
+
+.icon-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(44px, 1fr));
+  gap: 8px;
+  max-height: 260px;
+  overflow-y: auto;
+  padding: 4px;
+}
+
+.icon-tile {
+  border: 2px solid transparent;
+  border-radius: 8px;
+  background: var(--surface-alt, #f1f5f9);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  transition: border-color 0.15s ease;
+
+  ::ng-deep svg {
+    width: 32px;
+    height: 32px;
+  }
+
+  &:hover {
+    border-color: var(--accent, #00ada7);
+  }
+
+  &.selected {
+    border-color: var(--primary, #023f5f);
+    background: rgba(0, 173, 166, 0.12);
+  }
+}

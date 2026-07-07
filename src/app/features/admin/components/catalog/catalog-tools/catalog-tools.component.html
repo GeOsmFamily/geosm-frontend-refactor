@@ -1,0 +1,125 @@
+<mat-expansion-panel [expanded]="true" class="tool-panel">
+  <mat-expansion-panel-header>
+    <mat-panel-title>
+      <mat-icon>map</mat-icon>
+      {{ 'admin.catalog.qgisProjectTitle' | translate }}
+    </mat-panel-title>
+  </mat-expansion-panel-header>
+
+  @if (loadingProjects()) {
+    <mat-progress-spinner mode="indeterminate" diameter="32"></mat-progress-spinner>
+  } @else if (projects().length === 0) {
+    <p class="empty">{{ 'admin.catalog.noQgisProject' | translate }}</p>
+  } @else {
+    <ul class="qgis-list">
+      @for (project of projects(); track project.id) {
+        <li>
+          <div class="qgis-list-item">
+            <div>
+              <strong>{{ project.name }}</strong>
+              <span class="path">{{ project.filePath }}</span>
+              @if (project.description) {
+                <p>{{ project.description }}</p>
+              }
+            </div>
+            <button
+              mat-icon-button
+              type="button"
+              (click)="exportProject(project)"
+              [disabled]="exportingProjectId() === project.id"
+              [matTooltip]="'admin.catalog.qgisExportProject' | translate"
+            >
+              @if (exportingProjectId() === project.id) {
+                <mat-progress-spinner mode="indeterminate" diameter="18"></mat-progress-spinner>
+              } @else {
+                <mat-icon>download</mat-icon>
+              }
+            </button>
+          </div>
+        </li>
+      }
+    </ul>
+  }
+
+  <div class="actions-row">
+    <button mat-stroked-button type="button" (click)="confirmReload()" [disabled]="reloading()">
+      @if (reloading()) {
+        <mat-progress-spinner mode="indeterminate" diameter="18"></mat-progress-spinner>
+      } @else {
+        <mat-icon>refresh</mat-icon>
+      }
+      {{ 'admin.catalog.reloadQgis' | translate }}
+    </button>
+  </div>
+</mat-expansion-panel>
+
+<mat-expansion-panel class="tool-panel">
+  <mat-expansion-panel-header>
+    <mat-panel-title>
+      <mat-icon>layers</mat-icon>
+      {{ 'admin.catalog.rasterUploadTitle' | translate }}
+    </mat-panel-title>
+  </mat-expansion-panel-header>
+
+  <form [formGroup]="rasterForm" (ngSubmit)="uploadRaster()">
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>{{ 'admin.catalog.name' | translate }}</mat-label>
+      <input matInput formControlName="name" required />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>{{ 'admin.catalog.description' | translate }}</mat-label>
+      <textarea matInput formControlName="description" rows="2"></textarea>
+    </mat-form-field>
+
+    <div class="row">
+      <mat-form-field appearance="outline">
+        <mat-label>{{ 'admin.catalog.groupsTab' | translate }}</mat-label>
+        <mat-select formControlName="groupId" (selectionChange)="onRasterGroupChange($event.value)">
+          @for (g of groups(); track g.id) {
+            <mat-option [value]="g.id">{{ g.name }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>{{ 'admin.catalog.subGroup' | translate }}</mat-label>
+        <mat-select formControlName="subGroupId" [disabled]="!rasterForm.value.groupId || loadingSubGroups()">
+          @for (sg of subGroups(); track sg.id) {
+            <mat-option [value]="sg.id">{{ sg.name }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>{{ 'admin.catalog.tableName' | translate }}</mat-label>
+      <input matInput formControlName="tableName" required />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>{{ 'admin.catalog.srid' | translate }}</mat-label>
+      <input matInput type="number" formControlName="srid" />
+    </mat-form-field>
+
+    <input type="file" accept=".tif,.tiff,.geotiff" (change)="onRasterFileSelected($event)" />
+
+    <div class="actions-row">
+      <button mat-flat-button color="primary" type="submit" [disabled]="rasterForm.invalid || uploading()">
+        @if (uploading()) {
+          <mat-progress-spinner mode="indeterminate" diameter="18"></mat-progress-spinner>
+        } @else {
+          <mat-icon>upload</mat-icon>
+        }
+        {{ 'admin.catalog.upload' | translate }}
+      </button>
+    </div>
+  </form>
+
+  @if (rasterResult(); as result) {
+    <div class="raster-result">
+      <p>
+        <strong>{{ result.layer.name }}</strong> — {{ 'admin.catalog.rasterPublished' | translate }}
+      </p>
+    </div>
+  }
+</mat-expansion-panel>

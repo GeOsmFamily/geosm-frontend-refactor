@@ -1,0 +1,115 @@
+<h2 mat-dialog-title>{{ data.layer.name }}</h2>
+
+<mat-dialog-content>
+  <mat-tab-group>
+    <mat-tab [label]="'admin.catalog.tabGeneral' | translate">
+      <form [formGroup]="form" class="tab-content">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>{{ 'admin.catalog.name' | translate }}</mat-label>
+          <input matInput formControlName="name" required />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>{{ 'admin.catalog.description' | translate }}</mat-label>
+          <textarea matInput formControlName="description" rows="2"></textarea>
+        </mat-form-field>
+
+        <div class="row">
+          <mat-form-field appearance="outline">
+            <mat-label>{{ 'admin.catalog.minZoom' | translate }}</mat-label>
+            <input matInput type="number" formControlName="minZoom" min="0" max="22" />
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>{{ 'admin.catalog.maxZoom' | translate }}</mat-label>
+            <input matInput type="number" formControlName="maxZoom" min="0" max="22" />
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>{{ 'admin.catalog.opacity' | translate }}</mat-label>
+            <input matInput type="number" formControlName="opacity" min="0" max="1" step="0.1" />
+          </mat-form-field>
+        </div>
+
+        <div class="row toggles">
+          <mat-slide-toggle formControlName="isVisible">{{ 'admin.catalog.isVisible' | translate }}</mat-slide-toggle>
+          <mat-slide-toggle formControlName="isQueryable">{{ 'admin.catalog.isQueryable' | translate }}</mat-slide-toggle>
+        </div>
+
+        <div class="actions-row">
+          <button mat-flat-button color="primary" type="button" (click)="saveLayer()" [disabled]="form.invalid">
+            {{ 'common.save' | translate }}
+          </button>
+        </div>
+      </form>
+    </mat-tab>
+
+    <mat-tab [label]="'admin.catalog.tabStyle' | translate">
+      <div class="tab-content">
+        @if (loadingStyle()) {
+          <mat-progress-spinner mode="indeterminate" diameter="32"></mat-progress-spinner>
+        } @else {
+          <form [formGroup]="sldForm">
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>{{ 'admin.catalog.sldBody' | translate }}</mat-label>
+              <textarea matInput formControlName="sldBody" rows="8" class="code-area"></textarea>
+            </mat-form-field>
+            <div class="actions-row">
+              <button mat-stroked-button type="button" (click)="saveSld()" [disabled]="savingStyle()">
+                {{ 'admin.catalog.saveSld' | translate }}
+              </button>
+            </div>
+          </form>
+
+          <form [formGroup]="mapboxForm">
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>{{ 'admin.catalog.mapboxStyle' | translate }}</mat-label>
+              <textarea matInput formControlName="mapboxStyle" rows="8" class="code-area"></textarea>
+            </mat-form-field>
+            <div class="actions-row">
+              <button mat-stroked-button type="button" (click)="saveMapbox()" [disabled]="savingStyle()">
+                {{ 'admin.catalog.saveMapbox' | translate }}
+              </button>
+              <button mat-button color="warn" type="button" (click)="confirmResetStyle()">
+                <mat-icon>restart_alt</mat-icon>
+                {{ 'admin.catalog.resetStyle' | translate }}
+              </button>
+            </div>
+          </form>
+        }
+      </div>
+    </mat-tab>
+
+    <mat-tab [label]="'admin.catalog.tabActions' | translate">
+      <div class="tab-content">
+        <div class="action-item">
+          <div>
+            <strong>{{ 'admin.catalog.resyncTitle' | translate }}</strong>
+            <p>{{ 'admin.catalog.resyncHint' | translate }}</p>
+          </div>
+          <button mat-stroked-button type="button" (click)="confirmResync()" [disabled]="resyncing()">
+            @if (resyncing()) {
+              <mat-progress-spinner mode="indeterminate" diameter="18"></mat-progress-spinner>
+            } @else {
+              <mat-icon>sync</mat-icon>
+            }
+            {{ 'admin.catalog.resync' | translate }}
+          </button>
+        </div>
+
+        <div class="action-item">
+          <div>
+            <strong>{{ 'admin.catalog.sourceFile' | translate }}</strong>
+            <p>{{ 'admin.catalog.sourceFileHint' | translate }}</p>
+          </div>
+          <button mat-stroked-button type="button" (click)="downloadSourceFile()" [disabled]="loadingSource()">
+            <mat-icon>download</mat-icon>
+            {{ 'admin.catalog.download' | translate }}
+          </button>
+        </div>
+      </div>
+    </mat-tab>
+  </mat-tab-group>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button type="button" (click)="close()">{{ 'common.close' | translate }}</button>
+</mat-dialog-actions>

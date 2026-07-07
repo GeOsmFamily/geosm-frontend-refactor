@@ -1,0 +1,40 @@
+.toolbar {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.row-actions {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-bottom: 12px;
+
+  mat-icon {
+    color: var(--text-secondary, #64748b);
+  }
+
+  .crumb-current {
+    font-weight: 600;
+    color: var(--primary);
+    padding: 0 8px;
+  }
+}
+
+.tag-form {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 12px;
+
+  button {
+    margin-top: 8px;
+  }
+}
