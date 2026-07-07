@@ -1,0 +1,145 @@
+<div class="page-header">
+  <h2 class="page-title">{{ 'admin.nav.systemTools' | translate }}</h2>
+</div>
+
+<div class="section glass">
+  <div class="section-header">
+    <h3>{{ 'admin.systemTools.database' | translate }}</h3>
+    <button mat-icon-button (click)="loadDatabaseOverview()" [matTooltip]="'admin.common.refresh' | translate">
+      <mat-icon>refresh</mat-icon>
+    </button>
+  </div>
+
+  @if (loadingOverview()) {
+    <div class="centered"><mat-spinner diameter="28"></mat-spinner></div>
+  } @else {
+    <!-- "@else if (...; as x)" n'assigne pas correctement l'alias côté compilateur de templates
+         (voir observability.component.html) - imbriquer un @if simple dans le @else contourne. -->
+    @if (dbOverview(); as overview) {
+      <div class="db-summary">
+        <div class="summary-stat">
+          <span class="value">{{ overview.totalSizePretty }}</span>
+          <span class="label">{{ 'admin.systemTools.totalSize' | translate }}</span>
+        </div>
+        <div class="summary-stat">
+          <span class="value">{{ overview.tableCount }}</span>
+          <span class="label">{{ 'admin.systemTools.tableCount' | translate }}</span>
+        </div>
+      </div>
+
+      <div class="table-filters">
+        <mat-form-field appearance="outline" subscriptSizing="dynamic" class="search-field">
+          <mat-label>{{ 'admin.common.search' | translate }}</mat-label>
+          <input matInput [(ngModel)]="tableSearch" />
+        </mat-form-field>
+        <mat-form-field appearance="outline" subscriptSizing="dynamic">
+          <mat-label>{{ 'admin.common.schema' | translate }}</mat-label>
+          <select matNativeControl [(ngModel)]="schemaFilter">
+            <option [ngValue]="null">{{ 'admin.common.all' | translate }}</option>
+            @for (schema of schemas; track schema) {
+              <option [ngValue]="schema">{{ schema }}</option>
+            }
+          </select>
+        </mat-form-field>
+      </div>
+
+      <div class="tables-scroll">
+        <table class="db-tables-table">
+          <thead>
+            <tr>
+              <th>{{ 'admin.systemTools.schema' | translate }}</th>
+              <th>{{ 'admin.systemTools.table' | translate }}</th>
+              <th>{{ 'admin.systemTools.rowEstimate' | translate }}</th>
+              <th>{{ 'admin.systemTools.size' | translate }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (t of filteredTables; track t.schema + '.' + t.table) {
+              <tr>
+                <td>{{ t.schema }}</td>
+                <td>{{ t.table }}</td>
+                <td>{{ t.rowEstimate | number }}</td>
+                <td>{{ t.sizePretty }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    } @else {
+      <p class="hint">{{ 'admin.observability.healthError' | translate }}</p>
+    }
+  }
+</div>
+
+<div class="section glass">
+  <h3>{{ 'admin.systemTools.cache' | translate }}</h3>
+  <p class="hint">{{ 'admin.systemTools.cacheHint' | translate }}</p>
+  <button mat-stroked-button color="warn" [disabled]="clearingCache()" (click)="confirmClearCache()">
+    @if (clearingCache()) { <mat-spinner diameter="18"></mat-spinner> } @else { <mat-icon>delete_sweep</mat-icon> }
+    {{ 'admin.systemTools.clearCache' | translate }}
+  </button>
+</div>
+
+<div class="section glass">
+  <h3>{{ 'admin.systemTools.dbConfig' | translate }}</h3>
+  @if (dbConfig(); as db) {
+    <div class="db-info">
+      <div><span class="key">{{ 'admin.systemTools.dbHost' | translate }}</span> {{ db.host }}:{{ db.port }}</div>
+      <div><span class="key">{{ 'admin.systemTools.dbName' | translate }}</span> {{ db.database }}</div>
+      <div><span class="key">{{ 'admin.systemTools.dbUser' | translate }}</span> {{ db.user }}</div>
+      <div><span class="key">SSL</span> {{ db.ssl ? 'Oui' : 'Non' }}</div>
+    </div>
+  }
+</div>
+
+<div class="section glass">
+  <h3>{{ 'admin.systemTools.sequences' | translate }}</h3>
+
+  <div class="sequence-form">
+    <mat-form-field appearance="outline" subscriptSizing="dynamic">
+      <mat-label>{{ 'admin.systemTools.sequenceName' | translate }}</mat-label>
+      <input matInput [(ngModel)]="newSequenceName" />
+    </mat-form-field>
+    <mat-form-field appearance="outline" subscriptSizing="dynamic" class="narrow">
+      <mat-label>{{ 'admin.systemTools.sequenceStart' | translate }}</mat-label>
+      <input matInput type="number" [(ngModel)]="newSequenceStart" />
+    </mat-form-field>
+    <mat-form-field appearance="outline" subscriptSizing="dynamic" class="narrow">
+      <mat-label>{{ 'admin.systemTools.sequenceIncrement' | translate }}</mat-label>
+      <input matInput type="number" [(ngModel)]="newSequenceIncrement" />
+    </mat-form-field>
+    <button mat-flat-button color="primary" [disabled]="!newSequenceName.trim() || creatingSequence()" (click)="createSequence()">
+      @if (creatingSequence()) { <mat-spinner diameter="18"></mat-spinner> } @else { <mat-icon>add</mat-icon> }
+      {{ 'admin.systemTools.sequenceCreate' | translate }}
+    </button>
+  </div>
+
+  @if (sequences().length > 0) {
+    <table class="sequences-table">
+      <thead>
+        <tr>
+          <th>{{ 'admin.systemTools.sequenceName' | translate }}</th>
+          <th>{{ 'admin.systemTools.sequenceStart' | translate }}</th>
+          <th>{{ 'admin.systemTools.sequenceIncrement' | translate }}</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (seq of sequences(); track seq.sequence_name) {
+          <tr>
+            <td>{{ seq.sequence_name }}</td>
+            <td>{{ seq.start_value }}</td>
+            <td>{{ seq.increment }}</td>
+            <td>
+              <button mat-icon-button [disabled]="deletingSequence() === seq.sequence_name" (click)="confirmDeleteSequence(seq)" [matTooltip]="'common.delete' | translate">
+                @if (deletingSequence() === seq.sequence_name) { <mat-spinner diameter="18"></mat-spinner> } @else { <mat-icon>delete</mat-icon> }
+              </button>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  } @else {
+    <p class="hint">{{ 'admin.common.noResults' | translate }}</p>
+  }
+</div>

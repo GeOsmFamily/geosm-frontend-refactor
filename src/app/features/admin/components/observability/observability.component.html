@@ -1,0 +1,59 @@
+<div class="page-header">
+  <h2 class="page-title">{{ 'admin.nav.observability' | translate }}</h2>
+  <button mat-icon-button (click)="load()" [matTooltip]="'admin.common.refresh' | translate">
+    <mat-icon>refresh</mat-icon>
+  </button>
+</div>
+
+@if (loading()) {
+  <div class="centered"><mat-progress-spinner diameter="32" mode="indeterminate"></mat-progress-spinner></div>
+} @else {
+  <!-- "@else if (...; as h)" n'assigne pas correctement l'alias côté compilateur de templates -
+       imbriquer un @if simple dans le @else contourne le problème. -->
+  @if (health(); as h) {
+    <div class="section glass">
+      <h3>{{ 'admin.observability.systemHealth' | translate }} — {{ 'admin.observability.uptime' | translate }} : {{ formatUptime(h.uptime) }}</h3>
+      <div class="stat-row">
+        @for (key of serviceKeys; track key) {
+          <app-stat-card
+            [label]="key"
+            [value]="h.checks[key].status"
+            [icon]="h.checks[key].status === 'healthy' ? 'check_circle' : 'error'"
+            [accentVar]="h.checks[key].status === 'healthy' ? '--accent' : '--warn'"
+          ></app-stat-card>
+        }
+      </div>
+      <div class="stat-row">
+        <app-stat-card label="Disque" [value]="h.checks.disk.usagePercent + '% (' + h.checks.disk.free + ' libres)'" icon="storage"></app-stat-card>
+        <app-stat-card label="Mémoire" [value]="h.checks.memory.usagePercent + '% (' + h.checks.memory.freeMB + ' Mo libres)'" icon="memory"></app-stat-card>
+      </div>
+    </div>
+
+    @if (dashboard(); as d) {
+      <div class="section glass">
+        <h3>{{ 'admin.home.title' | translate }}</h3>
+        <div class="stat-row">
+          <app-stat-card [label]="'admin.home.instances' | translate" [value]="d.instanceCount" icon="public"></app-stat-card>
+          <app-stat-card [label]="'admin.home.users' | translate" [value]="d.userCount" icon="group"></app-stat-card>
+          <app-stat-card [label]="'admin.home.exports' | translate" [value]="d.exportCount" icon="download"></app-stat-card>
+          <app-stat-card [label]="'admin.home.themes' | translate" [value]="d.themeCount" icon="palette"></app-stat-card>
+        </div>
+      </div>
+    }
+  } @else {
+    <p class="hint">{{ 'admin.observability.healthError' | translate }}</p>
+  }
+}
+
+<div class="section glass">
+  <h3>{{ 'admin.observability.externalTools' | translate }}</h3>
+  <div class="links-grid">
+    @for (link of links; track link.key) {
+      <a [href]="link.url" target="_blank" rel="noopener" class="link-card">
+        <mat-icon>{{ link.icon }}</mat-icon>
+        <span>{{ link.key | titlecase }}</span>
+        <mat-icon class="open-icon">open_in_new</mat-icon>
+      </a>
+    }
+  </div>
+</div>

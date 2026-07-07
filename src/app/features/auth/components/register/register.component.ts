@@ -73,7 +73,11 @@ export class RegisterComponent {
     this.authService.register(dto).subscribe({
       next: () => {
         this.loading.set(false);
-        this.router.navigate(['/login']);
+        // Inscription = connexion immédiate (voir RegisterUseCase backend, qui renvoie des
+        // tokens comme LoginUseCase) - la connexion n'exige déjà pas d'email vérifié, donc
+        // repasser par /login serait de la friction sans bénéfice de sécurité. Le mail de
+        // vérification part quand même en tâche de fond.
+        this.router.navigate(['/map'], { queryParams: { verifyEmailSent: '1' } });
       },
       error: (err) => {
         this.loading.set(false);

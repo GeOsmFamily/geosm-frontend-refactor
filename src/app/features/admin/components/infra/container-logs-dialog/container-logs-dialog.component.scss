@@ -1,0 +1,30 @@
+.logs-content {
+  width: 720px;
+  max-width: 90vw;
+  height: 400px;
+
+  pre {
+    background: #0f172a;
+    color: #e2e8f0;
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 11px;
+    line-height: 1.5;
+    white-space: pre-wrap;
+    word-break: break-all;
+    height: 100%;
+    overflow-y: auto;
+    margin: 0;
+  }
+}
+
+.centered {
+  display: flex;
+  justify-content: center;
+  padding: 40px 0;
+}
+
+.hint {
+  color: var(--text-secondary, #64748b);
+  font-size: 13px;
+}

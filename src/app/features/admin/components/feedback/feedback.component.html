@@ -1,0 +1,43 @@
+<div class="page-header">
+  <h2 class="page-title">{{ 'admin.nav.feedback' | translate }}</h2>
+</div>
+
+<div class="filters glass">
+  <mat-form-field appearance="outline">
+    <mat-label>{{ 'admin.feedback.typeFilter' | translate }}</mat-label>
+    <mat-select [(ngModel)]="typeFilter" (selectionChange)="onFilterChange()">
+      <mat-option [value]="null">{{ 'admin.common.all' | translate }}</mat-option>
+      @for (type of types; track type) {
+        <mat-option [value]="type">{{ type }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline">
+    <mat-label>{{ 'admin.feedback.status' | translate }}</mat-label>
+    <mat-select [(ngModel)]="statusFilter" (selectionChange)="onFilterChange()">
+      <mat-option [value]="null">{{ 'admin.common.all' | translate }}</mat-option>
+      @for (status of statuses; track status) {
+        <mat-option [value]="status">{{ 'admin.feedback.statusValues.' + status | translate }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+</div>
+
+<app-admin-data-table
+  [columns]="columns"
+  [rows]="items()"
+  [loading]="loading()"
+  [total]="total()"
+  [pageIndex]="pageIndex()"
+  [pageSize]="pageSize()"
+  [hasActions]="true"
+  (sortChange)="onSortChange($event)"
+  (pageChange)="onPageChange($event)"
+>
+  <ng-template #actions let-item>
+    <button mat-icon-button (click)="openDetail(item)" [matTooltip]="'admin.feedback.viewDetail' | translate">
+      <mat-icon>visibility</mat-icon>
+    </button>
+  </ng-template>
+</app-admin-data-table>

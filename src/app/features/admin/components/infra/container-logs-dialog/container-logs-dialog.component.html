@@ -1,0 +1,15 @@
+<h2 mat-dialog-title>{{ data.name }}</h2>
+<mat-dialog-content class="logs-content">
+  @if (loading()) {
+    <div class="centered"><mat-spinner diameter="28"></mat-spinner></div>
+  } @else {
+    @if (error()) {
+      <p class="hint">{{ 'admin.infra.logsError' | translate }}</p>
+    } @else {
+      <pre>{{ logs() }}</pre>
+    }
+  }
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>{{ 'common.close' | translate }}</button>
+</mat-dialog-actions>

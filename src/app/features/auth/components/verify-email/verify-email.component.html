@@ -1,0 +1,28 @@
+<div class="verify-email-page">
+  <div class="verify-card">
+    <mat-icon class="brand-icon">public</mat-icon>
+    <h2>{{ 'auth.verifyEmailTitle' | translate }}</h2>
+
+    @switch (state()) {
+      @case ('loading') {
+        <mat-spinner diameter="36"></mat-spinner>
+        <p>{{ 'auth.verifyEmailInProgress' | translate }}</p>
+      }
+      @case ('success') {
+        <mat-icon class="status-icon success">check_circle</mat-icon>
+        <p>{{ 'auth.verifyEmailSuccess' | translate }}</p>
+        <a mat-flat-button color="primary" routerLink="/map">{{ 'auth.backToLogin' | translate }}</a>
+      }
+      @case ('missing-token') {
+        <mat-icon class="status-icon error">error</mat-icon>
+        <p>{{ 'auth.verifyEmailMissingToken' | translate }}</p>
+        <a mat-stroked-button routerLink="/map">{{ 'auth.backToLogin' | translate }}</a>
+      }
+      @case ('error') {
+        <mat-icon class="status-icon error">error</mat-icon>
+        <p>{{ 'auth.verifyEmailError' | translate }}</p>
+        <a mat-stroked-button routerLink="/map">{{ 'auth.backToLogin' | translate }}</a>
+      }
+    }
+  </div>
+</div>

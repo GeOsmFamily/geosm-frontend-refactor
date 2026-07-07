@@ -1,5 +1,4 @@
 import { Routes } from '@angular/router';
-import { authGuard } from './core/guards/auth.guard';
 import { roleGuard } from './core/guards/role.guard';
 import { Role } from './core/models/index';
 
@@ -21,16 +20,33 @@ export const routes: Routes = [
       import('./features/auth/components/auth-callback/auth-callback.component').then((m) => m.AuthCallbackComponent),
   },
   {
+    path: 'verify-email',
+    loadComponent: () =>
+      import('./features/auth/components/verify-email/verify-email.component').then((m) => m.VerifyEmailComponent),
+  },
+  {
+    path: 'forgot-password',
+    loadComponent: () =>
+      import('./features/auth/components/forgot-password/forgot-password.component').then((m) => m.ForgotPasswordComponent),
+  },
+  {
+    path: 'reset-password',
+    loadComponent: () =>
+      import('./features/auth/components/reset-password/reset-password.component').then((m) => m.ResetPasswordComponent),
+  },
+  {
+    // Le géoportail est public : un visiteur anonyme doit pouvoir consulter la carte sans
+    // compte (voir MapLayoutComponent, qui ne charge le profil que si une session existe déjà).
+    // Les actions qui nécessitent un compte (commentaires, favoris, admin...) restent gardées
+    // individuellement côté backend/composant.
     path: 'map',
     loadComponent: () =>
       import('./features/map/components/map-layout/map-layout.component').then((m) => m.MapLayoutComponent),
-    canActivate: [authGuard],
   },
   {
     path: 'map/:instanceSlug',
     loadComponent: () =>
       import('./features/map/components/map-layout/map-layout.component').then((m) => m.MapLayoutComponent),
-    canActivate: [authGuard],
   },
   {
     path: 'share/:code',

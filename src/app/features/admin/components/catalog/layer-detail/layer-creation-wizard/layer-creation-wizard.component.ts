@@ -18,6 +18,8 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import Map from 'ol/Map';
 import View from 'ol/View';
+import TileLayer from 'ol/layer/Tile';
+import OSM from 'ol/source/OSM';
 import VectorLayer from 'ol/layer/Vector';
 import VectorSource from 'ol/source/Vector';
 import GeoJSON from 'ol/format/GeoJSON';
@@ -345,14 +347,17 @@ export class LayerCreationWizardComponent {
         });
 
     if (!this.map) {
+      // Fond OSM (même source que la carte publique) - sans lui l'aperçu de données n'était
+      // qu'un fond blanc, sans aucun repère géographique pour situer les entités affichées.
       this.map = new Map({
         target: this.previewMapEl.nativeElement,
-        layers: [layer],
+        layers: [new TileLayer({ source: new OSM() }), layer],
         view: new View({ center: [0, 0], zoom: 2 }),
         controls: [],
       });
     } else {
       this.map.getLayers().clear();
+      this.map.addLayer(new TileLayer({ source: new OSM() }));
       this.map.addLayer(layer);
     }
 

@@ -12,9 +12,11 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { Subject, debounceTime, distinctUntilChanged } from 'rxjs';
+import { Subject, debounceTime } from 'rxjs';
 import Map from 'ol/Map';
 import View from 'ol/View';
+import TileLayer from 'ol/layer/Tile';
+import OSM from 'ol/source/OSM';
 import VectorLayer from 'ol/layer/Vector';
 import VectorSource from 'ol/source/Vector';
 import GeoJSON from 'ol/format/GeoJSON';
@@ -89,7 +91,12 @@ export class BoundaryPickerDialogComponent implements OnDestroy {
   private map: Map | null = null;
 
   constructor() {
-    this.search$.pipe(debounceTime(300), distinctUntilChanged()).subscribe(() => this.runSearch());
+    // distinctUntilChanged() n'a pas sa place ici : ce Subject n'émet jamais de valeur (juste un
+    // signal "re-cherche"), donc chaque next() produit `undefined`, identique au précédent -
+    // distinctUntilChanged filtrait alors TOUTE recherche après la toute première frappe, ce qui
+    // donnait l'impression d'une autocomplétion cassée/peu réactive (la liste ne se mettait à
+    // jour qu'une seule fois puis restait figée quoi qu'on tape ensuite).
+    this.search$.pipe(debounceTime(300)).subscribe(() => this.runSearch());
     this.runSearch();
   }
 
@@ -152,14 +159,17 @@ export class BoundaryPickerDialogComponent implements OnDestroy {
     });
 
     if (!this.map) {
+      // Fond OSM (même source que la carte publique, ol/source/OSM) - sans lui l'aperçu n'était
+      // qu'un fond blanc, la géométrie flottant sans aucun repère géographique.
       this.map = new Map({
         target: this.previewMapEl.nativeElement,
-        layers: [layer],
+        layers: [new TileLayer({ source: new OSM() }), layer],
         view: new View({ center: [0, 0], zoom: 2 }),
         controls: [],
       });
     } else {
       this.map.getLayers().clear();
+      this.map.addLayer(new TileLayer({ source: new OSM() }));
       this.map.addLayer(layer);
     }
 

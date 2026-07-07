@@ -8,6 +8,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 
 import { AuthService } from '../../../../core/services/auth.service';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
@@ -25,6 +26,7 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
     MatButtonModule,
     MatIconModule,
     MatProgressSpinnerModule,
+    MatCheckboxModule,
   ],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss',
@@ -37,6 +39,7 @@ export class LoginComponent implements OnInit {
 
   email = '';
   password = '';
+  rememberMe = true;
   hidePassword = true;
   readonly loading = signal(false);
   readonly errorMessage = signal('');
@@ -75,7 +78,7 @@ export class LoginComponent implements OnInit {
     this.loading.set(true);
     this.errorMessage.set('');
 
-    this.authService.login(this.email, this.password).subscribe({
+    this.authService.login(this.email, this.password, this.rememberMe).subscribe({
       next: () => {
         this.loading.set(false);
         this.router.navigate(['/map']);

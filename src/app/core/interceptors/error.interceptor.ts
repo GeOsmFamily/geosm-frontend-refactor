@@ -13,7 +13,12 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
 
   return next(req).pipe(
     catchError((error) => {
-      if (error.status === 401 && !req.url.includes('/auth/')) {
+      // Le géoportail est consultable sans compte (voir app.routes.ts) - un visiteur anonyme
+      // qui touche un endpoint protégé (ex. resync, favoris) reçoit un 401 légitime sans jamais
+      // avoir eu de refresh token. Tenter un refresh avec un token null renvoyait un 400 et,
+      // pire, appelait authService.logout() -> redirection forcée vers /login pour un visiteur
+      // qui n'a jamais été connecté. On ne tente le refresh que si une session existait déjà.
+      if (error.status === 401 && !req.url.includes('/auth/') && authService.getRefreshToken()) {
         if (!isRefreshing) {
           isRefreshing = true;
           return authService.refreshToken().pipe(

@@ -158,7 +158,12 @@ export class MapLayoutComponent implements OnInit {
   ];
 
   constructor() {
-    this.authService.getProfile().subscribe();
+    // Le géoportail est consultable sans compte (visiteur anonyme) - ne tente de charger le
+    // profil que si une session existe réellement, sinon /auth/me renvoie 401 pour rien à
+    // chaque chargement de page.
+    if (this.authService.isAuthenticated()) {
+      this.authService.getProfile().subscribe({ error: () => {} });
+    }
     this.mapService.mapReady$.subscribe((ready) => {
       if (ready) {
         const map = this.mapService.getMap();
@@ -209,6 +214,14 @@ export class MapLayoutComponent implements OnInit {
         } else if (queryParams['osmError']) {
           this.snackBar.open(this.translate.instant('auth.osmLinkError') || 'Erreur lors de la liaison du compte OpenStreetMap', 'OK', { duration: 4000 });
         }
+        this.router.navigate([], { queryParams: {}, replaceUrl: true });
+      }
+      if (queryParams['verifyEmailSent']) {
+        this.snackBar.open(
+          this.translate.instant('auth.verifyEmailSent') || 'Compte créé. Vérifiez votre boîte mail pour confirmer votre adresse.',
+          'OK',
+          { duration: 6000 },
+        );
         this.router.navigate([], { queryParams: {}, replaceUrl: true });
       }
     });
@@ -608,6 +621,10 @@ export class MapLayoutComponent implements OnInit {
 
   navigateToProfile(): void {
     this.toggleSettings();
+  }
+
+  navigateToLogin(): void {
+    this.router.navigate(['/login']);
   }
 
   get isAdmin(): boolean {

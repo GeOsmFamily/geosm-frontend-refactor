@@ -1,0 +1,33 @@
+.content {
+  min-width: 380px;
+  max-width: 480px;
+}
+
+.meta-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+
+  .date {
+    color: var(--text-secondary, #64748b);
+    font-size: 13px;
+  }
+}
+
+.description {
+  white-space: pre-wrap;
+  background: var(--background, #f1f5f9);
+  padding: 12px;
+  border-radius: 8px;
+  margin-bottom: 12px;
+}
+
+.contact, .page {
+  font-size: 13px;
+  margin: 4px 0;
+}
+
+.full-width {
+  width: 100%;
+}

@@ -1,0 +1,88 @@
+<div class="page-header">
+  <h2 class="page-title">{{ 'admin.nav.jobs' | translate }}</h2>
+  <button mat-icon-button (click)="load()" [matTooltip]="'admin.common.refresh' | translate">
+    <mat-icon>refresh</mat-icon>
+  </button>
+</div>
+
+<div class="trigger-panel glass">
+  <h3>{{ 'admin.jobs.triggerNow' | translate }}</h3>
+  <div class="trigger-row">
+    <mat-form-field appearance="outline" subscriptSizing="dynamic" class="pbf-field">
+      <mat-label>{{ 'admin.jobs.pbfPath' | translate }}</mat-label>
+      <input matInput [(ngModel)]="pbfPath" />
+    </mat-form-field>
+    <button mat-stroked-button [disabled]="triggeringOsm()" (click)="confirmAndTrigger('osm')">
+      @if (triggeringOsm()) { <mat-spinner diameter="18"></mat-spinner> } @else { <mat-icon>public</mat-icon> }
+      {{ 'admin.jobs.triggerOsmImport' | translate }}
+    </button>
+    <span class="cron-hint">{{ osmImportCron }}</span>
+  </div>
+
+  <div class="trigger-row">
+    <button mat-stroked-button [disabled]="triggeringBackup()" (click)="confirmAndTrigger('backup')">
+      @if (triggeringBackup()) { <mat-spinner diameter="18"></mat-spinner> } @else { <mat-icon>backup</mat-icon> }
+      {{ 'admin.jobs.triggerBackup' | translate }}
+    </button>
+    <span class="cron-hint">{{ backupCron }}</span>
+  </div>
+
+  <div class="trigger-row">
+    <button mat-stroked-button [disabled]="triggeringReindex()" (click)="confirmAndTrigger('reindex')">
+      @if (triggeringReindex()) { <mat-spinner diameter="18"></mat-spinner> } @else { <mat-icon>search</mat-icon> }
+      {{ 'admin.jobs.triggerReindex' | translate }}
+    </button>
+  </div>
+</div>
+
+@if (loading()) {
+  <div class="centered"><mat-spinner diameter="32"></mat-spinner></div>
+} @else {
+  @for (queue of queues(); track queue.name) {
+    <div class="queue-block glass">
+      <h3>{{ queue.name }}</h3>
+      <div class="stat-row">
+        <app-stat-card label="Waiting" [value]="countFor(queue, 'waiting')" icon="hourglass_empty" accentVar="--text-secondary"></app-stat-card>
+        <app-stat-card label="Active" [value]="countFor(queue, 'active')" icon="play_circle" accentVar="--primary"></app-stat-card>
+        <app-stat-card label="Completed" [value]="countFor(queue, 'completed')" icon="check_circle" accentVar="--accent"></app-stat-card>
+        <app-stat-card label="Failed" [value]="countFor(queue, 'failed')" icon="error" accentVar="--warn"></app-stat-card>
+        <app-stat-card label="Delayed" [value]="countFor(queue, 'delayed')" icon="schedule" accentVar="--text-secondary"></app-stat-card>
+      </div>
+
+      @if (queue.recentJobs.length > 0) {
+        <table class="jobs-table">
+          <thead>
+            <tr>
+              <th>{{ 'admin.jobs.jobType' | translate }}</th>
+              <th>{{ 'admin.jobs.jobStatus' | translate }}</th>
+              <th>{{ 'admin.jobs.jobCreatedAt' | translate }}</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (job of queue.recentJobs; track job.id) {
+              <tr>
+                <td>{{ job.type }}</td>
+                <td>
+                  <mat-chip [color]="job.status === 'failed' ? 'warn' : undefined" [highlighted]="job.status === 'failed'">
+                    {{ job.status }}
+                  </mat-chip>
+                </td>
+                <td>{{ job.createdAt | date: 'short' }}</td>
+                <td>
+                  @if (job.status === 'failed') {
+                    <button mat-icon-button [disabled]="retryingId() === job.id" (click)="retry(job)" [matTooltip]="'admin.jobs.retry' | translate">
+                      @if (retryingId() === job.id) { <mat-spinner diameter="18"></mat-spinner> } @else { <mat-icon>replay</mat-icon> }
+                    </button>
+                  }
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      } @else {
+        <p class="hint">{{ 'admin.common.noResults' | translate }}</p>
+      }
+    </div>
+  }
+}

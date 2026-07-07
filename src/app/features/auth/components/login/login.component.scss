@@ -181,8 +181,15 @@
 
 .form-options {
   display: flex;
-  justify-content: flex-end;
+  align-items: center;
+  justify-content: space-between;
   margin-bottom: 8px;
+  flex-wrap: wrap;
+  gap: 8px;
+
+  ::ng-deep .mat-mdc-checkbox label {
+    font-size: 13px;
+  }
 }
 
 .forgot-link {

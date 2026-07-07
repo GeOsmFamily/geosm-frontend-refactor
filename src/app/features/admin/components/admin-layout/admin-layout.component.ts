@@ -8,6 +8,7 @@ import { TranslateModule } from '@ngx-translate/core';
 
 import { AuthService } from '../../../../core/services/auth.service';
 import { Role } from '../../../../core/models/index';
+import { OBSERVABILITY_LINKS } from '../../shared/constants/observability-links';
 
 interface AdminNavItem {
   path: string;
@@ -27,13 +28,6 @@ const NAV_ITEMS: AdminNavItem[] = [
   { path: 'observability', icon: 'insights', labelKey: 'admin.nav.observability' },
   { path: 'infra', icon: 'dns', labelKey: 'admin.nav.infra', superAdminOnly: true },
   { path: 'system-tools', icon: 'build', labelKey: 'admin.nav.systemTools', superAdminOnly: true },
-];
-
-const OBSERVABILITY_LINKS = [
-  { key: 'grafana', url: 'http://localhost:3001', icon: 'dashboard' },
-  { key: 'prometheus', url: 'http://localhost:9090', icon: 'query_stats' },
-  { key: 'jaeger', url: 'http://localhost:16686', icon: 'timeline' },
-  { key: 'graylog', url: 'http://localhost:9009', icon: 'description' },
 ];
 
 @Component({

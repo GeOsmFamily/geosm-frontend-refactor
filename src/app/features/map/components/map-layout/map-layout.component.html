@@ -41,21 +41,26 @@
             </div>
           </div>
           <mat-divider></mat-divider>
-        }
-        <button mat-menu-item (click)="navigateToProfile()">
-          <mat-icon>settings</mat-icon>
-          <span>{{ 'common.settings' | translate }}</span>
-        </button>
-        @if (isAdmin) {
-          <button mat-menu-item (click)="navigateToAdmin()">
-            <mat-icon>admin_panel_settings</mat-icon>
-            <span>{{ 'common.administration' | translate }}</span>
+          <button mat-menu-item (click)="navigateToProfile()">
+            <mat-icon>settings</mat-icon>
+            <span>{{ 'common.settings' | translate }}</span>
+          </button>
+          @if (isAdmin) {
+            <button mat-menu-item (click)="navigateToAdmin()">
+              <mat-icon>admin_panel_settings</mat-icon>
+              <span>{{ 'common.administration' | translate }}</span>
+            </button>
+          }
+          <button mat-menu-item (click)="logout()" class="logout-item">
+            <mat-icon>logout</mat-icon>
+            <span>{{ 'auth.logout' | translate }}</span>
+          </button>
+        } @else {
+          <button mat-menu-item (click)="navigateToLogin()">
+            <mat-icon>login</mat-icon>
+            <span>{{ 'auth.loginButton' | translate }}</span>
           </button>
         }
-        <button mat-menu-item (click)="logout()" class="logout-item">
-          <mat-icon>logout</mat-icon>
-          <span>{{ 'auth.logout' | translate }}</span>
-        </button>
       </mat-menu>
 
       <button mat-icon-button (click)="toggleGeosignets()" [matTooltip]="'geosignets.title' | translate" class="header-action" [class.active]="geosignetsOpen()">

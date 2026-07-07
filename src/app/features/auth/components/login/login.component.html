@@ -61,7 +61,10 @@
         </mat-form-field>
 
         <div class="form-options">
-          <a routerLink="/login" class="forgot-link">Mot de passe oublié ?</a>
+          <mat-checkbox [(ngModel)]="rememberMe" name="rememberMe" color="primary">
+            {{ 'auth.rememberMe' | translate }}
+          </mat-checkbox>
+          <a routerLink="/forgot-password" class="forgot-link">{{ 'auth.forgotPassword' | translate }}</a>
         </div>
 
         <button

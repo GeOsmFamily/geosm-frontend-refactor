@@ -1,0 +1,47 @@
+<div class="page-header">
+  <h2 class="page-title">{{ 'admin.nav.infra' | translate }}</h2>
+  <button mat-icon-button (click)="load()" [matTooltip]="'admin.common.refresh' | translate">
+    <mat-icon>refresh</mat-icon>
+  </button>
+</div>
+
+@if (loading()) {
+  <div class="centered"><mat-spinner diameter="32"></mat-spinner></div>
+} @else {
+  @if (unavailable()) {
+    <p class="hint">{{ 'admin.infra.unavailable' | translate }}</p>
+  } @else {
+    <div class="containers-grid">
+      @for (container of containers(); track container.id) {
+        <div class="container-card glass">
+          <div class="card-header">
+            <span class="name">{{ container.name }}</span>
+            <mat-chip [color]="container.state === 'running' ? undefined : 'warn'" [highlighted]="container.state !== 'running'">
+              {{ container.state }}
+            </mat-chip>
+          </div>
+          <div class="image">{{ container.image }}</div>
+          <div class="status">{{ container.status }}</div>
+
+          @if (statsFor(container.id); as s) {
+            <div class="stats-row">
+              <div class="stat">
+                <mat-icon>memory</mat-icon>
+                <span>CPU {{ s.cpuPercent }}%</span>
+              </div>
+              <div class="stat">
+                <mat-icon>storage</mat-icon>
+                <span>RAM {{ s.memoryUsageMB }} / {{ s.memoryLimitMB }} Mo ({{ s.memoryPercent }}%)</span>
+              </div>
+            </div>
+          }
+
+          <button mat-button (click)="showLogs(container)">
+            <mat-icon>description</mat-icon>
+            {{ 'admin.infra.viewLogs' | translate }}
+          </button>
+        </div>
+      }
+    </div>
+  }
+}

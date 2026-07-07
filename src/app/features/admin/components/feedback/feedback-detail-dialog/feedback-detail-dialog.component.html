@@ -1,0 +1,38 @@
+<h2 mat-dialog-title>{{ 'admin.feedback.detailTitle' | translate }}</h2>
+<mat-dialog-content class="content">
+  <div class="meta-row">
+    <mat-chip>{{ data.feedback.type }}</mat-chip>
+    <span class="date">{{ data.feedback.createdAt | date: 'short' }}</span>
+  </div>
+
+  <p class="description">{{ data.feedback.description }}</p>
+
+  @if (data.feedback.contactEmail) {
+    <p class="contact">
+      <strong>{{ 'admin.feedback.contact' | translate }}:</strong> {{ data.feedback.contactEmail }}
+    </p>
+  }
+  @if (data.feedback.page) {
+    <p class="page">
+      <strong>{{ 'admin.feedback.page' | translate }}:</strong> {{ data.feedback.page }}
+    </p>
+  }
+
+  <mat-form-field appearance="outline" class="full-width">
+    <mat-label>{{ 'admin.feedback.status' | translate }}</mat-label>
+    <mat-select [(ngModel)]="status">
+      @for (s of statuses; track s) {
+        <mat-option [value]="s">{{ 'admin.feedback.statusValues.' + s | translate }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="full-width">
+    <mat-label>{{ 'admin.feedback.adminNotes' | translate }}</mat-label>
+    <textarea matInput [(ngModel)]="adminNotes" rows="3"></textarea>
+  </mat-form-field>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button (click)="dialogRef.close()">{{ 'common.cancel' | translate }}</button>
+  <button mat-flat-button color="primary" (click)="save()">{{ 'common.save' | translate }}</button>
+</mat-dialog-actions>

@@ -41,8 +41,38 @@ export const ADMIN_ROUTES: Routes = [
         loadComponent: () =>
           import('./components/catalog/catalog.component').then((m) => m.CatalogComponent),
       },
-      // Lots suivants : 'content' (A4), 'feedback' (A5), 'jobs' (A6),
-      // 'observability' (A7), 'infra' (A8), 'system-tools' (A9).
+      {
+        path: 'content',
+        loadComponent: () =>
+          import('./components/content/content.component').then((m) => m.ContentComponent),
+      },
+      {
+        path: 'feedback',
+        loadComponent: () =>
+          import('./components/feedback/feedback.component').then((m) => m.FeedbackComponent),
+      },
+      {
+        path: 'jobs',
+        loadComponent: () =>
+          import('./components/jobs/jobs.component').then((m) => m.JobsComponent),
+      },
+      {
+        path: 'observability',
+        loadComponent: () =>
+          import('./components/observability/observability.component').then((m) => m.ObservabilityComponent),
+      },
+      {
+        path: 'system-tools',
+        canActivate: [roleGuard([Role.SUPER_ADMIN])],
+        loadComponent: () =>
+          import('./components/system-tools/system-tools.component').then((m) => m.SystemToolsComponent),
+      },
+      {
+        path: 'infra',
+        canActivate: [roleGuard([Role.SUPER_ADMIN])],
+        loadComponent: () =>
+          import('./components/infra/infra.component').then((m) => m.InfraComponent),
+      },
     ],
   },
 ];
