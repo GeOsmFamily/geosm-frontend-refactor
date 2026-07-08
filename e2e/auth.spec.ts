@@ -26,7 +26,9 @@ test.beforeEach(async ({ page }) => {
 
 test.describe('Login', () => {
   test('redirects an unauthenticated visitor from a protected route to /login', async ({ page }) => {
-    await page.goto('/map');
+    // /map est un géoportail public (voir app.routes.ts) : /admin est la route réellement
+    // gardée pour un visiteur anonyme.
+    await page.goto('/admin');
     await expect(page).toHaveURL(/\/login/);
   });
 
