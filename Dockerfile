@@ -1,5 +1,5 @@
 # Stage 1: Build
-FROM node:20-alpine AS builder
+FROM node:26-alpine AS builder
 
 WORKDIR /app
 
@@ -34,7 +34,12 @@ RUN --mount=type=secret,id=mapillary_token \
     fi
 
 # Stage 2: Serve with nginx
-FROM nginx:1.27-alpine AS production
+FROM nginx:1.31-alpine AS production
+
+# Applique les correctifs de sécurité Alpine publiés après la construction de l'image de base
+# (ex. CVE-2026-31789 sur libssl3/libcrypto3), sans quoi le scan Trivy du workflow Sécurité
+# échoue sur des CVE CRITICAL déjà corrigées en amont.
+RUN apk update && apk upgrade --no-cache
 
 COPY --from=builder /app/dist/geosm-frontend/browser /usr/share/nginx/html
 COPY nginx.conf /etc/nginx/conf.d/default.conf

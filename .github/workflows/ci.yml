@@ -51,11 +51,11 @@ jobs:
       - run: npm ci
       - name: Installer Chrome pour Karma
         id: setup-chrome
-        uses: browser-actions/setup-chrome@v1
+        uses: browser-actions/setup-chrome@v2
         with:
           chrome-version: stable
       - name: Tests unitaires avec couverture
-        run: npx ng test --no-watch --no-progress --browsers=ChromeHeadless --code-coverage
+        run: npx ng test --no-watch --no-progress --browsers=ChromeHeadlessNoSandbox --code-coverage
         env:
           CHROME_BIN: ${{ steps.setup-chrome.outputs.chrome-path }}
       - uses: actions/upload-artifact@v4
@@ -94,7 +94,7 @@ jobs:
     if: github.ref == 'refs/heads/main'
     steps:
       - uses: actions/checkout@v4
-      - uses: docker/setup-buildx-action@v3
+      - uses: docker/setup-buildx-action@v4
       - uses: docker/build-push-action@v6
         with:
           context: .
