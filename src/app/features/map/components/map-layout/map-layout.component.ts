@@ -11,6 +11,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { DragDropModule } from '@angular/cdk/drag-drop';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { filter, take } from 'rxjs';
 
@@ -69,6 +70,7 @@ import { AnalyticsService } from '../../../../core/services/analytics.service';
     MatTooltipModule,
     MatDividerModule,
     MatSnackBarModule,
+    DragDropModule,
     TranslateModule,
     MapViewComponent,
     LayerPanelComponent,
