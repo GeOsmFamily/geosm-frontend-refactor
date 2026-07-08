@@ -169,7 +169,11 @@
 
       <!-- Floating Panels -->
       @if (geosignetsOpen()) {
-        <div class="floating-panel geosignets-panel glass animate-in" cdkDrag cdkDragBoundary=".map-area">
+        <div
+          class="floating-panel geosignets-panel glass animate-in"
+          cdkDrag
+          cdkDragBoundary=".map-area"
+        >
           <div class="panel-header">
             <div class="panel-title-group" cdkDragHandle>
               <mat-icon class="panel-icon">bookmarks</mat-icon>
@@ -186,7 +190,11 @@
       }
 
       @if (myMapsOpen()) {
-        <div class="floating-panel geosignets-panel glass animate-in" cdkDrag cdkDragBoundary=".map-area">
+        <div
+          class="floating-panel geosignets-panel glass animate-in"
+          cdkDrag
+          cdkDragBoundary=".map-area"
+        >
           <div class="panel-header">
             <div class="panel-title-group" cdkDragHandle>
               <mat-icon class="panel-icon">dashboard_customize</mat-icon>
@@ -203,7 +211,11 @@
       }
 
       @if (assistantOpen()) {
-        <div class="floating-panel assistant-panel glass animate-in" cdkDrag cdkDragBoundary=".map-area">
+        <div
+          class="floating-panel assistant-panel glass animate-in"
+          cdkDrag
+          cdkDragBoundary=".map-area"
+        >
           <div class="panel-header">
             <div class="panel-title-group" cdkDragHandle>
               <mat-icon class="panel-icon">auto_awesome</mat-icon>
@@ -220,7 +232,11 @@
       }
 
       @if (baseMapsOpen()) {
-        <div class="floating-panel geosignets-panel glass animate-in" cdkDrag cdkDragBoundary=".map-area">
+        <div
+          class="floating-panel geosignets-panel glass animate-in"
+          cdkDrag
+          cdkDragBoundary=".map-area"
+        >
           <div class="panel-header">
             <div class="panel-title-group" cdkDragHandle>
               <mat-icon class="panel-icon">map</mat-icon>
@@ -237,7 +253,11 @@
       }
 
       @if (settingsOpen()) {
-        <div class="floating-panel active-tool-panel glass animate-in" cdkDrag cdkDragBoundary=".map-area">
+        <div
+          class="floating-panel active-tool-panel glass animate-in"
+          cdkDrag
+          cdkDragBoundary=".map-area"
+        >
           <div class="panel-header">
             <div class="panel-title-group" cdkDragHandle>
               <mat-icon class="panel-icon">settings</mat-icon>
@@ -254,7 +274,11 @@
       }
 
       @if (infoOpen()) {
-        <div class="floating-panel active-tool-panel glass animate-in" cdkDrag cdkDragBoundary=".map-area">
+        <div
+          class="floating-panel active-tool-panel glass animate-in"
+          cdkDrag
+          cdkDragBoundary=".map-area"
+        >
           <div class="panel-header">
             <div class="panel-title-group" cdkDragHandle>
               <mat-icon class="panel-icon">info</mat-icon>
@@ -271,7 +295,11 @@
       }
 
       @if (locationInfoOpen()) {
-        <div class="floating-panel share-panel glass animate-in" cdkDrag cdkDragBoundary=".map-area">
+        <div
+          class="floating-panel share-panel glass animate-in"
+          cdkDrag
+          cdkDragBoundary=".map-area"
+        >
           <div class="panel-header">
             <div class="panel-title-group" cdkDragHandle>
               <mat-icon class="panel-icon">info</mat-icon>
@@ -343,7 +371,11 @@
       }
 
       @if (toolsMenuOpen()) {
-        <div class="floating-panel tools-menu-panel glass animate-in" cdkDrag cdkDragBoundary=".map-area">
+        <div
+          class="floating-panel tools-menu-panel glass animate-in"
+          cdkDrag
+          cdkDragBoundary=".map-area"
+        >
           <div class="panel-header">
             <div class="panel-title-group" cdkDragHandle>
               <mat-icon class="panel-icon">handyman</mat-icon>
@@ -373,7 +405,11 @@
       }
 
       @if (activeTool()) {
-        <div class="floating-panel active-tool-panel glass animate-in" cdkDrag cdkDragBoundary=".map-area">
+        <div
+          class="floating-panel active-tool-panel glass animate-in"
+          cdkDrag
+          cdkDragBoundary=".map-area"
+        >
           <div class="panel-header">
             <div class="panel-title-group" cdkDragHandle>
               <mat-icon class="panel-icon">{{ getActiveToolIcon() }}</mat-icon>
