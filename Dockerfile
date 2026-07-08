@@ -34,7 +34,7 @@ RUN --mount=type=secret,id=mapillary_token \
     fi
 
 # Stage 2: Serve with nginx
-FROM nginx:1.27-alpine AS production
+FROM nginx:1.31-alpine AS production
 
 # Applique les correctifs de sécurité Alpine publiés après la construction de l'image de base
 # (ex. CVE-2026-31789 sur libssl3/libcrypto3), sans quoi le scan Trivy du workflow Sécurité
