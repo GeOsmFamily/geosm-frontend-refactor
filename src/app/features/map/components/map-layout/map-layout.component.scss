@@ -195,6 +195,11 @@
   display: flex;
   align-items: center;
   gap: 10px;
+  cursor: grab;
+
+  &:active {
+    cursor: grabbing;
+  }
 }
 
 .panel-icon {
@@ -327,6 +332,14 @@
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   transition: all var(--transition-normal);
+
+  // La transition ci-dessus porte sur "all" (donc aussi "transform") : sans cette exception,
+  // le panneau met ~0.2s à rattraper le curseur à chaque déplacement pendant un cdkDrag,
+  // au lieu de le suivre au pixel près. cdk-drag-dragging est posée par le CDK le temps du
+  // glisser uniquement (voir cdkDrag sur ces panneaux dans le .html).
+  &.cdk-drag-dragging {
+    transition: none;
+  }
 
   &.geosignets-panel {
     left: 16px;

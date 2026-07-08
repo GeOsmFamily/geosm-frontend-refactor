@@ -169,9 +169,9 @@
 
       <!-- Floating Panels -->
       @if (geosignetsOpen()) {
-        <div class="floating-panel geosignets-panel glass animate-in">
+        <div class="floating-panel geosignets-panel glass animate-in" cdkDrag cdkDragBoundary=".map-area">
           <div class="panel-header">
-            <div class="panel-title-group">
+            <div class="panel-title-group" cdkDragHandle>
               <mat-icon class="panel-icon">bookmarks</mat-icon>
               <h3>{{ 'geosignets.title' | translate }}</h3>
             </div>
@@ -186,9 +186,9 @@
       }
 
       @if (myMapsOpen()) {
-        <div class="floating-panel geosignets-panel glass animate-in">
+        <div class="floating-panel geosignets-panel glass animate-in" cdkDrag cdkDragBoundary=".map-area">
           <div class="panel-header">
-            <div class="panel-title-group">
+            <div class="panel-title-group" cdkDragHandle>
               <mat-icon class="panel-icon">dashboard_customize</mat-icon>
               <h3>{{ 'myMaps.title' | translate }}</h3>
             </div>
@@ -203,9 +203,9 @@
       }
 
       @if (assistantOpen()) {
-        <div class="floating-panel assistant-panel glass animate-in">
+        <div class="floating-panel assistant-panel glass animate-in" cdkDrag cdkDragBoundary=".map-area">
           <div class="panel-header">
-            <div class="panel-title-group">
+            <div class="panel-title-group" cdkDragHandle>
               <mat-icon class="panel-icon">auto_awesome</mat-icon>
               <h3>Assistant IA</h3>
             </div>
@@ -220,9 +220,9 @@
       }
 
       @if (baseMapsOpen()) {
-        <div class="floating-panel geosignets-panel glass animate-in">
+        <div class="floating-panel geosignets-panel glass animate-in" cdkDrag cdkDragBoundary=".map-area">
           <div class="panel-header">
-            <div class="panel-title-group">
+            <div class="panel-title-group" cdkDragHandle>
               <mat-icon class="panel-icon">map</mat-icon>
               <h3>{{ 'map.baseMaps' | translate }}</h3>
             </div>
@@ -237,9 +237,9 @@
       }
 
       @if (settingsOpen()) {
-        <div class="floating-panel active-tool-panel glass animate-in">
+        <div class="floating-panel active-tool-panel glass animate-in" cdkDrag cdkDragBoundary=".map-area">
           <div class="panel-header">
-            <div class="panel-title-group">
+            <div class="panel-title-group" cdkDragHandle>
               <mat-icon class="panel-icon">settings</mat-icon>
               <h3>{{ 'common.settings' | translate }}</h3>
             </div>
@@ -254,9 +254,9 @@
       }
 
       @if (infoOpen()) {
-        <div class="floating-panel active-tool-panel glass animate-in">
+        <div class="floating-panel active-tool-panel glass animate-in" cdkDrag cdkDragBoundary=".map-area">
           <div class="panel-header">
-            <div class="panel-title-group">
+            <div class="panel-title-group" cdkDragHandle>
               <mat-icon class="panel-icon">info</mat-icon>
               <h3>{{ 'infoPanel.title' | translate }}</h3>
             </div>
@@ -271,9 +271,9 @@
       }
 
       @if (locationInfoOpen()) {
-        <div class="floating-panel share-panel glass animate-in">
+        <div class="floating-panel share-panel glass animate-in" cdkDrag cdkDragBoundary=".map-area">
           <div class="panel-header">
-            <div class="panel-title-group">
+            <div class="panel-title-group" cdkDragHandle>
               <mat-icon class="panel-icon">info</mat-icon>
               <h3>{{ 'contextMenu.info' | translate }}</h3>
             </div>
@@ -343,9 +343,9 @@
       }
 
       @if (toolsMenuOpen()) {
-        <div class="floating-panel tools-menu-panel glass animate-in">
+        <div class="floating-panel tools-menu-panel glass animate-in" cdkDrag cdkDragBoundary=".map-area">
           <div class="panel-header">
-            <div class="panel-title-group">
+            <div class="panel-title-group" cdkDragHandle>
               <mat-icon class="panel-icon">handyman</mat-icon>
               <h3>{{ 'map.tools' | translate }}</h3>
             </div>
@@ -373,9 +373,9 @@
       }
 
       @if (activeTool()) {
-        <div class="floating-panel active-tool-panel glass animate-in">
+        <div class="floating-panel active-tool-panel glass animate-in" cdkDrag cdkDragBoundary=".map-area">
           <div class="panel-header">
-            <div class="panel-title-group">
+            <div class="panel-title-group" cdkDragHandle>
               <mat-icon class="panel-icon">{{ getActiveToolIcon() }}</mat-icon>
               <h3>{{ getActiveToolLabel() | translate }}</h3>
             </div>
