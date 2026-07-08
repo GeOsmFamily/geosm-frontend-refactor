@@ -15,7 +15,13 @@ export interface ContainerLogsDialogData {
 @Component({
   selector: 'app-container-logs-dialog',
   standalone: true,
-  imports: [CommonModule, MatDialogModule, MatProgressSpinnerModule, MatButtonModule, TranslateModule],
+  imports: [
+    CommonModule,
+    MatDialogModule,
+    MatProgressSpinnerModule,
+    MatButtonModule,
+    TranslateModule,
+  ],
   templateUrl: './container-logs-dialog.component.html',
   styleUrl: './container-logs-dialog.component.scss',
 })

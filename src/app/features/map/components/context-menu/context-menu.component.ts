@@ -1,4 +1,12 @@
-import { Component, inject, signal, OnInit, OnDestroy, HostListener, ElementRef } from '@angular/core';
+import {
+  Component,
+  inject,
+  signal,
+  OnInit,
+  OnDestroy,
+  HostListener,
+  ElementRef,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
@@ -69,11 +77,9 @@ export class ContextMenuComponent implements OnInit, OnDestroy {
     const [lon, lat] = this.coordinates();
     const text = `${lat.toFixed(6)}, ${lon.toFixed(6)}`;
     navigator.clipboard.writeText(text).then(() => {
-      this.snackBar.open(
-        this.translate.instant('contextMenu.coordsCopied'),
-        'OK',
-        { duration: 2000 }
-      );
+      this.snackBar.open(this.translate.instant('contextMenu.coordsCopied'), 'OK', {
+        duration: 2000,
+      });
     });
     this.visible.set(false);
   }
@@ -84,11 +90,9 @@ export class ContextMenuComponent implements OnInit, OnDestroy {
       action: 'setStart',
       data: this.coordinates(),
     });
-    this.snackBar.open(
-      this.translate.instant('contextMenu.routeStartSet'),
-      'OK',
-      { duration: 2000 }
-    );
+    this.snackBar.open(this.translate.instant('contextMenu.routeStartSet'), 'OK', {
+      duration: 2000,
+    });
     this.visible.set(false);
   }
 
@@ -98,11 +102,7 @@ export class ContextMenuComponent implements OnInit, OnDestroy {
       action: 'setEnd',
       data: this.coordinates(),
     });
-    this.snackBar.open(
-      this.translate.instant('contextMenu.routeEndSet'),
-      'OK',
-      { duration: 2000 }
-    );
+    this.snackBar.open(this.translate.instant('contextMenu.routeEndSet'), 'OK', { duration: 2000 });
     this.visible.set(false);
   }
 
@@ -122,11 +122,9 @@ export class ContextMenuComponent implements OnInit, OnDestroy {
       action: 'addAt',
       data: this.coordinates(),
     });
-    this.snackBar.open(
-      this.translate.instant('contextMenu.commentPlaced'),
-      'OK',
-      { duration: 2000 }
-    );
+    this.snackBar.open(this.translate.instant('contextMenu.commentPlaced'), 'OK', {
+      duration: 2000,
+    });
     this.visible.set(false);
   }
 

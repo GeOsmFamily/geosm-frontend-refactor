@@ -1,7 +1,11 @@
 <div class="export-tool">
   <h3>Télécharger des données</h3>
 
-  <mat-button-toggle-group class="full-width mode-toggle" [(ngModel)]="exportMode" (change)="setMode($event.value)">
+  <mat-button-toggle-group
+    class="full-width mode-toggle"
+    [(ngModel)]="exportMode"
+    (change)="setMode($event.value)"
+  >
     <mat-button-toggle value="single" matTooltip="Exporter une seule couche">
       <mat-icon>layers</mat-icon>
       <span>Une couche</span>
@@ -32,7 +36,11 @@
       <div class="layers-preview">
         <mat-icon>dynamic_feed</mat-icon>
         <span>
-          <strong>{{ activeLayers.length }}</strong> couche{{ activeLayers.length > 1 ? 's' : '' }} active{{ activeLayers.length > 1 ? 's' : '' }} seront exportées dans un fichier zip, chacune séparément.
+          <strong>{{ activeLayers.length }}</strong> couche{{
+            activeLayers.length > 1 ? 's' : ''
+          }}
+          active{{ activeLayers.length > 1 ? 's' : '' }} seront exportées dans un fichier zip,
+          chacune séparément.
         </span>
       </div>
     }
@@ -50,15 +58,23 @@
       <mat-icon matPrefix>description</mat-icon>
     </mat-form-field>
 
-    <button mat-flat-button
-            color="primary"
-            class="full-width export-btn"
-            [disabled]="(exportMode === 'single' && !selectedLayerId) || (exportMode === 'all' && activeLayers.length === 0) || exporting"
-            (click)="startExport()">
+    <button
+      mat-flat-button
+      color="primary"
+      class="full-width export-btn"
+      [disabled]="
+        (exportMode === 'single' && !selectedLayerId) ||
+        (exportMode === 'all' && activeLayers.length === 0) ||
+        exporting
+      "
+      (click)="startExport()"
+    >
       @if (exporting) {
         <app-loading-spinner [diameter]="20" message="" />
       } @else {
-        <span class="btn-content"><mat-icon>download</mat-icon><span>Exporter et télécharger</span></span>
+        <span class="btn-content"
+          ><mat-icon>download</mat-icon><span>Exporter et télécharger</span></span
+        >
       }
     </button>
   }
@@ -71,23 +87,36 @@
       @for (exp of visibleExports; track exp.id) {
         <div class="export-item">
           <div class="export-icon-wrapper" [class.bulk]="exp.isBulk">
-            <mat-icon>{{ exp.isBulk ? 'folder_zip' : (formatIcons[exp.format] || 'description') }}</mat-icon>
+            <mat-icon>{{
+              exp.isBulk ? 'folder_zip' : formatIcons[exp.format] || 'description'
+            }}</mat-icon>
           </div>
           <div class="export-info">
-            <span class="export-name" [matTooltip]="getExportDisplayName(exp)">{{ getExportDisplayName(exp) }}</span>
+            <span class="export-name" [matTooltip]="getExportDisplayName(exp)">{{
+              getExportDisplayName(exp)
+            }}</span>
             <span class="export-meta">
               <span class="format-tag">{{ exp.format | uppercase }}</span>
-              @if (exp.isBulk) { <span class="bulk-tag">ZIP</span> }
-              <span class="export-date">{{ exp.createdAt | date:'short' }}</span>
+              @if (exp.isBulk) {
+                <span class="bulk-tag">ZIP</span>
+              }
+              <span class="export-date">{{ exp.createdAt | date: 'short' }}</span>
             </span>
           </div>
           <div class="export-actions">
             @if (isExportPending(exp)) {
               <app-loading-spinner [diameter]="16" message="" />
             }
-            <mat-chip [color]="getStatusColor(exp.status)">{{ getStatusLabel(exp.status) }}</mat-chip>
+            <mat-chip [color]="getStatusColor(exp.status)">{{
+              getStatusLabel(exp.status)
+            }}</mat-chip>
             @if (isExportReady(exp)) {
-              <button mat-icon-button class="download-icon-btn" (click)="downloadExport(exp)" matTooltip="Télécharger">
+              <button
+                mat-icon-button
+                class="download-icon-btn"
+                (click)="downloadExport(exp)"
+                matTooltip="Télécharger"
+              >
                 <mat-icon>download</mat-icon>
               </button>
             }
@@ -98,7 +127,9 @@
       @if (exports.length > historyLimit) {
         <button mat-button class="full-width toggle-history-btn" (click)="toggleHistoryExpanded()">
           <mat-icon>{{ showAllHistory ? 'expand_less' : 'expand_more' }}</mat-icon>
-          <span>{{ showAllHistory ? 'Réduire' : 'Voir tout l\'historique (' + exports.length + ')' }}</span>
+          <span>{{
+            showAllHistory ? 'Réduire' : "Voir tout l'historique (" + exports.length + ')'
+          }}</span>
         </button>
       }
     </div>

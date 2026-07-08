@@ -3,12 +3,17 @@
 
   <mat-form-field appearance="outline" class="full-width">
     <mat-label>Titre</mat-label>
-    <input matInput [(ngModel)]="title" placeholder="Titre de la carte">
+    <input matInput [(ngModel)]="title" placeholder="Titre de la carte" />
   </mat-form-field>
 
   <mat-form-field appearance="outline" class="full-width">
     <mat-label>Description</mat-label>
-    <textarea matInput [(ngModel)]="description" rows="3" placeholder="Description optionnelle"></textarea>
+    <textarea
+      matInput
+      [(ngModel)]="description"
+      rows="3"
+      placeholder="Description optionnelle"
+    ></textarea>
   </mat-form-field>
 
   <div class="row">
@@ -33,11 +38,13 @@
 
   <mat-divider></mat-divider>
 
-  <button mat-flat-button
-          color="primary"
-          class="full-width generate-pdf-btn"
-          [disabled]="generating"
-          (click)="generatePdf()">
+  <button
+    mat-flat-button
+    color="primary"
+    class="full-width generate-pdf-btn"
+    [disabled]="generating"
+    (click)="generatePdf()"
+  >
     @if (generating) {
       <app-loading-spinner [diameter]="20" message="" />
     } @else {

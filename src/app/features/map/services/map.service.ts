@@ -59,12 +59,12 @@ export class MapService {
 
     this.drawingLayer = new VectorLayer({
       source: this.drawingSource,
-      properties: { name: 'drawing-layer' }
+      properties: { name: 'drawing-layer' },
     });
 
     this.measureLayer = new VectorLayer({
       source: this.measureSource,
-      properties: { name: 'measure-layer' }
+      properties: { name: 'measure-layer' },
     });
 
     const clusterSource = new Cluster({
@@ -74,17 +74,12 @@ export class MapService {
 
     this.commentLayer = new VectorLayer({
       source: clusterSource,
-      properties: { name: 'comment-layer' }
+      properties: { name: 'comment-layer' },
     });
 
     this.map = new Map({
       target,
-      layers: [
-        this.baseLayer,
-        this.drawingLayer,
-        this.measureLayer,
-        this.commentLayer
-      ],
+      layers: [this.baseLayer, this.drawingLayer, this.measureLayer, this.commentLayer],
       view: new View({
         center: fromLonLat(center),
         zoom,
@@ -304,7 +299,10 @@ export class MapService {
   }
 
   getLayerByName(name: string): BaseLayer | undefined {
-    return this.map.getLayers().getArray().find((layer) => layer.get('name') === name);
+    return this.map
+      .getLayers()
+      .getArray()
+      .find((layer) => layer.get('name') === name);
   }
 
   removeLayerByName(name: string): void {

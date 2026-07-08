@@ -28,16 +28,12 @@ export class MapillaryService {
 
   getImagesInBbox(bbox: string, limit = 500): Observable<MapillaryImage[]> {
     const url = `https://graph.mapillary.com/images?access_token=${this.getToken()}&fields=id,thumb_1024_url,captured_at,sequence,compass_angle,geometry&bbox=${bbox}&limit=${limit}`;
-    return this.http.get<{ data: MapillaryImage[] }>(url).pipe(
-      map(r => r.data || [])
-    );
+    return this.http.get<{ data: MapillaryImage[] }>(url).pipe(map((r) => r.data || []));
   }
 
   getSequenceImages(sequenceId: string, limit = 1000): Observable<MapillaryImage[]> {
     const url = `https://graph.mapillary.com/images?access_token=${this.getToken()}&fields=id,thumb_1024_url,captured_at,sequence,compass_angle,geometry&sequence_ids=${sequenceId}&limit=${limit}`;
-    return this.http.get<{ data: MapillaryImage[] }>(url).pipe(
-      map(r => r.data || [])
-    );
+    return this.http.get<{ data: MapillaryImage[] }>(url).pipe(map((r) => r.data || []));
   }
 
   getEmbedUrl(imageId: string): string {

@@ -8,13 +8,30 @@
   gap: 8px;
   margin-bottom: 12px;
   flex-wrap: wrap;
-  .link-icon { width: 20px; height: 20px; margin-right: 4px; vertical-align: middle; }
+  .link-icon {
+    width: 20px;
+    height: 20px;
+    margin-right: 4px;
+    vertical-align: middle;
+  }
 }
 .properties-table {
   width: 100%;
   border-collapse: collapse;
-  tr:nth-child(even) { background: rgba(0,0,0,0.03); }
-  td { padding: 6px 10px; border-bottom: 1px solid rgba(0,0,0,0.08); font-size: 13px; }
-  .prop-key { font-weight: 500; color: #555; width: 40%; }
-  .prop-value { word-break: break-word; }
+  tr:nth-child(even) {
+    background: rgba(0, 0, 0, 0.03);
+  }
+  td {
+    padding: 6px 10px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+    font-size: 13px;
+  }
+  .prop-key {
+    font-weight: 500;
+    color: #555;
+    width: 40%;
+  }
+  .prop-value {
+    word-break: break-word;
+  }
 }

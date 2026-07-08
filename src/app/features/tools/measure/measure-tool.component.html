@@ -19,10 +19,12 @@
 
   <!-- Activate / Stop button -->
   <div class="activate-section">
-    <button mat-flat-button
-            [color]="isActive ? 'warn' : 'primary'"
-            class="full-width"
-            (click)="toggleActive()">
+    <button
+      mat-flat-button
+      [color]="isActive ? 'warn' : 'primary'"
+      class="full-width"
+      (click)="toggleActive()"
+    >
       <mat-icon>{{ isActive ? 'stop' : 'play_arrow' }}</mat-icon>
       {{ isActive ? ('measure.stop' | translate) : ('measure.start' | translate) }}
     </button>
@@ -51,7 +53,11 @@
         <div class="result-item">
           <mat-icon class="mode-icon">{{ getModeIcon(m.mode) }}</mat-icon>
           <span class="result-value">{{ m.value }}</span>
-          <button mat-icon-button [attr.aria-label]="'measure.remove' | translate" (click)="removeMeasurement(m)">
+          <button
+            mat-icon-button
+            [attr.aria-label]="'measure.remove' | translate"
+            (click)="removeMeasurement(m)"
+          >
             <mat-icon>close</mat-icon>
           </button>
         </div>

@@ -168,7 +168,8 @@
       // (40px) : sans display:flex/align-items/justify-content explicites, le modèle de
       // boîte MDC interne décentre visuellement l'icône (même cause que .panel-close,
       // voir map-layout.component.scss).
-      .close-btn, .download-btn {
+      .close-btn,
+      .download-btn {
         width: 24px;
         height: 24px;
         padding: 0 !important;

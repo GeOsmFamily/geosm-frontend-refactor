@@ -19,7 +19,10 @@ import { Subscription } from 'rxjs';
 
 import { MapService } from '../../map/services/map.service';
 import { MapLayerService, ActiveLayer } from '../../map/services/map-layer.service';
-import { NearestFeatureService, NearestFeatureResult } from '../../../core/services/nearest-feature.service';
+import {
+  NearestFeatureService,
+  NearestFeatureResult,
+} from '../../../core/services/nearest-feature.service';
 import { ToolActionService } from '../../../core/services/tool-action.service';
 import { LoadingSpinnerComponent } from '../../../shared/components/loading-spinner/loading-spinner.component';
 
@@ -27,8 +30,16 @@ import { LoadingSpinnerComponent } from '../../../shared/components/loading-spin
   selector: 'app-nearest-search-tool',
   standalone: true,
   imports: [
-    TranslateModule, CommonModule, MatButtonModule, MatIconModule, MatSelectModule,
-    MatFormFieldModule, MatDividerModule, MatTooltipModule, MatSnackBarModule, LoadingSpinnerComponent,
+    TranslateModule,
+    CommonModule,
+    MatButtonModule,
+    MatIconModule,
+    MatSelectModule,
+    MatFormFieldModule,
+    MatDividerModule,
+    MatTooltipModule,
+    MatSnackBarModule,
+    LoadingSpinnerComponent,
   ],
   templateUrl: './nearest-search-tool.component.html',
   styleUrl: './nearest-search-tool.component.scss',
@@ -100,7 +111,9 @@ export class NearestSearchToolComponent implements AfterViewInit, OnDestroy {
       this.clickListener = null;
     }
     this.picking.set(false);
-    setTimeout(() => { this.mapService.isPicking = false; }, 300);
+    setTimeout(() => {
+      this.mapService.isPicking = false;
+    }, 300);
   }
 
   private search(lon: number, lat: number): void {
@@ -117,32 +130,62 @@ export class NearestSearchToolComponent implements AfterViewInit, OnDestroy {
         this.results.set(results);
         this.updateMarkers(lon, lat, results);
         if (results.length === 0) {
-          this.snackBar.open(this.translate.instant('tools.nearestSearchErrors.noResult') || 'Aucun résultat trouvé pour cette couche.', 'OK', { duration: 3000 });
+          this.snackBar.open(
+            this.translate.instant('tools.nearestSearchErrors.noResult') ||
+              'Aucun résultat trouvé pour cette couche.',
+            'OK',
+            { duration: 3000 },
+          );
         }
       },
       error: () => {
         this.loading.set(false);
-        this.snackBar.open(this.translate.instant('tools.nearestSearchErrors.searchFailed') || 'Échec de la recherche du plus proche.', 'OK', { duration: 4000 });
+        this.snackBar.open(
+          this.translate.instant('tools.nearestSearchErrors.searchFailed') ||
+            'Échec de la recherche du plus proche.',
+          'OK',
+          { duration: 4000 },
+        );
       },
     });
   }
 
-  private updateMarkers(originLon: number, originLat: number, results: NearestFeatureResult[]): void {
+  private updateMarkers(
+    originLon: number,
+    originLat: number,
+    results: NearestFeatureResult[],
+  ): void {
     const source = this.markerLayer.getSource()!;
     source.clear();
 
     const originFeature = new Feature(new Point(fromLonLat([originLon, originLat])));
-    originFeature.setStyle(new Style({
-      image: new CircleStyle({ radius: 8, fill: new Fill({ color: '#023f5f' }), stroke: new Stroke({ color: '#ffffff', width: 2.5 }) }),
-    }));
+    originFeature.setStyle(
+      new Style({
+        image: new CircleStyle({
+          radius: 8,
+          fill: new Fill({ color: '#023f5f' }),
+          stroke: new Stroke({ color: '#ffffff', width: 2.5 }),
+        }),
+      }),
+    );
     source.addFeature(originFeature);
 
     results.forEach((r, i) => {
       const feature = new Feature(new Point(fromLonLat([r.lon, r.lat])));
-      feature.setStyle(new Style({
-        image: new CircleStyle({ radius: 12, fill: new Fill({ color: '#00ada7' }), stroke: new Stroke({ color: '#ffffff', width: 2 }) }),
-        text: new Text({ text: String(i + 1), fill: new Fill({ color: '#ffffff' }), font: 'bold 12px sans-serif' }),
-      }));
+      feature.setStyle(
+        new Style({
+          image: new CircleStyle({
+            radius: 12,
+            fill: new Fill({ color: '#00ada7' }),
+            stroke: new Stroke({ color: '#ffffff', width: 2 }),
+          }),
+          text: new Text({
+            text: String(i + 1),
+            fill: new Fill({ color: '#ffffff' }),
+            font: 'bold 12px sans-serif',
+          }),
+        }),
+      );
       source.addFeature(feature);
     });
   }

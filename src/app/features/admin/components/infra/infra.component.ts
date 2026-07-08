@@ -8,7 +8,11 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatChipsModule } from '@angular/material/chips';
 import { TranslateModule } from '@ngx-translate/core';
 
-import { AdminDockerService, ContainerSummary, ContainerStats } from '../../../../core/services/admin-docker.service';
+import {
+  AdminDockerService,
+  ContainerSummary,
+  ContainerStats,
+} from '../../../../core/services/admin-docker.service';
 import { ContainerLogsDialogComponent } from './container-logs-dialog/container-logs-dialog.component';
 
 /**
@@ -18,7 +22,16 @@ import { ContainerLogsDialogComponent } from './container-logs-dialog/container-
 @Component({
   selector: 'app-infra',
   standalone: true,
-  imports: [CommonModule, MatIconModule, MatButtonModule, MatDialogModule, MatTooltipModule, MatProgressSpinnerModule, MatChipsModule, TranslateModule],
+  imports: [
+    CommonModule,
+    MatIconModule,
+    MatButtonModule,
+    MatDialogModule,
+    MatTooltipModule,
+    MatProgressSpinnerModule,
+    MatChipsModule,
+    TranslateModule,
+  ],
   templateUrl: './infra.component.html',
   styleUrl: './infra.component.scss',
 })

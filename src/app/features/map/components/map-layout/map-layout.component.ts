@@ -39,7 +39,6 @@ import { InfoPanelComponent } from '../info-panel/info-panel.component';
 import { GeocodingService } from '../../../../core/services/geocoding.service';
 import { RoutingService } from '../../../../core/services/routing.service';
 
-
 import { DrawingToolComponent } from '../../../../features/tools/drawing/drawing-tool.component';
 import { MeasureToolComponent } from '../../../../features/tools/measure/measure-tool.component';
 import { RoutingToolComponent } from '../../../../features/tools/routing/routing-tool.component';
@@ -140,7 +139,6 @@ export class MapLayoutComponent implements OnInit {
   readonly currentUser = this.authService.currentUser$;
   currentZoom = 6;
 
-
   readonly tools = [
     { id: 'drawing', icon: 'draw', label: 'tools.drawing' },
     { id: 'measure', icon: 'straighten', label: 'right_menu.tools.mesure.title' },
@@ -193,7 +191,7 @@ export class MapLayoutComponent implements OnInit {
         this.mapService.mapReady$
           .pipe(
             filter((ready) => ready === true),
-            take(1)
+            take(1),
           )
           .subscribe(() => {
             setTimeout(() => {
@@ -210,15 +208,26 @@ export class MapLayoutComponent implements OnInit {
       if (queryParams['openSettings']) {
         this.settingsOpen.set(true);
         if (queryParams['osmLinked']) {
-          this.snackBar.open(this.translate.instant('auth.osmLinkedSuccess') || 'Compte OpenStreetMap lié avec succès', 'OK', { duration: 3000 });
+          this.snackBar.open(
+            this.translate.instant('auth.osmLinkedSuccess') ||
+              'Compte OpenStreetMap lié avec succès',
+            'OK',
+            { duration: 3000 },
+          );
         } else if (queryParams['osmError']) {
-          this.snackBar.open(this.translate.instant('auth.osmLinkError') || 'Erreur lors de la liaison du compte OpenStreetMap', 'OK', { duration: 4000 });
+          this.snackBar.open(
+            this.translate.instant('auth.osmLinkError') ||
+              'Erreur lors de la liaison du compte OpenStreetMap',
+            'OK',
+            { duration: 4000 },
+          );
         }
         this.router.navigate([], { queryParams: {}, replaceUrl: true });
       }
       if (queryParams['verifyEmailSent']) {
         this.snackBar.open(
-          this.translate.instant('auth.verifyEmailSent') || 'Compte créé. Vérifiez votre boîte mail pour confirmer votre adresse.',
+          this.translate.instant('auth.verifyEmailSent') ||
+            'Compte créé. Vérifiez votre boîte mail pour confirmer votre adresse.',
           'OK',
           { duration: 6000 },
         );
@@ -272,9 +281,10 @@ export class MapLayoutComponent implements OnInit {
       next: (res: any) => {
         this.locationInfo.set({
           ...res,
-          displayName: res.displayName || res.display_name || `${lat.toFixed(6)}, ${lon.toFixed(6)}`,
+          displayName:
+            res.displayName || res.display_name || `${lat.toFixed(6)}, ${lon.toFixed(6)}`,
           lat,
-          lon
+          lon,
         });
         this.locationInfoLoading.set(false);
       },
@@ -282,13 +292,12 @@ export class MapLayoutComponent implements OnInit {
         this.locationInfo.set({
           displayName: `${lat.toFixed(6)}, ${lon.toFixed(6)}`,
           lat,
-          lon
+          lon,
         } as any);
         this.locationInfoLoading.set(false);
-      }
+      },
     });
   }
-
 
   private loadDefaultInstance(): void {
     this.instanceService.list({ limit: 10, isActive: true }).subscribe({
@@ -302,7 +311,7 @@ export class MapLayoutComponent implements OnInit {
       },
       error: () => {
         this.router.navigate(['/map', 'cameroon']);
-      }
+      },
     });
   }
 
@@ -317,16 +326,19 @@ export class MapLayoutComponent implements OnInit {
         this.mapService.mapReady$
           .pipe(
             filter((ready) => ready === true),
-            take(1)
+            take(1),
           )
           .subscribe(() => {
             if (instance?.bbox && instance?.bbox?.length === 4) {
               this.mapService.fitExtent(
                 transformExtent(instance.bbox, 'EPSG:4326', 'EPSG:3857'),
-                [50, 50, 50, 50]
+                [50, 50, 50, 50],
               );
             } else {
-              this.mapService.zoomTo([instance.centerLon, instance.centerLat], instance.defaultZoom);
+              this.mapService.zoomTo(
+                [instance.centerLon, instance.centerLat],
+                instance.defaultZoom,
+              );
             }
           });
       },
@@ -509,7 +521,7 @@ export class MapLayoutComponent implements OnInit {
     this.toolAction.emit({
       tool: 'routing',
       action: 'setStart',
-      data: [info.lon, info.lat]
+      data: [info.lon, info.lat],
     });
     this.closeLocationInfo();
   }
@@ -520,7 +532,7 @@ export class MapLayoutComponent implements OnInit {
     this.toolAction.emit({
       tool: 'routing',
       action: 'setEnd',
-      data: [info.lon, info.lat]
+      data: [info.lon, info.lat],
     });
     this.closeLocationInfo();
   }
@@ -553,11 +565,9 @@ export class MapLayoutComponent implements OnInit {
 
   copyShareLinkFromInput(url: string): void {
     navigator.clipboard.writeText(url).then(() => {
-      this.snackBar.open(
-        'Lien de partage copié dans le presse-papiers !',
-        'OK',
-        { duration: 2000 }
-      );
+      this.snackBar.open('Lien de partage copié dans le presse-papiers !', 'OK', {
+        duration: 2000,
+      });
     });
   }
 
@@ -586,7 +596,9 @@ export class MapLayoutComponent implements OnInit {
   private trackToolOpened(toolId: string): void {
     const instanceId = this.instanceService.currentInstance$.value?.id;
     if (!instanceId) return;
-    this.analyticsService.trackEvent({ instanceId, eventType: 'tool_opened', metadata: { toolId } }).subscribe({ error: () => {} });
+    this.analyticsService
+      .trackEvent({ instanceId, eventType: 'tool_opened', metadata: { toolId } })
+      .subscribe({ error: () => {} });
   }
 
   closeActiveTool(): void {
@@ -636,4 +648,3 @@ export class MapLayoutComponent implements OnInit {
     this.router.navigate(['/admin']);
   }
 }
-

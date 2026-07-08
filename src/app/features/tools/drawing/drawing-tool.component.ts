@@ -22,7 +22,6 @@ import { DrawingService } from '../../../core/services/drawing.service';
 import { InstanceService } from '../../../core/services/instance.service';
 import { ConfirmDialogComponent } from '../../../shared/components/confirm-dialog/confirm-dialog.component';
 
-
 type DrawType = 'Point' | 'LineString' | 'Polygon' | 'Circle';
 
 interface DrawnFeature {
@@ -36,7 +35,8 @@ interface DrawnFeature {
 @Component({
   selector: 'app-drawing-tool',
   standalone: true,
-  imports: [TranslateModule, 
+  imports: [
+    TranslateModule,
     CommonModule,
     FormsModule,
     MatButtonModule,
@@ -68,8 +68,14 @@ export class DrawingToolComponent implements OnInit, OnDestroy {
   textLabel = '';
 
   readonly presetColors = [
-    '#1976d2', '#d32f2f', '#388e3c', '#f57c00',
-    '#7b1fa2', '#0097a7', '#fbc02d', '#455a64',
+    '#1976d2',
+    '#d32f2f',
+    '#388e3c',
+    '#f57c00',
+    '#7b1fa2',
+    '#0097a7',
+    '#fbc02d',
+    '#455a64',
   ];
 
   readonly drawTypes: { type: DrawType | 'Text'; icon: string; label: string }[] = [
@@ -95,7 +101,7 @@ export class DrawingToolComponent implements OnInit, OnDestroy {
       const type = (f.get('drawType') as string) || 'Point';
       const id = (f.getId() as string) || `draw-${++this.featureCounter}`;
       if (!f.getId()) f.setId(id);
-      
+
       const numericId = Number.parseInt(id.replace('draw-', ''), 10);
       if (!Number.isNaN(numericId) && numericId > this.featureCounter) {
         this.featureCounter = numericId;
@@ -128,7 +134,7 @@ export class DrawingToolComponent implements OnInit, OnDestroy {
     // ignore les clics quand ce flag est vrai.
     this.mapService.isPicking = true;
 
-    const olType: GeometryType = type === 'Text' ? 'Point' : type as GeometryType;
+    const olType: GeometryType = type === 'Text' ? 'Point' : (type as GeometryType);
 
     this.drawInteraction = new Draw({
       source: this.vectorSource,
@@ -152,7 +158,8 @@ export class DrawingToolComponent implements OnInit, OnDestroy {
         id,
         type,
         color: this.selectedColor,
-        label: type === 'Text' ? (feature.get('label') as string) : `${type} ${this.featureCounter}`,
+        label:
+          type === 'Text' ? (feature.get('label') as string) : `${type} ${this.featureCounter}`,
         feature,
       });
     });
@@ -181,7 +188,7 @@ export class DrawingToolComponent implements OnInit, OnDestroy {
 
   deleteFeature(item: DrawnFeature): void {
     this.vectorSource.removeFeature(item.feature);
-    this.drawnFeatures = this.drawnFeatures.filter(f => f.id !== item.id);
+    this.drawnFeatures = this.drawnFeatures.filter((f) => f.id !== item.id);
   }
 
   clearAll(): void {
@@ -191,7 +198,7 @@ export class DrawingToolComponent implements OnInit, OnDestroy {
         message: 'Voulez-vous vraiment supprimer tous les dessins ?',
       },
     });
-    ref.afterClosed().subscribe(confirmed => {
+    ref.afterClosed().subscribe((confirmed) => {
       if (confirmed) {
         this.vectorSource.clear();
         this.drawnFeatures = [];
@@ -205,7 +212,8 @@ export class DrawingToolComponent implements OnInit, OnDestroy {
     if (!instance) {
       this.snackBar.open(
         this.translate.instant('drawing.noInstance') || 'Aucune instance active',
-        'OK', { duration: 3000 }
+        'OK',
+        { duration: 3000 },
       );
       return;
     }
@@ -213,7 +221,8 @@ export class DrawingToolComponent implements OnInit, OnDestroy {
     if (this.vectorSource.getFeatures().length === 0) {
       this.snackBar.open(
         this.translate.instant('drawing.empty') || 'Aucun dessin à sauvegarder',
-        'OK', { duration: 3000 }
+        'OK',
+        { duration: 3000 },
       );
       return;
     }
@@ -223,27 +232,31 @@ export class DrawingToolComponent implements OnInit, OnDestroy {
       dataProjection: 'EPSG:4326',
     });
 
-    this.drawingService.create({
-      name: `Dessin ${new Date().toLocaleDateString('fr-FR')}`,
-      geojson: geojson as GeoJSON.GeoJSON,
-      description: '',
-      isPublic: false,
-      instanceId: instance.id,
-    }).subscribe({
-      next: () => {
-        this.snackBar.open(
-          this.translate.instant('drawing.saved') || 'Dessins sauvegardés avec succès !',
-          'OK', { duration: 3000 }
-        );
-      },
-      error: (err) => {
-        console.error('[DrawingTool] save error', err);
-        this.snackBar.open(
-          this.translate.instant('drawing.saveError') || 'Erreur lors de la sauvegarde',
-          'OK', { duration: 4000 }
-        );
-      },
-    });
+    this.drawingService
+      .create({
+        name: `Dessin ${new Date().toLocaleDateString('fr-FR')}`,
+        geojson: geojson as GeoJSON.GeoJSON,
+        description: '',
+        isPublic: false,
+        instanceId: instance.id,
+      })
+      .subscribe({
+        next: () => {
+          this.snackBar.open(
+            this.translate.instant('drawing.saved') || 'Dessins sauvegardés avec succès !',
+            'OK',
+            { duration: 3000 },
+          );
+        },
+        error: (err) => {
+          console.error('[DrawingTool] save error', err);
+          this.snackBar.open(
+            this.translate.instant('drawing.saveError') || 'Erreur lors de la sauvegarde',
+            'OK',
+            { duration: 4000 },
+          );
+        },
+      });
   }
 
   loadDrawings(): void {
@@ -251,7 +264,8 @@ export class DrawingToolComponent implements OnInit, OnDestroy {
     if (!instance) {
       this.snackBar.open(
         this.translate.instant('drawing.noInstance') || 'Aucune instance active',
-        'OK', { duration: 3000 }
+        'OK',
+        { duration: 3000 },
       );
       return;
     }
@@ -261,7 +275,8 @@ export class DrawingToolComponent implements OnInit, OnDestroy {
         if (drawings.length === 0) {
           this.snackBar.open(
             this.translate.instant('drawing.noneFound') || 'Aucun dessin sauvegardé trouvé',
-            'OK', { duration: 3000 }
+            'OK',
+            { duration: 3000 },
           );
           return;
         }
@@ -272,7 +287,7 @@ export class DrawingToolComponent implements OnInit, OnDestroy {
           dataProjection: 'EPSG:4326',
         });
 
-        features.forEach(f => {
+        features.forEach((f) => {
           this.featureCounter++;
           const id = `draw-${this.featureCounter}`;
           f.setId(id);
@@ -289,14 +304,16 @@ export class DrawingToolComponent implements OnInit, OnDestroy {
 
         this.snackBar.open(
           this.translate.instant('drawing.loaded') || `${features.length} dessin(s) chargé(s)`,
-          'OK', { duration: 3000 }
+          'OK',
+          { duration: 3000 },
         );
       },
       error: (err) => {
         console.error('[DrawingTool] load error', err);
         this.snackBar.open(
           this.translate.instant('drawing.loadError') || 'Erreur lors du chargement',
-          'OK', { duration: 4000 }
+          'OK',
+          { duration: 4000 },
         );
       },
     });
@@ -315,15 +332,16 @@ export class DrawingToolComponent implements OnInit, OnDestroy {
         fill: new Fill({ color }),
         stroke: new Stroke({ color: '#fff', width: 2 }),
       }),
-      text: drawType === 'Text' && label
-        ? new Text({
-            text: label,
-            font: '14px sans-serif',
-            fill: new Fill({ color }),
-            stroke: new Stroke({ color: '#fff', width: 3 }),
-            offsetY: -15,
-          })
-        : undefined,
+      text:
+        drawType === 'Text' && label
+          ? new Text({
+              text: label,
+              font: '14px sans-serif',
+              fill: new Fill({ color }),
+              stroke: new Stroke({ color: '#fff', width: 3 }),
+              offsetY: -15,
+            })
+          : undefined,
     });
   }
 }

@@ -60,9 +60,9 @@ export class CommentService {
 
   delete(id: string): Observable<void> {
     // The backend returns 204 No Content — bypass ApiService which expects a JSON envelope
-    return this.http.delete(`${this.baseUrl}/comments/${id}`, { observe: 'response' }).pipe(
-      map(() => undefined as void)
-    );
+    return this.http
+      .delete(`${this.baseUrl}/comments/${id}`, { observe: 'response' })
+      .pipe(map(() => undefined as void));
   }
 
   // --- Modération admin (Lot A4, /admin/comments) ---
@@ -80,8 +80,8 @@ export class CommentService {
   }
 
   adminDelete(id: string): Observable<void> {
-    return this.http.delete(`${this.baseUrl}/admin/comments/${id}`, { observe: 'response' }).pipe(
-      map(() => undefined as void)
-    );
+    return this.http
+      .delete(`${this.baseUrl}/admin/comments/${id}`, { observe: 'response' })
+      .pipe(map(() => undefined as void));
   }
 }

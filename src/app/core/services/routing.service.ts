@@ -31,4 +31,3 @@ export class RoutingService {
     return this.api.get<any>('/routing/nearest', { lon, lat });
   }
 }
-

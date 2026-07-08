@@ -2,13 +2,28 @@
   <div class="conversation-tabs">
     <div class="tabs-scroll">
       @for (conv of conversations(); track conv.id) {
-        <button class="tab" type="button" [class.active]="activeConversationId() === conv.id" (click)="selectConversation(conv.id)">
+        <button
+          class="tab"
+          type="button"
+          [class.active]="activeConversationId() === conv.id"
+          (click)="selectConversation(conv.id)"
+        >
           <span class="tab-title">{{ conv.title }}</span>
-          <mat-icon class="tab-close" (click)="deleteConversation(conv.id, $event)" matTooltip="Supprimer">close</mat-icon>
+          <mat-icon
+            class="tab-close"
+            (click)="deleteConversation(conv.id, $event)"
+            matTooltip="Supprimer"
+            >close</mat-icon
+          >
         </button>
       }
     </div>
-    <button mat-icon-button class="new-tab-btn" (click)="startNewConversation()" matTooltip="Nouvelle conversation">
+    <button
+      mat-icon-button
+      class="new-tab-btn"
+      (click)="startNewConversation()"
+      matTooltip="Nouvelle conversation"
+    >
       <mat-icon>add</mat-icon>
     </button>
   </div>
@@ -20,7 +35,11 @@
       </div>
     } @else {
       @for (msg of messages(); track $index) {
-        <div class="message" [class.user]="msg.role === 'user'" [class.model]="msg.role === 'model'">
+        <div
+          class="message"
+          [class.user]="msg.role === 'user'"
+          [class.model]="msg.role === 'model'"
+        >
           @if (msg.role === 'model') {
             <mat-icon class="avatar">auto_awesome</mat-icon>
           }
@@ -32,11 +51,24 @@
                   <mat-icon class="attachment-icon">picture_as_pdf</mat-icon>
                   <div class="attachment-info">
                     <span class="attachment-title">{{ attachment.title }}</span>
-                    <span class="attachment-status">{{ attachment.status === 'COMPLETED' ? 'Prêt' : (attachment.status === 'FAILED' ? 'Échec' : 'En cours...') }}</span>
+                    <span class="attachment-status">{{
+                      attachment.status === 'COMPLETED'
+                        ? 'Prêt'
+                        : attachment.status === 'FAILED'
+                          ? 'Échec'
+                          : 'En cours...'
+                    }}</span>
                   </div>
                   @if (attachment.downloadUrl) {
-                    <button mat-icon-button (click)="downloadAttachment(attachment)" [disabled]="downloadingId() === attachment.id" matTooltip="Télécharger">
-                      <mat-icon>{{ downloadingId() === attachment.id ? 'hourglass_empty' : 'download' }}</mat-icon>
+                    <button
+                      mat-icon-button
+                      (click)="downloadAttachment(attachment)"
+                      [disabled]="downloadingId() === attachment.id"
+                      matTooltip="Télécharger"
+                    >
+                      <mat-icon>{{
+                        downloadingId() === attachment.id ? 'hourglass_empty' : 'download'
+                      }}</mat-icon>
                     </button>
                   }
                 </div>
@@ -49,9 +81,7 @@
     @if (sending()) {
       <div class="message model">
         <mat-icon class="avatar">auto_awesome</mat-icon>
-        <div class="bubble typing">
-          <span></span><span></span><span></span>
-        </div>
+        <div class="bubble typing"><span></span><span></span><span></span></div>
       </div>
     }
     <div #messagesEnd></div>
@@ -68,14 +98,21 @@
   }
 
   <div class="input-row">
-    <input type="text"
-           aria-label="Message à l'assistant"
-           placeholder="Ex: montre-moi les hôpitaux à Douala"
-           [(ngModel)]="inputText"
-           (keyup.enter)="send()"
-           [disabled]="sending()"
-           class="chat-input" />
-    <button mat-icon-button class="send-btn" (click)="send()" [disabled]="!inputText.trim() || sending()">
+    <input
+      type="text"
+      aria-label="Message à l'assistant"
+      placeholder="Ex: montre-moi les hôpitaux à Douala"
+      [(ngModel)]="inputText"
+      (keyup.enter)="send()"
+      [disabled]="sending()"
+      class="chat-input"
+    />
+    <button
+      mat-icon-button
+      class="send-btn"
+      (click)="send()"
+      [disabled]="!inputText.trim() || sending()"
+    >
       <mat-icon>send</mat-icon>
     </button>
   </div>

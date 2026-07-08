@@ -1,7 +1,12 @@
 import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { MAT_DIALOG_DATA, MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import {
+  MAT_DIALOG_DATA,
+  MatDialog,
+  MatDialogModule,
+  MatDialogRef,
+} from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
@@ -64,15 +69,19 @@ export class InstanceFormDialogComponent {
     description: [this.instance?.description ?? ''],
     centerLat: [this.instance?.centerLat ?? 0, Validators.required],
     centerLon: [this.instance?.centerLon ?? 0, Validators.required],
-    defaultZoom: [this.instance?.defaultZoom ?? 6, [Validators.required, Validators.min(0), Validators.max(22)]],
+    defaultZoom: [
+      this.instance?.defaultZoom ?? 6,
+      [Validators.required, Validators.min(0), Validators.max(22)],
+    ],
     isActive: [this.instance?.isActive ?? true],
   });
 
   openBoundaryPicker(): void {
-    const ref = this.dialog.open<BoundaryPickerDialogComponent, { initialTable?: string }, BoundaryPickerResult | null>(
+    const ref = this.dialog.open<
       BoundaryPickerDialogComponent,
-      { data: { initialTable: this.boundary()?.boundaryTable } },
-    );
+      { initialTable?: string },
+      BoundaryPickerResult | null
+    >(BoundaryPickerDialogComponent, { data: { initialTable: this.boundary()?.boundaryTable } });
     ref.afterClosed().subscribe((result) => {
       if (result) this.boundary.set(result);
     });

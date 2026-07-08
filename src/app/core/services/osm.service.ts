@@ -21,7 +21,11 @@ export class OsmService {
     return this.api.get<string[]>(`/osm/tags/${encodeURIComponent(key)}/values`, { geometryType });
   }
 
-  preview(conditions: OsmTagCondition[], tables?: OsmGeometryKind[], limit = 200): Observable<GeoJSON.FeatureCollection> {
+  preview(
+    conditions: OsmTagCondition[],
+    tables?: OsmGeometryKind[],
+    limit = 200,
+  ): Observable<GeoJSON.FeatureCollection> {
     return this.api.post<GeoJSON.FeatureCollection>('/osm/query', { conditions, tables, limit });
   }
 }

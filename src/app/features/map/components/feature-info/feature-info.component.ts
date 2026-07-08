@@ -22,9 +22,22 @@ import { ExportService } from '../../../../core/services/export.service';
 import { getExportFileExtension } from '../../../../core/utils/export-format.util';
 
 const KNOWN_KEYS = new Set([
-  'id', 'geometry', 'tags', 'layerId', 'name', 'name:fr',
-  'opening_hours', 'phone', 'contact:phone', 'website', 'contact:website',
-  'addr:street', 'addr:housenumber', 'addr:city', 'image', 'wikimedia_commons',
+  'id',
+  'geometry',
+  'tags',
+  'layerId',
+  'name',
+  'name:fr',
+  'opening_hours',
+  'phone',
+  'contact:phone',
+  'website',
+  'contact:website',
+  'addr:street',
+  'addr:housenumber',
+  'addr:city',
+  'image',
+  'wikimedia_commons',
 ]);
 
 // Les valeurs doivent correspondre à l'enum backend ExportFormat (majuscules),
@@ -39,7 +52,15 @@ const DOWNLOAD_FORMATS: { value: string; label: string }[] = [
 @Component({
   selector: 'app-feature-info',
   standalone: true,
-  imports: [CommonModule, MatIconModule, MatButtonModule, MatMenuModule, MatProgressSpinnerModule, MatSnackBarModule, TranslateModule],
+  imports: [
+    CommonModule,
+    MatIconModule,
+    MatButtonModule,
+    MatMenuModule,
+    MatProgressSpinnerModule,
+    MatSnackBarModule,
+    TranslateModule,
+  ],
   templateUrl: './feature-info.component.html',
   styleUrl: './feature-info.component.scss',
 })
@@ -82,7 +103,7 @@ export class FeatureInfoComponent implements OnInit, OnDestroy {
           this.setupOverlay();
           this.setupClickHandler();
         }
-      })
+      }),
     );
   }
 
@@ -153,8 +174,13 @@ export class FeatureInfoComponent implements OnInit, OnDestroy {
           const activeLayer = this.lastLayerId
             ? this.mapLayerService.getActiveLayers().find((al) => al.layer.id === this.lastLayerId)
             : undefined;
-          const fallbackTitle = activeLayer?.layer.name || this.translate.instant('map.featureInfo.genericFeature');
-          this.showProperties((targetFeature.get('name') as string) || fallbackTitle, props, event.coordinate);
+          const fallbackTitle =
+            activeLayer?.layer.name || this.translate.instant('map.featureInfo.genericFeature');
+          this.showProperties(
+            (targetFeature.get('name') as string) || fallbackTitle,
+            props,
+            event.coordinate,
+          );
           return;
         }
 
@@ -165,23 +191,35 @@ export class FeatureInfoComponent implements OnInit, OnDestroy {
         // filtre, n'importe quel clic À L'INTÉRIEUR de leur emprise (même loin de tout symbole
         // visible) ouvrait la fiche descriptive, car le serveur QGIS y trouve bien un polygone -
         // ce n'est simplement pas "un point d'une couche" au sens attendu par l'utilisateur.
-        const wmsLayers = map.getLayers().getArray().filter((l): l is TileLayer<TileWMS> => {
-          if (!(l instanceof TileLayer) || !(l.getSource() instanceof TileWMS) || !l.getVisible()) return false;
-          const activeLayer = activeLayers.find((al) => al.olLayer === l);
-          const geometryType = (activeLayer?.layer.geometryType || activeLayer?.layer.metadata?.geometryType || '').toLowerCase();
-          return geometryType === 'point' || geometryType === 'multipoint';
-        });
+        const wmsLayers = map
+          .getLayers()
+          .getArray()
+          .filter((l): l is TileLayer<TileWMS> => {
+            if (!(l instanceof TileLayer) || !(l.getSource() instanceof TileWMS) || !l.getVisible())
+              return false;
+            const activeLayer = activeLayers.find((al) => al.olLayer === l);
+            const geometryType = (
+              activeLayer?.layer.geometryType ||
+              activeLayer?.layer.metadata?.geometryType ||
+              ''
+            ).toLowerCase();
+            return geometryType === 'point' || geometryType === 'multipoint';
+          });
 
         if (wmsLayers.length > 0) {
           this.queryWmsLayers(wmsLayers, event.coordinate, map.getView().getResolution()!);
         } else {
           this.close();
         }
-      })
+      }),
     );
   }
 
-  private queryWmsLayers(layers: TileLayer<TileWMS>[], coordinate: number[], resolution: number): void {
+  private queryWmsLayers(
+    layers: TileLayer<TileWMS>[],
+    coordinate: number[],
+    resolution: number,
+  ): void {
     this.loading.set(true);
     this.visible.set(true);
     this.overlay.setPosition(coordinate);
@@ -212,7 +250,11 @@ export class FeatureInfoComponent implements OnInit, OnDestroy {
         if (response.features && response.features.length > 0) {
           const props = response.features[0].properties || {};
           this.lastFeatureId = props['osm_id'] != null ? String(props['osm_id']) : null;
-          this.showProperties(layer.get('name') || this.translate.instant('map.featureInfo.genericFeature'), props, coordinate);
+          this.showProperties(
+            layer.get('name') || this.translate.instant('map.featureInfo.genericFeature'),
+            props,
+            coordinate,
+          );
         } else {
           this.close();
         }
@@ -251,7 +293,7 @@ export class FeatureInfoComponent implements OnInit, OnDestroy {
     this.otherProperties.set(
       Object.entries(merged)
         .filter(([k, v]) => !KNOWN_KEYS.has(k) && v !== null && v !== undefined && v !== '')
-        .map(([key, value]) => ({ key, value: String(value) }))
+        .map(([key, value]) => ({ key, value: String(value) })),
     );
     this.showAllProperties.set(false);
     this.canDownload.set(!!this.lastLayerId && !!this.lastFeatureId);
@@ -273,7 +315,8 @@ export class FeatureInfoComponent implements OnInit, OnDestroy {
       return image;
     }
 
-    const commons = typeof merged['wikimedia_commons'] === 'string' ? merged['wikimedia_commons'].trim() : '';
+    const commons =
+      typeof merged['wikimedia_commons'] === 'string' ? merged['wikimedia_commons'].trim() : '';
     if (/^file:/i.test(commons)) {
       const filename = commons.slice(commons.indexOf(':') + 1);
       return `https://commons.wikimedia.org/wiki/Special:FilePath/${encodeURIComponent(filename)}?width=480`;
@@ -305,24 +348,41 @@ export class FeatureInfoComponent implements OnInit, OnDestroy {
 
   downloadFeature(format: string): void {
     if (!this.lastLayerId || !this.lastFeatureId) {
-      this.snackBar.open(this.translate.instant('featureInfo.errors.noExportableData') || 'Aucune donnée exportable pour cet élément.', 'OK', { duration: 3000 });
+      this.snackBar.open(
+        this.translate.instant('featureInfo.errors.noExportableData') ||
+          'Aucune donnée exportable pour cet élément.',
+        'OK',
+        { duration: 3000 },
+      );
       return;
     }
     this.downloading.set(true);
-    this.exportService.create({ layerId: this.lastLayerId, format, featureId: this.lastFeatureId }).subscribe({
-      next: (exp) => this.pollExportUntilReady(exp.id, format),
-      error: (err) => {
-        this.downloading.set(false);
-        console.error('[FeatureInfo] Échec de la création de l\'export', err);
-        this.snackBar.open(this.translate.instant('featureInfo.errors.createExportFailed') || 'Échec du téléchargement : impossible de créer l\'export.', 'OK', { duration: 4000 });
-      },
-    });
+    this.exportService
+      .create({ layerId: this.lastLayerId, format, featureId: this.lastFeatureId })
+      .subscribe({
+        next: (exp) => this.pollExportUntilReady(exp.id, format),
+        error: (err) => {
+          this.downloading.set(false);
+          console.error("[FeatureInfo] Échec de la création de l'export", err);
+          this.snackBar.open(
+            this.translate.instant('featureInfo.errors.createExportFailed') ||
+              "Échec du téléchargement : impossible de créer l'export.",
+            'OK',
+            { duration: 4000 },
+          );
+        },
+      });
   }
 
   private pollExportUntilReady(exportId: string, format: string, attempt = 0): void {
     if (attempt > 30) {
       this.downloading.set(false);
-      this.snackBar.open(this.translate.instant('featureInfo.errors.downloadExpired') || 'Le téléchargement a expiré, réessayez.', 'OK', { duration: 4000 });
+      this.snackBar.open(
+        this.translate.instant('featureInfo.errors.downloadExpired') ||
+          'Le téléchargement a expiré, réessayez.',
+        'OK',
+        { duration: 4000 },
+      );
       return;
     }
     this.exportService.getById(exportId).subscribe({
@@ -344,21 +404,35 @@ export class FeatureInfoComponent implements OnInit, OnDestroy {
             error: (err) => {
               this.downloading.set(false);
               console.error('[FeatureInfo] Échec du téléchargement du fichier', err);
-              this.snackBar.open(this.translate.instant('featureInfo.errors.downloadFileFailed') || 'Échec du téléchargement du fichier.', 'OK', { duration: 4000 });
+              this.snackBar.open(
+                this.translate.instant('featureInfo.errors.downloadFileFailed') ||
+                  'Échec du téléchargement du fichier.',
+                'OK',
+                { duration: 4000 },
+              );
             },
           });
         } else if (status === 'FAILED') {
           this.downloading.set(false);
           console.error('[FeatureInfo] Export en échec côté serveur', exp);
-          this.snackBar.open(this.translate.instant('featureInfo.errors.serverExportFailed') || 'L\'export a échoué côté serveur.', 'OK', { duration: 4000 });
+          this.snackBar.open(
+            this.translate.instant('featureInfo.errors.serverExportFailed') ||
+              "L'export a échoué côté serveur.",
+            'OK',
+            { duration: 4000 },
+          );
         } else {
           setTimeout(() => this.pollExportUntilReady(exportId, format, attempt + 1), 1000);
         }
       },
       error: (err) => {
         this.downloading.set(false);
-        console.error('[FeatureInfo] Échec de la vérification du statut de l\'export', err);
-        this.snackBar.open(this.translate.instant('featureInfo.errors.downloadFailed') || 'Échec du téléchargement.', 'OK', { duration: 4000 });
+        console.error("[FeatureInfo] Échec de la vérification du statut de l'export", err);
+        this.snackBar.open(
+          this.translate.instant('featureInfo.errors.downloadFailed') || 'Échec du téléchargement.',
+          'OK',
+          { duration: 4000 },
+        );
       },
     });
   }

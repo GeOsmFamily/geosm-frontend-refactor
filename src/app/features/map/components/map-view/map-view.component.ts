@@ -1,4 +1,12 @@
-import { Component, ElementRef, OnDestroy, ViewChild, AfterViewInit, inject, signal } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  OnDestroy,
+  ViewChild,
+  AfterViewInit,
+  inject,
+  signal,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Subject, takeUntil } from 'rxjs';
@@ -55,19 +63,17 @@ export class MapViewComponent implements AfterViewInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe((dark) => this.mapService.switchBasemap(dark));
 
-    this.instanceService.currentInstance$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((instance) => {
-        if (instance) {
-          this.loadBaseMaps(instance.id);
-          if (instance.slug === 'cameroon') {
-            this.loadCameroonBoundary();
-          } else {
-            this.mapService.removeLayerByName('instance-boundary');
-          }
-          this.currentInstance = instance;
+    this.instanceService.currentInstance$.pipe(takeUntil(this.destroy$)).subscribe((instance) => {
+      if (instance) {
+        this.loadBaseMaps(instance.id);
+        if (instance.slug === 'cameroon') {
+          this.loadCameroonBoundary();
+        } else {
+          this.mapService.removeLayerByName('instance-boundary');
         }
-      });
+        this.currentInstance = instance;
+      }
+    });
 
     this.mapMoveListener = () => {
       this.checkInstanceBoundary();
@@ -96,11 +102,7 @@ export class MapViewComponent implements AfterViewInit, OnDestroy {
     if (!center) return;
 
     // Transform instance bbox from EPSG:4326 to EPSG:3857
-    const instanceExtent = transformExtent(
-      this.currentInstance.bbox,
-      'EPSG:4326',
-      'EPSG:3857'
-    );
+    const instanceExtent = transformExtent(this.currentInstance.bbox, 'EPSG:4326', 'EPSG:3857');
 
     // Recentrer uniquement quand le CENTRE de la vue s'éloigne significativement de
     // l'emprise de l'instance (avec une marge de tolérance) - pas quand une simple
@@ -120,8 +122,10 @@ export class MapViewComponent implements AfterViewInit, OnDestroy {
       instanceExtent[3] + marginY,
     ];
     const centerInBounds =
-      center[0] >= bufferedExtent[0] && center[0] <= bufferedExtent[2] &&
-      center[1] >= bufferedExtent[1] && center[1] <= bufferedExtent[3];
+      center[0] >= bufferedExtent[0] &&
+      center[0] <= bufferedExtent[2] &&
+      center[1] >= bufferedExtent[1] &&
+      center[1] <= bufferedExtent[3];
 
     if (!centerInBounds) {
       view.fit(instanceExtent, { duration: 800, padding: [50, 50, 50, 50] });
@@ -165,7 +169,7 @@ export class MapViewComponent implements AfterViewInit, OnDestroy {
           [20037508.34, -20037508.34],
           [20037508.34, 20037508.34],
           [-20037508.34, 20037508.34],
-          [-20037508.34, -20037508.34]
+          [-20037508.34, -20037508.34],
         ];
 
         let invertedGeom: Polygon | null = null;
@@ -189,7 +193,6 @@ export class MapViewComponent implements AfterViewInit, OnDestroy {
         const maskFeature = new Feature(invertedGeom);
 
         const maskStyle = new Style({
-
           fill: new Fill({
             color: 'rgba(2, 27, 50, 0.45)', // Premium dimming mask overlay
           }),
@@ -199,9 +202,7 @@ export class MapViewComponent implements AfterViewInit, OnDestroy {
 
         this.mapService.addVectorLayer('instance-boundary', [maskFeature]);
       },
-      error: (err) => console.error('Failed to load Cameroon boundary:', err)
-
+      error: (err) => console.error('Failed to load Cameroon boundary:', err),
     });
   }
-
 }

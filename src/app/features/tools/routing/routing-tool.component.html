@@ -11,8 +11,18 @@
   <div class="point-input">
     <mat-form-field appearance="outline" class="full-width">
       <mat-label>{{ 'tools.routing.start' | translate }}</mat-label>
-      <input matInput [(ngModel)]="startText" [placeholder]="'tools.routing.clickMap' | translate" readonly>
-      <button matSuffix mat-icon-button (click)="pickOnMap('start')" [matTooltip]="'tools.routing.clickMap' | translate">
+      <input
+        matInput
+        [(ngModel)]="startText"
+        [placeholder]="'tools.routing.clickMap' | translate"
+        readonly
+      />
+      <button
+        matSuffix
+        mat-icon-button
+        (click)="pickOnMap('start')"
+        [matTooltip]="'tools.routing.clickMap' | translate"
+      >
         <mat-icon>my_location</mat-icon>
       </button>
     </mat-form-field>
@@ -22,7 +32,12 @@
     <div class="point-input waypoint-input">
       <mat-form-field appearance="outline" class="full-width">
         <mat-label>{{ 'tools.routing.waypoint' | translate }} {{ $index + 1 }}</mat-label>
-        <input matInput [ngModel]="wp.text" [placeholder]="'tools.routing.clickMap' | translate" readonly>
+        <input
+          matInput
+          [ngModel]="wp.text"
+          [placeholder]="'tools.routing.clickMap' | translate"
+          readonly
+        />
         <button matSuffix mat-icon-button (click)="pickOnMap($index)">
           <mat-icon>my_location</mat-icon>
         </button>
@@ -40,7 +55,12 @@
   <div class="point-input">
     <mat-form-field appearance="outline" class="full-width">
       <mat-label>{{ 'tools.routing.end' | translate }}</mat-label>
-      <input matInput [(ngModel)]="endText" [placeholder]="'tools.routing.clickMap' | translate" readonly>
+      <input
+        matInput
+        [(ngModel)]="endText"
+        [placeholder]="'tools.routing.clickMap' | translate"
+        readonly
+      />
       <button matSuffix mat-icon-button (click)="pickOnMap('end')">
         <mat-icon>my_location</mat-icon>
       </button>
@@ -64,11 +84,17 @@
       mat-flat-button
       color="primary"
       [disabled]="!startCoord || !endCoord || loading"
-      (click)="calculateRoute()">
+      (click)="calculateRoute()"
+    >
       <mat-icon>directions</mat-icon>
       <span>{{ 'tools.routing.calculate' | translate }}</span>
     </button>
-    <button class="clear-btn" mat-stroked-button (click)="clearRoute()" [matTooltip]="'tools.routing.clear' | translate">
+    <button
+      class="clear-btn"
+      mat-stroked-button
+      (click)="clearRoute()"
+      [matTooltip]="'tools.routing.clear' | translate"
+    >
       <mat-icon>clear</mat-icon>
     </button>
   </div>
@@ -82,11 +108,17 @@
     <div class="route-result">
       <div class="result-row">
         <mat-icon>straighten</mat-icon>
-        <span>{{ 'tools.routing.distance' | translate }}: {{ formatDistance(routeResult.distance) }}</span>
+        <span
+          >{{ 'tools.routing.distance' | translate }}:
+          {{ formatDistance(routeResult.distance) }}</span
+        >
       </div>
       <div class="result-row">
         <mat-icon>schedule</mat-icon>
-        <span>{{ 'tools.routing.duration' | translate }}: {{ formatDuration(routeResult.duration) }}</span>
+        <span
+          >{{ 'tools.routing.duration' | translate }}:
+          {{ formatDuration(routeResult.duration) }}</span
+        >
       </div>
     </div>
   }

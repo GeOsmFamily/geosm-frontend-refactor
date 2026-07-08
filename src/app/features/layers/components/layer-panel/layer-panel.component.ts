@@ -28,11 +28,9 @@ export class LayerPanelComponent implements OnInit, OnDestroy {
   activeLayerCount = 0;
 
   ngOnInit(): void {
-    this.mapLayerService.activeLayers$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(layers => {
-        this.activeLayerCount = layers.length;
-      });
+    this.mapLayerService.activeLayers$.pipe(takeUntil(this.destroy$)).subscribe((layers) => {
+      this.activeLayerCount = layers.length;
+    });
   }
 
   ngOnDestroy(): void {

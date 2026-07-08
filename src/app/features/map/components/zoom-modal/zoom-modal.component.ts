@@ -11,7 +11,16 @@ import { TranslateModule } from '@ngx-translate/core';
 @Component({
   selector: 'app-zoom-modal',
   standalone: true,
-  imports: [TranslateModule, CommonModule, FormsModule, MatDialogModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatIconModule],
+  imports: [
+    TranslateModule,
+    CommonModule,
+    FormsModule,
+    MatDialogModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
+    MatIconModule,
+  ],
   templateUrl: './zoom-modal.component.html',
   styleUrl: './zoom-modal.component.scss',
 })
@@ -22,9 +31,14 @@ export class ZoomModalComponent {
   constructor(private dialogRef: MatDialogRef<ZoomModalComponent>) {}
 
   isValid(): boolean {
-    return this.longitude !== null && this.latitude !== null &&
-      this.longitude >= -180 && this.longitude <= 180 &&
-      this.latitude >= -90 && this.latitude <= 90;
+    return (
+      this.longitude !== null &&
+      this.latitude !== null &&
+      this.longitude >= -180 &&
+      this.longitude <= 180 &&
+      this.latitude >= -90 &&
+      this.latitude <= 90
+    );
   }
 
   submit(): void {

@@ -91,7 +91,7 @@ export class PlanLocalisationToolComponent implements OnDestroy {
           fill: new Fill({ color: '#e74c3c' }),
           stroke: new Stroke({ color: '#ffffff', width: 2.5 }),
         }),
-      })
+      }),
     );
   }
 
@@ -131,32 +131,41 @@ export class PlanLocalisationToolComponent implements OnDestroy {
     if (!lonLat || !instance) return;
 
     this.generating.set(true);
-    this.locationPlanService.create({
-      instanceId: instance.id,
-      title: this.title || 'Plan de localisation',
-      description: this.description || undefined,
-      landmark: this.landmark || undefined,
-      lon: lonLat[0],
-      lat: lonLat[1],
-      scale: this.scale === 'auto' ? undefined : this.scale,
-      paperSize: this.paperSize,
-      orientation: this.orientation,
-      includeLegend: this.includeLegend,
-      includeScale: this.includeScale,
-      includeGrid: this.includeGrid,
-      includeNorthArrow: this.includeNorthArrow,
-      autoFillWithAI: this.autoFillWithAI,
-    }).subscribe({
-      next: (plan) => {
-        this.analyticsService.trackEvent({ instanceId: instance.id, eventType: 'location_plan_created' }).subscribe({ error: () => {} });
-        this.pollUntilDone(plan.id);
-      },
-      error: (err) => {
-        console.error('[PlanLocalisation] Échec de la création du plan', err);
-        this.generating.set(false);
-        this.snackBar.open(this.translate.instant('tools.planLocalisationErrors.generationFailed') || 'Échec de la génération du PDF. Réessayez.', 'OK', { duration: 4000 });
-      },
-    });
+    this.locationPlanService
+      .create({
+        instanceId: instance.id,
+        title: this.title || 'Plan de localisation',
+        description: this.description || undefined,
+        landmark: this.landmark || undefined,
+        lon: lonLat[0],
+        lat: lonLat[1],
+        scale: this.scale === 'auto' ? undefined : this.scale,
+        paperSize: this.paperSize,
+        orientation: this.orientation,
+        includeLegend: this.includeLegend,
+        includeScale: this.includeScale,
+        includeGrid: this.includeGrid,
+        includeNorthArrow: this.includeNorthArrow,
+        autoFillWithAI: this.autoFillWithAI,
+      })
+      .subscribe({
+        next: (plan) => {
+          this.analyticsService
+            .trackEvent({ instanceId: instance.id, eventType: 'location_plan_created' })
+            .subscribe({ error: () => {} });
+          this.pollUntilDone(plan.id);
+        },
+        error: (err) => {
+          console.error('[PlanLocalisation] Échec de la création du plan', err);
+          this.generating.set(false);
+          this.snackBar.open(
+            this.translate.instant('tools.planLocalisationErrors.generationFailed') ||
+              'Échec de la génération du PDF. Réessayez.',
+            'OK',
+            { duration: 4000 },
+          );
+        },
+      });
   }
 
   private pollUntilDone(planId: string): void {
@@ -164,33 +173,49 @@ export class PlanLocalisationToolComponent implements OnDestroy {
     let ticks = 0;
 
     this.pollSub?.unsubscribe();
-    this.pollSub = timer(0, POLL_INTERVAL_MS).pipe(
-      takeWhile(() => ticks++ < maxTicks),
-      switchMap(() => this.locationPlanService.getById(planId)),
-    ).subscribe({
-      next: (plan) => {
-        if (plan.status === 'COMPLETED') {
-          this.pollSub?.unsubscribe();
+    this.pollSub = timer(0, POLL_INTERVAL_MS)
+      .pipe(
+        takeWhile(() => ticks++ < maxTicks),
+        switchMap(() => this.locationPlanService.getById(planId)),
+      )
+      .subscribe({
+        next: (plan) => {
+          if (plan.status === 'COMPLETED') {
+            this.pollSub?.unsubscribe();
+            this.generating.set(false);
+            this.triggerDownload(planId, plan.title);
+          } else if (plan.status === 'FAILED') {
+            this.pollSub?.unsubscribe();
+            this.generating.set(false);
+            this.snackBar.open(
+              plan.errorMessage || 'Échec de la génération du PDF. Réessayez.',
+              'OK',
+              { duration: 5000 },
+            );
+          }
+        },
+        error: () => {
           this.generating.set(false);
-          this.triggerDownload(planId, plan.title);
-        } else if (plan.status === 'FAILED') {
-          this.pollSub?.unsubscribe();
-          this.generating.set(false);
-          this.snackBar.open(plan.errorMessage || 'Échec de la génération du PDF. Réessayez.', 'OK', { duration: 5000 });
-        }
-      },
-      error: () => {
-        this.generating.set(false);
-        this.snackBar.open(this.translate.instant('tools.planLocalisationErrors.generationFailed') || 'Échec de la génération du PDF. Réessayez.', 'OK', { duration: 4000 });
-      },
-      complete: () => {
-        // takeWhile a atteint le nombre max de tentatives sans COMPLETED/FAILED.
-        if (this.generating()) {
-          this.generating.set(false);
-          this.snackBar.open(this.translate.instant('tools.planLocalisationErrors.generationTimeout') || 'La génération prend plus de temps que prévu. Réessayez dans un instant.', 'OK', { duration: 5000 });
-        }
-      },
-    });
+          this.snackBar.open(
+            this.translate.instant('tools.planLocalisationErrors.generationFailed') ||
+              'Échec de la génération du PDF. Réessayez.',
+            'OK',
+            { duration: 4000 },
+          );
+        },
+        complete: () => {
+          // takeWhile a atteint le nombre max de tentatives sans COMPLETED/FAILED.
+          if (this.generating()) {
+            this.generating.set(false);
+            this.snackBar.open(
+              this.translate.instant('tools.planLocalisationErrors.generationTimeout') ||
+                'La génération prend plus de temps que prévu. Réessayez dans un instant.',
+              'OK',
+              { duration: 5000 },
+            );
+          }
+        },
+      });
   }
 
   private triggerDownload(planId: string, title: string): void {
@@ -205,7 +230,12 @@ export class PlanLocalisationToolComponent implements OnDestroy {
         URL.revokeObjectURL(url);
       },
       error: () => {
-        this.snackBar.open(this.translate.instant('tools.planLocalisationErrors.downloadFailed') || 'Le PDF est prêt mais le téléchargement a échoué. Réessayez.', 'OK', { duration: 4000 });
+        this.snackBar.open(
+          this.translate.instant('tools.planLocalisationErrors.downloadFailed') ||
+            'Le PDF est prêt mais le téléchargement a échoué. Réessayez.',
+          'OK',
+          { duration: 4000 },
+        );
       },
     });
   }

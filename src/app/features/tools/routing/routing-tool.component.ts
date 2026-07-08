@@ -17,7 +17,6 @@ import GeoJSON from 'ol/format/GeoJSON';
 import { fromLonLat, toLonLat } from 'ol/proj';
 import { Fill, Stroke, Style, Circle as CircleStyle } from 'ol/style';
 
-
 import { MapService } from '../../map/services/map.service';
 import { RoutingService } from '../../../core/services/routing.service';
 import { ToolActionService } from '../../../core/services/tool-action.service';
@@ -30,7 +29,8 @@ type PickTarget = 'start' | 'end' | number;
 @Component({
   selector: 'app-routing-tool',
   standalone: true,
-  imports: [TranslateModule, 
+  imports: [
+    TranslateModule,
     CommonModule,
     FormsModule,
     MatButtonModule,
@@ -224,9 +224,10 @@ export class RoutingToolComponent implements OnInit, OnDestroy {
   }
 
   private displayRoute(result: RouteResult): void {
-    this.vectorSource.getFeatures()
-      .filter(f => f.get('pointType') === 'route')
-      .forEach(f => this.vectorSource.removeFeature(f));
+    this.vectorSource
+      .getFeatures()
+      .filter((f) => f.get('pointType') === 'route')
+      .forEach((f) => this.vectorSource.removeFeature(f));
 
     const geojsonFormat = new GeoJSON();
     const geom = geojsonFormat.readGeometry(result.geometry, {
@@ -242,9 +243,10 @@ export class RoutingToolComponent implements OnInit, OnDestroy {
   }
 
   private updateMarkers(): void {
-    this.vectorSource.getFeatures()
-      .filter(f => f.get('pointType') !== 'route')
-      .forEach(f => this.vectorSource.removeFeature(f));
+    this.vectorSource
+      .getFeatures()
+      .filter((f) => f.get('pointType') !== 'route')
+      .forEach((f) => this.vectorSource.removeFeature(f));
 
     if (this.startCoord) {
       const f = new Feature(new Point(fromLonLat(this.startCoord)));
@@ -258,7 +260,7 @@ export class RoutingToolComponent implements OnInit, OnDestroy {
       this.vectorSource.addFeature(f);
     }
 
-    this.waypoints.forEach(wp => {
+    this.waypoints.forEach((wp) => {
       if (wp.coord) {
         const f = new Feature(new Point(fromLonLat(wp.coord)));
         f.set('pointType', 'waypoint');

@@ -36,7 +36,15 @@ export class SearchService {
   }
 
   /** "Les utilisateurs qui ont activé X ont aussi activé Y" (co-occurrence). */
-  getLayerRecommendations(layerId: string, instanceId: string, limit?: number): Observable<LayerRecommendation[]> {
-    return this.api.get<LayerRecommendation[]>('/search/layer-recommendations', { layerId, instanceId, limit });
+  getLayerRecommendations(
+    layerId: string,
+    instanceId: string,
+    limit?: number,
+  ): Observable<LayerRecommendation[]> {
+    return this.api.get<LayerRecommendation[]>('/search/layer-recommendations', {
+      layerId,
+      instanceId,
+      limit,
+    });
   }
 }

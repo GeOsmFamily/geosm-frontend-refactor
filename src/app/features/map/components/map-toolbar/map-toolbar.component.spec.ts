@@ -27,7 +27,7 @@ describe('MapToolbarComponent', () => {
     mapSpy.getView.and.returnValue(viewSpy);
 
     mapServiceSpy = jasmine.createSpyObj('MapService', ['getMap'], {
-      mapReady$: mapReadySubject.asObservable()
+      mapReady$: mapReadySubject.asObservable(),
     });
     mapServiceSpy.getMap.and.returnValue(mapSpy);
 
@@ -45,11 +45,7 @@ describe('MapToolbarComponent', () => {
     };
 
     await TestBed.configureTestingModule({
-      imports: [
-        MapToolbarComponent,
-        NoopAnimationsModule,
-        TranslateModule.forRoot(),
-      ],
+      imports: [MapToolbarComponent, NoopAnimationsModule, TranslateModule.forRoot()],
       providers: [
         { provide: MapService, useValue: mapServiceSpy },
         { provide: MatDialog, useValue: dialogSpy },

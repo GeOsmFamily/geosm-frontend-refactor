@@ -42,9 +42,13 @@
     letter-spacing: 0.2px;
     background: linear-gradient(135deg, #023f5f 0%, #00ada7 100%) !important;
     box-shadow: 0 4px 14px rgba(0, 173, 167, 0.3);
-    transition: box-shadow 0.2s ease, transform 0.2s ease;
+    transition:
+      box-shadow 0.2s ease,
+      transform 0.2s ease;
 
-    mat-icon { margin: 0; }
+    mat-icon {
+      margin: 0;
+    }
 
     &:not([disabled]):hover {
       box-shadow: 0 6px 18px rgba(0, 173, 167, 0.4);

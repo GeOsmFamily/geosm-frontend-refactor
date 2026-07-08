@@ -16,8 +16,14 @@ import { Sort } from '@angular/material/sort';
 import { InstanceService } from '../../../../core/services/instance.service';
 import { AuthService } from '../../../../core/services/auth.service';
 import { Instance, Role } from '../../../../core/models/index';
-import { AdminDataTableComponent, AdminTableColumn } from '../../shared/components/admin-data-table/admin-data-table.component';
-import { InstanceFormDialogComponent, InstanceFormDialogData } from './instance-form-dialog/instance-form-dialog.component';
+import {
+  AdminDataTableComponent,
+  AdminTableColumn,
+} from '../../shared/components/admin-data-table/admin-data-table.component';
+import {
+  InstanceFormDialogComponent,
+  InstanceFormDialogData,
+} from './instance-form-dialog/instance-form-dialog.component';
 import { InstanceTemplateDialogComponent } from './instance-template-dialog/instance-template-dialog.component';
 import { ConfirmDialogComponent } from '../../../../shared/components/confirm-dialog/confirm-dialog.component';
 
@@ -73,7 +79,11 @@ export class InstancesComponent implements OnInit {
   load(): void {
     this.loading.set(true);
     this.instanceService
-      .list({ page: this.pageIndex() + 1, limit: this.pageSize(), search: this.searchTerm || undefined })
+      .list({
+        page: this.pageIndex() + 1,
+        limit: this.pageSize(),
+        search: this.searchTerm || undefined,
+      })
       .subscribe({
         next: (res) => {
           this.instances.set(res.data);
@@ -100,9 +110,12 @@ export class InstancesComponent implements OnInit {
   }
 
   openCreateDialog(): void {
-    const ref = this.dialog.open<InstanceFormDialogComponent, InstanceFormDialogData>(InstanceFormDialogComponent, {
-      data: { mode: 'create' },
-    });
+    const ref = this.dialog.open<InstanceFormDialogComponent, InstanceFormDialogData>(
+      InstanceFormDialogComponent,
+      {
+        data: { mode: 'create' },
+      },
+    );
     ref.afterClosed().subscribe((dto) => {
       if (!dto) return;
       this.instanceService.create(dto).subscribe({
@@ -130,9 +143,12 @@ export class InstancesComponent implements OnInit {
   }
 
   openEditDialog(instance: Instance): void {
-    const ref = this.dialog.open<InstanceFormDialogComponent, InstanceFormDialogData>(InstanceFormDialogComponent, {
-      data: { mode: 'edit', instance },
-    });
+    const ref = this.dialog.open<InstanceFormDialogComponent, InstanceFormDialogData>(
+      InstanceFormDialogComponent,
+      {
+        data: { mode: 'edit', instance },
+      },
+    );
     ref.afterClosed().subscribe((dto) => {
       if (!dto) return;
       this.instanceService.update(instance.id, dto).subscribe({
@@ -174,6 +190,8 @@ export class InstancesComponent implements OnInit {
 
   private notifyError(err: unknown): void {
     const message = (err as { error?: { error?: { message?: string } } })?.error?.error?.message;
-    this.snackBar.open(message ?? this.translate.instant('common.error'), undefined, { duration: 4000 });
+    this.snackBar.open(message ?? this.translate.instant('common.error'), undefined, {
+      duration: 4000,
+    });
   }
 }

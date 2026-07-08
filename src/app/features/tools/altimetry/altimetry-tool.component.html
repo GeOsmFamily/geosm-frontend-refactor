@@ -1,15 +1,26 @@
 <div class="altimetry-tool">
   <h3>Profil altimétrique</h3>
-  <p class="hint">Tracez une ligne sur la carte pour obtenir son profil altimétrique (double-clic pour terminer le tracé).</p>
+  <p class="hint">
+    Tracez une ligne sur la carte pour obtenir son profil altimétrique (double-clic pour terminer le
+    tracé).
+  </p>
 
-  <button mat-stroked-button
-          color="primary"
-          class="full-width pick-btn"
-          [class.active]="picking()"
-          [disabled]="loading()"
-          (click)="togglePicking()">
+  <button
+    mat-stroked-button
+    color="primary"
+    class="full-width pick-btn"
+    [class.active]="picking()"
+    [disabled]="loading()"
+    (click)="togglePicking()"
+  >
     <mat-icon>{{ picking() ? 'close' : 'timeline' }}</mat-icon>
-    {{ picking() ? 'Cliquez sur la carte, double-clic pour terminer...' : (hasProfile() ? 'Tracer une nouvelle ligne' : 'Tracer une ligne') }}
+    {{
+      picking()
+        ? 'Cliquez sur la carte, double-clic pour terminer...'
+        : hasProfile()
+          ? 'Tracer une nouvelle ligne'
+          : 'Tracer une ligne'
+    }}
   </button>
 
   @if (loading()) {
@@ -30,7 +41,11 @@
       <div class="stats-grid">
         <div class="stat-card">
           <mat-icon>straighten</mat-icon>
-          <span class="stat-value">{{ s.distanceM >= 1000 ? (s.distanceM / 1000).toFixed(2) + ' km' : s.distanceM.toFixed(0) + ' m' }}</span>
+          <span class="stat-value">{{
+            s.distanceM >= 1000
+              ? (s.distanceM / 1000).toFixed(2) + ' km'
+              : s.distanceM.toFixed(0) + ' m'
+          }}</span>
           <span class="stat-label">Distance</span>
         </div>
         <div class="stat-card">

@@ -16,7 +16,12 @@ import { ConfirmDialogComponent } from '../../../../../shared/components/confirm
 import { QgisProjectService } from '../../../../../core/services/qgis-project.service';
 import { RasterService } from '../../../../../core/services/raster.service';
 import { GroupService } from '../../../../../core/services/group.service';
-import { Group, QgisProjectModel, RasterImportResult, SubGroup } from '../../../../../core/models/index';
+import {
+  Group,
+  QgisProjectModel,
+  RasterImportResult,
+  SubGroup,
+} from '../../../../../core/models/index';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
@@ -80,7 +85,9 @@ export class CatalogToolsComponent implements OnChanges {
 
   private loadGroups(): void {
     if (!this.instanceId) return;
-    this.groupService.listGroups(this.instanceId).subscribe({ next: (list) => this.groups.set(list) });
+    this.groupService
+      .listGroups(this.instanceId)
+      .subscribe({ next: (list) => this.groups.set(list) });
   }
 
   onRasterGroupChange(groupId: string): void {
@@ -89,7 +96,10 @@ export class CatalogToolsComponent implements OnChanges {
     if (!groupId) return;
     this.loadingSubGroups.set(true);
     this.groupService.listSubGroups(groupId).subscribe({
-      next: (list) => { this.subGroups.set(list); this.loadingSubGroups.set(false); },
+      next: (list) => {
+        this.subGroups.set(list);
+        this.loadingSubGroups.set(false);
+      },
       error: () => this.loadingSubGroups.set(false),
     });
   }
@@ -98,7 +108,10 @@ export class CatalogToolsComponent implements OnChanges {
     if (!this.instanceId) return;
     this.loadingProjects.set(true);
     this.qgisService.get(this.instanceId).subscribe({
-      next: (list) => { this.projects.set(list); this.loadingProjects.set(false); },
+      next: (list) => {
+        this.projects.set(list);
+        this.loadingProjects.set(false);
+      },
       error: () => this.loadingProjects.set(false),
     });
   }
@@ -119,7 +132,10 @@ export class CatalogToolsComponent implements OnChanges {
           this.projects.set(list);
           this.notify('admin.catalog.reloadQgisDone');
         },
-        error: (err) => { this.reloading.set(false); this.notifyError(err); },
+        error: (err) => {
+          this.reloading.set(false);
+          this.notifyError(err);
+        },
       });
     });
   }
@@ -132,7 +148,10 @@ export class CatalogToolsComponent implements OnChanges {
         window.open(result.url, '_blank');
         this.notify('admin.catalog.qgisExportDone');
       },
-      error: (err) => { this.exportingProjectId.set(null); this.notifyError(err); },
+      error: (err) => {
+        this.exportingProjectId.set(null);
+        this.notifyError(err);
+      },
     });
   }
 
@@ -163,12 +182,19 @@ export class CatalogToolsComponent implements OnChanges {
           this.rasterForm.reset({ srid: 4326 });
           this.subGroups.set([]);
           if (result.postgisImportWarning) {
-            this.snackBar.open(this.translate.instant('admin.catalog.rasterPostgisWarning'), undefined, { duration: 6000 });
+            this.snackBar.open(
+              this.translate.instant('admin.catalog.rasterPostgisWarning'),
+              undefined,
+              { duration: 6000 },
+            );
           } else {
             this.notify('admin.catalog.rasterUploaded');
           }
         },
-        error: (err) => { this.uploading.set(false); this.notifyError(err); },
+        error: (err) => {
+          this.uploading.set(false);
+          this.notifyError(err);
+        },
       });
   }
 
@@ -178,6 +204,8 @@ export class CatalogToolsComponent implements OnChanges {
 
   private notifyError(err: unknown): void {
     const message = (err as { error?: { error?: { message?: string } } })?.error?.error?.message;
-    this.snackBar.open(message ?? this.translate.instant('common.error'), undefined, { duration: 4000 });
+    this.snackBar.open(message ?? this.translate.instant('common.error'), undefined, {
+      duration: 4000,
+    });
   }
 }

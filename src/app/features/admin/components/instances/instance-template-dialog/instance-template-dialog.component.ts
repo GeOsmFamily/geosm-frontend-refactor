@@ -19,7 +19,15 @@ import { CreateInstanceTemplateDTO } from '../../../../../core/services/instance
 @Component({
   selector: 'app-instance-template-dialog',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, MatDialogModule, MatFormFieldModule, MatInputModule, MatButtonModule, TranslateModule],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    MatDialogModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
+    TranslateModule,
+  ],
   templateUrl: './instance-template-dialog.component.html',
   styleUrl: './instance-template-dialog.component.scss',
 })
@@ -42,7 +50,10 @@ export class InstanceTemplateDialogComponent {
       slug: value.slug!,
       description: value.description || undefined,
       thematiques: value.thematiques
-        ? value.thematiques.split(',').map((t) => t.trim()).filter(Boolean)
+        ? value.thematiques
+            .split(',')
+            .map((t) => t.trim())
+            .filter(Boolean)
         : undefined,
     };
     this.dialogRef.close(dto);

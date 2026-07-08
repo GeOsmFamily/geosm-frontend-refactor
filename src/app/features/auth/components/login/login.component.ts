@@ -16,7 +16,8 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [TranslateModule, 
+  imports: [
+    TranslateModule,
     CommonModule,
     FormsModule,
     RouterLink,
@@ -48,7 +49,10 @@ export class LoginComponent implements OnInit {
 
   ngOnInit(): void {
     if (this.route.snapshot.queryParamMap.get('osmError')) {
-      this.errorMessage.set(this.translate.instant('auth.osmLoginFailed') || 'La connexion via OpenStreetMap a échoué. Veuillez réessayer.');
+      this.errorMessage.set(
+        this.translate.instant('auth.osmLoginFailed') ||
+          'La connexion via OpenStreetMap a échoué. Veuillez réessayer.',
+      );
     }
     this.authService.getOsmStatus().subscribe({
       next: (res) => this.osmConfigured.set(res.configured),
@@ -64,14 +68,19 @@ export class LoginComponent implements OnInit {
       },
       error: () => {
         this.osmLoading.set(false);
-        this.errorMessage.set(this.translate.instant('auth.osmUnavailable') || 'Connexion OpenStreetMap indisponible pour le moment.');
+        this.errorMessage.set(
+          this.translate.instant('auth.osmUnavailable') ||
+            'Connexion OpenStreetMap indisponible pour le moment.',
+        );
       },
     });
   }
 
   login(): void {
     if (!this.email || !this.password) {
-      this.errorMessage.set(this.translate.instant('auth.enterEmailPassword') || 'Please enter email and password.');
+      this.errorMessage.set(
+        this.translate.instant('auth.enterEmailPassword') || 'Please enter email and password.',
+      );
       return;
     }
 
@@ -86,7 +95,9 @@ export class LoginComponent implements OnInit {
       error: (err) => {
         this.loading.set(false);
         this.errorMessage.set(
-          err.error?.error?.message || this.translate.instant('auth.loginFailedGeneric') || 'Login failed. Please check your credentials.',
+          err.error?.error?.message ||
+            this.translate.instant('auth.loginFailedGeneric') ||
+            'Login failed. Please check your credentials.',
         );
       },
     });

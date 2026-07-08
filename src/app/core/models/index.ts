@@ -110,7 +110,8 @@ export interface SubGroup {
   isActive?: boolean;
 }
 
-export type GeometryTypeEnum = 'POINT' | 'LINESTRING' | 'POLYGON' | 'MULTIPOINT' | 'MULTILINESTRING' | 'MULTIPOLYGON';
+export type GeometryTypeEnum =
+  'POINT' | 'LINESTRING' | 'POLYGON' | 'MULTIPOINT' | 'MULTILINESTRING' | 'MULTIPOLYGON';
 export type LayerSourceType = 'WMS' | 'WFS' | 'WMTS' | 'GEOJSON' | 'MVT' | 'XYZ';
 
 export interface Layer {

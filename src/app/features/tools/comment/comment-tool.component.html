@@ -3,10 +3,12 @@
     <h3>{{ 'right_menu.tools.comment.title' | translate }}</h3>
 
     <div class="place-section">
-      <button mat-flat-button
-              [color]="isPlacing ? 'warn' : 'primary'"
-              class="full-width"
-              (click)="isPlacing ? stopPlacing() : startPlacing()">
+      <button
+        mat-flat-button
+        [color]="isPlacing ? 'warn' : 'primary'"
+        class="full-width"
+        (click)="isPlacing ? stopPlacing() : startPlacing()"
+      >
         <mat-icon>{{ isPlacing ? 'close' : 'add_location' }}</mat-icon>
         {{ isPlacing ? ('comment.cancel' | translate) : ('comment.placeComment' | translate) }}
       </button>
@@ -18,17 +20,27 @@
       @if (pendingCoord) {
         <div class="comment-form">
           <p class="coord-info">
-            Position : {{ pendingCoord[1] | number:'1.5-5' }}, {{ pendingCoord[0] | number:'1.5-5' }}
+            Position : {{ pendingCoord[1] | number: '1.5-5' }},
+            {{ pendingCoord[0] | number: '1.5-5' }}
           </p>
           <mat-form-field appearance="outline" class="full-width">
             <mat-label>{{ 'comment.commentLabel' | translate }}</mat-label>
-            <textarea matInput id="comment-text-input" [attr.aria-label]="'comment.commentLabel' | translate" [(ngModel)]="commentText" rows="3" [placeholder]="'comment.writeComment' | translate"></textarea>
+            <textarea
+              matInput
+              id="comment-text-input"
+              [attr.aria-label]="'comment.commentLabel' | translate"
+              [(ngModel)]="commentText"
+              rows="3"
+              [placeholder]="'comment.writeComment' | translate"
+            ></textarea>
           </mat-form-field>
-          <button mat-flat-button
-                  color="primary"
-                  class="full-width"
-                  [disabled]="!commentText.trim()"
-                  (click)="addComment()">
+          <button
+            mat-flat-button
+            color="primary"
+            class="full-width"
+            [disabled]="!commentText.trim()"
+            (click)="addComment()"
+          >
             <mat-icon>check</mat-icon> {{ 'comment.add' | translate }}
           </button>
         </div>
@@ -43,17 +55,30 @@
         @for (comment of comments; track comment.id) {
           <div class="comment-item" [class.resolved]="comment.resolved">
             <div class="comment-item-row">
-              <button class="comment-content" type="button" (click)="navigateTo(comment)" aria-label="Comment info">
-                <mat-icon class="pin-icon">{{ comment.resolved ? 'check_circle' : 'place' }}</mat-icon>
+              <button
+                class="comment-content"
+                type="button"
+                (click)="navigateTo(comment)"
+                aria-label="Comment info"
+              >
+                <mat-icon class="pin-icon">{{
+                  comment.resolved ? 'check_circle' : 'place'
+                }}</mat-icon>
                 <div class="comment-detail">
                   <span class="comment-text">{{ comment.text }}</span>
                   <span class="comment-meta">
-                    @if (comment.authorName) { {{ comment.authorName }} · }
-                    {{ comment.lat | number:'1.4-4' }}, {{ comment.lon | number:'1.4-4' }}
+                    @if (comment.authorName) {
+                      {{ comment.authorName }} ·
+                    }
+                    {{ comment.lat | number: '1.4-4' }}, {{ comment.lon | number: '1.4-4' }}
                   </span>
                 </div>
               </button>
-              <button mat-icon-button (click)="deleteComment(comment)" [attr.aria-label]="'comment.delete' | translate">
+              <button
+                mat-icon-button
+                (click)="deleteComment(comment)"
+                [attr.aria-label]="'comment.delete' | translate"
+              >
                 <mat-icon>delete</mat-icon>
               </button>
             </div>
@@ -61,12 +86,17 @@
             <div class="comment-actions">
               <button class="thread-btn" type="button" (click)="toggleExpanded(comment)">
                 <mat-icon>{{ isExpanded(comment) ? 'expand_less' : 'expand_more' }}</mat-icon>
-                {{ comment.replies.length }} {{ comment.replies.length > 1 ? 'réponses' : 'réponse' }}
+                {{ comment.replies.length }}
+                {{ comment.replies.length > 1 ? 'réponses' : 'réponse' }}
               </button>
               <button class="thread-btn" type="button" (click)="startReply(comment)">
                 <mat-icon>reply</mat-icon> Répondre
               </button>
-              <button class="thread-btn resolve-btn" type="button" (click)="toggleResolved(comment)">
+              <button
+                class="thread-btn resolve-btn"
+                type="button"
+                (click)="toggleResolved(comment)"
+              >
                 <mat-icon>{{ comment.resolved ? 'unpublished' : 'check_circle' }}</mat-icon>
                 {{ comment.resolved ? 'Rouvrir' : 'Résoudre' }}
               </button>
@@ -80,7 +110,11 @@
                       <span class="reply-author">{{ reply.authorName || 'Utilisateur' }}</span>
                       <span class="reply-text">{{ reply.text }}</span>
                     </div>
-                    <button class="reply-delete-btn" (click)="deleteReply(comment, reply)" aria-label="Supprimer la réponse">
+                    <button
+                      class="reply-delete-btn"
+                      (click)="deleteReply(comment, reply)"
+                      aria-label="Supprimer la réponse"
+                    >
                       <mat-icon>close</mat-icon>
                     </button>
                   </div>
@@ -92,11 +126,21 @@
               <div class="reply-form">
                 <mat-form-field appearance="outline" class="full-width">
                   <mat-label>Votre réponse</mat-label>
-                  <textarea matInput [(ngModel)]="replyText" rows="2" (keyup.enter)="submitReply(comment)"></textarea>
+                  <textarea
+                    matInput
+                    [(ngModel)]="replyText"
+                    rows="2"
+                    (keyup.enter)="submitReply(comment)"
+                  ></textarea>
                 </mat-form-field>
                 <div class="reply-form-actions">
                   <button mat-button (click)="cancelReply()">Annuler</button>
-                  <button mat-flat-button color="primary" [disabled]="!replyText.trim()" (click)="submitReply(comment)">
+                  <button
+                    mat-flat-button
+                    color="primary"
+                    [disabled]="!replyText.trim()"
+                    (click)="submitReply(comment)"
+                  >
                     Envoyer
                   </button>
                 </div>

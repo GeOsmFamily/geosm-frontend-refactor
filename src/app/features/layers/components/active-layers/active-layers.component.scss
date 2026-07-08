@@ -85,7 +85,7 @@
     border-radius: 12px;
     padding: 12px;
     transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
 
     &:hover {
       border-color: var(--accent, #00ada7);
@@ -114,8 +114,12 @@
     flex-shrink: 0;
     margin-top: 2px;
 
-    &:hover { color: var(--accent, #00ada7); }
-    &:active { cursor: grabbing; }
+    &:hover {
+      color: var(--accent, #00ada7);
+    }
+    &:active {
+      cursor: grabbing;
+    }
 
     mat-icon {
       font-size: 18px;
@@ -254,10 +258,12 @@
         border: 2px solid #ffffff;
         cursor: pointer;
         margin-top: -5px;
-        box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
         transition: transform 0.1s;
 
-        &:hover { transform: scale(1.2); }
+        &:hover {
+          transform: scale(1.2);
+        }
       }
 
       &::-moz-range-thumb {
@@ -267,10 +273,12 @@
         background: var(--accent, #00ada7);
         border: 2px solid #ffffff;
         cursor: pointer;
-        box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
         transition: transform 0.1s;
 
-        &:hover { transform: scale(1.2); }
+        &:hover {
+          transform: scale(1.2);
+        }
       }
     }
 
@@ -456,6 +464,11 @@
 }
 
 @keyframes float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-4px); }
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
 }

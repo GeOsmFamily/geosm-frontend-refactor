@@ -52,8 +52,16 @@ export class AssistantService {
   private readonly http = inject(HttpClient);
   private readonly baseUrl = environment.apiUrl;
 
-  chat(instanceId: string, conversationId: string, message: string): Observable<AssistantChatResult> {
-    return this.api.post<AssistantChatResult>('/assistant/chat', { instanceId, conversationId, message });
+  chat(
+    instanceId: string,
+    conversationId: string,
+    message: string,
+  ): Observable<AssistantChatResult> {
+    return this.api.post<AssistantChatResult>('/assistant/chat', {
+      instanceId,
+      conversationId,
+      message,
+    });
   }
 
   listConversations(instanceId: string): Observable<AssistantConversationSummary[]> {
@@ -72,8 +80,8 @@ export class AssistantService {
     // Le backend renvoie 204 No Content - ApiService.delete() attend une enveloppe JSON
     // { data } et échoue silencieusement sur un corps vide (même contournement que
     // GeosignetService.delete()).
-    return this.http.delete(`${this.baseUrl}/assistant/conversations/${id}`, { observe: 'response' }).pipe(
-      map(() => undefined as void),
-    );
+    return this.http
+      .delete(`${this.baseUrl}/assistant/conversations/${id}`, { observe: 'response' })
+      .pipe(map(() => undefined as void));
   }
 }

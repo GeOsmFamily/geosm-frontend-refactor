@@ -10,15 +10,23 @@
     <div class="save-form">
       <div class="input-wrapper">
         <mat-icon class="input-icon">save</mat-icon>
-        <input type="text"
-               id="map-name-input"
-               aria-label="Nom de la carte"
-               [placeholder]="'myMaps.name' | translate"
-               [(ngModel)]="mapName"
-               (keyup.enter)="saveCurrentMap()"
-               class="custom-input" />
+        <input
+          type="text"
+          id="map-name-input"
+          aria-label="Nom de la carte"
+          [placeholder]="'myMaps.name' | translate"
+          [(ngModel)]="mapName"
+          (keyup.enter)="saveCurrentMap()"
+          class="custom-input"
+        />
       </div>
-      <button mat-flat-button color="primary" class="save-btn" (click)="saveCurrentMap()" [disabled]="!mapName.trim() || saving()">
+      <button
+        mat-flat-button
+        color="primary"
+        class="save-btn"
+        (click)="saveCurrentMap()"
+        [disabled]="!mapName.trim() || saving()"
+      >
         <mat-icon>{{ saving() ? 'hourglass_empty' : 'save' }}</mat-icon>
         <span>{{ 'myMaps.save' | translate }}</span>
       </button>
@@ -33,20 +41,31 @@
       <div class="map-list">
         @for (m of maps(); track m.id) {
           <div class="map-card glass">
-            <button class="map-info" type="button" (click)="loadMap(m)" [disabled]="loadingMapId() === m.id">
-              <mat-icon class="map-icon">{{ loadingMapId() === m.id ? 'hourglass_empty' : 'map' }}</mat-icon>
+            <button
+              class="map-info"
+              type="button"
+              (click)="loadMap(m)"
+              [disabled]="loadingMapId() === m.id"
+            >
+              <mat-icon class="map-icon">{{
+                loadingMapId() === m.id ? 'hourglass_empty' : 'map'
+              }}</mat-icon>
               <div class="map-details">
                 <span class="map-name" [matTooltip]="'myMaps.load' | translate">
                   {{ m.name }}
                 </span>
                 <span class="map-meta">
-                  {{ 'myMaps.layerCount' | translate:{ count: m.layers.length } }}
+                  {{ 'myMaps.layerCount' | translate: { count: m.layers.length } }}
                 </span>
               </div>
             </button>
 
             <div class="map-actions">
-              <button class="delete-btn" (click)="delete(m)" [matTooltip]="'myMaps.delete' | translate">
+              <button
+                class="delete-btn"
+                (click)="delete(m)"
+                [matTooltip]="'myMaps.delete' | translate"
+              >
                 <mat-icon>delete</mat-icon>
               </button>
             </div>

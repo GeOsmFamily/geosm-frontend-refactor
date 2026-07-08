@@ -9,7 +9,12 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(160deg, var(--primary) 0%, var(--primary-light) 50%, var(--accent) 100%);
+  background: linear-gradient(
+    160deg,
+    var(--primary) 0%,
+    var(--primary-light) 50%,
+    var(--accent) 100%
+  );
   position: relative;
   overflow: hidden;
   padding: 48px;
@@ -27,8 +32,13 @@
 }
 
 @keyframes float {
-  0%, 100% { transform: translateY(0) rotate(0deg); }
-  50% { transform: translateY(-30px) rotate(2deg); }
+  0%,
+  100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-30px) rotate(2deg);
+  }
 }
 
 .brand-area {
@@ -135,10 +145,14 @@
   display: flex;
   gap: 12px;
 
-  mat-form-field { flex: 1; }
+  mat-form-field {
+    flex: 1;
+  }
 }
 
-.full-width { width: 100%; }
+.full-width {
+  width: 100%;
+}
 
 .register-btn {
   height: 48px !important;
@@ -169,7 +183,8 @@
   align-items: center;
   margin: 24px 0;
 
-  &::before, &::after {
+  &::before,
+  &::after {
     content: '';
     flex: 1;
     height: 1px;
@@ -205,13 +220,27 @@
 }
 
 @media (max-width: 900px) {
-  .register-page { flex-direction: column; }
-  .register-left { padding: 32px 24px; min-height: auto; }
-  .register-right { padding: 32px 24px; }
+  .register-page {
+    flex-direction: column;
+  }
+  .register-left {
+    padding: 32px 24px;
+    min-height: auto;
+  }
+  .register-right {
+    padding: 32px 24px;
+  }
 }
 
 @media (max-width: 480px) {
-  .register-right { padding: 24px 16px; }
-  .name-row { flex-direction: column; gap: 2px; }
-  .form-header h2 { font-size: 24px; }
+  .register-right {
+    padding: 24px 16px;
+  }
+  .name-row {
+    flex-direction: column;
+    gap: 2px;
+  }
+  .form-header h2 {
+    font-size: 24px;
+  }
 }

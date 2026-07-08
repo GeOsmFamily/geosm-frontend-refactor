@@ -13,7 +13,9 @@ export const ADMIN_ROUTES: Routes = [
   {
     path: '',
     loadComponent: () =>
-      import('./components/admin-layout/admin-layout.component').then((m) => m.AdminLayoutComponent),
+      import('./components/admin-layout/admin-layout.component').then(
+        (m) => m.AdminLayoutComponent,
+      ),
     children: [
       {
         path: '',
@@ -34,7 +36,9 @@ export const ADMIN_ROUTES: Routes = [
       {
         path: 'instances/:id/users',
         loadComponent: () =>
-          import('./components/instances/instance-users/instance-users.component').then((m) => m.InstanceUsersComponent),
+          import('./components/instances/instance-users/instance-users.component').then(
+            (m) => m.InstanceUsersComponent,
+          ),
       },
       {
         path: 'catalog',
@@ -59,13 +63,17 @@ export const ADMIN_ROUTES: Routes = [
       {
         path: 'observability',
         loadComponent: () =>
-          import('./components/observability/observability.component').then((m) => m.ObservabilityComponent),
+          import('./components/observability/observability.component').then(
+            (m) => m.ObservabilityComponent,
+          ),
       },
       {
         path: 'system-tools',
         canActivate: [roleGuard([Role.SUPER_ADMIN])],
         loadComponent: () =>
-          import('./components/system-tools/system-tools.component').then((m) => m.SystemToolsComponent),
+          import('./components/system-tools/system-tools.component').then(
+            (m) => m.SystemToolsComponent,
+          ),
       },
       {
         path: 'infra',

@@ -20,7 +20,15 @@ export interface GroupFormDialogData {
 @Component({
   selector: 'app-group-form-dialog',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, MatDialogModule, MatFormFieldModule, MatInputModule, MatButtonModule, TranslateModule],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    MatDialogModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
+    TranslateModule,
+  ],
   templateUrl: './group-form-dialog.component.html',
   styleUrl: './group-form-dialog.component.scss',
 })

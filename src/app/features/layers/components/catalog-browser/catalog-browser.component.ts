@@ -50,7 +50,9 @@ export class CatalogBrowserComponent implements OnInit, OnDestroy {
   loading = true;
 
   private static readonly VIEW_MODE_STORAGE_KEY = 'geosm.catalog.viewMode';
-  viewMode: 'list' | 'grid' = (localStorage.getItem(CatalogBrowserComponent.VIEW_MODE_STORAGE_KEY) as 'list' | 'grid') || 'list';
+  viewMode: 'list' | 'grid' =
+    (localStorage.getItem(CatalogBrowserComponent.VIEW_MODE_STORAGE_KEY) as 'list' | 'grid') ||
+    'list';
 
   setViewMode(mode: 'list' | 'grid'): void {
     this.viewMode = mode;
@@ -58,22 +60,18 @@ export class CatalogBrowserComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.instanceService.currentInstance$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(instance => {
-        if (instance) {
-          this.loadCatalog(instance.slug);
-        }
-      });
+    this.instanceService.currentInstance$.pipe(takeUntil(this.destroy$)).subscribe((instance) => {
+      if (instance) {
+        this.loadCatalog(instance.slug);
+      }
+    });
 
-    this.translate.onLangChange
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(() => {
-        const instance = this.instanceService.currentInstance$.value;
-        if (instance) {
-          this.loadCatalog(instance.slug);
-        }
-      });
+    this.translate.onLangChange.pipe(takeUntil(this.destroy$)).subscribe(() => {
+      const instance = this.instanceService.currentInstance$.value;
+      if (instance) {
+        this.loadCatalog(instance.slug);
+      }
+    });
   }
 
   ngOnDestroy(): void {
@@ -113,7 +111,7 @@ export class CatalogBrowserComponent implements OnInit, OnDestroy {
           this.groups = instance.groups.map((group: any) => this.mapGroup(group, instance.id));
           this.filteredGroups = this.groups;
           if (this.selectedGroup) {
-            const found = this.groups.find(g => g.id === this.selectedGroup?.id);
+            const found = this.groups.find((g) => g.id === this.selectedGroup?.id);
             this.selectedGroup = found || null;
           }
         } else {
@@ -141,18 +139,18 @@ export class CatalogBrowserComponent implements OnInit, OnDestroy {
     }
 
     this.filteredGroups = this.groups
-      .map(group => {
+      .map((group) => {
         const filteredSubGroups = group.subGroups
-          .map(sg => ({
+          .map((sg) => ({
             ...sg,
             layers: sg.layers.filter(
-              l =>
+              (l) =>
                 l.name.toLowerCase().includes(q) ||
                 l.description?.toLowerCase().includes(q) ||
-                l.tags?.some(t => t.toLowerCase().includes(q)),
+                l.tags?.some((t) => t.toLowerCase().includes(q)),
             ),
           }))
-          .filter(sg => sg.layers.length > 0 || sg.name.toLowerCase().includes(q));
+          .filter((sg) => sg.layers.length > 0 || sg.name.toLowerCase().includes(q));
 
         return {
           ...group,
@@ -160,7 +158,7 @@ export class CatalogBrowserComponent implements OnInit, OnDestroy {
           layerCount: filteredSubGroups.reduce((acc, sg) => acc + sg.layers.length, 0),
         };
       })
-      .filter(g => g.subGroups.length > 0 || g.name.toLowerCase().includes(q));
+      .filter((g) => g.subGroups.length > 0 || g.name.toLowerCase().includes(q));
   }
 
   toggleLayer(layer: Layer, event: MouseEvent): void {
@@ -179,7 +177,12 @@ export class CatalogBrowserComponent implements OnInit, OnDestroy {
   getMatIcon(layer: Layer): string {
     const metaIcon = layer.metadata?.icon;
     // Only use icon if it's a Material icon name (no dots, no slashes, no http)
-    if (metaIcon && !metaIcon.includes('.') && !metaIcon.includes('/') && !metaIcon.startsWith('http')) {
+    if (
+      metaIcon &&
+      !metaIcon.includes('.') &&
+      !metaIcon.includes('/') &&
+      !metaIcon.startsWith('http')
+    ) {
       return metaIcon;
     }
     return this.getGeometryIcon(layer.geometryType || layer.sourceType);
@@ -192,12 +195,17 @@ export class CatalogBrowserComponent implements OnInit, OnDestroy {
   getGeometryLabel(layer: Layer): string {
     const type = (layer.geometryType || layer.metadata?.geometryType || '').toLowerCase();
     switch (type) {
-      case 'point': return 'Point';
+      case 'point':
+        return 'Point';
       case 'linestring':
-      case 'line': return 'Ligne';
-      case 'polygon': return 'Polygone';
-      case 'raster': return 'Raster';
-      default: return 'WMS';
+      case 'line':
+        return 'Ligne';
+      case 'polygon':
+        return 'Polygone';
+      case 'raster':
+        return 'Raster';
+      default:
+        return 'WMS';
     }
   }
 

@@ -11,7 +11,12 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
-import { AdminSystemService, DbConfig, SequenceInfo, DatabaseOverview } from '../../../../core/services/admin-system.service';
+import {
+  AdminSystemService,
+  DbConfig,
+  SequenceInfo,
+  DatabaseOverview,
+} from '../../../../core/services/admin-system.service';
 import { ConfirmDialogComponent } from '../../../../shared/components/confirm-dialog/confirm-dialog.component';
 
 @Component({
@@ -83,7 +88,10 @@ export class SystemToolsComponent implements OnInit {
     const search = this.tableSearch.trim().toLowerCase();
     return overview.tables.filter((t) => {
       const matchesSchema = !this.schemaFilter || t.schema === this.schemaFilter;
-      const matchesSearch = !search || t.table.toLowerCase().includes(search) || t.schema.toLowerCase().includes(search);
+      const matchesSearch =
+        !search ||
+        t.table.toLowerCase().includes(search) ||
+        t.schema.toLowerCase().includes(search);
       return matchesSchema && matchesSearch;
     });
   }
@@ -118,25 +126,29 @@ export class SystemToolsComponent implements OnInit {
   createSequence(): void {
     if (!this.newSequenceName.trim()) return;
     this.creatingSequence.set(true);
-    this.systemService.createSequence(this.newSequenceName.trim(), this.newSequenceStart, this.newSequenceIncrement).subscribe({
-      next: () => {
-        this.creatingSequence.set(false);
-        this.newSequenceName = '';
-        this.notify('admin.systemTools.sequenceCreated');
-        this.loadSequences();
-      },
-      error: (err) => {
-        this.creatingSequence.set(false);
-        this.notifyError(err);
-      },
-    });
+    this.systemService
+      .createSequence(this.newSequenceName.trim(), this.newSequenceStart, this.newSequenceIncrement)
+      .subscribe({
+        next: () => {
+          this.creatingSequence.set(false);
+          this.newSequenceName = '';
+          this.notify('admin.systemTools.sequenceCreated');
+          this.loadSequences();
+        },
+        error: (err) => {
+          this.creatingSequence.set(false);
+          this.notifyError(err);
+        },
+      });
   }
 
   confirmDeleteSequence(sequence: SequenceInfo): void {
     const ref = this.dialog.open(ConfirmDialogComponent, {
       data: {
         title: this.translate.instant('admin.systemTools.confirmDeleteSequenceTitle'),
-        message: this.translate.instant('admin.systemTools.confirmDeleteSequenceMessage', { name: sequence.sequence_name }),
+        message: this.translate.instant('admin.systemTools.confirmDeleteSequenceMessage', {
+          name: sequence.sequence_name,
+        }),
       },
     });
     ref.afterClosed().subscribe((confirmed) => {
@@ -162,6 +174,8 @@ export class SystemToolsComponent implements OnInit {
 
   private notifyError(err: unknown): void {
     const message = (err as { error?: { error?: { message?: string } } })?.error?.error?.message;
-    this.snackBar.open(message ?? this.translate.instant('common.error'), undefined, { duration: 4000 });
+    this.snackBar.open(message ?? this.translate.instant('common.error'), undefined, {
+      duration: 4000,
+    });
   }
 }

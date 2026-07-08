@@ -1,6 +1,12 @@
 import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import {
+  FormsModule,
+  ReactiveFormsModule,
+  FormBuilder,
+  FormGroup,
+  Validators,
+} from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
@@ -71,29 +77,32 @@ export class InfoPanelComponent {
     this.submitting.set(true);
     const { type, description, contactEmail } = this.feedbackForm.value;
 
-    this.feedbackService.submit({
-      type,
-      description,
-      contactEmail: contactEmail || undefined,
-      page: globalThis.location?.pathname,
-    }).subscribe({
-      next: () => {
-        this.submitting.set(false);
-        this.feedbackForm.reset({ type: 'BUG', description: '', contactEmail: '' });
-        this.snackBar.open(
-          this.translate.instant('infoPanel.feedback.success') || 'Merci pour votre retour !',
-          'OK',
-          { duration: 3000 },
-        );
-      },
-      error: () => {
-        this.submitting.set(false);
-        this.snackBar.open(
-          this.translate.instant('infoPanel.feedback.error') || "Une erreur est survenue lors de l'envoi.",
-          'OK',
-          { duration: 4000 },
-        );
-      },
-    });
+    this.feedbackService
+      .submit({
+        type,
+        description,
+        contactEmail: contactEmail || undefined,
+        page: globalThis.location?.pathname,
+      })
+      .subscribe({
+        next: () => {
+          this.submitting.set(false);
+          this.feedbackForm.reset({ type: 'BUG', description: '', contactEmail: '' });
+          this.snackBar.open(
+            this.translate.instant('infoPanel.feedback.success') || 'Merci pour votre retour !',
+            'OK',
+            { duration: 3000 },
+          );
+        },
+        error: () => {
+          this.submitting.set(false);
+          this.snackBar.open(
+            this.translate.instant('infoPanel.feedback.error') ||
+              "Une erreur est survenue lors de l'envoi.",
+            'OK',
+            { duration: 4000 },
+          );
+        },
+      });
   }
 }

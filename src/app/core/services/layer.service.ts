@@ -3,7 +3,14 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, map } from 'rxjs';
 
 import { ApiService } from './api.service';
-import { ApiResponse, Feature, Layer, OsmTagCondition, PaginatedResponse, StagedFileImport } from '../models/index';
+import {
+  ApiResponse,
+  Feature,
+  Layer,
+  OsmTagCondition,
+  PaginatedResponse,
+  StagedFileImport,
+} from '../models/index';
 import { environment } from '../../../environments/environment';
 
 export interface FeatureCollectionResponse {
@@ -75,8 +82,13 @@ export class LayerService {
     return this.api.post<Layer>(`/instances/${instanceId}/layers/${id}/resync`, {});
   }
 
-  getSourceFile(instanceId: string, id: string): Observable<{ layerId: string; name: string; url: string }> {
-    return this.api.get<{ layerId: string; name: string; url: string }>(`/instances/${instanceId}/layers/${id}/source-file`);
+  getSourceFile(
+    instanceId: string,
+    id: string,
+  ): Observable<{ layerId: string; name: string; url: string }> {
+    return this.api.get<{ layerId: string; name: string; url: string }>(
+      `/instances/${instanceId}/layers/${id}/source-file`,
+    );
   }
 
   /**
@@ -84,7 +96,10 @@ export class LayerService {
    * {data, meta}) - le backend renvoie {type, features}. Accepte bbox (chaîne
    * "minLon,minLat,maxLon,maxLat"), limit, offset en params.
    */
-  getFeatures(layerId: string, params?: Record<string, any>): Observable<FeatureCollectionResponse> {
+  getFeatures(
+    layerId: string,
+    params?: Record<string, any>,
+  ): Observable<FeatureCollectionResponse> {
     return this.api.get<FeatureCollectionResponse>(`/layers/${layerId}/features`, params);
   }
 
@@ -93,7 +108,10 @@ export class LayerService {
     const formData = new FormData();
     formData.append('file', file);
     return this.http
-      .post<ApiResponse<StagedFileImport>>(`${environment.apiUrl}/instances/${instanceId}/layers/import/file`, formData)
+      .post<ApiResponse<StagedFileImport>>(
+        `${environment.apiUrl}/instances/${instanceId}/layers/import/file`,
+        formData,
+      )
       .pipe(map((res) => res.data));
   }
 
@@ -112,9 +130,17 @@ export class LayerService {
       formData.append('mode', dto.mode);
       if (dto.kmlFile) formData.append('file', dto.kmlFile);
       return this.http
-        .post<ApiResponse<Layer>>(`${environment.apiUrl}/instances/${instanceId}/layers/${layerId}/style/apply`, formData)
+        .post<ApiResponse<Layer>>(
+          `${environment.apiUrl}/instances/${instanceId}/layers/${layerId}/style/apply`,
+          formData,
+        )
         .pipe(map((res) => res.data));
     }
-    return this.api.post<Layer>(`/instances/${instanceId}/layers/${layerId}/style/apply`, { mode: dto.mode, color: dto.color, iconKey: dto.iconKey, shape: dto.shape });
+    return this.api.post<Layer>(`/instances/${instanceId}/layers/${layerId}/style/apply`, {
+      mode: dto.mode,
+      color: dto.color,
+      iconKey: dto.iconKey,
+      shape: dto.shape,
+    });
   }
 }

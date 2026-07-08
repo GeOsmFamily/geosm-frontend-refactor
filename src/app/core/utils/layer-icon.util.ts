@@ -5,7 +5,7 @@ import { environment } from '../../../environments/environment';
 const DEFAULT_MARKER_SVG =
   'data:image/svg+xml;utf8,' +
   encodeURIComponent(
-    '<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32"><circle cx="16" cy="16" r="12" fill="#00ada7" stroke="#ffffff" stroke-width="2.5"/></svg>'
+    '<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32"><circle cx="16" cy="16" r="12" fill="#00ada7" stroke="#ffffff" stroke-width="2.5"/></svg>',
   );
 
 /**
@@ -23,7 +23,8 @@ export function resolveLayerIconUrl(layer: Layer): string | null {
     return `${origin}/${icon}`;
   }
   if (icon.startsWith('assets/')) return icon;
-  if (icon.startsWith('http://') || icon.startsWith('https://') || icon.startsWith('/')) return icon;
+  if (icon.startsWith('http://') || icon.startsWith('https://') || icon.startsWith('/'))
+    return icon;
   return null;
 }
 
@@ -34,11 +35,16 @@ export function resolveLayerIconUrlOrDefault(layer: Layer): string {
 
 export function getGeometryIcon(type: string | null | undefined): string {
   switch (type?.toLowerCase()) {
-    case 'point': return 'place';
+    case 'point':
+      return 'place';
     case 'line':
-    case 'linestring': return 'timeline';
-    case 'polygon': return 'pentagon';
-    case 'raster': return 'grid_on';
-    default: return 'layers';
+    case 'linestring':
+      return 'timeline';
+    case 'polygon':
+      return 'pentagon';
+    case 'raster':
+      return 'grid_on';
+    default:
+      return 'layers';
   }
 }

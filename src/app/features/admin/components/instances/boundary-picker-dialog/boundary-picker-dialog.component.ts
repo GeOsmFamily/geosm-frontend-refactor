@@ -199,7 +199,9 @@ export class BoundaryPickerDialogComponent implements OnDestroy {
           this.importing.set(false);
           this.importFileRef = null;
           this.snackBar.open(
-            this.translate.instant('admin.instances.boundaryImportSuccess', { count: result.importedCount }),
+            this.translate.instant('admin.instances.boundaryImportSuccess', {
+              count: result.importedCount,
+            }),
             undefined,
             { duration: 4000 },
           );
@@ -207,8 +209,13 @@ export class BoundaryPickerDialogComponent implements OnDestroy {
         },
         error: (err) => {
           this.importing.set(false);
-          const message = (err as { error?: { error?: { message?: string } } })?.error?.error?.message;
-          this.snackBar.open(message ?? this.translate.instant('admin.instances.boundaryImportError'), undefined, { duration: 5000 });
+          const message = (err as { error?: { error?: { message?: string } } })?.error?.error
+            ?.message;
+          this.snackBar.open(
+            message ?? this.translate.instant('admin.instances.boundaryImportError'),
+            undefined,
+            { duration: 5000 },
+          );
         },
       });
   }

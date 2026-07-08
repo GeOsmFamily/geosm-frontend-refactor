@@ -15,10 +15,18 @@ describe('MapLayoutComponent', () => {
   let fixture: ComponentFixture<MapLayoutComponent>;
 
   beforeEach(async () => {
-    const authSpy = jasmine.createSpyObj('AuthService', ['getProfile', 'logout'], {
-      currentUser$: of(null),
-    });
+    const authSpy = jasmine.createSpyObj(
+      'AuthService',
+      ['getProfile', 'logout', 'isAuthenticated'],
+      {
+        currentUser$: of(null),
+      },
+    );
     authSpy.getProfile.and.returnValue(of(null));
+    // Le géoportail est consultable sans compte - le constructeur ne charge le profil que si
+    // une session existe déjà (voir isAuthenticated()) ; false par défaut ici pour un visiteur
+    // anonyme, cohérent avec currentUser$ = null.
+    authSpy.isAuthenticated.and.returnValue(false);
 
     const mapSpy = jasmine.createSpyObj('MapService', ['getMap', 'zoomTo', 'fitExtent'], {
       mousePosition$: of([0, 0]),

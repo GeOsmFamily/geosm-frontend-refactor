@@ -80,7 +80,9 @@ export class LayerDetailDialogComponent {
         const primary = styles[0];
         if (primary) {
           this.sldForm.patchValue({ sldBody: primary.sldBody ?? '' });
-          this.mapboxForm.patchValue({ mapboxStyle: primary.mapboxStyle ? JSON.stringify(primary.mapboxStyle, null, 2) : '' });
+          this.mapboxForm.patchValue({
+            mapboxStyle: primary.mapboxStyle ? JSON.stringify(primary.mapboxStyle, null, 2) : '',
+          });
         }
         this.loadingStyle.set(false);
       },
@@ -109,7 +111,10 @@ export class LayerDetailDialogComponent {
         this.changed = true;
         this.notify('admin.catalog.styleUpdated');
       },
-      error: (err) => { this.savingStyle.set(false); this.notifyError(err); },
+      error: (err) => {
+        this.savingStyle.set(false);
+        this.notifyError(err);
+      },
     });
   }
 
@@ -120,7 +125,9 @@ export class LayerDetailDialogComponent {
     try {
       parsed = JSON.parse(raw);
     } catch {
-      this.snackBar.open(this.translate.instant('admin.catalog.invalidJson'), undefined, { duration: 4000 });
+      this.snackBar.open(this.translate.instant('admin.catalog.invalidJson'), undefined, {
+        duration: 4000,
+      });
       return;
     }
     this.savingStyle.set(true);
@@ -130,7 +137,10 @@ export class LayerDetailDialogComponent {
         this.changed = true;
         this.notify('admin.catalog.styleUpdated');
       },
-      error: (err) => { this.savingStyle.set(false); this.notifyError(err); },
+      error: (err) => {
+        this.savingStyle.set(false);
+        this.notifyError(err);
+      },
     });
   }
 
@@ -170,7 +180,10 @@ export class LayerDetailDialogComponent {
           this.changed = true;
           this.notify('admin.catalog.resyncDone');
         },
-        error: (err) => { this.resyncing.set(false); this.notifyError(err); },
+        error: (err) => {
+          this.resyncing.set(false);
+          this.notifyError(err);
+        },
       });
     });
   }
@@ -182,7 +195,10 @@ export class LayerDetailDialogComponent {
         this.loadingSource.set(false);
         window.open(result.url, '_blank');
       },
-      error: (err) => { this.loadingSource.set(false); this.notifyError(err); },
+      error: (err) => {
+        this.loadingSource.set(false);
+        this.notifyError(err);
+      },
     });
   }
 
@@ -196,6 +212,8 @@ export class LayerDetailDialogComponent {
 
   private notifyError(err: unknown): void {
     const message = (err as { error?: { error?: { message?: string } } })?.error?.error?.message;
-    this.snackBar.open(message ?? this.translate.instant('common.error'), undefined, { duration: 4000 });
+    this.snackBar.open(message ?? this.translate.instant('common.error'), undefined, {
+      duration: 4000,
+    });
   }
 }

@@ -25,7 +25,8 @@ interface BaseMapOption {
 @Component({
   selector: 'app-base-map-switcher',
   standalone: true,
-  imports: [TranslateModule, 
+  imports: [
+    TranslateModule,
     CommonModule,
     FormsModule,
     MatCardModule,
@@ -54,7 +55,12 @@ export class BaseMapSwitcherComponent implements OnInit, OnDestroy {
   private static readonly THUMB_Y = 7;
 
   private readonly defaultBaseMaps: BaseMapOption[] = [
-    { id: 'osm', name: 'OpenStreetMap', thumbnail: `https://a.tile.openstreetmap.org/${BaseMapSwitcherComponent.THUMB_Z}/${BaseMapSwitcherComponent.THUMB_X}/${BaseMapSwitcherComponent.THUMB_Y}.png`, baseMap: null },
+    {
+      id: 'osm',
+      name: 'OpenStreetMap',
+      thumbnail: `https://a.tile.openstreetmap.org/${BaseMapSwitcherComponent.THUMB_Z}/${BaseMapSwitcherComponent.THUMB_X}/${BaseMapSwitcherComponent.THUMB_Y}.png`,
+      baseMap: null,
+    },
     { id: 'none', name: 'Aucun fond de carte', thumbnail: null, baseMap: null },
   ];
 
@@ -81,9 +87,15 @@ export class BaseMapSwitcherComponent implements OnInit, OnDestroy {
       const format = (cfg['format'] as string) || 'image/png';
       const style = (cfg['style'] as string) || 'normal';
       const params = new URLSearchParams({
-        SERVICE: 'WMTS', REQUEST: 'GetTile', VERSION: '1.0.0',
-        LAYER: layer, STYLE: style, TILEMATRIXSET: matrixSet,
-        TILEMATRIX: String(z), TILEROW: String(y), TILECOL: String(x),
+        SERVICE: 'WMTS',
+        REQUEST: 'GetTile',
+        VERSION: '1.0.0',
+        LAYER: layer,
+        STYLE: style,
+        TILEMATRIXSET: matrixSet,
+        TILEMATRIX: String(z),
+        TILEROW: String(y),
+        TILECOL: String(x),
         FORMAT: format,
       });
       return `${bm.url}?${params.toString()}`;
@@ -93,25 +105,21 @@ export class BaseMapSwitcherComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.instanceService.currentInstance$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(instance => {
-        if (instance) {
-          this.loadBaseMaps(instance.id);
-        } else {
-          this.baseMaps = [...this.defaultBaseMaps];
-          this.loading = false;
-        }
-      });
+    this.instanceService.currentInstance$.pipe(takeUntil(this.destroy$)).subscribe((instance) => {
+      if (instance) {
+        this.loadBaseMaps(instance.id);
+      } else {
+        this.baseMaps = [...this.defaultBaseMaps];
+        this.loading = false;
+      }
+    });
 
-    this.translate.onLangChange
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(() => {
-        const instance = this.instanceService.currentInstance$.value;
-        if (instance) {
-          this.loadBaseMaps(instance.id);
-        }
-      });
+    this.translate.onLangChange.pipe(takeUntil(this.destroy$)).subscribe(() => {
+      const instance = this.instanceService.currentInstance$.value;
+      if (instance) {
+        this.loadBaseMaps(instance.id);
+      }
+    });
   }
 
   ngOnDestroy(): void {
@@ -123,22 +131,22 @@ export class BaseMapSwitcherComponent implements OnInit, OnDestroy {
     this.loading = true;
     this.baseMapService.list(instanceId).subscribe({
       next: (maps) => {
-        const filtered = maps.filter(m => 
-          m.name.toLowerCase() !== 'openstreetmap' && 
-          !m.url?.includes('openstreetmap.org')
+        const filtered = maps.filter(
+          (m) => m.name.toLowerCase() !== 'openstreetmap' && !m.url?.includes('openstreetmap.org'),
         );
         this.baseMaps = [
           ...this.defaultBaseMaps,
-          ...[...filtered].sort((a, b) => a.order - b.order).map(bm => ({
-            id: bm.id,
-            name: bm.name,
-            thumbnail: this.buildThumbnailUrl(bm),
-            baseMap: bm,
-          })),
+          ...[...filtered]
+            .sort((a, b) => a.order - b.order)
+            .map((bm) => ({
+              id: bm.id,
+              name: bm.name,
+              thumbnail: this.buildThumbnailUrl(bm),
+              baseMap: bm,
+            })),
         ];
 
-
-        const defaultMap = maps.find(m => m.isDefault);
+        const defaultMap = maps.find((m) => m.isDefault);
         if (defaultMap) {
           this.selectedBaseMapId = defaultMap.id;
           this.applyBaseMap(defaultMap.id);
@@ -174,7 +182,7 @@ export class BaseMapSwitcherComponent implements OnInit, OnDestroy {
     // de carte (XYZ/Mapbox/WMS/WMTS) - reconstruire une source XYZ nue ici pour tous
     // les types (comme c'était fait avant) casse les fonds WMTS tel que "France Topo",
     // dont l'URL n'a pas de template {z}/{x}/{y} et nécessite les paramètres WMTS.
-    const option = this.baseMaps.find(bm => bm.id === id);
+    const option = this.baseMaps.find((bm) => bm.id === id);
     if (option?.baseMap) {
       this.mapService.applyBaseMap(option.baseMap);
     }

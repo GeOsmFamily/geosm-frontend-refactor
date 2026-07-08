@@ -1,4 +1,6 @@
 import { TestBed } from '@angular/core/testing';
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { of } from 'rxjs';
 import { LayerService } from './layer.service';
 import { ApiService } from './api.service';
@@ -15,6 +17,10 @@ describe('LayerService', () => {
 
     TestBed.configureTestingModule({
       providers: [
+        // LayerService injecte aussi HttpClient directement (multipart pour les uploads de
+        // fichiers/projets QGIS - ApiService ne gère que le JSON), pas seulement ApiService.
+        provideHttpClient(),
+        provideHttpClientTesting(),
         LayerService,
         { provide: ApiService, useValue: apiSpy },
       ],
@@ -29,11 +35,15 @@ describe('LayerService', () => {
 
   describe('list', () => {
     it('should call the instance-scoped layers endpoint', () => {
-      apiSpy.getPaginated.and.returnValue(of({ data: [mockLayer], meta: { page: 1, limit: 10, total: 1, totalPages: 1 } }));
+      apiSpy.getPaginated.and.returnValue(
+        of({ data: [mockLayer], meta: { page: 1, limit: 10, total: 1, totalPages: 1 } }),
+      );
 
       service.list('inst-1', { search: 'hop' });
 
-      expect(apiSpy.getPaginated).toHaveBeenCalledWith('/instances/inst-1/layers', { search: 'hop' });
+      expect(apiSpy.getPaginated).toHaveBeenCalledWith('/instances/inst-1/layers', {
+        search: 'hop',
+      });
     });
   });
 
@@ -59,7 +69,9 @@ describe('LayerService', () => {
     it('should PATCH to update a layer', () => {
       apiSpy.patch.and.returnValue(of(mockLayer));
       service.update('inst-1', 'layer-1', { name: 'Renamed' });
-      expect(apiSpy.patch).toHaveBeenCalledWith('/instances/inst-1/layers/layer-1', { name: 'Renamed' });
+      expect(apiSpy.patch).toHaveBeenCalledWith('/instances/inst-1/layers/layer-1', {
+        name: 'Renamed',
+      });
     });
 
     it('should DELETE a layer', () => {

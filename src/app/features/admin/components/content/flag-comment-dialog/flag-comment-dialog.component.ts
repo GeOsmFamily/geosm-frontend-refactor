@@ -11,7 +11,15 @@ import { TranslateModule } from '@ngx-translate/core';
 @Component({
   selector: 'app-flag-comment-dialog',
   standalone: true,
-  imports: [CommonModule, FormsModule, MatDialogModule, MatFormFieldModule, MatInputModule, MatButtonModule, TranslateModule],
+  imports: [
+    CommonModule,
+    FormsModule,
+    MatDialogModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
+    TranslateModule,
+  ],
   template: `
     <h2 mat-dialog-title>{{ 'admin.content.flagDialogTitle' | translate }}</h2>
     <mat-dialog-content>
@@ -22,10 +30,19 @@ import { TranslateModule } from '@ngx-translate/core';
     </mat-dialog-content>
     <mat-dialog-actions align="end">
       <button mat-button (click)="dialogRef.close()">{{ 'common.cancel' | translate }}</button>
-      <button mat-flat-button color="warn" (click)="dialogRef.close(reason)">{{ 'admin.content.flag' | translate }}</button>
+      <button mat-flat-button color="warn" (click)="dialogRef.close(reason)">
+        {{ 'admin.content.flag' | translate }}
+      </button>
     </mat-dialog-actions>
   `,
-  styles: [`.full-width { width: 100%; min-width: 320px; }`],
+  styles: [
+    `
+      .full-width {
+        width: 100%;
+        min-width: 320px;
+      }
+    `,
+  ],
 })
 export class FlagCommentDialogComponent {
   readonly dialogRef = inject(MatDialogRef<FlagCommentDialogComponent>);

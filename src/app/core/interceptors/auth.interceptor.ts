@@ -4,7 +4,13 @@ import { TranslateService } from '@ngx-translate/core';
 
 import { AuthService } from '../services/auth.service';
 
-const PUBLIC_PATHS = ['/auth/login', '/auth/register', '/auth/forgot-password', '/auth/reset-password', '/catalog'];
+const PUBLIC_PATHS = [
+  '/auth/login',
+  '/auth/register',
+  '/auth/forgot-password',
+  '/auth/reset-password',
+  '/catalog',
+];
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   if (!req.url.includes('/api/')) {
@@ -29,4 +35,3 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const cloned = req.clone({ setHeaders: headers });
   return next(cloned);
 };
-

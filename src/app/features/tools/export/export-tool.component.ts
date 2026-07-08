@@ -37,7 +37,8 @@ const FORMAT_ICONS: Record<string, string> = {
 @Component({
   selector: 'app-export-tool',
   standalone: true,
-  imports: [TranslateModule,
+  imports: [
+    TranslateModule,
     CommonModule,
     FormsModule,
     MatButtonModule,
@@ -99,7 +100,7 @@ export class ExportToolComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.mapLayerService.activeLayers$.subscribe(layers => {
+    this.mapLayerService.activeLayers$.subscribe((layers) => {
       this.activeLayers = layers;
       for (const al of layers) this.layerNameCache.set(al.layer.id, al.layer.name);
       // Présélectionne la couche active si une seule est disponible (raccourci fréquent).
@@ -145,10 +146,39 @@ export class ExportToolComponent implements OnInit, OnDestroy {
     if (this.exportMode === 'all') {
       if (this.activeLayers.length === 0) return;
       this.exporting = true;
-      this.exportService.createBulk({
+      this.exportService
+        .createBulk({
+          format: this.selectedFormat,
+          layerIds: this.activeLayers.map((al) => al.layer.id),
+        })
+        .subscribe({
+          next: (exp) => {
+            this.exports.unshift(exp);
+            this.exporting = false;
+            this.pollUntilDone(exp.id, true);
+          },
+          error: (err) => {
+            this.exporting = false;
+            console.error("[ExportTool] Échec de la création de l'export groupé", err);
+            this.snackBar.open(
+              this.translate.instant('tools.export.errors.launchFailed') ||
+                "Échec du lancement de l'export.",
+              'OK',
+              { duration: 4000 },
+            );
+          },
+        });
+      return;
+    }
+
+    if (!this.selectedLayerId) return;
+    this.exporting = true;
+    this.exportService
+      .create({
+        layerId: this.selectedLayerId,
         format: this.selectedFormat,
-        layerIds: this.activeLayers.map(al => al.layer.id),
-      }).subscribe({
+      })
+      .subscribe({
         next: (exp) => {
           this.exports.unshift(exp);
           this.exporting = false;
@@ -156,30 +186,15 @@ export class ExportToolComponent implements OnInit, OnDestroy {
         },
         error: (err) => {
           this.exporting = false;
-          console.error('[ExportTool] Échec de la création de l\'export groupé', err);
-          this.snackBar.open(this.translate.instant('tools.export.errors.launchFailed') || 'Échec du lancement de l\'export.', 'OK', { duration: 4000 });
+          console.error("[ExportTool] Échec de la création de l'export", err);
+          this.snackBar.open(
+            this.translate.instant('tools.export.errors.launchFailed') ||
+              "Échec du lancement de l'export.",
+            'OK',
+            { duration: 4000 },
+          );
         },
       });
-      return;
-    }
-
-    if (!this.selectedLayerId) return;
-    this.exporting = true;
-    this.exportService.create({
-      layerId: this.selectedLayerId,
-      format: this.selectedFormat,
-    }).subscribe({
-      next: (exp) => {
-        this.exports.unshift(exp);
-        this.exporting = false;
-        this.pollUntilDone(exp.id, true);
-      },
-      error: (err) => {
-        this.exporting = false;
-        console.error('[ExportTool] Échec de la création de l\'export', err);
-        this.snackBar.open(this.translate.instant('tools.export.errors.launchFailed') || 'Échec du lancement de l\'export.', 'OK', { duration: 4000 });
-      },
-    });
   }
 
   private isPending(exp: Export): boolean {
@@ -194,28 +209,35 @@ export class ExportToolComponent implements OnInit, OnDestroy {
     const maxTicks = Math.ceil(POLL_TIMEOUT_MS / POLL_INTERVAL_MS);
     let ticks = 0;
 
-    const sub = timer(0, POLL_INTERVAL_MS).pipe(
-      takeWhile(() => ticks++ < maxTicks),
-      switchMap(() => this.exportService.getById(exportId)),
-    ).subscribe({
-      next: (exp) => {
-        const idx = this.exports.findIndex(e => e.id === exportId);
-        if (idx !== -1) this.exports[idx] = exp;
+    const sub = timer(0, POLL_INTERVAL_MS)
+      .pipe(
+        takeWhile(() => ticks++ < maxTicks),
+        switchMap(() => this.exportService.getById(exportId)),
+      )
+      .subscribe({
+        next: (exp) => {
+          const idx = this.exports.findIndex((e) => e.id === exportId);
+          if (idx !== -1) this.exports[idx] = exp;
 
-        if (!this.isPending(exp)) {
-          this.pollSubs.get(exportId)?.unsubscribe();
-          this.pollSubs.delete(exportId);
-          if ((exp.status || '').toUpperCase() === 'COMPLETED' && autoDownload) {
-            this.downloadExport(exp);
-          } else if ((exp.status || '').toUpperCase() === 'FAILED') {
-            this.snackBar.open(this.translate.instant('tools.export.errors.exportFailed') || 'L\'export a échoué. Réessayez.', 'OK', { duration: 4000 });
+          if (!this.isPending(exp)) {
+            this.pollSubs.get(exportId)?.unsubscribe();
+            this.pollSubs.delete(exportId);
+            if ((exp.status || '').toUpperCase() === 'COMPLETED' && autoDownload) {
+              this.downloadExport(exp);
+            } else if ((exp.status || '').toUpperCase() === 'FAILED') {
+              this.snackBar.open(
+                this.translate.instant('tools.export.errors.exportFailed') ||
+                  "L'export a échoué. Réessayez.",
+                'OK',
+                { duration: 4000 },
+              );
+            }
           }
-        }
-      },
-      error: () => {
-        this.pollSubs.delete(exportId);
-      },
-    });
+        },
+        error: () => {
+          this.pollSubs.delete(exportId);
+        },
+      });
 
     this.pollSubs.set(exportId, sub);
   }
@@ -248,11 +270,14 @@ export class ExportToolComponent implements OnInit, OnDestroy {
   }
 
   private slugify(text: string): string {
-    return text
-      .toLowerCase()
-      .normalize('NFD').replace(/[̀-ͯ]/g, '')
-      .replace(/[^a-z0-9]+/g, '-')
-      .replace(/(^-|-$)/g, '') || 'export';
+    return (
+      text
+        .toLowerCase()
+        .normalize('NFD')
+        .replace(/[̀-ͯ]/g, '')
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/(^-|-$)/g, '') || 'export'
+    );
   }
 
   downloadExport(exp: Export): void {
@@ -270,28 +295,42 @@ export class ExportToolComponent implements OnInit, OnDestroy {
       },
       error: (err) => {
         console.error('[ExportTool] Échec du téléchargement', err);
-        this.snackBar.open(this.translate.instant('tools.export.errors.downloadFailed') || 'Le fichier est prêt mais le téléchargement a échoué. Réessayez.', 'OK', { duration: 4000 });
+        this.snackBar.open(
+          this.translate.instant('tools.export.errors.downloadFailed') ||
+            'Le fichier est prêt mais le téléchargement a échoué. Réessayez.',
+          'OK',
+          { duration: 4000 },
+        );
       },
     });
   }
 
   getStatusColor(status: string): string {
     switch ((status || '').toUpperCase()) {
-      case 'COMPLETED': return 'primary';
+      case 'COMPLETED':
+        return 'primary';
       case 'PENDING':
-      case 'PROCESSING': return 'accent';
-      case 'FAILED': return 'warn';
-      default: return '';
+      case 'PROCESSING':
+        return 'accent';
+      case 'FAILED':
+        return 'warn';
+      default:
+        return '';
     }
   }
 
   getStatusLabel(status: string): string {
     switch ((status || '').toUpperCase()) {
-      case 'COMPLETED': return 'Terminé';
-      case 'PENDING': return 'En attente';
-      case 'PROCESSING': return 'En cours';
-      case 'FAILED': return 'Échoué';
-      default: return status;
+      case 'COMPLETED':
+        return 'Terminé';
+      case 'PENDING':
+        return 'En attente';
+      case 'PROCESSING':
+        return 'En cours';
+      case 'FAILED':
+        return 'Échoué';
+      default:
+        return status;
     }
   }
 }

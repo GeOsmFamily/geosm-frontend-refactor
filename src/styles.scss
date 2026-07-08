@@ -17,44 +17,102 @@ mat-icon {
 
 // GeOSM custom palettes
 $geosm-primary-map: (
-  50: #e0ecf2, 100: #b3cfe0, 200: #80afc9, 300: #4d8fb2, 400: #2677a1,
-  500: #023f5f, 600: #023957, 700: #02314d, 800: #022943, 900: #011b32,
-  A100: #6db8ff, A200: #3a9fff, A400: #0787ff, A700: #0078ec,
-  contrast: (50: #333, 100: #333, 200: #333, 300: white, 400: white, 500: white, 600: white, 700: white, 800: white, 900: white, A100: #333, A200: white, A400: white, A700: white)
+  50: #e0ecf2,
+  100: #b3cfe0,
+  200: #80afc9,
+  300: #4d8fb2,
+  400: #2677a1,
+  500: #023f5f,
+  600: #023957,
+  700: #02314d,
+  800: #022943,
+  900: #011b32,
+  A100: #6db8ff,
+  A200: #3a9fff,
+  A400: #0787ff,
+  A700: #0078ec,
+  contrast: (
+    50: #333,
+    100: #333,
+    200: #333,
+    300: white,
+    400: white,
+    500: white,
+    600: white,
+    700: white,
+    800: white,
+    900: white,
+    A100: #333,
+    A200: white,
+    A400: white,
+    A700: white,
+  ),
 );
 $geosm-accent-map: (
-  50: #e0f7f6, 100: #b3ebe9, 200: #80deda, 300: #4dd1cc, 400: #26c7c2,
-  500: #00ada7, 600: #009c97, 700: #008a85, 800: #007874, 900: #005a56,
-  A100: #a0fff9, A200: #6dfff6, A400: #3afff3, A700: #20fff1,
-  contrast: (50: #333, 100: #333, 200: #333, 300: #333, 400: white, 500: white, 600: white, 700: white, 800: white, 900: white, A100: #333, A200: #333, A400: #333, A700: #333)
+  50: #e0f7f6,
+  100: #b3ebe9,
+  200: #80deda,
+  300: #4dd1cc,
+  400: #26c7c2,
+  500: #00ada7,
+  600: #009c97,
+  700: #008a85,
+  800: #007874,
+  900: #005a56,
+  A100: #a0fff9,
+  A200: #6dfff6,
+  A400: #3afff3,
+  A700: #20fff1,
+  contrast: (
+    50: #333,
+    100: #333,
+    200: #333,
+    300: #333,
+    400: white,
+    500: white,
+    600: white,
+    700: white,
+    800: white,
+    900: white,
+    A100: #333,
+    A200: #333,
+    A400: #333,
+    A700: #333,
+  ),
 );
 
 $geosm-primary: mat.m2-define-palette($geosm-primary-map);
 $geosm-accent: mat.m2-define-palette($geosm-accent-map);
 $geosm-warn: mat.m2-define-palette(mat.$m2-red-palette);
-$geosm-theme: mat.m2-define-light-theme((
-  color: (
-    primary: $geosm-primary,
-    accent: $geosm-accent,
-    warn: $geosm-warn,
-  ),
-  typography: mat.m2-define-typography-config(
-    $font-family: "'Avenir Next Rounded Pro Regular', 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif",
-  ),
-));
+$geosm-theme: mat.m2-define-light-theme(
+  (
+    color: (
+      primary: $geosm-primary,
+      accent: $geosm-accent,
+      warn: $geosm-warn,
+    ),
+    typography: mat.m2-define-typography-config(
+        $font-family:
+          "'Avenir Next Rounded Pro Regular', 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif",
+      ),
+  )
+);
 
 @include mat.all-component-themes($geosm-theme);
 
-$geosm-dark-theme: mat.m2-define-dark-theme((
-  color: (
-    primary: $geosm-primary,
-    accent: $geosm-accent,
-    warn: $geosm-warn,
-  ),
-  typography: mat.m2-define-typography-config(
-    $font-family: "'Avenir Next Rounded Pro Regular', 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif",
-  ),
-));
+$geosm-dark-theme: mat.m2-define-dark-theme(
+  (
+    color: (
+      primary: $geosm-primary,
+      accent: $geosm-accent,
+      warn: $geosm-warn,
+    ),
+    typography: mat.m2-define-typography-config(
+        $font-family:
+          "'Avenir Next Rounded Pro Regular', 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif",
+      ),
+  )
+);
 
 body.dark-theme {
   @include mat.all-component-colors($geosm-dark-theme);
@@ -67,14 +125,15 @@ body.dark-theme {
   --text-light: #64748b;
   --border: #334155;
   --border-light: #1e293b;
-  
+
   --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.4);
   --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.4);
   --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.45);
   --shadow-xl: 0 20px 40px rgba(0, 0, 0, 0.5);
 
   // Glassmorphism overrides for dark theme
-  .glass, &.glass {
+  .glass,
+  &.glass {
     background: rgba(30, 41, 59, 0.8) !important;
     border: 1px solid rgba(255, 255, 255, 0.08) !important;
   }
@@ -107,49 +166,73 @@ body.dark-theme {
   font-family: 'Avenir Next Rounded Pro Regular';
   font-style: normal;
   font-weight: 400;
-  src: local('Avenir Next Rounded Pro Regular'), url('assets/font/avenir-next-rounded-pro-cufonfonts-webfont/AvenirNextRoundedProRegular.woff') format('woff');
+  src:
+    local('Avenir Next Rounded Pro Regular'),
+    url('assets/font/avenir-next-rounded-pro-cufonfonts-webfont/AvenirNextRoundedProRegular.woff')
+      format('woff');
 }
 @font-face {
   font-family: 'Avenir Next Rounded Pro Italic';
   font-style: italic;
   font-weight: 400;
-  src: local('Avenir Next Rounded Pro Italic'), url('assets/font/avenir-next-rounded-pro-cufonfonts-webfont/AvenirNextRoundedProRegularIt.woff') format('woff');
+  src:
+    local('Avenir Next Rounded Pro Italic'),
+    url('assets/font/avenir-next-rounded-pro-cufonfonts-webfont/AvenirNextRoundedProRegularIt.woff')
+      format('woff');
 }
 @font-face {
   font-family: 'Avenir Next Rounded Pro Medium';
   font-style: normal;
   font-weight: 500;
-  src: local('Avenir Next Rounded Pro Medium'), url('assets/font/avenir-next-rounded-pro-cufonfonts-webfont/AvenirNextRoundedProMedium.woff') format('woff');
+  src:
+    local('Avenir Next Rounded Pro Medium'),
+    url('assets/font/avenir-next-rounded-pro-cufonfonts-webfont/AvenirNextRoundedProMedium.woff')
+      format('woff');
 }
 @font-face {
   font-family: 'Avenir Next Rounded Pro Medium Italic';
   font-style: italic;
   font-weight: 500;
-  src: local('Avenir Next Rounded Pro Medium Italic'), url('assets/font/avenir-next-rounded-pro-cufonfonts-webfont/AvenirNextRoundedProMediumIt.woff') format('woff');
+  src:
+    local('Avenir Next Rounded Pro Medium Italic'),
+    url('assets/font/avenir-next-rounded-pro-cufonfonts-webfont/AvenirNextRoundedProMediumIt.woff')
+      format('woff');
 }
 @font-face {
   font-family: 'Avenir Next Rounded Pro Demi';
   font-style: normal;
   font-weight: 600;
-  src: local('Avenir Next Rounded Pro Demi'), url('assets/font/avenir-next-rounded-pro-cufonfonts-webfont/AvenirNextRoundedProDemi.woff') format('woff');
+  src:
+    local('Avenir Next Rounded Pro Demi'),
+    url('assets/font/avenir-next-rounded-pro-cufonfonts-webfont/AvenirNextRoundedProDemi.woff')
+      format('woff');
 }
 @font-face {
   font-family: 'Avenir Next Rounded Pro DemiItalic';
   font-style: italic;
   font-weight: 600;
-  src: local('Avenir Next Rounded Pro DemiItalic'), url('assets/font/avenir-next-rounded-pro-cufonfonts-webfont/AvenirNextRoundedProDemiIt.woff') format('woff');
+  src:
+    local('Avenir Next Rounded Pro DemiItalic'),
+    url('assets/font/avenir-next-rounded-pro-cufonfonts-webfont/AvenirNextRoundedProDemiIt.woff')
+      format('woff');
 }
 @font-face {
   font-family: 'Avenir Next Rounded Pro Bold';
   font-style: normal;
   font-weight: 700;
-  src: local('Avenir Next Rounded Pro Bold'), url('assets/font/avenir-next-rounded-pro-cufonfonts-webfont/AvenirNextRoundedProBold.woff') format('woff');
+  src:
+    local('Avenir Next Rounded Pro Bold'),
+    url('assets/font/avenir-next-rounded-pro-cufonfonts-webfont/AvenirNextRoundedProBold.woff')
+      format('woff');
 }
 @font-face {
   font-family: 'Avenir Next Rounded Pro Bold Italic';
   font-style: italic;
   font-weight: 700;
-  src: local('Avenir Next Rounded Pro Bold Italic'), url('assets/font/avenir-next-rounded-pro-cufonfonts-webfont/AvenirNextRoundedProBoldIt.woff') format('woff');
+  src:
+    local('Avenir Next Rounded Pro Bold Italic'),
+    url('assets/font/avenir-next-rounded-pro-cufonfonts-webfont/AvenirNextRoundedProBoldIt.woff')
+      format('woff');
 }
 
 :root {
@@ -189,13 +272,22 @@ body.dark-theme {
   box-sizing: border-box;
 }
 
-html, body {
+html,
+body {
   width: 100%;
   height: 100%;
   margin: 0;
   padding: 0;
   overflow: hidden;
-  font-family: 'Avenir Next Rounded Pro Regular', 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+  font-family:
+    'Avenir Next Rounded Pro Regular',
+    'Roboto',
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    Helvetica,
+    Arial,
+    sans-serif;
   color: var(--text);
   background: var(--background);
   -webkit-font-smoothing: antialiased;
@@ -209,7 +301,9 @@ app-root {
 }
 
 // Global button enhancements
-.mat-mdc-raised-button, .mat-mdc-flat-button, .mat-mdc-outlined-button {
+.mat-mdc-raised-button,
+.mat-mdc-flat-button,
+.mat-mdc-outlined-button {
   border-radius: var(--radius-sm) !important;
   font-family: 'Avenir Next Rounded Pro Medium', 'Roboto', sans-serif !important;
   letter-spacing: 0.3px !important;
@@ -217,7 +311,9 @@ app-root {
 }
 
 .mat-mdc-icon-button {
-  transition: background-color var(--transition-fast), transform var(--transition-fast) !important;
+  transition:
+    background-color var(--transition-fast),
+    transform var(--transition-fast) !important;
   &:hover {
     transform: scale(1.05);
   }
@@ -271,7 +367,9 @@ app-root {
 ::-webkit-scrollbar-thumb {
   background: rgba(0, 0, 0, 0.15);
   border-radius: 3px;
-  &:hover { background: rgba(0, 0, 0, 0.25); }
+  &:hover {
+    background: rgba(0, 0, 0, 0.25);
+  }
 }
 
 // Material dialog overrides
@@ -313,19 +411,49 @@ app-root {
   border-radius: 50%;
   animation: lds-ripple 1s cubic-bezier(0, 0.2, 0.8, 1) infinite;
 }
-.lds-ripple div:nth-child(2) { animation-delay: -0.5s; }
+.lds-ripple div:nth-child(2) {
+  animation-delay: -0.5s;
+}
 
 @keyframes lds-ripple {
-  0% { top: 28px; left: 28px; width: 0; height: 0; opacity: 1; }
-  100% { top: -1px; left: -1px; width: 58px; height: 58px; opacity: 0; }
+  0% {
+    top: 28px;
+    left: 28px;
+    width: 0;
+    height: 0;
+    opacity: 1;
+  }
+  100% {
+    top: -1px;
+    left: -1px;
+    width: 58px;
+    height: 58px;
+    opacity: 0;
+  }
 }
 
 // OpenLayers styles
-.ol-zoom-out, .ol-zoom-in { padding: 0; border: none; background: transparent; }
-.ol-zoom-out:focus, .ol-zoom-in:focus { outline: none; }
-.ol-rotate-reset { background: transparent; padding: 0; border: none; }
-.ol-rotate-reset:focus { outline: none; }
-.ol-overlaycontainer-stopevent .ol-zoom { display: none; }
+.ol-zoom-out,
+.ol-zoom-in {
+  padding: 0;
+  border: none;
+  background: transparent;
+}
+.ol-zoom-out:focus,
+.ol-zoom-in:focus {
+  outline: none;
+}
+.ol-rotate-reset {
+  background: transparent;
+  padding: 0;
+  border: none;
+}
+.ol-rotate-reset:focus {
+  outline: none;
+}
+.ol-overlaycontainer-stopevent .ol-zoom {
+  display: none;
+}
 
 .ol-control button {
   padding: 0;
@@ -346,9 +474,15 @@ app-root {
   background-color: var(--primary-light) !important;
   transform: scale(1.08);
 }
-.ol-control { position: unset !important; background: unset !important; padding: 0; }
+.ol-control {
+  position: unset !important;
+  background: unset !important;
+  padding: 0;
+}
 
-#ghostMap .ol-attribution { display: none !important; }
+#ghostMap .ol-attribution {
+  display: none !important;
+}
 .ol-attribution {
   background: rgba(255, 255, 255, 0.85) !important;
   backdrop-filter: blur(8px);
@@ -362,7 +496,13 @@ app-root {
   bottom: 8px !important;
   right: 8px !important;
   top: auto !important;
-  button { width: 22px !important; height: 22px !important; margin-bottom: 0; border-radius: 4px !important; background: var(--primary) !important; }
+  button {
+    width: 22px !important;
+    height: 22px !important;
+    margin-bottom: 0;
+    border-radius: 4px !important;
+    background: var(--primary) !important;
+  }
 }
 
 // Dark mode: attribution
@@ -370,10 +510,13 @@ body.dark-theme .ol-attribution {
   background: rgba(15, 23, 42, 0.85) !important;
   color: #cbd5e1 !important;
   border: 1px solid rgba(255, 255, 255, 0.1);
-  a { color: var(--accent) !important; }
+  a {
+    color: var(--accent) !important;
+  }
 }
 
-.tooltip.tooltip-static, .tooltip.tooltip-measure {
+.tooltip.tooltip-static,
+.tooltip.tooltip-measure {
   background-color: var(--primary);
   color: white;
   border-radius: var(--radius-sm);
@@ -383,7 +526,8 @@ body.dark-theme .ol-attribution {
   font-family: 'Avenir Next Rounded Pro Regular', 'Roboto', sans-serif;
   box-shadow: var(--shadow-md);
 }
-.tooltiphelp.hidden, .tooltiphelp {
+.tooltiphelp.hidden,
+.tooltiphelp {
   background-color: white;
   color: var(--text);
   border-radius: var(--radius-sm);
@@ -394,7 +538,9 @@ body.dark-theme .ol-attribution {
   box-shadow: var(--shadow-sm);
 }
 
-.ol-scale-line-inner { font-size: 11px !important; }
+.ol-scale-line-inner {
+  font-size: 11px !important;
+}
 .ol-scale-line {
   background: rgba(2, 63, 95, 0.7) !important;
   border-radius: 4px;
@@ -422,34 +568,81 @@ body.dark-theme .ol-scale-line {
   border: 1px solid rgba(255, 255, 255, 0.15);
 }
 
-.ol-viewport, .ol-unselectable {
+.ol-viewport,
+.ol-unselectable {
   -webkit-touch-callout: none;
   user-select: none;
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 }
-.ol-grabbing { cursor: grabbing; }
-.ol-grab { cursor: grab; }
+.ol-grabbing {
+  cursor: grabbing;
+}
+.ol-grab {
+  cursor: grab;
+}
 
-.ol-mouse-position { top: 2px; position: relative; text-align: center; display: inline-block; }
-.ol-box { box-sizing: border-box; border-radius: 2px; border: 2px solid var(--accent); }
+.ol-mouse-position {
+  top: 2px;
+  position: relative;
+  text-align: center;
+  display: inline-block;
+}
+.ol-box {
+  box-sizing: border-box;
+  border-radius: 2px;
+  border: 2px solid var(--accent);
+}
 
 // Utility classes
-.primaryColor { color: var(--primary) !important; }
-.primaryColorBG { background-color: var(--primary) !important; }
-.accentColor { color: var(--accent) !important; }
-.accentColorBG { background-color: var(--accent) !important; }
-.pointer { cursor: pointer; }
-.text-center { text-align: center; }
-.bold { font-weight: 600 !important; }
-input { background: transparent !important; }
+.primaryColor {
+  color: var(--primary) !important;
+}
+.primaryColorBG {
+  background-color: var(--primary) !important;
+}
+.accentColor {
+  color: var(--accent) !important;
+}
+.accentColorBG {
+  background-color: var(--accent) !important;
+}
+.pointer {
+  cursor: pointer;
+}
+.text-center {
+  text-align: center;
+}
+.bold {
+  font-weight: 600 !important;
+}
+input {
+  background: transparent !important;
+}
 
 // Layout helpers
-.flex-center { display: flex; align-items: center; }
-.flex-col { display: flex; flex-direction: column; }
-.flex-between { display: flex; align-items: center; justify-content: space-between; }
-.gap-4 { gap: 4px; }
-.gap-8 { gap: 8px; }
-.full-size { width: 100%; height: 100%; }
+.flex-center {
+  display: flex;
+  align-items: center;
+}
+.flex-col {
+  display: flex;
+  flex-direction: column;
+}
+.flex-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.gap-4 {
+  gap: 4px;
+}
+.gap-8 {
+  gap: 8px;
+}
+.full-size {
+  width: 100%;
+  height: 100%;
+}
 
 // Glassmorphism utility
 .glass {
@@ -460,8 +653,14 @@ input { background: transparent !important; }
 
 // Smooth page transition
 @keyframes fadeSlideIn {
-  from { opacity: 0; transform: translateY(8px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .animate-in {
@@ -469,9 +668,16 @@ input { background: transparent !important; }
 }
 
 // Tool sub-component shared styling
-.drawing-tool, .measure-tool, .routing-tool, .export-tool,
-.print-tool, .comment-tool, .altimetry-tool, .mapillary-tool,
-.compare-tool, .statistics-tool {
+.drawing-tool,
+.measure-tool,
+.routing-tool,
+.export-tool,
+.print-tool,
+.comment-tool,
+.altimetry-tool,
+.mapillary-tool,
+.compare-tool,
+.statistics-tool {
   h3 {
     font-family: 'Avenir Next Rounded Pro Demi', 'Roboto', sans-serif;
     font-size: 15px;
@@ -493,14 +699,17 @@ input { background: transparent !important; }
     color: var(--text-light);
   }
 
-  .full-width { width: 100%; }
+  .full-width {
+    width: 100%;
+  }
 
   mat-button-toggle-group {
     border-radius: var(--radius-sm) !important;
     border: 1px solid var(--border) !important;
   }
 
-  button[mat-flat-button], button[mat-raised-button] {
+  button[mat-flat-button],
+  button[mat-raised-button] {
     border-radius: var(--radius-sm) !important;
     font-family: 'Avenir Next Rounded Pro Medium', 'Roboto', sans-serif !important;
   }
@@ -520,4 +729,3 @@ input { background: transparent !important; }
     border-bottom-right-radius: 24px !important;
   }
 }
-

@@ -14,7 +14,14 @@ type VerifyState = 'loading' | 'success' | 'error' | 'missing-token';
 @Component({
   selector: 'app-verify-email',
   standalone: true,
-  imports: [CommonModule, RouterLink, MatIconModule, MatButtonModule, MatProgressSpinnerModule, TranslateModule],
+  imports: [
+    CommonModule,
+    RouterLink,
+    MatIconModule,
+    MatButtonModule,
+    MatProgressSpinnerModule,
+    TranslateModule,
+  ],
   templateUrl: './verify-email.component.html',
   styleUrl: './verify-email.component.scss',
 })

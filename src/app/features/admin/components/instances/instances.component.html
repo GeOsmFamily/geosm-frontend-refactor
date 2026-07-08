@@ -18,7 +18,12 @@
   <mat-form-field appearance="outline" class="search-field">
     <mat-label>{{ 'admin.common.search' | translate }}</mat-label>
     <input matInput [(ngModel)]="searchTerm" (keyup.enter)="onFilterChange()" />
-    <button matSuffix mat-icon-button [attr.aria-label]="'admin.common.search' | translate" (click)="onFilterChange()">
+    <button
+      matSuffix
+      mat-icon-button
+      [attr.aria-label]="'admin.common.search' | translate"
+      (click)="onFilterChange()"
+    >
       <mat-icon>search</mat-icon>
     </button>
   </mat-form-field>
@@ -37,14 +42,26 @@
 >
   <ng-template #actions let-instance>
     <div class="row-actions">
-      <button mat-icon-button (click)="manageUsers(instance)" [matTooltip]="'admin.instances.usersTitle' | translate">
+      <button
+        mat-icon-button
+        (click)="manageUsers(instance)"
+        [matTooltip]="'admin.instances.usersTitle' | translate"
+      >
         <mat-icon>group</mat-icon>
       </button>
-      <button mat-icon-button (click)="openEditDialog(instance)" [matTooltip]="'common.save' | translate">
+      <button
+        mat-icon-button
+        (click)="openEditDialog(instance)"
+        [matTooltip]="'common.save' | translate"
+      >
         <mat-icon>edit</mat-icon>
       </button>
       @if (isSuperAdmin) {
-        <button mat-icon-button (click)="confirmDelete(instance)" [matTooltip]="'common.delete' | translate">
+        <button
+          mat-icon-button
+          (click)="confirmDelete(instance)"
+          [matTooltip]="'common.delete' | translate"
+        >
           <mat-icon>delete</mat-icon>
         </button>
       }

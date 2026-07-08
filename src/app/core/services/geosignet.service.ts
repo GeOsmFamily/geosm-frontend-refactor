@@ -28,8 +28,8 @@ export class GeosignetService {
 
   delete(id: string): Observable<void> {
     // The backend returns 204 No Content — bypass ApiService which expects a JSON envelope
-    return this.http.delete(`${this.baseUrl}/geosignets/${id}`, { observe: 'response' }).pipe(
-      map(() => undefined as void)
-    );
+    return this.http
+      .delete(`${this.baseUrl}/geosignets/${id}`, { observe: 'response' })
+      .pipe(map(() => undefined as void));
   }
 }

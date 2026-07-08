@@ -21,7 +21,14 @@ export interface AdminTableColumn {
 @Component({
   selector: 'app-admin-data-table',
   standalone: true,
-  imports: [CommonModule, MatTableModule, MatSortModule, MatPaginatorModule, MatProgressSpinnerModule, TranslateModule],
+  imports: [
+    CommonModule,
+    MatTableModule,
+    MatSortModule,
+    MatPaginatorModule,
+    MatProgressSpinnerModule,
+    TranslateModule,
+  ],
   templateUrl: './admin-data-table.component.html',
   styleUrl: './admin-data-table.component.scss',
 })

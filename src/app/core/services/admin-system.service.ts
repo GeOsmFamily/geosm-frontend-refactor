@@ -66,7 +66,9 @@ export class AdminSystemService {
   // ApiService.delete() ne supporte pas de corps, on passe donc par HttpClient directement.
   deleteSequence(name: string): Observable<{ name: string; dropped: boolean }> {
     return this.http
-      .delete<ApiResponse<{ name: string; dropped: boolean }>>(`${this.baseUrl}/admin/sequences`, { body: { name } })
+      .delete<ApiResponse<{ name: string; dropped: boolean }>>(`${this.baseUrl}/admin/sequences`, {
+        body: { name },
+      })
       .pipe(map((res) => res.data));
   }
 }

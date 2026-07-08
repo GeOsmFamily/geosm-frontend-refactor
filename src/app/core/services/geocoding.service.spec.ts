@@ -16,17 +16,14 @@ describe('GeocodingService', () => {
     boundingbox: [4.0, 4.1, 9.6, 9.8],
     type: 'city',
     importance: 0.8,
-    address: { city: 'Douala', country: 'Cameroun' }
+    address: { city: 'Douala', country: 'Cameroun' },
   };
 
   beforeEach(() => {
     apiSpy = jasmine.createSpyObj('ApiService', ['get']);
 
     TestBed.configureTestingModule({
-      providers: [
-        GeocodingService,
-        { provide: ApiService, useValue: apiSpy },
-      ],
+      providers: [GeocodingService, { provide: ApiService, useValue: apiSpy }],
     });
 
     service = TestBed.inject(GeocodingService);

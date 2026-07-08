@@ -25,7 +25,8 @@ interface ToolItem {
 @Component({
   selector: 'app-tool-panel',
   standalone: true,
-  imports: [TranslateModule, 
+  imports: [
+    TranslateModule,
     CommonModule,
     MatIconModule,
     MatButtonModule,
@@ -67,6 +68,6 @@ export class ToolPanelComponent {
   }
 
   getActiveToolLabel(): string {
-    return this.tools.find(t => t.id === this.activeTool)?.label ?? '';
+    return this.tools.find((t) => t.id === this.activeTool)?.label ?? '';
   }
 }

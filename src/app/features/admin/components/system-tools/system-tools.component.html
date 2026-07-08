@@ -5,7 +5,11 @@
 <div class="section glass">
   <div class="section-header">
     <h3>{{ 'admin.systemTools.database' | translate }}</h3>
-    <button mat-icon-button (click)="loadDatabaseOverview()" [matTooltip]="'admin.common.refresh' | translate">
+    <button
+      mat-icon-button
+      (click)="loadDatabaseOverview()"
+      [matTooltip]="'admin.common.refresh' | translate"
+    >
       <mat-icon>refresh</mat-icon>
     </button>
   </div>
@@ -74,8 +78,17 @@
 <div class="section glass">
   <h3>{{ 'admin.systemTools.cache' | translate }}</h3>
   <p class="hint">{{ 'admin.systemTools.cacheHint' | translate }}</p>
-  <button mat-stroked-button color="warn" [disabled]="clearingCache()" (click)="confirmClearCache()">
-    @if (clearingCache()) { <mat-spinner diameter="18"></mat-spinner> } @else { <mat-icon>delete_sweep</mat-icon> }
+  <button
+    mat-stroked-button
+    color="warn"
+    [disabled]="clearingCache()"
+    (click)="confirmClearCache()"
+  >
+    @if (clearingCache()) {
+      <mat-spinner diameter="18"></mat-spinner>
+    } @else {
+      <mat-icon>delete_sweep</mat-icon>
+    }
     {{ 'admin.systemTools.clearCache' | translate }}
   </button>
 </div>
@@ -84,9 +97,17 @@
   <h3>{{ 'admin.systemTools.dbConfig' | translate }}</h3>
   @if (dbConfig(); as db) {
     <div class="db-info">
-      <div><span class="key">{{ 'admin.systemTools.dbHost' | translate }}</span> {{ db.host }}:{{ db.port }}</div>
-      <div><span class="key">{{ 'admin.systemTools.dbName' | translate }}</span> {{ db.database }}</div>
-      <div><span class="key">{{ 'admin.systemTools.dbUser' | translate }}</span> {{ db.user }}</div>
+      <div>
+        <span class="key">{{ 'admin.systemTools.dbHost' | translate }}</span> {{ db.host }}:{{
+          db.port
+        }}
+      </div>
+      <div>
+        <span class="key">{{ 'admin.systemTools.dbName' | translate }}</span> {{ db.database }}
+      </div>
+      <div>
+        <span class="key">{{ 'admin.systemTools.dbUser' | translate }}</span> {{ db.user }}
+      </div>
       <div><span class="key">SSL</span> {{ db.ssl ? 'Oui' : 'Non' }}</div>
     </div>
   }
@@ -108,8 +129,17 @@
       <mat-label>{{ 'admin.systemTools.sequenceIncrement' | translate }}</mat-label>
       <input matInput type="number" [(ngModel)]="newSequenceIncrement" />
     </mat-form-field>
-    <button mat-flat-button color="primary" [disabled]="!newSequenceName.trim() || creatingSequence()" (click)="createSequence()">
-      @if (creatingSequence()) { <mat-spinner diameter="18"></mat-spinner> } @else { <mat-icon>add</mat-icon> }
+    <button
+      mat-flat-button
+      color="primary"
+      [disabled]="!newSequenceName.trim() || creatingSequence()"
+      (click)="createSequence()"
+    >
+      @if (creatingSequence()) {
+        <mat-spinner diameter="18"></mat-spinner>
+      } @else {
+        <mat-icon>add</mat-icon>
+      }
       {{ 'admin.systemTools.sequenceCreate' | translate }}
     </button>
   </div>
@@ -131,8 +161,17 @@
             <td>{{ seq.start_value }}</td>
             <td>{{ seq.increment }}</td>
             <td>
-              <button mat-icon-button [disabled]="deletingSequence() === seq.sequence_name" (click)="confirmDeleteSequence(seq)" [matTooltip]="'common.delete' | translate">
-                @if (deletingSequence() === seq.sequence_name) { <mat-spinner diameter="18"></mat-spinner> } @else { <mat-icon>delete</mat-icon> }
+              <button
+                mat-icon-button
+                [disabled]="deletingSequence() === seq.sequence_name"
+                (click)="confirmDeleteSequence(seq)"
+                [matTooltip]="'common.delete' | translate"
+              >
+                @if (deletingSequence() === seq.sequence_name) {
+                  <mat-spinner diameter="18"></mat-spinner>
+                } @else {
+                  <mat-icon>delete</mat-icon>
+                }
               </button>
             </td>
           </tr>

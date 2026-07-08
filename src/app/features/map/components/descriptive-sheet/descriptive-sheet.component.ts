@@ -23,7 +23,16 @@ export interface DescriptiveSheetData {
 @Component({
   selector: 'app-descriptive-sheet',
   standalone: true,
-  imports: [TranslateModule, CommonModule, MatDialogModule, MatButtonModule, MatIconModule, MatTabsModule, MatTableModule, MatDividerModule],
+  imports: [
+    TranslateModule,
+    CommonModule,
+    MatDialogModule,
+    MatButtonModule,
+    MatIconModule,
+    MatTabsModule,
+    MatTableModule,
+    MatDividerModule,
+  ],
   templateUrl: './descriptive-sheet.component.html',
   styleUrl: './descriptive-sheet.component.scss',
 })
@@ -54,9 +63,10 @@ export class DescriptiveSheetComponent implements OnInit, OnDestroy {
     const props = this.data.properties || {};
     if (props['wikipedia']) {
       const parts = (props['wikipedia'] as string).split(':');
-      this.wikipediaUrl = parts.length === 2
-        ? `https://${parts[0]}.wikipedia.org/wiki/${parts[1]}`
-        : `https://en.wikipedia.org/wiki/${props['wikipedia']}`;
+      this.wikipediaUrl =
+        parts.length === 2
+          ? `https://${parts[0]}.wikipedia.org/wiki/${parts[1]}`
+          : `https://en.wikipedia.org/wiki/${props['wikipedia']}`;
     }
     if (props['wikidata']) {
       this.wikidataUrl = `https://www.wikidata.org/wiki/${props['wikidata']}`;
@@ -80,7 +90,7 @@ export class DescriptiveSheetComponent implements OnInit, OnDestroy {
         const format = new GeoJSON();
         const feature = format.readFeature(
           { type: 'Feature', geometry: this.data.geometry, properties: {} },
-          { featureProjection: 'EPSG:3857', dataProjection: 'EPSG:4326' }
+          { featureProjection: 'EPSG:3857', dataProjection: 'EPSG:4326' },
         ) as any;
         this.highlightSource.addFeature(feature);
         const extent = feature.getGeometry()!.getExtent();

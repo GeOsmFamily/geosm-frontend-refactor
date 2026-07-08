@@ -6,13 +6,18 @@
 </div>
 
 @if (loading()) {
-  <div class="centered"><mat-progress-spinner diameter="32" mode="indeterminate"></mat-progress-spinner></div>
+  <div class="centered">
+    <mat-progress-spinner diameter="32" mode="indeterminate"></mat-progress-spinner>
+  </div>
 } @else {
   <!-- "@else if (...; as h)" n'assigne pas correctement l'alias côté compilateur de templates -
        imbriquer un @if simple dans le @else contourne le problème. -->
   @if (health(); as h) {
     <div class="section glass">
-      <h3>{{ 'admin.observability.systemHealth' | translate }} — {{ 'admin.observability.uptime' | translate }} : {{ formatUptime(h.uptime) }}</h3>
+      <h3>
+        {{ 'admin.observability.systemHealth' | translate }} —
+        {{ 'admin.observability.uptime' | translate }} : {{ formatUptime(h.uptime) }}
+      </h3>
       <div class="stat-row">
         @for (key of serviceKeys; track key) {
           <app-stat-card
@@ -24,8 +29,16 @@
         }
       </div>
       <div class="stat-row">
-        <app-stat-card label="Disque" [value]="h.checks.disk.usagePercent + '% (' + h.checks.disk.free + ' libres)'" icon="storage"></app-stat-card>
-        <app-stat-card label="Mémoire" [value]="h.checks.memory.usagePercent + '% (' + h.checks.memory.freeMB + ' Mo libres)'" icon="memory"></app-stat-card>
+        <app-stat-card
+          label="Disque"
+          [value]="h.checks.disk.usagePercent + '% (' + h.checks.disk.free + ' libres)'"
+          icon="storage"
+        ></app-stat-card>
+        <app-stat-card
+          label="Mémoire"
+          [value]="h.checks.memory.usagePercent + '% (' + h.checks.memory.freeMB + ' Mo libres)'"
+          icon="memory"
+        ></app-stat-card>
       </div>
     </div>
 
@@ -33,10 +46,26 @@
       <div class="section glass">
         <h3>{{ 'admin.home.title' | translate }}</h3>
         <div class="stat-row">
-          <app-stat-card [label]="'admin.home.instances' | translate" [value]="d.instanceCount" icon="public"></app-stat-card>
-          <app-stat-card [label]="'admin.home.users' | translate" [value]="d.userCount" icon="group"></app-stat-card>
-          <app-stat-card [label]="'admin.home.exports' | translate" [value]="d.exportCount" icon="download"></app-stat-card>
-          <app-stat-card [label]="'admin.home.themes' | translate" [value]="d.themeCount" icon="palette"></app-stat-card>
+          <app-stat-card
+            [label]="'admin.home.instances' | translate"
+            [value]="d.instanceCount"
+            icon="public"
+          ></app-stat-card>
+          <app-stat-card
+            [label]="'admin.home.users' | translate"
+            [value]="d.userCount"
+            icon="group"
+          ></app-stat-card>
+          <app-stat-card
+            [label]="'admin.home.exports' | translate"
+            [value]="d.exportCount"
+            icon="download"
+          ></app-stat-card>
+          <app-stat-card
+            [label]="'admin.home.themes' | translate"
+            [value]="d.themeCount"
+            icon="palette"
+          ></app-stat-card>
         </div>
       </div>
     }

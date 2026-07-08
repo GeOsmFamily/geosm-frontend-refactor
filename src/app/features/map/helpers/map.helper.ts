@@ -40,10 +40,7 @@ export function createXyzLayer(url: string): TileLayer<XYZ> {
   });
 }
 
-export function createVectorLayer(
-  features: Feature[],
-  style?: Style,
-): VectorLayer<VectorSource> {
+export function createVectorLayer(features: Feature[], style?: Style): VectorLayer<VectorSource> {
   return new VectorLayer({
     source: new VectorSource({ features }),
     style: style || createDefaultStyle('Point'),
@@ -53,13 +50,20 @@ export function createVectorLayer(
 const DEFAULT_CLUSTER_ICON =
   'data:image/svg+xml;utf8,' +
   encodeURIComponent(
-    '<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32"><circle cx="16" cy="16" r="12" fill="#00ada7" stroke="#ffffff" stroke-width="2.5"/></svg>'
+    '<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32"><circle cx="16" cy="16" r="12" fill="#00ada7" stroke="#ffffff" stroke-width="2.5"/></svg>',
   );
 
 const ICON_SIZE = 30; // taille finale du marqueur/cluster en pixels ("pas trop gros")
 const BADGE_HEIGHT = 16;
 
-function drawRoundRect(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, r: number): void {
+function drawRoundRect(
+  ctx: CanvasRenderingContext2D,
+  x: number,
+  y: number,
+  w: number,
+  h: number,
+  r: number,
+): void {
   ctx.beginPath();
   ctx.moveTo(x + r, y);
   ctx.arcTo(x + w, y, x + w, y + h, r);
@@ -192,11 +196,7 @@ export function featuresToGeoJson(features: Feature<Geometry>[]): object {
   );
 }
 
-export function transformCoords(
-  coords: number[],
-  fromProj: string,
-  toProj: string,
-): number[] {
+export function transformCoords(coords: number[], fromProj: string, toProj: string): number[] {
   return transform(coords, fromProj, toProj);
 }
 

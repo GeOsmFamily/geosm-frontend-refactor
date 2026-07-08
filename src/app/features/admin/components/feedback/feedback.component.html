@@ -18,7 +18,9 @@
     <mat-select [(ngModel)]="statusFilter" (selectionChange)="onFilterChange()">
       <mat-option [value]="null">{{ 'admin.common.all' | translate }}</mat-option>
       @for (status of statuses; track status) {
-        <mat-option [value]="status">{{ 'admin.feedback.statusValues.' + status | translate }}</mat-option>
+        <mat-option [value]="status">{{
+          'admin.feedback.statusValues.' + status | translate
+        }}</mat-option>
       }
     </mat-select>
   </mat-form-field>
@@ -36,7 +38,11 @@
   (pageChange)="onPageChange($event)"
 >
   <ng-template #actions let-item>
-    <button mat-icon-button (click)="openDetail(item)" [matTooltip]="'admin.feedback.viewDetail' | translate">
+    <button
+      mat-icon-button
+      (click)="openDetail(item)"
+      [matTooltip]="'admin.feedback.viewDetail' | translate"
+    >
       <mat-icon>visibility</mat-icon>
     </button>
   </ng-template>

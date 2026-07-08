@@ -16,7 +16,9 @@
 
       <div class="results-list">
         @if (loading()) {
-          <div class="centered"><mat-progress-spinner diameter="28" mode="indeterminate"></mat-progress-spinner></div>
+          <div class="centered">
+            <mat-progress-spinner diameter="28" mode="indeterminate"></mat-progress-spinner>
+          </div>
         } @else if (results().length === 0) {
           <p class="hint">{{ 'admin.common.noResults' | translate }}</p>
         } @else {
@@ -39,13 +41,19 @@
 
     <div class="picker-preview">
       @if (previewLoading()) {
-        <div class="centered"><mat-progress-spinner diameter="28" mode="indeterminate"></mat-progress-spinner></div>
+        <div class="centered">
+          <mat-progress-spinner diameter="28" mode="indeterminate"></mat-progress-spinner>
+        </div>
       } @else if (previewError()) {
         <p class="hint">{{ 'admin.instances.boundaryPreviewError' | translate }}</p>
       } @else if (!selected()) {
         <p class="hint">{{ 'admin.instances.boundaryPreviewHint' | translate }}</p>
       }
-      <div #previewMap class="preview-map" [class.hidden]="!selected() || previewLoading() || previewError()"></div>
+      <div
+        #previewMap
+        class="preview-map"
+        [class.hidden]="!selected() || previewLoading() || previewError()"
+      ></div>
     </div>
   </div>
 
@@ -80,8 +88,12 @@
       <mat-form-field appearance="outline" subscriptSizing="dynamic">
         <mat-label>{{ 'admin.instances.boundaryImportMode' | translate }}</mat-label>
         <mat-select [(ngModel)]="importMode">
-          <mat-option value="append">{{ 'admin.instances.boundaryImportModeAppend' | translate }}</mat-option>
-          <mat-option value="replace">{{ 'admin.instances.boundaryImportModeReplace' | translate }}</mat-option>
+          <mat-option value="append">{{
+            'admin.instances.boundaryImportModeAppend' | translate
+          }}</mat-option>
+          <mat-option value="replace">{{
+            'admin.instances.boundaryImportModeReplace' | translate
+          }}</mat-option>
         </mat-select>
       </mat-form-field>
 

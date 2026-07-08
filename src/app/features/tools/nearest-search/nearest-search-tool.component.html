@@ -1,6 +1,9 @@
 <div class="nearest-search-tool">
   <h3>Le plus proche</h3>
-  <p class="hint">Choisissez une couche active, puis cliquez sur la carte pour trouver les éléments les plus proches (distance routière réelle).</p>
+  <p class="hint">
+    Choisissez une couche active, puis cliquez sur la carte pour trouver les éléments les plus
+    proches (distance routière réelle).
+  </p>
 
   @if (activeLayers().length === 0) {
     <div class="empty-state">
@@ -17,12 +20,14 @@
       </mat-select>
     </mat-form-field>
 
-    <button mat-stroked-button
-            color="primary"
-            class="full-width pick-btn"
-            [class.active]="picking()"
-            [disabled]="!selectedLayerId() || loading()"
-            (click)="togglePicking()">
+    <button
+      mat-stroked-button
+      color="primary"
+      class="full-width pick-btn"
+      [class.active]="picking()"
+      [disabled]="!selectedLayerId() || loading()"
+      (click)="togglePicking()"
+    >
       <mat-icon>{{ picking() ? 'close' : 'my_location' }}</mat-icon>
       {{ picking() ? 'Cliquez sur la carte...' : 'Choisir un point de départ' }}
     </button>
@@ -45,8 +50,12 @@
               <span class="result-meta">
                 <mat-icon>{{ result.routed ? 'directions_car' : 'straighten' }}</mat-icon>
                 {{ formatDistance(result.distance) }}
-                @if (result.duration) { · {{ formatDuration(result.duration) }} }
-                @if (!result.routed) { (à vol d'oiseau) }
+                @if (result.duration) {
+                  · {{ formatDuration(result.duration) }}
+                }
+                @if (!result.routed) {
+                  (à vol d'oiseau)
+                }
               </span>
             </div>
             <div class="result-actions">

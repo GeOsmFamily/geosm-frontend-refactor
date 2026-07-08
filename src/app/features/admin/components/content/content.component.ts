@@ -17,7 +17,10 @@ import { Sort } from '@angular/material/sort';
 import { CommentService, Comment } from '../../../../core/services/comment.service';
 import { InstanceService } from '../../../../core/services/instance.service';
 import { Instance } from '../../../../core/models/index';
-import { AdminDataTableComponent, AdminTableColumn } from '../../shared/components/admin-data-table/admin-data-table.component';
+import {
+  AdminDataTableComponent,
+  AdminTableColumn,
+} from '../../shared/components/admin-data-table/admin-data-table.component';
 import { ConfirmDialogComponent } from '../../../../shared/components/confirm-dialog/confirm-dialog.component';
 import { FlagCommentDialogComponent } from './flag-comment-dialog/flag-comment-dialog.component';
 
@@ -164,6 +167,8 @@ export class ContentComponent implements OnInit {
 
   private notifyError(err: unknown): void {
     const message = (err as { error?: { error?: { message?: string } } })?.error?.error?.message;
-    this.snackBar.open(message ?? this.translate.instant('common.error'), undefined, { duration: 4000 });
+    this.snackBar.open(message ?? this.translate.instant('common.error'), undefined, {
+      duration: 4000,
+    });
   }
 }

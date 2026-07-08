@@ -9,7 +9,16 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatOptionModule } from '@angular/material/core';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatMenuModule } from '@angular/material/menu';
-import { Subject, debounceTime, distinctUntilChanged, switchMap, forkJoin, of, takeUntil, catchError } from 'rxjs';
+import {
+  Subject,
+  debounceTime,
+  distinctUntilChanged,
+  switchMap,
+  forkJoin,
+  of,
+  takeUntil,
+  catchError,
+} from 'rxjs';
 
 import { GeocodingService } from '../../../../core/services/geocoding.service';
 import { SearchService, LayerSuggestion } from '../../../../core/services/search.service';
@@ -93,11 +102,9 @@ export class SearchBarComponent implements OnInit, OnDestroy {
     // currentInstance$.value pouvait encore valoir null, ce qui faisait échouer silencieusement
     // le chargement des suggestions - jamais réessayé ensuite. Voir CatalogBrowserComponent qui
     // suit déjà ce pattern réactif.
-    this.instanceService.currentInstance$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((instance) => {
-        if (instance) this.loadSuggestions();
-      });
+    this.instanceService.currentInstance$.pipe(takeUntil(this.destroy$)).subscribe((instance) => {
+      if (instance) this.loadSuggestions();
+    });
     this.markerLayer = new VectorLayer({
       source: this.markerSource,
       style: (feature) => {
@@ -135,54 +142,82 @@ export class SearchBarComponent implements OnInit, OnDestroy {
       },
     });
 
-    this.searchInput$.pipe(
-      debounceTime(300),
-      distinctUntilChanged(),
-      switchMap(query => {
-        if (!query || query.length < 2) {
-          return of({ geocoding: [] as GeocodingResult[], layers: [] as any[] });
-        }
+    this.searchInput$
+      .pipe(
+        debounceTime(300),
+        distinctUntilChanged(),
+        switchMap((query) => {
+          if (!query || query.length < 2) {
+            return of({ geocoding: [] as GeocodingResult[], layers: [] as any[] });
+          }
 
-        const country = this.getCountryCode();
-        const searchOpts: Record<string, any> = { limit: 10 };
-        if (country) {
-          searchOpts['countrycodes'] = country;
-        }
+          const country = this.getCountryCode();
+          const searchOpts: Record<string, any> = { limit: 10 };
+          if (country) {
+            searchOpts['countrycodes'] = country;
+          }
 
-        return forkJoin({
-          geocoding: this.geocodingService.search(query, searchOpts).pipe(catchError(() => of([]))),
-          layers: this.searchService.searchLayers(query, undefined, 5).pipe(catchError(() => of([]))),
+          return forkJoin({
+            geocoding: this.geocodingService
+              .search(query, searchOpts)
+              .pipe(catchError(() => of([]))),
+            layers: this.searchService
+              .searchLayers(query, undefined, 5)
+              .pipe(catchError(() => of([]))),
+          });
+        }),
+        takeUntil(this.destroy$),
+      )
+      .subscribe(({ geocoding, layers }) => {
+        const allGeocoding = (geocoding || []).map((g: any) => {
+          const isBoundary =
+            g.class === 'boundary' ||
+            g.type === 'administrative' ||
+            [
+              'country',
+              'state',
+              'state_district',
+              'county',
+              'municipality',
+              'city',
+              'town',
+              'village',
+              'suburb',
+              'neighbourhood',
+            ].includes(g.type) ||
+            (g.class === 'place' &&
+              [
+                'state',
+                'country',
+                'city',
+                'county',
+                'municipality',
+                'district',
+                'suburb',
+                'town',
+                'village',
+              ].includes(g.type)) ||
+            (g.geojson && (g.geojson.type === 'Polygon' || g.geojson.type === 'MultiPolygon'));
+
+          return {
+            type: (isBoundary ? 'boundary' : 'geocoding') as 'boundary' | 'geocoding',
+            label: g.displayName || g.display_name,
+            data: g,
+          };
         });
-      }),
-      takeUntil(this.destroy$),
-    ).subscribe(({ geocoding, layers }) => {
-      const allGeocoding = (geocoding || []).map((g: any) => {
-        const isBoundary =
-          g.class === 'boundary' ||
-          g.type === 'administrative' ||
-          ['country', 'state', 'state_district', 'county', 'municipality', 'city', 'town', 'village', 'suburb', 'neighbourhood'].includes(g.type) ||
-          (g.class === 'place' && ['state', 'country', 'city', 'county', 'municipality', 'district', 'suburb', 'town', 'village'].includes(g.type)) ||
-          (g.geojson && (g.geojson.type === 'Polygon' || g.geojson.type === 'MultiPolygon'));
 
-        return {
-          type: (isBoundary ? 'boundary' : 'geocoding') as 'boundary' | 'geocoding',
-          label: g.displayName || g.display_name,
-          data: g,
-        };
+        this.geocodingResults = allGeocoding.filter((item) => item.type === 'geocoding');
+        this.boundaryResults = allGeocoding.filter((item) => item.type === 'boundary');
+
+        const layerArr = Array.isArray(layers) ? layers : (layers as any)?.data || [];
+        this.layerResults = layerArr.map((l: any) => ({
+          type: 'layer' as const,
+          label: l.name,
+          data: l,
+        }));
+
+        this.results = [...this.geocodingResults, ...this.boundaryResults, ...this.layerResults];
       });
-
-      this.geocodingResults = allGeocoding.filter(item => item.type === 'geocoding');
-      this.boundaryResults = allGeocoding.filter(item => item.type === 'boundary');
-
-      const layerArr = Array.isArray(layers) ? layers : (layers as any)?.data || [];
-      this.layerResults = layerArr.map((l: any) => ({
-        type: 'layer' as const,
-        label: l.name,
-        data: l,
-      }));
-
-      this.results = [...this.geocodingResults, ...this.boundaryResults, ...this.layerResults];
-    });
   }
 
   ngOnDestroy(): void {
@@ -236,7 +271,7 @@ export class SearchBarComponent implements OnInit, OnDestroy {
         const latMax = Number(geo.boundingbox[1]);
         const lonMin = Number(geo.boundingbox[2]);
         const lonMax = Number(geo.boundingbox[3]);
-        
+
         const bboxPolygon = {
           type: 'Polygon',
           coordinates: [
@@ -245,9 +280,9 @@ export class SearchBarComponent implements OnInit, OnDestroy {
               [lonMax, latMin],
               [lonMax, latMax],
               [lonMin, latMax],
-              [lonMin, latMin]
-            ]
-          ]
+              [lonMin, latMin],
+            ],
+          ],
         };
 
         const geojsonFormat = new GeoJSON();
@@ -263,7 +298,7 @@ export class SearchBarComponent implements OnInit, OnDestroy {
 
         const view = this.mapService.getMap().getView();
         view.fit(geom.getExtent(), { padding: [50, 50, 50, 50], duration: 500 });
-        
+
         // Save the generated bbox polygon so that the download feature gets it
         geo.geojson = bboxPolygon;
         this.activeBoundary.set(item);
@@ -304,12 +339,14 @@ export class SearchBarComponent implements OnInit, OnDestroy {
   private trackSearchSelection(item: SearchResultItem): void {
     const instanceId = this.instanceService.currentInstance$.value?.id;
     if (!instanceId) return;
-    this.analyticsService.trackEvent({
-      instanceId,
-      eventType: 'search_performed',
-      layerId: item.type === 'layer' ? item.data?.id : undefined,
-      metadata: { resultType: item.type, query: this.searchQuery },
-    }).subscribe({ error: () => {} });
+    this.analyticsService
+      .trackEvent({
+        instanceId,
+        eventType: 'search_performed',
+        layerId: item.type === 'layer' ? item.data?.id : undefined,
+        metadata: { resultType: item.type, query: this.searchQuery },
+      })
+      .subscribe({ error: () => {} });
   }
 
   private loadSuggestions(): void {
@@ -317,7 +354,9 @@ export class SearchBarComponent implements OnInit, OnDestroy {
     if (!instance) return;
     this.searchService.getSuggestions(instance.id, 5).subscribe({
       next: (layers: LayerSuggestion[]) => {
-        this.suggestions.set(layers.map((l) => ({ type: 'layer' as const, label: l.name, data: l })));
+        this.suggestions.set(
+          layers.map((l) => ({ type: 'layer' as const, label: l.name, data: l })),
+        );
       },
       error: () => this.suggestions.set([]),
     });
@@ -339,11 +378,16 @@ export class SearchBarComponent implements OnInit, OnDestroy {
     const trimmed: SearchResultItem = {
       type: item.type,
       label: item.label,
-      data: item.type === 'geocoding'
-        ? { lat: item.data.lat, lon: item.data.lon }
-        : item.type === 'boundary'
-          ? { boundingbox: item.data.boundingbox, osm_id: item.data.osm_id, osm_type: item.data.osm_type }
-          : item.data,
+      data:
+        item.type === 'geocoding'
+          ? { lat: item.data.lat, lon: item.data.lon }
+          : item.type === 'boundary'
+            ? {
+                boundingbox: item.data.boundingbox,
+                osm_id: item.data.osm_id,
+                osm_type: item.data.osm_type,
+              }
+            : item.data,
     };
 
     const withoutDuplicate = this.history().filter((h) => h.label !== item.label);
@@ -415,43 +459,44 @@ export class SearchBarComponent implements OnInit, OnDestroy {
     fetch(apiUrl, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify({
         geojson: featureCollection,
         fileName: `${safeName}_limite`,
-        format: format
+        format: format,
+      }),
+    })
+      .then((response) => {
+        if (!response.ok) throw new Error('Export failed');
+        return response.blob();
       })
-    })
-    .then(response => {
-      if (!response.ok) throw new Error('Export failed');
-      return response.blob();
-    })
-    .then(blob => {
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = format === 'geojson' ? `${safeName}_limite.geojson` : `${safeName}_limite.zip`;
-      link.click();
-      URL.revokeObjectURL(url);
-    })
-    .catch(err => {
-      console.error('Error exporting boundary:', err);
-      // Fallback for GeoJSON in case of backend issues
-      if (format === 'geojson') {
-        const jsonStr = JSON.stringify(featureCollection, null, 2);
-        const localBlob = new Blob([jsonStr], { type: 'application/json' });
-        const localUrl = URL.createObjectURL(localBlob);
-        const localLink = document.createElement('a');
-        localLink.href = localUrl;
-        localLink.download = `${safeName}_limite.geojson`;
-        localLink.click();
-        URL.revokeObjectURL(localUrl);
-      }
-    })
-    .finally(() => {
-      this.downloadingBoundary.set(false);
-    });
+      .then((blob) => {
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download =
+          format === 'geojson' ? `${safeName}_limite.geojson` : `${safeName}_limite.zip`;
+        link.click();
+        URL.revokeObjectURL(url);
+      })
+      .catch((err) => {
+        console.error('Error exporting boundary:', err);
+        // Fallback for GeoJSON in case of backend issues
+        if (format === 'geojson') {
+          const jsonStr = JSON.stringify(featureCollection, null, 2);
+          const localBlob = new Blob([jsonStr], { type: 'application/json' });
+          const localUrl = URL.createObjectURL(localBlob);
+          const localLink = document.createElement('a');
+          localLink.href = localUrl;
+          localLink.download = `${safeName}_limite.geojson`;
+          localLink.click();
+          URL.revokeObjectURL(localUrl);
+        }
+      })
+      .finally(() => {
+        this.downloadingBoundary.set(false);
+      });
   }
 
   displayFn(item: SearchResultItem | string): string {

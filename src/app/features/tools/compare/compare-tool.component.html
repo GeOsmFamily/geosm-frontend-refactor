@@ -4,7 +4,11 @@
 
   @if (!comparing) {
     <mat-form-field appearance="outline" class="full-width">
-      <mat-label>{{ 'left_menu.fonds' | translate }} ({{ 'naviguation_tools.past_view' | translate }})</mat-label>
+      <mat-label
+        >{{ 'left_menu.fonds' | translate }} ({{
+          'naviguation_tools.past_view' | translate
+        }})</mat-label
+      >
       <mat-select [(ngModel)]="leftBaseMapId">
         @for (bm of baseMaps; track bm.id) {
           <mat-option [value]="bm.id" [disabled]="bm.id === rightBaseMapId">
@@ -15,7 +19,11 @@
     </mat-form-field>
 
     <mat-form-field appearance="outline" class="full-width">
-      <mat-label>{{ 'left_menu.fonds' | translate }} ({{ 'naviguation_tools.next_view' | translate }})</mat-label>
+      <mat-label
+        >{{ 'left_menu.fonds' | translate }} ({{
+          'naviguation_tools.next_view' | translate
+        }})</mat-label
+      >
       <mat-select [(ngModel)]="rightBaseMapId">
         @for (bm of baseMaps; track bm.id) {
           <mat-option [value]="bm.id" [disabled]="bm.id === leftBaseMapId">
@@ -29,9 +37,13 @@
       <p class="hint">Chargez au moins 2 fonds de carte pour les comparer.</p>
     }
 
-    <button mat-raised-button color="primary" class="full-width"
-            [disabled]="!leftBaseMapId || !rightBaseMapId"
-            (click)="startCompare()">
+    <button
+      mat-raised-button
+      color="primary"
+      class="full-width"
+      [disabled]="!leftBaseMapId || !rightBaseMapId"
+      (click)="startCompare()"
+    >
       <mat-icon>compare</mat-icon> {{ 'compare_maps.compare' | translate }}
     </button>
   } @else {
@@ -40,10 +52,18 @@
         <span>&larr; {{ 'naviguation_tools.past_view' | translate }}</span>
         <span>{{ 'naviguation_tools.next_view' | translate }} &rarr;</span>
       </div>
-      <input type="range" id="compare-swipe-range" aria-label="Position de balayage" min="0" max="100" [value]="swipePosition"
-             (input)="onSwipeInput($event)" class="swipe-slider">
+      <input
+        type="range"
+        id="compare-swipe-range"
+        aria-label="Position de balayage"
+        min="0"
+        max="100"
+        [value]="swipePosition"
+        (input)="onSwipeInput($event)"
+        class="swipe-slider"
+      />
 
-      <div class="swipe-value">{{ swipePosition | number:'1.0-0' }}%</div>
+      <div class="swipe-value">{{ swipePosition | number: '1.0-0' }}%</div>
     </div>
 
     <mat-divider></mat-divider>

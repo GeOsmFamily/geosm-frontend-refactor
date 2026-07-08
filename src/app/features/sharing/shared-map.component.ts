@@ -54,7 +54,7 @@ export class SharedMapComponent implements OnInit {
 
   private loadInstanceAndApply(share: ShareMap): void {
     if (!share.instanceSlug) {
-      this.error.set("Cette carte partagée fait référence à une instance introuvable.");
+      this.error.set('Cette carte partagée fait référence à une instance introuvable.');
       this.loading.set(false);
       return;
     }
@@ -77,13 +77,13 @@ export class SharedMapComponent implements OnInit {
             // Apply coordinates anyway even if catalog fails
             this.applyMapCoordinates(share);
             this.loading.set(false);
-          }
+          },
         });
       },
       error: () => {
         this.applyMapCoordinates(share);
         this.loading.set(false);
-      }
+      },
     });
   }
 
@@ -100,7 +100,7 @@ export class SharedMapComponent implements OnInit {
                 bbox: l.bbox || null,
                 tags: l.tags || [],
                 instanceId: group.instanceId || '',
-                subGroupId: sg.id
+                subGroupId: sg.id,
               });
             }
           }
@@ -126,10 +126,14 @@ export class SharedMapComponent implements OnInit {
 
     const state = share.mapState as Record<string, any>;
     if (state && Array.isArray(state['layers'])) {
-      const layersState = state['layers'] as { layerId: string; opacity: number; visible: boolean }[];
+      const layersState = state['layers'] as {
+        layerId: string;
+        opacity: number;
+        visible: boolean;
+      }[];
       setTimeout(() => {
         for (const layerEntry of layersState) {
-          const catalogLayer = catalogLayers.find(l => l.id === layerEntry.layerId);
+          const catalogLayer = catalogLayers.find((l) => l.id === layerEntry.layerId);
           if (catalogLayer) {
             this.mapLayerService.addLayer(catalogLayer);
             this.mapLayerService.setOpacity(catalogLayer.id, layerEntry.opacity);

@@ -74,7 +74,7 @@ export class LegendComponent implements OnInit, OnDestroy {
 
   toggleCollapse(item: LegendItem): void {
     this.legendItems.update((items) =>
-      items.map((i) => (i.layerId === item.layerId ? { ...i, collapsed: !i.collapsed } : i))
+      items.map((i) => (i.layerId === item.layerId ? { ...i, collapsed: !i.collapsed } : i)),
     );
   }
 }

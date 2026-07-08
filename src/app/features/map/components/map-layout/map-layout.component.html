@@ -2,7 +2,12 @@
   <!-- Header -->
   <header class="header">
     <div class="header-left">
-      <button mat-icon-button class="menu-btn" (click)="toggleLeftPanel()" [matTooltip]="'map.layers' | translate">
+      <button
+        mat-icon-button
+        class="menu-btn"
+        (click)="toggleLeftPanel()"
+        [matTooltip]="'map.layers' | translate"
+      >
         <mat-icon>{{ leftPanelOpen() ? 'menu_open' : 'menu' }}</mat-icon>
       </button>
       <div class="logo-group">
@@ -15,18 +20,32 @@
     </div>
 
     <div class="header-right">
-      <button mat-icon-button [matMenuTriggerFor]="langMenu" matTooltip="{{ 'common.language' | translate }}" class="header-action">
+      <button
+        mat-icon-button
+        [matMenuTriggerFor]="langMenu"
+        matTooltip="{{ 'common.language' | translate }}"
+        class="header-action"
+      >
         <mat-icon>translate</mat-icon>
       </button>
       <mat-menu #langMenu="matMenu" class="lang-menu">
         @for (lang of availableLanguages; track lang) {
-          <button mat-menu-item (click)="switchLanguage(lang)" [class.active-lang]="currentLang() === lang">
+          <button
+            mat-menu-item
+            (click)="switchLanguage(lang)"
+            [class.active-lang]="currentLang() === lang"
+          >
             <span class="lang-label">{{ lang | uppercase }}</span>
           </button>
         }
       </mat-menu>
 
-      <button mat-icon-button [matMenuTriggerFor]="userMenu" [matTooltip]="'common.myAccount' | translate" class="header-action user-btn">
+      <button
+        mat-icon-button
+        [matMenuTriggerFor]="userMenu"
+        [matTooltip]="'common.myAccount' | translate"
+        class="header-action user-btn"
+      >
         <mat-icon>person</mat-icon>
       </button>
       <mat-menu #userMenu="matMenu">
@@ -63,22 +82,58 @@
         }
       </mat-menu>
 
-      <button mat-icon-button (click)="toggleGeosignets()" [matTooltip]="'geosignets.title' | translate" class="header-action" [class.active]="geosignetsOpen()">
+      <button
+        mat-icon-button
+        (click)="toggleGeosignets()"
+        [matTooltip]="'geosignets.title' | translate"
+        class="header-action"
+        [class.active]="geosignetsOpen()"
+      >
         <mat-icon>bookmarks</mat-icon>
       </button>
-      <button mat-icon-button (click)="toggleMyMaps()" [matTooltip]="'myMaps.title' | translate" class="header-action" [class.active]="myMapsOpen()">
+      <button
+        mat-icon-button
+        (click)="toggleMyMaps()"
+        [matTooltip]="'myMaps.title' | translate"
+        class="header-action"
+        [class.active]="myMapsOpen()"
+      >
         <mat-icon>dashboard_customize</mat-icon>
       </button>
-      <button mat-icon-button (click)="toggleAssistant()" matTooltip="Assistant IA" class="header-action" [class.active]="assistantOpen()">
+      <button
+        mat-icon-button
+        (click)="toggleAssistant()"
+        matTooltip="Assistant IA"
+        class="header-action"
+        [class.active]="assistantOpen()"
+      >
         <mat-icon>auto_awesome</mat-icon>
       </button>
-      <button mat-icon-button (click)="toggleBaseMaps()" [matTooltip]="'map.baseMaps' | translate" class="header-action" [class.active]="baseMapsOpen()">
+      <button
+        mat-icon-button
+        (click)="toggleBaseMaps()"
+        [matTooltip]="'map.baseMaps' | translate"
+        class="header-action"
+        [class.active]="baseMapsOpen()"
+      >
         <mat-icon>map</mat-icon>
       </button>
-      <button mat-icon-button (click)="toggleToolsMenu()" [matTooltip]="'map.tools' | translate" class="header-action tools-btn" [class.active]="toolsMenuOpen() || activeTool()">
+      <button
+        mat-icon-button
+        (click)="toggleToolsMenu()"
+        [matTooltip]="'map.tools' | translate"
+        class="header-action tools-btn"
+        [class.active]="toolsMenuOpen() || activeTool()"
+      >
         <mat-icon>handyman</mat-icon>
       </button>
-      <button mat-icon-button (click)="toggleInfo()" [matTooltip]="'infoPanel.title' | translate" class="header-action" [class.active]="infoOpen()">
+      <button
+        mat-icon-button
+        (click)="toggleInfo()"
+        [matTooltip]="'infoPanel.title' | translate"
+        class="header-action"
+        [class.active]="infoOpen()"
+      >
         <mat-icon>info</mat-icon>
       </button>
     </div>
@@ -233,25 +288,51 @@
                 <span>Recherche de l'adresse...</span>
               </div>
             } @else if (locationInfo()) {
-              <div style="font-size: 13px; font-weight: 500; margin-bottom: 8px; color: var(--text)">
+              <div
+                style="font-size: 13px; font-weight: 500; margin-bottom: 8px; color: var(--text)"
+              >
                 {{ locationInfo()?.displayName }}
               </div>
-              <div style="font-size: 11px; font-family: monospace; color: var(--text-secondary); margin-bottom: 12px">
-                Lat: {{ locationInfo()?.lat | number:'1.6-6' }}<br>
-                Lon: {{ locationInfo()?.lon | number:'1.6-6' }}
+              <div
+                style="
+                  font-size: 11px;
+                  font-family: monospace;
+                  color: var(--text-secondary);
+                  margin-bottom: 12px;
+                "
+              >
+                Lat: {{ locationInfo()?.lat | number: '1.6-6' }}<br />
+                Lon: {{ locationInfo()?.lon | number: '1.6-6' }}
               </div>
               <div style="display: flex; gap: 8px">
-                <button mat-stroked-button color="primary" style="flex: 1; font-size: 11px; height: 32px" (click)="setRouteStartFromInfo()">
-                  <mat-icon style="font-size: 16px; width: 16px; height: 16px">trip_origin</mat-icon>
+                <button
+                  mat-stroked-button
+                  color="primary"
+                  style="flex: 1; font-size: 11px; height: 32px"
+                  (click)="setRouteStartFromInfo()"
+                >
+                  <mat-icon style="font-size: 16px; width: 16px; height: 16px"
+                    >trip_origin</mat-icon
+                  >
                   {{ 'right_menu.map_routing.start' | translate }}
                 </button>
-                <button mat-stroked-button color="primary" style="flex: 1; font-size: 11px; height: 32px" (click)="setRouteEndFromInfo()">
+                <button
+                  mat-stroked-button
+                  color="primary"
+                  style="flex: 1; font-size: 11px; height: 32px"
+                  (click)="setRouteEndFromInfo()"
+                >
                   <mat-icon style="font-size: 16px; width: 16px; height: 16px">place</mat-icon>
                   {{ 'right_menu.map_routing.destination' | translate }}
                 </button>
               </div>
               <div style="display: flex; gap: 8px; margin-top: 8px">
-                <button mat-flat-button color="accent" style="flex: 1; font-size: 11px; height: 32px" (click)="shareLocation()">
+                <button
+                  mat-flat-button
+                  color="accent"
+                  style="flex: 1; font-size: 11px; height: 32px"
+                  (click)="shareLocation()"
+                >
                   <mat-icon style="font-size: 16px; width: 16px; height: 16px">share</mat-icon>
                   Partager
                 </button>
@@ -275,9 +356,11 @@
           <div class="panel-body">
             <div class="tool-grid">
               @for (tool of tools; track tool.id) {
-                <button class="tool-btn"
-                        [class.active]="activeTool() === tool.id"
-                        (click)="selectTool(tool.id)">
+                <button
+                  class="tool-btn"
+                  [class.active]="activeTool() === tool.id"
+                  (click)="selectTool(tool.id)"
+                >
                   <div class="tool-icon-wrapper">
                     <mat-icon>{{ tool.icon }}</mat-icon>
                   </div>
@@ -302,19 +385,45 @@
           </div>
           <div class="panel-body">
             @switch (activeTool()) {
-              @case ('drawing') { <app-drawing-tool /> }
-              @case ('measure') { <app-measure-tool /> }
-              @case ('routing') { <app-routing-tool /> }
-              @case ('export') { <app-export-tool /> }
-              @case ('print') { <app-print-tool /> }
-              @case ('comment') { <app-comment-tool /> }
-              @case ('altimetry') { <app-altimetry-tool /> }
-              @case ('mapillary') { <app-mapillary-tool /> }
-              @case ('compare') { <app-compare-tool /> }
-              @case ('statistics') { <app-statistics-tool /> }
-              @case ('plan-localisation') { <app-plan-localisation-tool /> }
-              @case ('spatial-analysis') { <app-spatial-analysis-tool /> }
-              @case ('nearest-search') { <app-nearest-search-tool /> }
+              @case ('drawing') {
+                <app-drawing-tool />
+              }
+              @case ('measure') {
+                <app-measure-tool />
+              }
+              @case ('routing') {
+                <app-routing-tool />
+              }
+              @case ('export') {
+                <app-export-tool />
+              }
+              @case ('print') {
+                <app-print-tool />
+              }
+              @case ('comment') {
+                <app-comment-tool />
+              }
+              @case ('altimetry') {
+                <app-altimetry-tool />
+              }
+              @case ('mapillary') {
+                <app-mapillary-tool />
+              }
+              @case ('compare') {
+                <app-compare-tool />
+              }
+              @case ('statistics') {
+                <app-statistics-tool />
+              }
+              @case ('plan-localisation') {
+                <app-plan-localisation-tool />
+              }
+              @case ('spatial-analysis') {
+                <app-spatial-analysis-tool />
+              }
+              @case ('nearest-search') {
+                <app-nearest-search-tool />
+              }
             }
           </div>
         </div>
@@ -325,7 +434,7 @@
         @if (mousePosition | async; as pos) {
           <div class="coord-badge">
             <mat-icon>place</mat-icon>
-            <span>{{ pos[1] | number:'1.5-5' }}° N, {{ pos[0] | number:'1.5-5' }}° E</span>
+            <span>{{ pos[1] | number: '1.5-5' }}° N, {{ pos[0] | number: '1.5-5' }}° E</span>
           </div>
         }
         <div class="zoom-badge">
@@ -343,10 +452,22 @@
               <h3>Lien copié !</h3>
             </div>
             <div class="share-modal-body">
-              <p>Le lien de partage pour cette position a bien été copié dans votre presse-papiers :</p>
+              <p>
+                Le lien de partage pour cette position a bien été copié dans votre presse-papiers :
+              </p>
               <div class="share-link-box">
-                <input type="text" [value]="shareUrlText()" readonly class="share-link-input" #shareInput>
-                <button mat-icon-button (click)="copyShareLinkFromInput(shareInput.value)" matTooltip="Copier à nouveau">
+                <input
+                  type="text"
+                  [value]="shareUrlText()"
+                  readonly
+                  class="share-link-input"
+                  #shareInput
+                />
+                <button
+                  mat-icon-button
+                  (click)="copyShareLinkFromInput(shareInput.value)"
+                  matTooltip="Copier à nouveau"
+                >
                   <mat-icon>content_copy</mat-icon>
                 </button>
               </div>
@@ -357,7 +478,6 @@
           </div>
         </div>
       }
-
     </div>
   </div>
 </div>

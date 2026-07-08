@@ -10,7 +10,10 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
-import { AdminDataTableComponent, AdminTableColumn } from '../../../shared/components/admin-data-table/admin-data-table.component';
+import {
+  AdminDataTableComponent,
+  AdminTableColumn,
+} from '../../../shared/components/admin-data-table/admin-data-table.component';
 import { ConfirmDialogComponent } from '../../../../../shared/components/confirm-dialog/confirm-dialog.component';
 import { DefaultThemeService } from '../../../../../core/services/default-theme.service';
 import { DefaultTag, DefaultTheme } from '../../../../../core/models/index';
@@ -73,7 +76,10 @@ export class DefaultThemesComponent implements OnInit {
   private load(): void {
     this.loading.set(true);
     this.themeService.list().subscribe({
-      next: (list) => { this.themes.set(list); this.loading.set(false); },
+      next: (list) => {
+        this.themes.set(list);
+        this.loading.set(false);
+      },
       error: () => this.loading.set(false),
     });
   }
@@ -87,14 +93,22 @@ export class DefaultThemesComponent implements OnInit {
   }
 
   private openForm(data: ThemeFormDialogData): void {
-    const ref = this.dialog.open(ThemeFormDialogComponent, { data, width: '480px', maxWidth: '95vw' });
+    const ref = this.dialog.open(ThemeFormDialogComponent, {
+      data,
+      width: '480px',
+      maxWidth: '95vw',
+    });
     ref.afterClosed().subscribe((result) => {
       if (!result) return;
-      const request$ = data.mode === 'edit' && data.theme
-        ? this.themeService.update(data.theme.id, result)
-        : this.themeService.create(result);
+      const request$ =
+        data.mode === 'edit' && data.theme
+          ? this.themeService.update(data.theme.id, result)
+          : this.themeService.create(result);
       request$.subscribe({
-        next: () => { this.load(); this.notify('admin.catalog.saved'); },
+        next: () => {
+          this.load();
+          this.notify('admin.catalog.saved');
+        },
         error: (err) => this.notifyError(err),
       });
     });
@@ -110,7 +124,10 @@ export class DefaultThemesComponent implements OnInit {
     ref.afterClosed().subscribe((confirmed) => {
       if (!confirmed) return;
       this.themeService.delete(theme.id).subscribe({
-        next: () => { this.load(); this.notify('admin.catalog.deleted'); },
+        next: () => {
+          this.load();
+          this.notify('admin.catalog.deleted');
+        },
         error: (err) => this.notifyError(err),
       });
     });
@@ -127,8 +144,15 @@ export class DefaultThemesComponent implements OnInit {
       if (!confirmed) return;
       this.seeding.set(true);
       this.themeService.seed().subscribe({
-        next: () => { this.seeding.set(false); this.load(); this.notify('admin.catalog.seedThemesDone'); },
-        error: (err) => { this.seeding.set(false); this.notifyError(err); },
+        next: () => {
+          this.seeding.set(false);
+          this.load();
+          this.notify('admin.catalog.seedThemesDone');
+        },
+        error: (err) => {
+          this.seeding.set(false);
+          this.notifyError(err);
+        },
       });
     });
   }
@@ -138,7 +162,10 @@ export class DefaultThemesComponent implements OnInit {
     this.tagForm.reset();
     this.loadingTags.set(true);
     this.themeService.listTags(theme.id).subscribe({
-      next: (tags) => { this.tags.set(tags); this.loadingTags.set(false); },
+      next: (tags) => {
+        this.tags.set(tags);
+        this.loadingTags.set(false);
+      },
       error: () => this.loadingTags.set(false),
     });
   }
@@ -168,6 +195,8 @@ export class DefaultThemesComponent implements OnInit {
 
   private notifyError(err: unknown): void {
     const message = (err as { error?: { error?: { message?: string } } })?.error?.error?.message;
-    this.snackBar.open(message ?? this.translate.instant('common.error'), undefined, { duration: 4000 });
+    this.snackBar.open(message ?? this.translate.instant('common.error'), undefined, {
+      duration: 4000,
+    });
   }
 }

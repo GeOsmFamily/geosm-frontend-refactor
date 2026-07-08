@@ -18,6 +18,11 @@ export class NearestFeatureService {
   private readonly api = inject(ApiService);
 
   find(layerId: string, lon: number, lat: number, limit = 3): Observable<NearestFeatureResult[]> {
-    return this.api.get<NearestFeatureResult[]>('/routing/nearest-feature', { layerId, lon, lat, limit });
+    return this.api.get<NearestFeatureResult[]>('/routing/nearest-feature', {
+      layerId,
+      lon,
+      lat,
+      limit,
+    });
   }
 }

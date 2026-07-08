@@ -10,11 +10,20 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { GroupService } from '../../../../../core/services/group.service';
 import { LayerService } from '../../../../../core/services/layer.service';
 import { Group, Layer, SubGroup } from '../../../../../core/models/index';
-import { AdminDataTableComponent, AdminTableColumn } from '../../../shared/components/admin-data-table/admin-data-table.component';
+import {
+  AdminDataTableComponent,
+  AdminTableColumn,
+} from '../../../shared/components/admin-data-table/admin-data-table.component';
 import { ConfirmDialogComponent } from '../../../../../shared/components/confirm-dialog/confirm-dialog.component';
-import { GroupFormDialogComponent, GroupFormDialogData } from '../shared-dialogs/group-form-dialog.component';
+import {
+  GroupFormDialogComponent,
+  GroupFormDialogData,
+} from '../shared-dialogs/group-form-dialog.component';
 import { LayerDetailDialogComponent } from '../layer-detail/layer-detail-dialog.component';
-import { LayerCreationWizardComponent, LayerCreationWizardData } from '../layer-detail/layer-creation-wizard/layer-creation-wizard.component';
+import {
+  LayerCreationWizardComponent,
+  LayerCreationWizardData,
+} from '../layer-detail/layer-creation-wizard/layer-creation-wizard.component';
 
 type Level = 'groups' | 'subgroups' | 'layers';
 
@@ -101,13 +110,15 @@ export class CatalogTreeComponent implements OnChanges {
 
   private loadLayers(): void {
     this.loading.set(true);
-    this.layerService.list(this.instanceId, { subGroupId: this.currentSubGroup()!.id, limit: 100 }).subscribe({
-      next: (res) => {
-        this.layers.set(res.data);
-        this.loading.set(false);
-      },
-      error: () => this.loading.set(false),
-    });
+    this.layerService
+      .list(this.instanceId, { subGroupId: this.currentSubGroup()!.id, limit: 100 })
+      .subscribe({
+        next: (res) => {
+          this.layers.set(res.data);
+          this.loading.set(false);
+        },
+        error: () => this.loading.set(false),
+      });
   }
 
   openGroup(group: Group): void {
@@ -157,26 +168,38 @@ export class CatalogTreeComponent implements OnChanges {
   }
 
   openCreateGroupDialog(): void {
-    const ref = this.dialog.open<GroupFormDialogComponent, GroupFormDialogData>(GroupFormDialogComponent, {
-      data: { kind: 'group', mode: 'create' },
-    });
+    const ref = this.dialog.open<GroupFormDialogComponent, GroupFormDialogData>(
+      GroupFormDialogComponent,
+      {
+        data: { kind: 'group', mode: 'create' },
+      },
+    );
     ref.afterClosed().subscribe((dto) => {
       if (!dto) return;
       this.groupService.createGroup(this.instanceId, dto).subscribe({
-        next: () => { this.notify('admin.catalog.created'); this.loadGroups(); },
+        next: () => {
+          this.notify('admin.catalog.created');
+          this.loadGroups();
+        },
         error: (err) => this.notifyError(err),
       });
     });
   }
 
   openEditGroupDialog(group: Group): void {
-    const ref = this.dialog.open<GroupFormDialogComponent, GroupFormDialogData>(GroupFormDialogComponent, {
-      data: { kind: 'group', mode: 'edit', entity: group },
-    });
+    const ref = this.dialog.open<GroupFormDialogComponent, GroupFormDialogData>(
+      GroupFormDialogComponent,
+      {
+        data: { kind: 'group', mode: 'edit', entity: group },
+      },
+    );
     ref.afterClosed().subscribe((dto) => {
       if (!dto) return;
       this.groupService.updateGroup(this.instanceId, group.id, dto).subscribe({
-        next: () => { this.notify('admin.catalog.updated'); this.loadGroups(); },
+        next: () => {
+          this.notify('admin.catalog.updated');
+          this.loadGroups();
+        },
         error: (err) => this.notifyError(err),
       });
     });
@@ -185,33 +208,48 @@ export class CatalogTreeComponent implements OnChanges {
   confirmDeleteGroup(group: Group): void {
     this.confirmDelete(group.name, () =>
       this.groupService.deleteGroup(this.instanceId, group.id).subscribe({
-        next: () => { this.notify('admin.catalog.deleted'); this.loadGroups(); },
+        next: () => {
+          this.notify('admin.catalog.deleted');
+          this.loadGroups();
+        },
         error: (err) => this.notifyError(err),
       }),
     );
   }
 
   openCreateSubGroupDialog(): void {
-    const ref = this.dialog.open<GroupFormDialogComponent, GroupFormDialogData>(GroupFormDialogComponent, {
-      data: { kind: 'subgroup', mode: 'create' },
-    });
+    const ref = this.dialog.open<GroupFormDialogComponent, GroupFormDialogData>(
+      GroupFormDialogComponent,
+      {
+        data: { kind: 'subgroup', mode: 'create' },
+      },
+    );
     ref.afterClosed().subscribe((dto) => {
       if (!dto) return;
       this.groupService.createSubGroup(this.currentGroup()!.id, dto).subscribe({
-        next: () => { this.notify('admin.catalog.created'); this.loadSubGroups(this.currentGroup()!.id); },
+        next: () => {
+          this.notify('admin.catalog.created');
+          this.loadSubGroups(this.currentGroup()!.id);
+        },
         error: (err) => this.notifyError(err),
       });
     });
   }
 
   openEditSubGroupDialog(subGroup: SubGroup): void {
-    const ref = this.dialog.open<GroupFormDialogComponent, GroupFormDialogData>(GroupFormDialogComponent, {
-      data: { kind: 'subgroup', mode: 'edit', entity: subGroup },
-    });
+    const ref = this.dialog.open<GroupFormDialogComponent, GroupFormDialogData>(
+      GroupFormDialogComponent,
+      {
+        data: { kind: 'subgroup', mode: 'edit', entity: subGroup },
+      },
+    );
     ref.afterClosed().subscribe((dto) => {
       if (!dto) return;
       this.groupService.updateSubGroup(this.currentGroup()!.id, subGroup.id, dto).subscribe({
-        next: () => { this.notify('admin.catalog.updated'); this.loadSubGroups(this.currentGroup()!.id); },
+        next: () => {
+          this.notify('admin.catalog.updated');
+          this.loadSubGroups(this.currentGroup()!.id);
+        },
         error: (err) => this.notifyError(err),
       });
     });
@@ -220,22 +258,28 @@ export class CatalogTreeComponent implements OnChanges {
   confirmDeleteSubGroup(subGroup: SubGroup): void {
     this.confirmDelete(subGroup.name, () =>
       this.groupService.deleteSubGroup(this.currentGroup()!.id, subGroup.id).subscribe({
-        next: () => { this.notify('admin.catalog.deleted'); this.loadSubGroups(this.currentGroup()!.id); },
+        next: () => {
+          this.notify('admin.catalog.deleted');
+          this.loadSubGroups(this.currentGroup()!.id);
+        },
         error: (err) => this.notifyError(err),
       }),
     );
   }
 
   openCreateLayerDialog(): void {
-    const ref = this.dialog.open<LayerCreationWizardComponent, LayerCreationWizardData>(LayerCreationWizardComponent, {
-      data: {
-        instanceId: this.instanceId,
-        subGroupId: this.currentSubGroup()!.id,
-        themeColor: this.currentGroup()?.color ?? undefined,
+    const ref = this.dialog.open<LayerCreationWizardComponent, LayerCreationWizardData>(
+      LayerCreationWizardComponent,
+      {
+        data: {
+          instanceId: this.instanceId,
+          subGroupId: this.currentSubGroup()!.id,
+          themeColor: this.currentGroup()?.color ?? undefined,
+        },
+        width: '760px',
+        maxWidth: '95vw',
       },
-      width: '760px',
-      maxWidth: '95vw',
-    });
+    );
     ref.afterClosed().subscribe((created) => {
       if (!created) return;
       this.loadLayers();
@@ -246,7 +290,10 @@ export class CatalogTreeComponent implements OnChanges {
     event.stopPropagation();
     this.confirmDelete(layer.name, () =>
       this.layerService.delete(this.instanceId, layer.id).subscribe({
-        next: () => { this.notify('admin.catalog.deleted'); this.loadLayers(); },
+        next: () => {
+          this.notify('admin.catalog.deleted');
+          this.loadLayers();
+        },
         error: (err) => this.notifyError(err),
       }),
     );
@@ -270,6 +317,8 @@ export class CatalogTreeComponent implements OnChanges {
 
   private notifyError(err: unknown): void {
     const message = (err as { error?: { error?: { message?: string } } })?.error?.error?.message;
-    this.snackBar.open(message ?? this.translate.instant('common.error'), undefined, { duration: 4000 });
+    this.snackBar.open(message ?? this.translate.instant('common.error'), undefined, {
+      duration: 4000,
+    });
   }
 }

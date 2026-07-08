@@ -30,12 +30,22 @@
         </div>
 
         <div class="row toggles">
-          <mat-slide-toggle formControlName="isVisible">{{ 'admin.catalog.isVisible' | translate }}</mat-slide-toggle>
-          <mat-slide-toggle formControlName="isQueryable">{{ 'admin.catalog.isQueryable' | translate }}</mat-slide-toggle>
+          <mat-slide-toggle formControlName="isVisible">{{
+            'admin.catalog.isVisible' | translate
+          }}</mat-slide-toggle>
+          <mat-slide-toggle formControlName="isQueryable">{{
+            'admin.catalog.isQueryable' | translate
+          }}</mat-slide-toggle>
         </div>
 
         <div class="actions-row">
-          <button mat-flat-button color="primary" type="button" (click)="saveLayer()" [disabled]="form.invalid">
+          <button
+            mat-flat-button
+            color="primary"
+            type="button"
+            (click)="saveLayer()"
+            [disabled]="form.invalid"
+          >
             {{ 'common.save' | translate }}
           </button>
         </div>
@@ -53,7 +63,12 @@
               <textarea matInput formControlName="sldBody" rows="8" class="code-area"></textarea>
             </mat-form-field>
             <div class="actions-row">
-              <button mat-stroked-button type="button" (click)="saveSld()" [disabled]="savingStyle()">
+              <button
+                mat-stroked-button
+                type="button"
+                (click)="saveSld()"
+                [disabled]="savingStyle()"
+              >
                 {{ 'admin.catalog.saveSld' | translate }}
               </button>
             </div>
@@ -62,10 +77,20 @@
           <form [formGroup]="mapboxForm">
             <mat-form-field appearance="outline" class="full-width">
               <mat-label>{{ 'admin.catalog.mapboxStyle' | translate }}</mat-label>
-              <textarea matInput formControlName="mapboxStyle" rows="8" class="code-area"></textarea>
+              <textarea
+                matInput
+                formControlName="mapboxStyle"
+                rows="8"
+                class="code-area"
+              ></textarea>
             </mat-form-field>
             <div class="actions-row">
-              <button mat-stroked-button type="button" (click)="saveMapbox()" [disabled]="savingStyle()">
+              <button
+                mat-stroked-button
+                type="button"
+                (click)="saveMapbox()"
+                [disabled]="savingStyle()"
+              >
                 {{ 'admin.catalog.saveMapbox' | translate }}
               </button>
               <button mat-button color="warn" type="button" (click)="confirmResetStyle()">
@@ -85,7 +110,12 @@
             <strong>{{ 'admin.catalog.resyncTitle' | translate }}</strong>
             <p>{{ 'admin.catalog.resyncHint' | translate }}</p>
           </div>
-          <button mat-stroked-button type="button" (click)="confirmResync()" [disabled]="resyncing()">
+          <button
+            mat-stroked-button
+            type="button"
+            (click)="confirmResync()"
+            [disabled]="resyncing()"
+          >
             @if (resyncing()) {
               <mat-progress-spinner mode="indeterminate" diameter="18"></mat-progress-spinner>
             } @else {
@@ -100,7 +130,12 @@
             <strong>{{ 'admin.catalog.sourceFile' | translate }}</strong>
             <p>{{ 'admin.catalog.sourceFileHint' | translate }}</p>
           </div>
-          <button mat-stroked-button type="button" (click)="downloadSourceFile()" [disabled]="loadingSource()">
+          <button
+            mat-stroked-button
+            type="button"
+            (click)="downloadSourceFile()"
+            [disabled]="loadingSource()"
+          >
             <mat-icon>download</mat-icon>
             {{ 'admin.catalog.download' | translate }}
           </button>

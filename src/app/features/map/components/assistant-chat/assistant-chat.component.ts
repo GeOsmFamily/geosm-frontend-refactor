@@ -10,7 +10,13 @@ import VectorLayer from 'ol/layer/Vector';
 import VectorSource from 'ol/source/Vector';
 import { Style, Stroke, Fill, Circle as CircleStyle } from 'ol/style';
 
-import { AssistantService, AssistantChatTurn, AssistantClientAction, AssistantAttachment, AssistantConversationSummary } from '../../../../core/services/assistant.service';
+import {
+  AssistantService,
+  AssistantChatTurn,
+  AssistantClientAction,
+  AssistantAttachment,
+  AssistantConversationSummary,
+} from '../../../../core/services/assistant.service';
 import { InstanceService } from '../../../../core/services/instance.service';
 import { AnalyticsService } from '../../../../core/services/analytics.service';
 import { LayerService } from '../../../../core/services/layer.service';
@@ -22,7 +28,8 @@ interface DisplayMessage extends AssistantChatTurn {
   attachments?: AssistantAttachment[];
 }
 
-const WELCOME_TEXT = 'Bonjour ! Je peux vous aider à explorer la carte : activer des couches, chercher un lieu, générer un plan de localisation, calculer une zone tampon... Que puis-je faire pour vous ?';
+const WELCOME_TEXT =
+  'Bonjour ! Je peux vous aider à explorer la carte : activer des couches, chercher un lieu, générer un plan de localisation, calculer une zone tampon... Que puis-je faire pour vous ?';
 
 @Component({
   selector: 'app-assistant-chat',
@@ -85,7 +92,10 @@ export class AssistantChatComponent implements OnInit, OnDestroy {
     if (!instance) return;
 
     this.assistantService.createConversation(instance.id).subscribe((conv) => {
-      this.conversations.update((list) => [{ id: conv.id, title: conv.title, updatedAt: conv.updatedAt }, ...list]);
+      this.conversations.update((list) => [
+        { id: conv.id, title: conv.title, updatedAt: conv.updatedAt },
+        ...list,
+      ]);
       this.activeConversationId.set(conv.id);
       this.messages.set([{ role: 'model', text: WELCOME_TEXT }]);
     });
@@ -97,7 +107,9 @@ export class AssistantChatComponent implements OnInit, OnDestroy {
     this.loadingConversation.set(true);
     this.assistantService.getConversation(id).subscribe({
       next: (conv) => {
-        this.messages.set(conv.messages.length > 0 ? conv.messages : [{ role: 'model', text: WELCOME_TEXT }]);
+        this.messages.set(
+          conv.messages.length > 0 ? conv.messages : [{ role: 'model', text: WELCOME_TEXT }],
+        );
         this.loadingConversation.set(false);
         this.scrollToBottom();
       },
@@ -145,18 +157,26 @@ export class AssistantChatComponent implements OnInit, OnDestroy {
     this.inputText = '';
     this.sending.set(true);
     this.scrollToBottom();
-    this.analyticsService.trackEvent({ instanceId: instance.id, eventType: 'assistant_message_sent' }).subscribe({ error: () => {} });
+    this.analyticsService
+      .trackEvent({ instanceId: instance.id, eventType: 'assistant_message_sent' })
+      .subscribe({ error: () => {} });
 
     this.assistantService.chat(instance.id, conversationId, text).subscribe({
       next: (result) => {
-        this.messages.update((m) => [...m, { role: 'model', text: result.reply || '...', attachments: result.attachments }]);
+        this.messages.update((m) => [
+          ...m,
+          { role: 'model', text: result.reply || '...', attachments: result.attachments },
+        ]);
         this.executeClientActions(instance.id, result.clientActions);
         this.refreshConversationSummary(conversationId, text);
         this.sending.set(false);
         this.scrollToBottom();
       },
       error: () => {
-        this.messages.update((m) => [...m, { role: 'model', text: 'Désolé, une erreur est survenue. Réessayez.' }]);
+        this.messages.update((m) => [
+          ...m,
+          { role: 'model', text: 'Désolé, une erreur est survenue. Réessayez.' },
+        ]);
         this.sending.set(false);
         this.scrollToBottom();
       },
@@ -171,7 +191,9 @@ export class AssistantChatComponent implements OnInit, OnDestroy {
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        const fileTitle = attachment.title ? attachment.title.toLowerCase().replace(/\s+/g, '-') : 'plan-localisation';
+        const fileTitle = attachment.title
+          ? attachment.title.toLowerCase().replace(/\s+/g, '-')
+          : 'plan-localisation';
         a.download = `${fileTitle}-${Date.now()}.pdf`;
         a.click();
         URL.revokeObjectURL(url);
@@ -218,16 +240,26 @@ export class AssistantChatComponent implements OnInit, OnDestroy {
         new Style({
           stroke: new Stroke({ color: '#00ada7', width: 3, lineDash: [8, 4] }),
           fill: new Fill({ color: 'rgba(0, 173, 167, 0.18)' }),
-          image: new CircleStyle({ radius: 7, stroke: new Stroke({ color: '#00ada7', width: 2 }), fill: new Fill({ color: '#ffffff' }) }),
+          image: new CircleStyle({
+            radius: 7,
+            stroke: new Stroke({ color: '#00ada7', width: 2 }),
+            fill: new Fill({ color: '#ffffff' }),
+          }),
         }),
       );
     }
     const format = new GeoJSONFormat();
-    const olGeometry = format.readGeometry(geometry, { featureProjection: 'EPSG:3857', dataProjection: 'EPSG:4326' });
+    const olGeometry = format.readGeometry(geometry, {
+      featureProjection: 'EPSG:3857',
+      dataProjection: 'EPSG:4326',
+    });
     const source = this.resultLayer.getSource()!;
     source.clear();
     source.addFeature(new Feature(olGeometry));
-    this.mapService.getMap().getView().fit(olGeometry.getExtent(), { padding: [80, 80, 80, 80], maxZoom: 16, duration: 400 });
+    this.mapService
+      .getMap()
+      .getView()
+      .fit(olGeometry.getExtent(), { padding: [80, 80, 80, 80], maxZoom: 16, duration: 400 });
     this.mapResultVisible.set(true);
   }
 

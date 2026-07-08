@@ -39,7 +39,9 @@ export interface FeedbackDetailDialogResult {
   styleUrl: './feedback-detail-dialog.component.scss',
 })
 export class FeedbackDetailDialogComponent {
-  readonly dialogRef = inject(MatDialogRef<FeedbackDetailDialogComponent, FeedbackDetailDialogResult>);
+  readonly dialogRef = inject(
+    MatDialogRef<FeedbackDetailDialogComponent, FeedbackDetailDialogResult>,
+  );
   readonly data = inject<FeedbackDetailDialogData>(MAT_DIALOG_DATA);
 
   status: FeedbackStatus = this.data.feedback.status;

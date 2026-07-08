@@ -149,13 +149,13 @@ export class PrintToolComponent {
         pdf.setFontSize(8);
         pdf.setTextColor(71, 85, 105);
         pdf.text(`Échelle : ${scaleText}`, margin, yPos);
-        
+
         pdf.setDrawColor(71, 85, 105);
         pdf.setLineWidth(0.3);
         pdf.line(margin, yPos + 1.5, margin + 20, yPos + 1.5);
         pdf.line(margin, yPos + 0.8, margin, yPos + 2.2);
         pdf.line(margin + 20, yPos + 0.8, margin + 20, yPos + 2.2);
-        
+
         yPos += 8;
       }
 
@@ -177,10 +177,19 @@ export class PrintToolComponent {
         hour: '2-digit',
         minute: '2-digit',
       });
-      pdf.text(`Lat/Lon: ${center[1].toFixed(5)}, ${center[0].toFixed(5)} | Zoom: ${zoom.toFixed(0)} | Date: ${now}`, margin, pageHeight - 10);
+      pdf.text(
+        `Lat/Lon: ${center[1].toFixed(5)}, ${center[0].toFixed(5)} | Zoom: ${zoom.toFixed(0)} | Date: ${now}`,
+        margin,
+        pageHeight - 10,
+      );
 
       // Attributions on the right
-      pdf.text('Données © OpenStreetMap contributors | Propulsé par GeOSM', pageWidth - margin, pageHeight - 10, { align: 'right' });
+      pdf.text(
+        'Données © OpenStreetMap contributors | Propulsé par GeOSM',
+        pageWidth - margin,
+        pageHeight - 10,
+        { align: 'right' },
+      );
 
       // Save PDF
       const fileTitle = this.title ? this.title.toLowerCase().replace(/\s+/g, '-') : 'carte';

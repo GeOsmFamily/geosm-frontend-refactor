@@ -29,8 +29,17 @@ import { createClusterLayer } from '../../../../../map/helpers/map.helper';
 import { LayerService } from '../../../../../../core/services/layer.service';
 import { OsmService, OsmGeometryKind } from '../../../../../../core/services/osm.service';
 import { QgisProjectService } from '../../../../../../core/services/qgis-project.service';
-import { GeometryTypeEnum, Layer, OsmTagCondition, QgisProjectLayerInfo, StagedFileImport } from '../../../../../../core/models/index';
-import { IconPickerComponent, IconShape } from '../../../../shared/components/icon-picker/icon-picker.component';
+import {
+  GeometryTypeEnum,
+  Layer,
+  OsmTagCondition,
+  QgisProjectLayerInfo,
+  StagedFileImport,
+} from '../../../../../../core/models/index';
+import {
+  IconPickerComponent,
+  IconShape,
+} from '../../../../shared/components/icon-picker/icon-picker.component';
 
 export interface LayerCreationWizardData {
   instanceId: string;
@@ -42,7 +51,14 @@ export interface LayerCreationWizardData {
 
 type SourceType = 'file' | 'osm' | 'qgis';
 
-const GEOMETRY_TYPES: GeometryTypeEnum[] = ['POINT', 'LINESTRING', 'POLYGON', 'MULTIPOINT', 'MULTILINESTRING', 'MULTIPOLYGON'];
+const GEOMETRY_TYPES: GeometryTypeEnum[] = [
+  'POINT',
+  'LINESTRING',
+  'POLYGON',
+  'MULTIPOINT',
+  'MULTILINESTRING',
+  'MULTIPOLYGON',
+];
 
 @Component({
   selector: 'app-layer-creation-wizard',
@@ -81,9 +97,9 @@ export class LayerCreationWizardComponent {
   readonly dialogRef = inject(MatDialogRef<LayerCreationWizardComponent>);
   readonly data: LayerCreationWizardData = inject(MAT_DIALOG_DATA);
 
-  readonly stepperOrientation = this.breakpointObserver.observe(Breakpoints.Handset).pipe(
-    rxMap((result) => (result.matches ? 'vertical' : 'horizontal')),
-  );
+  readonly stepperOrientation = this.breakpointObserver
+    .observe(Breakpoints.Handset)
+    .pipe(rxMap((result) => (result.matches ? 'vertical' : 'horizontal')));
 
   @ViewChild('previewMap') private previewMapEl?: ElementRef<HTMLDivElement>;
   private map?: Map;
@@ -112,7 +128,9 @@ export class LayerCreationWizardComponent {
   readonly qgisUploading = signal(false);
   readonly qgisProject = signal<{ id: string } | null>(null);
   readonly qgisLayers = signal<QgisProjectLayerInfo[]>([]);
-  readonly qgisSelected = signal<Record<string, { selected: boolean; displayName: string; geometryType: GeometryTypeEnum }>>({});
+  readonly qgisSelected = signal<
+    Record<string, { selected: boolean; displayName: string; geometryType: GeometryTypeEnum }>
+  >({});
 
   // ── Publication ──
   readonly publishForm = this.fb.nonNullable.group({
@@ -160,7 +178,10 @@ export class LayerCreationWizardComponent {
         this.staging.set(result);
         this.renderPreview(result.preview);
       },
-      error: (err) => { this.stagingLoading.set(false); this.notifyError(err); },
+      error: (err) => {
+        this.stagingLoading.set(false);
+        this.notifyError(err);
+      },
     });
   }
 
@@ -182,7 +203,10 @@ export class LayerCreationWizardComponent {
 
   addOsmCondition(): void {
     if (!this.osmKeyInput.trim() || !this.osmValueInput.trim()) return;
-    this.osmConditions.set([...this.osmConditions(), { key: this.osmKeyInput.trim(), value: this.osmValueInput.trim() }]);
+    this.osmConditions.set([
+      ...this.osmConditions(),
+      { key: this.osmKeyInput.trim(), value: this.osmValueInput.trim() },
+    ]);
     this.osmKeyInput = '';
     this.osmValueInput = '';
     this.osmTagValues.set([]);
@@ -196,8 +220,15 @@ export class LayerCreationWizardComponent {
     if (this.osmConditions().length === 0) return;
     this.osmLoading.set(true);
     this.osmService.preview(this.osmConditions(), [this.osmGeometryType()], 200).subscribe({
-      next: (fc) => { this.osmLoading.set(false); this.osmPreview.set(fc); this.renderPreview(fc); },
-      error: (err) => { this.osmLoading.set(false); this.notifyError(err); },
+      next: (fc) => {
+        this.osmLoading.set(false);
+        this.osmPreview.set(fc);
+        this.renderPreview(fc);
+      },
+      error: (err) => {
+        this.osmLoading.set(false);
+        this.notifyError(err);
+      },
     });
   }
 
@@ -210,43 +241,68 @@ export class LayerCreationWizardComponent {
   uploadQgisProject(): void {
     if (!this.qgisFileRef || !this.qgisProjectName.trim()) return;
     this.qgisUploading.set(true);
-    this.qgisProjectService.upload(this.data.instanceId, { file: this.qgisFileRef, name: this.qgisProjectName.trim() }).subscribe({
-      next: (project) => {
-        this.qgisProject.set({ id: project.id });
-        this.qgisProjectService.listLayers(this.data.instanceId, project.id).subscribe({
-          next: (layers) => {
-            this.qgisUploading.set(false);
-            this.qgisLayers.set(layers);
-            const selection: Record<string, { selected: boolean; displayName: string; geometryType: GeometryTypeEnum }> = {};
-            for (const l of layers) {
-              selection[l.name] = { selected: false, displayName: l.title || l.name, geometryType: 'POLYGON' };
-            }
-            this.qgisSelected.set(selection);
-          },
-          error: (err) => { this.qgisUploading.set(false); this.notifyError(err); },
-        });
-      },
-      error: (err) => { this.qgisUploading.set(false); this.notifyError(err); },
-    });
+    this.qgisProjectService
+      .upload(this.data.instanceId, { file: this.qgisFileRef, name: this.qgisProjectName.trim() })
+      .subscribe({
+        next: (project) => {
+          this.qgisProject.set({ id: project.id });
+          this.qgisProjectService.listLayers(this.data.instanceId, project.id).subscribe({
+            next: (layers) => {
+              this.qgisUploading.set(false);
+              this.qgisLayers.set(layers);
+              const selection: Record<
+                string,
+                { selected: boolean; displayName: string; geometryType: GeometryTypeEnum }
+              > = {};
+              for (const l of layers) {
+                selection[l.name] = {
+                  selected: false,
+                  displayName: l.title || l.name,
+                  geometryType: 'POLYGON',
+                };
+              }
+              this.qgisSelected.set(selection);
+            },
+            error: (err) => {
+              this.qgisUploading.set(false);
+              this.notifyError(err);
+            },
+          });
+        },
+        error: (err) => {
+          this.qgisUploading.set(false);
+          this.notifyError(err);
+        },
+      });
   }
 
   toggleQgisLayer(name: string, checked: boolean): void {
-    this.qgisSelected.set({ ...this.qgisSelected(), [name]: { ...this.qgisSelected()[name], selected: checked } });
+    this.qgisSelected.set({
+      ...this.qgisSelected(),
+      [name]: { ...this.qgisSelected()[name], selected: checked },
+    });
   }
 
   updateQgisDisplayName(name: string, value: string): void {
-    this.qgisSelected.set({ ...this.qgisSelected(), [name]: { ...this.qgisSelected()[name], displayName: value } });
+    this.qgisSelected.set({
+      ...this.qgisSelected(),
+      [name]: { ...this.qgisSelected()[name], displayName: value },
+    });
   }
 
   updateQgisGeometryType(name: string, value: GeometryTypeEnum): void {
-    this.qgisSelected.set({ ...this.qgisSelected(), [name]: { ...this.qgisSelected()[name], geometryType: value } });
+    this.qgisSelected.set({
+      ...this.qgisSelected(),
+      [name]: { ...this.qgisSelected()[name], geometryType: value },
+    });
   }
 
   // ── Publication ──
   canPublish(): boolean {
     if (this.sourceType() === 'file') return !!this.staging();
     if (this.sourceType() === 'osm') return this.osmConditions().length > 0;
-    if (this.sourceType() === 'qgis') return Object.values(this.qgisSelected()).some((s) => s.selected);
+    if (this.sourceType() === 'qgis')
+      return Object.values(this.qgisSelected()).some((s) => s.selected);
     return false;
   }
 
@@ -258,38 +314,69 @@ export class LayerCreationWizardComponent {
     if (this.sourceType() === 'file') {
       const staging = this.staging();
       if (!staging) return;
-      this.layerService.confirmFileImport(this.data.instanceId, {
-        stagingTable: staging.stagingTable,
-        name,
-        description: description || undefined,
-        subGroupId: this.data.subGroupId,
-        isVisible,
-      }).subscribe({
-        next: (layer) => { this.publishing.set(false); this.createdLayer.set(layer); this.notify('admin.catalog.wizard.published'); },
-        error: (err) => { this.publishing.set(false); this.notifyError(err); },
-      });
+      this.layerService
+        .confirmFileImport(this.data.instanceId, {
+          stagingTable: staging.stagingTable,
+          name,
+          description: description || undefined,
+          subGroupId: this.data.subGroupId,
+          isVisible,
+        })
+        .subscribe({
+          next: (layer) => {
+            this.publishing.set(false);
+            this.createdLayer.set(layer);
+            this.notify('admin.catalog.wizard.published');
+          },
+          error: (err) => {
+            this.publishing.set(false);
+            this.notifyError(err);
+          },
+        });
     } else if (this.sourceType() === 'osm') {
-      this.layerService.confirmOsmImport(this.data.instanceId, {
-        name,
-        description: description || undefined,
-        subGroupId: this.data.subGroupId,
-        geometryType: this.osmGeometryType().toUpperCase(),
-        conditions: this.osmConditions(),
-        isVisible,
-      }).subscribe({
-        next: (layer) => { this.publishing.set(false); this.createdLayer.set(layer); this.notify('admin.catalog.wizard.published'); },
-        error: (err) => { this.publishing.set(false); this.notifyError(err); },
-      });
+      this.layerService
+        .confirmOsmImport(this.data.instanceId, {
+          name,
+          description: description || undefined,
+          subGroupId: this.data.subGroupId,
+          geometryType: this.osmGeometryType().toUpperCase(),
+          conditions: this.osmConditions(),
+          isVisible,
+        })
+        .subscribe({
+          next: (layer) => {
+            this.publishing.set(false);
+            this.createdLayer.set(layer);
+            this.notify('admin.catalog.wizard.published');
+          },
+          error: (err) => {
+            this.publishing.set(false);
+            this.notifyError(err);
+          },
+        });
     } else if (this.sourceType() === 'qgis') {
       const project = this.qgisProject();
       if (!project) return;
       const layers = Object.entries(this.qgisSelected())
         .filter(([, v]) => v.selected)
-        .map(([layerName, v]) => ({ layerName, displayName: v.displayName, geometryType: v.geometryType }));
-      this.qgisProjectService.confirmLayers(this.data.instanceId, project.id, this.data.subGroupId, layers).subscribe({
-        next: (created) => { this.publishing.set(false); this.createdLayers.set(created); this.notify('admin.catalog.wizard.published'); },
-        error: (err) => { this.publishing.set(false); this.notifyError(err); },
-      });
+        .map(([layerName, v]) => ({
+          layerName,
+          displayName: v.displayName,
+          geometryType: v.geometryType,
+        }));
+      this.qgisProjectService
+        .confirmLayers(this.data.instanceId, project.id, this.data.subGroupId, layers)
+        .subscribe({
+          next: (created) => {
+            this.publishing.set(false);
+            this.createdLayers.set(created);
+            this.notify('admin.catalog.wizard.published');
+          },
+          error: (err) => {
+            this.publishing.set(false);
+            this.notifyError(err);
+          },
+        });
     }
   }
 
@@ -305,16 +392,42 @@ export class LayerCreationWizardComponent {
     this.applyingStyle.set(true);
 
     if (this.styleMode() === 'kml') {
-      if (!this.kmlStyleFile) { this.applyingStyle.set(false); return; }
-      this.layerService.applyStyle(this.data.instanceId, layer.id, { mode: 'kml', kmlFile: this.kmlStyleFile }).subscribe({
-        next: () => { this.applyingStyle.set(false); this.styleApplied.set(true); this.notify('admin.catalog.wizard.styleApplied'); },
-        error: (err) => { this.applyingStyle.set(false); this.notifyError(err); },
-      });
+      if (!this.kmlStyleFile) {
+        this.applyingStyle.set(false);
+        return;
+      }
+      this.layerService
+        .applyStyle(this.data.instanceId, layer.id, { mode: 'kml', kmlFile: this.kmlStyleFile })
+        .subscribe({
+          next: () => {
+            this.applyingStyle.set(false);
+            this.styleApplied.set(true);
+            this.notify('admin.catalog.wizard.styleApplied');
+          },
+          error: (err) => {
+            this.applyingStyle.set(false);
+            this.notifyError(err);
+          },
+        });
     } else {
-      this.layerService.applyStyle(this.data.instanceId, layer.id, { mode: 'color-icon', color: this.styleColor(), iconKey: this.styleIconKey(), shape: this.styleShape() }).subscribe({
-        next: () => { this.applyingStyle.set(false); this.styleApplied.set(true); this.notify('admin.catalog.wizard.styleApplied'); },
-        error: (err) => { this.applyingStyle.set(false); this.notifyError(err); },
-      });
+      this.layerService
+        .applyStyle(this.data.instanceId, layer.id, {
+          mode: 'color-icon',
+          color: this.styleColor(),
+          iconKey: this.styleIconKey(),
+          shape: this.styleShape(),
+        })
+        .subscribe({
+          next: () => {
+            this.applyingStyle.set(false);
+            this.styleApplied.set(true);
+            this.notify('admin.catalog.wizard.styleApplied');
+          },
+          error: (err) => {
+            this.applyingStyle.set(false);
+            this.notifyError(err);
+          },
+        });
     }
   }
 
@@ -328,14 +441,19 @@ export class LayerCreationWizardComponent {
 
   private renderPreview(fc: GeoJSON.FeatureCollection): void {
     if (!this.previewMapEl) return;
-    const olFeatures = new GeoJSON().readFeatures(fc, { featureProjection: 'EPSG:3857', dataProjection: 'EPSG:4326' });
+    const olFeatures = new GeoJSON().readFeatures(fc, {
+      featureProjection: 'EPSG:3857',
+      dataProjection: 'EPSG:4326',
+    });
     const source = new VectorSource({ features: olFeatures });
 
     // Les points proches se chevauchent visuellement sur une petite carte d'aperçu (des
     // dizaines d'entités peuvent tenir sur quelques pixels) - un clustering avec badge de
     // comptage évite de laisser croire que l'aperçu affiche moins d'entités qu'il n'y en a
     // réellement (même mécanisme que le rendu des couches ponctuelles sur la vraie carte).
-    const isPointGeometry = olFeatures.length > 0 && ['Point', 'MultiPoint'].includes(olFeatures[0].getGeometry()?.getType() ?? '');
+    const isPointGeometry =
+      olFeatures.length > 0 &&
+      ['Point', 'MultiPoint'].includes(olFeatures[0].getGeometry()?.getType() ?? '');
     const layer: VectorLayer<any> = isPointGeometry
       ? createClusterLayer(source, undefined, 40, undefined, '#00ada7')
       : new VectorLayer({
@@ -373,6 +491,8 @@ export class LayerCreationWizardComponent {
 
   private notifyError(err: unknown): void {
     const message = (err as { error?: { error?: { message?: string } } })?.error?.error?.message;
-    this.snackBar.open(message ?? this.translate.instant('common.error'), undefined, { duration: 4000 });
+    this.snackBar.open(message ?? this.translate.instant('common.error'), undefined, {
+      duration: 4000,
+    });
   }
 }

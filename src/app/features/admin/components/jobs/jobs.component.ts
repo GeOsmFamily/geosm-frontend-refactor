@@ -136,7 +136,9 @@ export class JobsComponent implements OnInit {
       next: (res) => {
         this.triggeringBackup.set(false);
         this.snackBar.open(
-          this.translate.instant('admin.jobs.backupDone', { size: this.formatBytes(res.sizeBytes) }),
+          this.translate.instant('admin.jobs.backupDone', {
+            size: this.formatBytes(res.sizeBytes),
+          }),
           undefined,
           { duration: 4000 },
         );
@@ -174,6 +176,8 @@ export class JobsComponent implements OnInit {
 
   private notifyError(err: unknown): void {
     const message = (err as { error?: { error?: { message?: string } } })?.error?.error?.message;
-    this.snackBar.open(message ?? this.translate.instant('common.error'), undefined, { duration: 4000 });
+    this.snackBar.open(message ?? this.translate.instant('common.error'), undefined, {
+      duration: 4000,
+    });
   }
 }

@@ -41,7 +41,12 @@
       @if (boundary(); as b) {
         <div class="boundary-chip">
           <span>{{ b.boundaryTable }} — id {{ b.boundaryId }}</span>
-          <button mat-icon-button type="button" (click)="clearBoundary()" [attr.aria-label]="'common.delete' | translate">
+          <button
+            mat-icon-button
+            type="button"
+            (click)="clearBoundary()"
+            [attr.aria-label]="'common.delete' | translate"
+          >
             <mat-icon>close</mat-icon>
           </button>
         </div>
@@ -55,7 +60,9 @@
     </div>
 
     @if (!isCreate) {
-      <mat-slide-toggle formControlName="isActive">{{ 'admin.instances.active' | translate }}</mat-slide-toggle>
+      <mat-slide-toggle formControlName="isActive">{{
+        'admin.instances.active' | translate
+      }}</mat-slide-toggle>
     }
   </mat-dialog-content>
 

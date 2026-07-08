@@ -38,10 +38,14 @@
 
     .tool-icon-wrapper {
       background: rgba(255, 255, 255, 0.15);
-      mat-icon { color: white; }
+      mat-icon {
+        color: white;
+      }
     }
 
-    .tool-label { color: rgba(255, 255, 255, 0.9); }
+    .tool-label {
+      color: rgba(255, 255, 255, 0.9);
+    }
   }
 }
 

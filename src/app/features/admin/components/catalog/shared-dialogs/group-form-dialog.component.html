@@ -2,7 +2,10 @@
   @if (isGroup) {
     {{ (isCreate ? 'admin.catalog.createGroupTitle' : 'admin.catalog.editGroupTitle') | translate }}
   } @else {
-    {{ (isCreate ? 'admin.catalog.createSubGroupTitle' : 'admin.catalog.editSubGroupTitle') | translate }}
+    {{
+      (isCreate ? 'admin.catalog.createSubGroupTitle' : 'admin.catalog.editSubGroupTitle')
+        | translate
+    }}
   }
 </h2>
 

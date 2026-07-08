@@ -26,7 +26,15 @@ interface DashboardStats {
 @Component({
   selector: 'app-observability',
   standalone: true,
-  imports: [CommonModule, MatIconModule, MatButtonModule, MatProgressSpinnerModule, MatTooltipModule, TranslateModule, StatCardComponent],
+  imports: [
+    CommonModule,
+    MatIconModule,
+    MatButtonModule,
+    MatProgressSpinnerModule,
+    MatTooltipModule,
+    TranslateModule,
+    StatCardComponent,
+  ],
   templateUrl: './observability.component.html',
   styleUrl: './observability.component.scss',
 })
@@ -54,7 +62,9 @@ export class ObservabilityComponent implements OnInit {
       },
       error: () => this.loading.set(false),
     });
-    this.api.get<DashboardStats>('/admin/dashboard').subscribe({ next: (res) => this.dashboard.set(res) });
+    this.api
+      .get<DashboardStats>('/admin/dashboard')
+      .subscribe({ next: (res) => this.dashboard.set(res) });
   }
 
   formatUptime(seconds: number): string {

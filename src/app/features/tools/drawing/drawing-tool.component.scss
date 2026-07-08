@@ -65,7 +65,9 @@
 
       &.selected {
         border-color: #333;
-        box-shadow: 0 0 0 2px white, 0 0 0 4px #333;
+        box-shadow:
+          0 0 0 2px white,
+          0 0 0 4px #333;
       }
     }
 

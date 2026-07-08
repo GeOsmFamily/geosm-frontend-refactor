@@ -38,11 +38,21 @@
               <div class="user-info">
                 <div class="user-fullname">{{ osm.displayName }}</div>
                 @if (osm.osmAccountCreatedAt) {
-                  <div class="user-email">{{ 'settings.osm.memberSince' | translate }} {{ osm.osmAccountCreatedAt | date:'dd/MM/yyyy' }}</div>
+                  <div class="user-email">
+                    {{ 'settings.osm.memberSince' | translate }}
+                    {{ osm.osmAccountCreatedAt | date: 'dd/MM/yyyy' }}
+                  </div>
                 }
-                <div class="user-email">{{ osm.changesetCount }} {{ 'settings.osm.contributions' | translate }}</div>
+                <div class="user-email">
+                  {{ osm.changesetCount }} {{ 'settings.osm.contributions' | translate }}
+                </div>
               </div>
-              <button mat-icon-button color="warn" (click)="unlinkOsmAccount()" [matTooltip]="'settings.osm.unlinkTooltip' | translate">
+              <button
+                mat-icon-button
+                color="warn"
+                (click)="unlinkOsmAccount()"
+                [matTooltip]="'settings.osm.unlinkTooltip' | translate"
+              >
                 <mat-icon>link_off</mat-icon>
               </button>
             </div>
@@ -50,7 +60,12 @@
             <div class="auth-fallback-card glass">
               <mat-icon class="fallback-icon">public</mat-icon>
               <p class="fallback-text">{{ 'settings.osm.notLinked' | translate }}</p>
-              <button mat-flat-button color="primary" (click)="linkOsmAccount()" [disabled]="linkingOsm()">
+              <button
+                mat-flat-button
+                color="primary"
+                (click)="linkOsmAccount()"
+                [disabled]="linkingOsm()"
+              >
                 <mat-icon>link</mat-icon>
                 {{ 'settings.osm.linkButton' | translate }}
               </button>
@@ -94,11 +109,21 @@
         <div class="form-row">
           <mat-form-field appearance="outline" class="form-field">
             <mat-label>{{ 'settings.currentPassword' | translate }}</mat-label>
-            <input matInput id="profile-currentPassword" type="password" formControlName="currentPassword" />
+            <input
+              matInput
+              id="profile-currentPassword"
+              type="password"
+              formControlName="currentPassword"
+            />
           </mat-form-field>
           <mat-form-field appearance="outline" class="form-field">
             <mat-label>{{ 'settings.newPassword' | translate }}</mat-label>
-            <input matInput id="profile-newPassword" type="password" formControlName="newPassword" />
+            <input
+              matInput
+              id="profile-newPassword"
+              type="password"
+              formControlName="newPassword"
+            />
           </mat-form-field>
         </div>
         <button mat-flat-button color="warn" type="submit" [disabled]="passwordForm.invalid">
@@ -107,7 +132,6 @@
         </button>
       </form>
     </div>
-
   } @else {
     <div class="settings-section">
       <div class="section-title">
@@ -124,5 +148,4 @@
       </div>
     </div>
   }
-
 </div>

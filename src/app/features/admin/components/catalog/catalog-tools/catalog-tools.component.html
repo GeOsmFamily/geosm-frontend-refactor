@@ -83,7 +83,10 @@
       </mat-form-field>
       <mat-form-field appearance="outline">
         <mat-label>{{ 'admin.catalog.subGroup' | translate }}</mat-label>
-        <mat-select formControlName="subGroupId" [disabled]="!rasterForm.value.groupId || loadingSubGroups()">
+        <mat-select
+          formControlName="subGroupId"
+          [disabled]="!rasterForm.value.groupId || loadingSubGroups()"
+        >
           @for (sg of subGroups(); track sg.id) {
             <mat-option [value]="sg.id">{{ sg.name }}</mat-option>
           }
@@ -104,7 +107,12 @@
     <input type="file" accept=".tif,.tiff,.geotiff" (change)="onRasterFileSelected($event)" />
 
     <div class="actions-row">
-      <button mat-flat-button color="primary" type="submit" [disabled]="rasterForm.invalid || uploading()">
+      <button
+        mat-flat-button
+        color="primary"
+        type="submit"
+        [disabled]="rasterForm.invalid || uploading()"
+      >
         @if (uploading()) {
           <mat-progress-spinner mode="indeterminate" diameter="18"></mat-progress-spinner>
         } @else {

@@ -17,7 +17,15 @@ export interface ThemeFormDialogData {
 @Component({
   selector: 'app-theme-form-dialog',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, MatDialogModule, MatFormFieldModule, MatInputModule, MatButtonModule, TranslateModule],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    MatDialogModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
+    TranslateModule,
+  ],
   templateUrl: './theme-form-dialog.component.html',
   styleUrl: './theme-form-dialog.component.scss',
 })

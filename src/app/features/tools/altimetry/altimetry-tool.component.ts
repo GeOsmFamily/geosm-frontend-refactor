@@ -1,4 +1,14 @@
-import { AfterViewInit, Component, ElementRef, Injector, OnDestroy, ViewChild, afterNextRender, inject, signal } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  Injector,
+  OnDestroy,
+  ViewChild,
+  afterNextRender,
+  inject,
+  signal,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -30,7 +40,15 @@ interface ProfileStats {
 @Component({
   selector: 'app-altimetry-tool',
   standalone: true,
-  imports: [TranslateModule, CommonModule, MatButtonModule, MatIconModule, MatDividerModule, MatSnackBarModule, LoadingSpinnerComponent],
+  imports: [
+    TranslateModule,
+    CommonModule,
+    MatButtonModule,
+    MatIconModule,
+    MatDividerModule,
+    MatSnackBarModule,
+    LoadingSpinnerComponent,
+  ],
   templateUrl: './altimetry-tool.component.html',
   styleUrl: './altimetry-tool.component.scss',
 })
@@ -117,7 +135,9 @@ export class AltimetryToolComponent implements AfterViewInit, OnDestroy {
     // que le second clic physique n'ait eu lieu. Un setTimeout(0) remettrait isPicking à false
     // avant même que l'événement 'click' du second clic n'atteigne FeatureInfoComponent, qui
     // ouvrirait alors à tort la fiche descriptive sur la ligne qui vient d'être tracée.
-    setTimeout(() => { this.mapService.isPicking = false; }, 300);
+    setTimeout(() => {
+      this.mapService.isPicking = false;
+    }, 300);
   }
 
   private fetchProfile(geom3857: LineString): void {
@@ -132,26 +152,38 @@ export class AltimetryToolComponent implements AfterViewInit, OnDestroy {
     const length = geom3857.getLength();
     const numPoints = Math.max(20, Math.min(300, Math.round(length / 50)));
 
-    this.geoportailService.getElevationProfile(geojson as unknown as GeoJSON.Geometry, numPoints).subscribe({
-      next: (result) => {
-        this.loading.set(false);
-        const points = result?.profile || [];
-        if (points.length === 0) {
-          this.snackBar.open(this.translate.instant('tools.altimetryErrors.noData') || 'Aucune donnée d\'altitude disponible pour cette zone.', 'OK', { duration: 4000 });
-          return;
-        }
-        this.stats.set(this.computeStats(points));
-        this.hasProfile.set(true);
-        // Le <canvas #chartCanvas> est dans un bloc @if(hasProfile()) : il n'existe pas encore
-        // dans le DOM au moment de ce set() (Angular ne l'a pas encore rendu). afterNextRender()
-        // attend le prochain rendu effectif avant d'initialiser Chart.js sur le canvas.
-        afterNextRender(() => void this.renderChart(points), { injector: this.injector });
-      },
-      error: () => {
-        this.loading.set(false);
-        this.snackBar.open(this.translate.instant('tools.altimetryErrors.fetchFailed') || 'Échec de la récupération du profil altimétrique. Réessayez.', 'OK', { duration: 4000 });
-      },
-    });
+    this.geoportailService
+      .getElevationProfile(geojson as unknown as GeoJSON.Geometry, numPoints)
+      .subscribe({
+        next: (result) => {
+          this.loading.set(false);
+          const points = result?.profile || [];
+          if (points.length === 0) {
+            this.snackBar.open(
+              this.translate.instant('tools.altimetryErrors.noData') ||
+                "Aucune donnée d'altitude disponible pour cette zone.",
+              'OK',
+              { duration: 4000 },
+            );
+            return;
+          }
+          this.stats.set(this.computeStats(points));
+          this.hasProfile.set(true);
+          // Le <canvas #chartCanvas> est dans un bloc @if(hasProfile()) : il n'existe pas encore
+          // dans le DOM au moment de ce set() (Angular ne l'a pas encore rendu). afterNextRender()
+          // attend le prochain rendu effectif avant d'initialiser Chart.js sur le canvas.
+          afterNextRender(() => void this.renderChart(points), { injector: this.injector });
+        },
+        error: () => {
+          this.loading.set(false);
+          this.snackBar.open(
+            this.translate.instant('tools.altimetryErrors.fetchFailed') ||
+              'Échec de la récupération du profil altimétrique. Réessayez.',
+            'OK',
+            { duration: 4000 },
+          );
+        },
+      });
   }
 
   private computeStats(points: ElevationPoint[]): ProfileStats {
@@ -183,24 +215,26 @@ export class AltimetryToolComponent implements AfterViewInit, OnDestroy {
 
     this.chart?.destroy();
 
-    const labels = points.map(p => (p.distance / 1000).toFixed(2));
-    const data = points.map(p => p.altitude);
+    const labels = points.map((p) => (p.distance / 1000).toFixed(2));
+    const data = points.map((p) => p.altitude);
 
     this.chart = new Chart(this.chartCanvas.nativeElement, {
       type: 'line',
       data: {
         labels,
-        datasets: [{
-          data,
-          borderColor: '#00ada7',
-          backgroundColor: 'rgba(0, 173, 167, 0.15)',
-          fill: true,
-          tension: 0.15,
-          pointRadius: 0,
-          pointHoverRadius: 5,
-          pointHoverBackgroundColor: '#e74c3c',
-          borderWidth: 2,
-        }],
+        datasets: [
+          {
+            data,
+            borderColor: '#00ada7',
+            backgroundColor: 'rgba(0, 173, 167, 0.15)',
+            fill: true,
+            tension: 0.15,
+            pointRadius: 0,
+            pointHoverRadius: 5,
+            pointHoverBackgroundColor: '#e74c3c',
+            borderWidth: 2,
+          },
+        ],
       },
       options: {
         responsive: true,

@@ -23,9 +23,16 @@
     font-size: 14px;
     color: var(--text);
 
-    &:hover { background: var(--surface-hover); }
+    &:hover {
+      background: var(--surface-hover);
+    }
 
-    mat-icon { font-size: 20px; width: 20px; height: 20px; color: var(--text-secondary); }
+    mat-icon {
+      font-size: 20px;
+      width: 20px;
+      height: 20px;
+      color: var(--text-secondary);
+    }
 
     &.divider {
       height: 1px;
@@ -33,7 +40,9 @@
       margin: 4px 12px;
       background: var(--border-light);
       cursor: default;
-      &:hover { background: var(--border-light); }
+      &:hover {
+        background: var(--border-light);
+      }
     }
   }
 }

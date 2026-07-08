@@ -44,7 +44,7 @@ export class MapillaryToolComponent implements OnInit, OnDestroy {
   private map!: Map;
   private clickListener: ((evt: any) => void) | null = null;
   private pointerMoveListener: ((evt: any) => void) | null = null;
-  
+
   private vectorTileLayer!: VectorTileLayer;
   private readonly markerSource = new VectorSource();
   private markerLayer!: VectorLayer<VectorSource>;
@@ -94,10 +94,10 @@ export class MapillaryToolComponent implements OnInit, OnDestroy {
       }),
       style: (feature) => {
         const layerName = feature.get('layer') || '';
-        
+
         if (layerName === 'image') {
           const isSelected = feature.get('id') === this.selectedImage?.id;
-          
+
           if (isSelected) {
             const compassAngle = feature.get('compass_angle');
             if (compassAngle !== undefined && compassAngle !== null) {
@@ -216,7 +216,7 @@ export class MapillaryToolComponent implements OnInit, OnDestroy {
                     this.playbackLoading = false;
                     const sorted = [...imgs].sort((a, b) => a.captured_at - b.captured_at);
                     this.sequenceImages = sorted;
-                    this.playbackIndex = this.sequenceImages.findIndex(x => x.id === details.id);
+                    this.playbackIndex = this.sequenceImages.findIndex((x) => x.id === details.id);
                     if (this.playbackIndex === -1) this.playbackIndex = 0;
                     this.selectImage(details, true);
                     this.startPlayback();
@@ -225,7 +225,7 @@ export class MapillaryToolComponent implements OnInit, OnDestroy {
                     this.playbackLoading = false;
                     this.playbackMode = false;
                     this.selectImage(details, true);
-                  }
+                  },
                 });
               } else {
                 this.selectImage(details, true);
@@ -233,7 +233,7 @@ export class MapillaryToolComponent implements OnInit, OnDestroy {
             },
             error: () => {
               this.loadingSelected = false;
-            }
+            },
           });
         }
       }
@@ -259,7 +259,7 @@ export class MapillaryToolComponent implements OnInit, OnDestroy {
           const idStr = imageId.toString();
           this.hoveredImageId = idNum;
           const dateStr = capturedAt ? new Date(capturedAt).toLocaleDateString() : 'Inconnue';
-          
+
           if (this.thumbnailCache[idNum]) {
             const url = this.thumbnailCache[idNum];
             this.popupElement.innerHTML = `
@@ -271,7 +271,7 @@ export class MapillaryToolComponent implements OnInit, OnDestroy {
               <div style="width: 100%; height: 75px; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.1); border-radius: 4px; font-size: 9px; color: #aaa;">Chargement...</div>
               <div style="font-size: 10px; margin-top: 4px; text-align: center; font-weight: 500; font-family: sans-serif;">${dateStr}</div>
             `;
-            
+
             this.mapillaryService.getImageDetails(idStr).subscribe({
               next: (details) => {
                 this.thumbnailCache[idNum] = details.thumb_1024_url;
@@ -281,10 +281,10 @@ export class MapillaryToolComponent implements OnInit, OnDestroy {
                     <div style="font-size: 10px; margin-top: 4px; text-align: center; font-weight: 500; font-family: sans-serif;">${dateStr}</div>
                   `;
                 }
-              }
+              },
             });
           }
-          
+
           this.popupElement.style.display = 'block';
           this.popupOverlay.setPosition(evt.coordinate);
           this.map.getTargetElement().style.cursor = 'pointer';
@@ -336,7 +336,7 @@ export class MapillaryToolComponent implements OnInit, OnDestroy {
     this.markerSource.clear();
     if (img.geometry && img.geometry.coordinates) {
       const coords = fromLonLat(img.geometry.coordinates);
-      
+
       if (centerMap) {
         this.map.getView().setCenter(coords);
       }
@@ -349,7 +349,10 @@ export class MapillaryToolComponent implements OnInit, OnDestroy {
           stroke: new Stroke({ color: '#ffffff', width: 2.5 }),
           points: 3,
           radius: 12,
-          rotation: compassAngle !== undefined && compassAngle !== null ? ((compassAngle - 180) * Math.PI) / 180 : 0,
+          rotation:
+            compassAngle !== undefined && compassAngle !== null
+              ? ((compassAngle - 180) * Math.PI) / 180
+              : 0,
           angle: 0,
         }),
       });
@@ -391,7 +394,9 @@ export class MapillaryToolComponent implements OnInit, OnDestroy {
         const sorted = [...imgs].sort((a, b) => a.captured_at - b.captured_at);
         this.sequenceImages = sorted;
 
-        this.playbackIndex = this.sequenceImages.findIndex(img => img.id === this.selectedImage?.id);
+        this.playbackIndex = this.sequenceImages.findIndex(
+          (img) => img.id === this.selectedImage?.id,
+        );
         if (this.playbackIndex === -1) this.playbackIndex = 0;
 
         this.startPlayback();
@@ -460,7 +465,7 @@ export class MapillaryToolComponent implements OnInit, OnDestroy {
     const inputEl = event.target as HTMLInputElement;
     if (!inputEl) return;
     const value = Number(inputEl.value);
-    
+
     this.pausePlayback();
     this.playbackIndex = value;
     if (this.sequenceImages[value]) {

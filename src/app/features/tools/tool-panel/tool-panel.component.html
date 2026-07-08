@@ -1,11 +1,13 @@
 <div class="tool-panel">
   <div class="tool-grid">
     @for (tool of tools; track tool.id) {
-      <button class="tool-btn"
-              [class.active]="activeTool === tool.id"
-              [matTooltip]="tool.label | translate"
-              matTooltipPosition="below"
-              (click)="toggleTool(tool.id)">
+      <button
+        class="tool-btn"
+        [class.active]="activeTool === tool.id"
+        [matTooltip]="tool.label | translate"
+        matTooltipPosition="below"
+        (click)="toggleTool(tool.id)"
+      >
         <div class="tool-icon-wrapper">
           <mat-icon>{{ tool.icon }}</mat-icon>
         </div>
@@ -24,17 +26,39 @@
       </div>
       <div class="tool-content-body">
         @switch (activeTool) {
-          @case ('drawing') { <app-drawing-tool /> }
-          @case ('measure') { <app-measure-tool /> }
-          @case ('routing') { <app-routing-tool /> }
-          @case ('export') { <app-export-tool /> }
-          @case ('print') { <app-print-tool /> }
-          @case ('comment') { <app-comment-tool /> }
-          @case ('altimetry') { <app-altimetry-tool /> }
-          @case ('mapillary') { <app-mapillary-tool /> }
-          @case ('compare') { <app-compare-tool /> }
-          @case ('statistics') { <app-statistics-tool /> }
-          @case ('spatial-analysis') { <app-spatial-analysis-tool /> }
+          @case ('drawing') {
+            <app-drawing-tool />
+          }
+          @case ('measure') {
+            <app-measure-tool />
+          }
+          @case ('routing') {
+            <app-routing-tool />
+          }
+          @case ('export') {
+            <app-export-tool />
+          }
+          @case ('print') {
+            <app-print-tool />
+          }
+          @case ('comment') {
+            <app-comment-tool />
+          }
+          @case ('altimetry') {
+            <app-altimetry-tool />
+          }
+          @case ('mapillary') {
+            <app-mapillary-tool />
+          }
+          @case ('compare') {
+            <app-compare-tool />
+          }
+          @case ('statistics') {
+            <app-statistics-tool />
+          }
+          @case ('spatial-analysis') {
+            <app-spatial-analysis-tool />
+          }
         }
       </div>
     </div>

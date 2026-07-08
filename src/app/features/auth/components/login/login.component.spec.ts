@@ -13,7 +13,11 @@ describe('LoginComponent', () => {
   let authServiceSpy: jasmine.SpyObj<AuthService>;
 
   beforeEach(async () => {
-    authServiceSpy = jasmine.createSpyObj('AuthService', ['login', 'getOsmStatus', 'getOsmLoginUrl']);
+    authServiceSpy = jasmine.createSpyObj('AuthService', [
+      'login',
+      'getOsmStatus',
+      'getOsmLoginUrl',
+    ]);
     authServiceSpy.getOsmStatus.and.returnValue(of({ configured: false }));
 
     await TestBed.configureTestingModule({
@@ -23,9 +27,7 @@ describe('LoginComponent', () => {
         RouterTestingModule,
         TranslateModule.forRoot(),
       ],
-      providers: [
-        { provide: AuthService, useValue: authServiceSpy },
-      ],
+      providers: [{ provide: AuthService, useValue: authServiceSpy }],
     }).compileComponents();
 
     fixture = TestBed.createComponent(LoginComponent);
@@ -49,7 +51,9 @@ describe('LoginComponent', () => {
     component.email = 'user@test.com';
     component.password = 'pass123';
     component.login();
-    expect(authServiceSpy.login).toHaveBeenCalledWith('user@test.com', 'pass123');
+    // rememberMe est coché par défaut (voir login.component.ts) - session persistante tant
+    // que l'utilisateur ne décoche pas explicitement la case.
+    expect(authServiceSpy.login).toHaveBeenCalledWith('user@test.com', 'pass123', true);
   });
 
   it('should set loading during login', () => {
@@ -63,7 +67,9 @@ describe('LoginComponent', () => {
 
   it('should show the real backend error message on login failure (matches the actual API error envelope {success, error: {code, message}})', () => {
     authServiceSpy.login.and.returnValue(
-      throwError(() => ({ error: { success: false, error: { code: 'UNAUTHORIZED', message: 'Invalid credentials' } } })),
+      throwError(() => ({
+        error: { success: false, error: { code: 'UNAUTHORIZED', message: 'Invalid credentials' } },
+      })),
     );
     component.email = 'user@test.com';
     component.password = 'wrong';

@@ -15,14 +15,8 @@ describe('InfoPanelComponent', () => {
     feedbackServiceSpy = jasmine.createSpyObj('FeedbackService', ['submit']);
 
     await TestBed.configureTestingModule({
-      imports: [
-        InfoPanelComponent,
-        NoopAnimationsModule,
-        TranslateModule.forRoot(),
-      ],
-      providers: [
-        { provide: FeedbackService, useValue: feedbackServiceSpy },
-      ],
+      imports: [InfoPanelComponent, NoopAnimationsModule, TranslateModule.forRoot()],
+      providers: [{ provide: FeedbackService, useValue: feedbackServiceSpy }],
     }).compileComponents();
 
     fixture = TestBed.createComponent(InfoPanelComponent);
@@ -46,10 +40,20 @@ describe('InfoPanelComponent', () => {
   });
 
   it('should submit valid feedback and reset the form on success', () => {
-    feedbackServiceSpy.submit.and.returnValue(of({
-      id: 'fb-1', type: 'BUG', description: 'Map does not load correctly',
-      contactEmail: null, page: '/map', userId: null, createdAt: '2026-07-06T00:00:00.000Z',
-    }));
+    feedbackServiceSpy.submit.and.returnValue(
+      of({
+        id: 'fb-1',
+        type: 'BUG',
+        description: 'Map does not load correctly',
+        contactEmail: null,
+        page: '/map',
+        userId: null,
+        createdAt: '2026-07-06T00:00:00.000Z',
+        status: 'NEW',
+        adminNotes: null,
+        reviewedAt: null,
+      }),
+    );
     component.feedbackForm.patchValue({ type: 'BUG', description: 'Map does not load correctly' });
 
     component.submitFeedback();

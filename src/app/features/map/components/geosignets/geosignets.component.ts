@@ -20,9 +20,17 @@ import { AuthService } from '../../../../core/services/auth.service';
   selector: 'app-geosignets',
   standalone: true,
   imports: [
-    CommonModule, FormsModule, MatIconModule, MatButtonModule,
-    MatInputModule, MatFormFieldModule, MatListModule, MatTooltipModule,
-    MatCardModule, MatSnackBarModule, TranslateModule,
+    CommonModule,
+    FormsModule,
+    MatIconModule,
+    MatButtonModule,
+    MatInputModule,
+    MatFormFieldModule,
+    MatListModule,
+    MatTooltipModule,
+    MatCardModule,
+    MatSnackBarModule,
+    TranslateModule,
   ],
   templateUrl: './geosignets.component.html',
   styleUrl: './geosignets.component.scss',
@@ -49,7 +57,7 @@ export class GeosignetsComponent implements OnInit {
   bookmarkName = '';
 
   ngOnInit(): void {
-    this.currentUser.subscribe(user => {
+    this.currentUser.subscribe((user) => {
       if (user) {
         this.loadBookmarks();
       } else {
@@ -64,28 +72,30 @@ export class GeosignetsComponent implements OnInit {
     const center = this.mapService.getCenter() as [number, number];
     const zoom = this.mapService.getZoom();
 
-    this.geosignetService.create({
-      name: this.bookmarkName.trim(),
-      center,
-      zoom,
-    }).subscribe({
-      next: (bookmark) => {
-        this.bookmarks.update((bm) => [bookmark, ...bm]);
-        this.bookmarkName = '';
-        this.snackBar.open(
-          this.translate.instant('shared.savedSuccessfully') || 'Enregistré avec succès',
-          'OK',
-          { duration: 3000 }
-        );
-      },
-      error: () => {
-        this.snackBar.open(
-          this.translate.instant('shared.error') || 'Une erreur est survenue',
-          'OK',
-          { duration: 3000 }
-        );
-      }
-    });
+    this.geosignetService
+      .create({
+        name: this.bookmarkName.trim(),
+        center,
+        zoom,
+      })
+      .subscribe({
+        next: (bookmark) => {
+          this.bookmarks.update((bm) => [bookmark, ...bm]);
+          this.bookmarkName = '';
+          this.snackBar.open(
+            this.translate.instant('shared.savedSuccessfully') || 'Enregistré avec succès',
+            'OK',
+            { duration: 3000 },
+          );
+        },
+        error: () => {
+          this.snackBar.open(
+            this.translate.instant('shared.error') || 'Une erreur est survenue',
+            'OK',
+            { duration: 3000 },
+          );
+        },
+      });
   }
 
   flyTo(bookmark: Geosignet): void {
@@ -101,9 +111,9 @@ export class GeosignetsComponent implements OnInit {
         this.snackBar.open(
           this.translate.instant('shared.error') || 'Une erreur est survenue',
           'OK',
-          { duration: 3000 }
+          { duration: 3000 },
         );
-      }
+      },
     });
   }
 
@@ -111,20 +121,18 @@ export class GeosignetsComponent implements OnInit {
     const lat = bookmark.center[1];
     const lon = bookmark.center[0];
     const zoom = bookmark.zoom;
-    
+
     // Generate share URL
     const url = `${globalThis.location.origin}${globalThis.location.pathname}?lat=${lat}&lon=${lon}&z=${zoom}`;
-    
+
     // Copy link to clipboard
     navigator.clipboard.writeText(url).then(() => {
       if (this.shareRequested.observed) {
         this.shareRequested.emit(url);
       } else {
-        this.snackBar.open(
-          this.translate.instant('geosignets.share') || 'Lien copié !',
-          'OK',
-          { duration: 3000 }
-        );
+        this.snackBar.open(this.translate.instant('geosignets.share') || 'Lien copié !', 'OK', {
+          duration: 3000,
+        });
       }
     });
   }
@@ -141,7 +149,7 @@ export class GeosignetsComponent implements OnInit {
       error: () => {
         // Silent fail or default empty
         this.bookmarks.set([]);
-      }
+      },
     });
   }
 }

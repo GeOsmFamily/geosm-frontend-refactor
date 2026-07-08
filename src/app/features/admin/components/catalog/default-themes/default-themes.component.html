@@ -20,13 +20,21 @@
   >
     <ng-template #actions let-theme>
       <div class="row-actions">
-        <button mat-icon-button (click)="openTags(theme)" [matTooltip]="'admin.catalog.tags' | translate">
+        <button
+          mat-icon-button
+          (click)="openTags(theme)"
+          [matTooltip]="'admin.catalog.tags' | translate"
+        >
           <mat-icon>sell</mat-icon>
         </button>
         <button mat-icon-button (click)="edit(theme)" [matTooltip]="'common.save' | translate">
           <mat-icon>edit</mat-icon>
         </button>
-        <button mat-icon-button (click)="confirmDelete(theme)" [matTooltip]="'common.delete' | translate">
+        <button
+          mat-icon-button
+          (click)="confirmDelete(theme)"
+          [matTooltip]="'common.delete' | translate"
+        >
           <mat-icon>delete</mat-icon>
         </button>
       </div>

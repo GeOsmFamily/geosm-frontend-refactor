@@ -11,10 +11,7 @@ describe('SearchService', () => {
     apiSpy = jasmine.createSpyObj('ApiService', ['get']);
 
     TestBed.configureTestingModule({
-      providers: [
-        SearchService,
-        { provide: ApiService, useValue: apiSpy },
-      ],
+      providers: [SearchService, { provide: ApiService, useValue: apiSpy }],
     });
 
     service = TestBed.inject(SearchService);
@@ -36,7 +33,11 @@ describe('SearchService', () => {
     it('should call /search/layers with instance scoping', () => {
       apiSpy.get.and.returnValue(of({}));
       service.searchLayers('hop', 'inst-1', 10);
-      expect(apiSpy.get).toHaveBeenCalledWith('/search/layers', { q: 'hop', instanceId: 'inst-1', limit: 10 });
+      expect(apiSpy.get).toHaveBeenCalledWith('/search/layers', {
+        q: 'hop',
+        instanceId: 'inst-1',
+        limit: 10,
+      });
     });
   });
 
@@ -44,7 +45,11 @@ describe('SearchService', () => {
     it('should call /search/features scoped to a layer', () => {
       apiSpy.get.and.returnValue(of({}));
       service.searchFeatures('hop', 'layer-1');
-      expect(apiSpy.get).toHaveBeenCalledWith('/search/features', { q: 'hop', layerId: 'layer-1', limit: undefined });
+      expect(apiSpy.get).toHaveBeenCalledWith('/search/features', {
+        q: 'hop',
+        layerId: 'layer-1',
+        limit: undefined,
+      });
     });
   });
 
@@ -55,7 +60,10 @@ describe('SearchService', () => {
 
       service.getSuggestions('inst-1', 5).subscribe((result) => {
         expect(result).toEqual(suggestions);
-        expect(apiSpy.get).toHaveBeenCalledWith('/search/suggestions', { instanceId: 'inst-1', limit: 5 });
+        expect(apiSpy.get).toHaveBeenCalledWith('/search/suggestions', {
+          instanceId: 'inst-1',
+          limit: 5,
+        });
         done();
       });
     });
@@ -68,7 +76,11 @@ describe('SearchService', () => {
 
       service.getLayerRecommendations('layer-1', 'inst-1', 5).subscribe((result) => {
         expect(result).toEqual(recommendations);
-        expect(apiSpy.get).toHaveBeenCalledWith('/search/layer-recommendations', { layerId: 'layer-1', instanceId: 'inst-1', limit: 5 });
+        expect(apiSpy.get).toHaveBeenCalledWith('/search/layer-recommendations', {
+          layerId: 'layer-1',
+          instanceId: 'inst-1',
+          limit: 5,
+        });
         done();
       });
     });

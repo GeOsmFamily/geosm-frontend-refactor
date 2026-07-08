@@ -9,7 +9,14 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 @Component({
   selector: 'app-social-share',
   standalone: true,
-  imports: [CommonModule, MatIconModule, MatButtonModule, MatTooltipModule, MatSnackBarModule, TranslateModule],
+  imports: [
+    CommonModule,
+    MatIconModule,
+    MatButtonModule,
+    MatTooltipModule,
+    MatSnackBarModule,
+    TranslateModule,
+  ],
   templateUrl: './social-share.component.html',
   styleUrl: './social-share.component.scss',
 })
@@ -47,11 +54,7 @@ export class SocialShareComponent {
 
   copyUrl(): void {
     navigator.clipboard.writeText(this.getShareUrl()).then(() => {
-      this.snackBar.open(
-        this.translate.instant('sharing.copied'),
-        'OK',
-        { duration: 2000 }
-      );
+      this.snackBar.open(this.translate.instant('sharing.copied'), 'OK', { duration: 2000 });
     });
   }
 }

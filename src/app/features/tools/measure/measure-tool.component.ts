@@ -73,7 +73,7 @@ export class MeasureToolComponent implements OnInit, OnDestroy {
           fill: new Fill({ color: '#1976d2' }),
           stroke: new Stroke({ color: '#fff', width: 2 }),
         }),
-      })
+      }),
     );
 
     // Initialize local counter to avoid ID conflicts
@@ -245,7 +245,7 @@ export class MeasureToolComponent implements OnInit, OnDestroy {
       this.mapService.measureOverlays.splice(overlayIdx, 1);
     }
 
-    const idx = this.measurements.findIndex(m => m.id === item.id);
+    const idx = this.measurements.findIndex((m) => m.id === item.id);
     if (idx > -1) {
       this.measurements.splice(idx, 1);
     }

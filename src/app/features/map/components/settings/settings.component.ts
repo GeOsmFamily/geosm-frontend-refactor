@@ -1,6 +1,12 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import {
+  FormsModule,
+  ReactiveFormsModule,
+  FormBuilder,
+  FormGroup,
+  Validators,
+} from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
@@ -63,7 +69,7 @@ export class SettingsComponent implements OnInit {
       newPassword: ['', [Validators.required, Validators.minLength(8)]],
     });
 
-    this.currentUser.subscribe(user => {
+    this.currentUser.subscribe((user) => {
       if (user) {
         this.profileForm.patchValue({
           firstName: user.firstName,
@@ -101,7 +107,12 @@ export class SettingsComponent implements OnInit {
       },
       error: () => {
         this.linkingOsm.set(false);
-        this.snackBar.open(this.translate.instant('settings.osmLinkStartError') || 'Impossible de démarrer la liaison OpenStreetMap', 'OK', { duration: 3000 });
+        this.snackBar.open(
+          this.translate.instant('settings.osmLinkStartError') ||
+            'Impossible de démarrer la liaison OpenStreetMap',
+          'OK',
+          { duration: 3000 },
+        );
       },
     });
   }
@@ -110,10 +121,18 @@ export class SettingsComponent implements OnInit {
     this.authService.unlinkOsm().subscribe({
       next: () => {
         this.osmProfile.set(null);
-        this.snackBar.open(this.translate.instant('settings.osmUnlinked') || 'Compte OpenStreetMap délié', 'OK', { duration: 3000 });
+        this.snackBar.open(
+          this.translate.instant('settings.osmUnlinked') || 'Compte OpenStreetMap délié',
+          'OK',
+          { duration: 3000 },
+        );
       },
       error: () => {
-        this.snackBar.open(this.translate.instant('settings.osmUnlinkError') || 'Erreur lors de la déliaison', 'OK', { duration: 3000 });
+        this.snackBar.open(
+          this.translate.instant('settings.osmUnlinkError') || 'Erreur lors de la déliaison',
+          'OK',
+          { duration: 3000 },
+        );
       },
     });
   }
@@ -126,16 +145,16 @@ export class SettingsComponent implements OnInit {
         this.snackBar.open(
           this.translate.instant('settings.profileUpdated') || 'Profil mis à jour avec succès',
           'OK',
-          { duration: 3000 }
+          { duration: 3000 },
         );
       },
       error: () => {
         this.snackBar.open(
           this.translate.instant('settings.profileUpdateError') || 'Erreur lors de la mise à jour',
           'OK',
-          { duration: 3000 }
+          { duration: 3000 },
         );
-      }
+      },
     });
   }
 
@@ -148,16 +167,16 @@ export class SettingsComponent implements OnInit {
         this.snackBar.open(
           this.translate.instant('settings.passwordChanged') || 'Mot de passe changé avec succès',
           'OK',
-          { duration: 3000 }
+          { duration: 3000 },
         );
       },
       error: () => {
         this.snackBar.open(
           this.translate.instant('settings.passwordChangeError') || 'Ancien mot de passe incorrect',
           'OK',
-          { duration: 3000 }
+          { duration: 3000 },
         );
-      }
+      },
     });
   }
 

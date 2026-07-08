@@ -164,12 +164,15 @@ export class ActiveLayersComponent implements OnInit {
         this.snackBar.open(
           this.translate.instant('map.resyncSuccess') || 'Couche resynchronisée avec succès',
           'OK',
-          { duration: 3000 }
+          { duration: 3000 },
         );
       },
       error: (err) => {
         this.resyncingIds.delete(layer.layer.id);
-        const message = err?.error?.error?.message || this.translate.instant('shared.error') || 'Une erreur est survenue';
+        const message =
+          err?.error?.error?.message ||
+          this.translate.instant('shared.error') ||
+          'Une erreur est survenue';
         this.snackBar.open(message, 'OK', { duration: 4000 });
       },
     });
@@ -186,36 +189,42 @@ export class ActiveLayersComponent implements OnInit {
     const center = mapCenter ? toLonLat(mapCenter) : mapCenter;
     const zoom = map.getView().getZoom();
 
-    const layersState = this.mapLayerService.getActiveLayers().map(al => ({
+    const layersState = this.mapLayerService.getActiveLayers().map((al) => ({
       layerId: al.layer.id,
       opacity: al.opacity,
-      visible: al.layer.id === activeLayer.layer.id ? true : al.visible
+      visible: al.layer.id === activeLayer.layer.id ? true : al.visible,
     }));
 
     const mapState = {
       center,
       zoom,
-      layers: layersState
+      layers: layersState,
     };
 
-    this.sharingService.createShare({
-      instanceId: instance ? instance.id : '',
-      mapState
-    }).subscribe({
-      next: (res) => {
-        const shareUrl = `${globalThis.location.origin}/share/${res.shortCode}`;
-        navigator.clipboard.writeText(shareUrl).then(() => {
+    this.sharingService
+      .createShare({
+        instanceId: instance ? instance.id : '',
+        mapState,
+      })
+      .subscribe({
+        next: (res) => {
+          const shareUrl = `${globalThis.location.origin}/share/${res.shortCode}`;
+          navigator.clipboard.writeText(shareUrl).then(() => {
+            this.snackBar.open(
+              this.translate.instant('sharing.copied') || 'Lien copié dans le presse-papiers !',
+              'OK',
+              { duration: 3000 },
+            );
+          });
+        },
+        error: () => {
           this.snackBar.open(
-            this.translate.instant('sharing.copied') || 'Lien copié dans le presse-papiers !',
+            this.translate.instant('sharing.errors.createFailed') ||
+              'Erreur lors de la création du partage.',
             'OK',
-            { duration: 3000 }
+            { duration: 3000 },
           );
-        });
-      },
-      error: () => {
-        this.snackBar.open(this.translate.instant('sharing.errors.createFailed') || 'Erreur lors de la création du partage.', 'OK', { duration: 3000 });
-      }
-    });
+        },
+      });
   }
 }
-

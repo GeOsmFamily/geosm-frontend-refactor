@@ -1,4 +1,13 @@
-import { Component, EventEmitter, Input, OnChanges, OnInit, Output, inject, signal } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnChanges,
+  OnInit,
+  Output,
+  inject,
+  signal,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DomSanitizer, type SafeHtml } from '@angular/platform-browser';
 import { MatButtonModule } from '@angular/material/button';
@@ -20,7 +29,15 @@ export type IconShape = 'circle' | 'square' | 'triangle' | 'star' | 'pin';
 @Component({
   selector: 'app-icon-picker',
   standalone: true,
-  imports: [CommonModule, MatButtonModule, MatIconModule, MatChipsModule, MatTooltipModule, MatProgressSpinnerModule, TranslateModule],
+  imports: [
+    CommonModule,
+    MatButtonModule,
+    MatIconModule,
+    MatChipsModule,
+    MatTooltipModule,
+    MatProgressSpinnerModule,
+    TranslateModule,
+  ],
   templateUrl: './icon-picker.component.html',
   styleUrl: './icon-picker.component.scss',
 })
@@ -70,7 +87,12 @@ export class IconPickerComponent implements OnInit, OnChanges {
     }));
     this.iconCatalogService.generatePreview(options).subscribe({
       next: (result) => {
-        this.tiles.set(this.catalog.map((entry, i) => ({ ...entry, svg: this.sanitizer.bypassSecurityTrustHtml(result.svgs[i]) })));
+        this.tiles.set(
+          this.catalog.map((entry, i) => ({
+            ...entry,
+            svg: this.sanitizer.bypassSecurityTrustHtml(result.svgs[i]),
+          })),
+        );
         this.loading.set(false);
       },
       error: () => this.loading.set(false),

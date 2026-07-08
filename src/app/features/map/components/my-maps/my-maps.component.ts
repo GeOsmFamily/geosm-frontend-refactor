@@ -26,8 +26,16 @@ import { MapComposition } from '../../../../core/models/index';
   selector: 'app-my-maps',
   standalone: true,
   imports: [
-    CommonModule, FormsModule, MatIconModule, MatButtonModule,
-    MatInputModule, MatFormFieldModule, MatCardModule, MatTooltipModule, MatSnackBarModule, TranslateModule,
+    CommonModule,
+    FormsModule,
+    MatIconModule,
+    MatButtonModule,
+    MatInputModule,
+    MatFormFieldModule,
+    MatCardModule,
+    MatTooltipModule,
+    MatSnackBarModule,
+    TranslateModule,
   ],
   templateUrl: './my-maps.component.html',
   styleUrl: './my-maps.component.scss',
@@ -76,40 +84,46 @@ export class MyMapsComponent implements OnInit {
       visible: al.visible,
     }));
 
-    this.mapCompositionService.create(instance.id, {
-      name: this.mapName.trim(),
-      slug: this.slugify(this.mapName.trim()) + '-' + Date.now().toString(36),
-      layers,
-      center: { lat, lon },
-      zoom,
-    }).subscribe({
-      next: (composition) => {
-        this.saving.set(false);
-        this.maps.update((m) => [composition, ...m]);
-        this.mapName = '';
-        this.analyticsService.trackEvent({ instanceId: instance.id, eventType: 'map_composition_saved' }).subscribe({ error: () => {} });
-        this.snackBar.open(
-          this.translate.instant('shared.savedSuccessfully') || 'Enregistré avec succès',
-          'OK',
-          { duration: 3000 },
-        );
-      },
-      error: () => {
-        this.saving.set(false);
-        this.snackBar.open(
-          this.translate.instant('shared.error') || 'Une erreur est survenue',
-          'OK',
-          { duration: 3000 },
-        );
-      },
-    });
+    this.mapCompositionService
+      .create(instance.id, {
+        name: this.mapName.trim(),
+        slug: this.slugify(this.mapName.trim()) + '-' + Date.now().toString(36),
+        layers,
+        center: { lat, lon },
+        zoom,
+      })
+      .subscribe({
+        next: (composition) => {
+          this.saving.set(false);
+          this.maps.update((m) => [composition, ...m]);
+          this.mapName = '';
+          this.analyticsService
+            .trackEvent({ instanceId: instance.id, eventType: 'map_composition_saved' })
+            .subscribe({ error: () => {} });
+          this.snackBar.open(
+            this.translate.instant('shared.savedSuccessfully') || 'Enregistré avec succès',
+            'OK',
+            { duration: 3000 },
+          );
+        },
+        error: () => {
+          this.saving.set(false);
+          this.snackBar.open(
+            this.translate.instant('shared.error') || 'Une erreur est survenue',
+            'OK',
+            { duration: 3000 },
+          );
+        },
+      });
   }
 
   loadMap(composition: MapComposition): void {
     const instance = this.instanceService.currentInstance$.value;
     if (!instance) return;
     this.loadingMapId.set(composition.id);
-    this.analyticsService.trackEvent({ instanceId: instance.id, eventType: 'map_composition_loaded' }).subscribe({ error: () => {} });
+    this.analyticsService
+      .trackEvent({ instanceId: instance.id, eventType: 'map_composition_loaded' })
+      .subscribe({ error: () => {} });
 
     this.mapLayerService.removeAll();
 
@@ -175,10 +189,13 @@ export class MyMapsComponent implements OnInit {
   }
 
   private slugify(text: string): string {
-    return text
-      .toLowerCase()
-      .normalize('NFD').replace(/[̀-ͯ]/g, '')
-      .replace(/[^a-z0-9]+/g, '-')
-      .replace(/(^-|-$)/g, '') || 'carte';
+    return (
+      text
+        .toLowerCase()
+        .normalize('NFD')
+        .replace(/[̀-ͯ]/g, '')
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/(^-|-$)/g, '') || 'carte'
+    );
   }
 }

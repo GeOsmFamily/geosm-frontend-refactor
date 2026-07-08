@@ -7,7 +7,9 @@
 
 .legend-item {
   border-bottom: 1px solid var(--border-light);
-  &:last-child { border-bottom: none; }
+  &:last-child {
+    border-bottom: none;
+  }
 }
 
 .legend-header {
@@ -19,7 +21,9 @@
   user-select: none;
   transition: background var(--transition-fast);
 
-  &:hover { background: var(--surface-hover); }
+  &:hover {
+    background: var(--surface-hover);
+  }
 }
 
 .collapse-icon {
@@ -29,7 +33,9 @@
   height: 20px;
   color: var(--text-secondary);
 
-  &.collapsed { transform: rotate(-90deg); }
+  &.collapsed {
+    transform: rotate(-90deg);
+  }
 }
 
 .layer-name {
@@ -39,7 +45,9 @@
   color: var(--text);
 }
 
-.legend-body { padding: 4px 8px 8px 28px; }
+.legend-body {
+  padding: 4px 8px 8px 28px;
+}
 
 .legend-image {
   max-width: 100%;

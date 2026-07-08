@@ -22,15 +22,15 @@ export class AuthService {
    * session a été stockée.
    */
   login(email: string, password: string, rememberMe = true): Observable<AuthTokens> {
-    return this.api.post<AuthTokens>('/auth/login', { email, password } as LoginRequest).pipe(
-      tap((tokens) => this.storeTokens(tokens, rememberMe)),
-    );
+    return this.api
+      .post<AuthTokens>('/auth/login', { email, password } as LoginRequest)
+      .pipe(tap((tokens) => this.storeTokens(tokens, rememberMe)));
   }
 
   register(dto: RegisterRequest): Observable<AuthTokens> {
-    return this.api.post<AuthTokens>('/auth/register', dto).pipe(
-      tap((tokens) => this.storeTokens(tokens, true)),
-    );
+    return this.api
+      .post<AuthTokens>('/auth/register', dto)
+      .pipe(tap((tokens) => this.storeTokens(tokens, true)));
   }
 
   logout(): void {
@@ -48,21 +48,17 @@ export class AuthService {
     // en cours - sinon un "remember me" décoché finirait par persister le nouveau token dans
     // localStorage au premier rafraîchissement, contournant silencieusement le choix initial.
     const rememberMe = !!localStorage.getItem(REFRESH_TOKEN_KEY);
-    return this.api.post<AuthTokens>('/auth/refresh', { refreshToken }).pipe(
-      tap((tokens) => this.storeTokens(tokens, rememberMe)),
-    );
+    return this.api
+      .post<AuthTokens>('/auth/refresh', { refreshToken })
+      .pipe(tap((tokens) => this.storeTokens(tokens, rememberMe)));
   }
 
   getProfile(): Observable<User> {
-    return this.api.get<User>('/auth/me').pipe(
-      tap((user) => this.currentUser$.next(user)),
-    );
+    return this.api.get<User>('/auth/me').pipe(tap((user) => this.currentUser$.next(user)));
   }
 
   updateProfile(dto: Partial<User>): Observable<User> {
-    return this.api.patch<User>('/auth/me', dto).pipe(
-      tap((user) => this.currentUser$.next(user)),
-    );
+    return this.api.patch<User>('/auth/me', dto).pipe(tap((user) => this.currentUser$.next(user)));
   }
 
   changePassword(dto: { currentPassword: string; newPassword: string }): Observable<void> {
@@ -124,7 +120,9 @@ export class AuthService {
     // Change d'emplacement : si une session précédente existait ailleurs (ex. bascule
     // remember-me entre deux connexions), on nettoie l'autre emplacement pour ne pas laisser
     // un jeton obsolète traîner.
-    const [target, other] = rememberMe ? [localStorage, sessionStorage] : [sessionStorage, localStorage];
+    const [target, other] = rememberMe
+      ? [localStorage, sessionStorage]
+      : [sessionStorage, localStorage];
     other.removeItem(ACCESS_TOKEN_KEY);
     other.removeItem(REFRESH_TOKEN_KEY);
     target.setItem(ACCESS_TOKEN_KEY, tokens.accessToken);

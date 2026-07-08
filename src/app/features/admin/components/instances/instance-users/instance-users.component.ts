@@ -85,14 +85,16 @@ export class InstanceUsersComponent implements OnInit {
 
   addUser(): void {
     if (!this.newUserId.trim()) return;
-    this.instanceService.addUser(this.instanceId, this.newUserId.trim(), this.newUserRole).subscribe({
-      next: () => {
-        this.newUserId = '';
-        this.notify('admin.instances.userAdded');
-        this.load();
-      },
-      error: (err) => this.notifyError(err),
-    });
+    this.instanceService
+      .addUser(this.instanceId, this.newUserId.trim(), this.newUserRole)
+      .subscribe({
+        next: () => {
+          this.newUserId = '';
+          this.notify('admin.instances.userAdded');
+          this.load();
+        },
+        error: (err) => this.notifyError(err),
+      });
   }
 
   changeRole(instanceUser: InstanceUser, role: Role): void {
@@ -137,6 +139,8 @@ export class InstanceUsersComponent implements OnInit {
 
   private notifyError(err: unknown): void {
     const message = (err as { error?: { error?: { message?: string } } })?.error?.error?.message;
-    this.snackBar.open(message ?? this.translate.instant('common.error'), undefined, { duration: 4000 });
+    this.snackBar.open(message ?? this.translate.instant('common.error'), undefined, {
+      duration: 4000,
+    });
   }
 }

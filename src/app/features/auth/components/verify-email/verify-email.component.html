@@ -11,7 +11,9 @@
       @case ('success') {
         <mat-icon class="status-icon success">check_circle</mat-icon>
         <p>{{ 'auth.verifyEmailSuccess' | translate }}</p>
-        <a mat-flat-button color="primary" routerLink="/map">{{ 'auth.backToLogin' | translate }}</a>
+        <a mat-flat-button color="primary" routerLink="/map">{{
+          'auth.backToLogin' | translate
+        }}</a>
       }
       @case ('missing-token') {
         <mat-icon class="status-icon error">error</mat-icon>

@@ -53,7 +53,11 @@ export class FeedbackService {
     return this.api.get<AdminFeedbackPage>('/admin/feedback', params as Record<string, unknown>);
   }
 
-  updateStatus(id: string, status: FeedbackStatus, adminNotes?: string): Observable<FeedbackSubmission> {
+  updateStatus(
+    id: string,
+    status: FeedbackStatus,
+    adminNotes?: string,
+  ): Observable<FeedbackSubmission> {
     return this.api.patch<FeedbackSubmission>(`/admin/feedback/${id}`, { status, adminNotes });
   }
 }

@@ -20,17 +20,19 @@ import { AuthService } from '../../../../core/services/auth.service';
       <p>Connexion en cours...</p>
     </div>
   `,
-  styles: [`
-    .callback-page {
-      height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 16px;
-      color: var(--text-secondary, #64748b);
-    }
-  `],
+  styles: [
+    `
+      .callback-page {
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 16px;
+        color: var(--text-secondary, #64748b);
+      }
+    `,
+  ],
 })
 export class AuthCallbackComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);

@@ -4,12 +4,10 @@
   } @else {
     <div class="base-map-grid">
       @for (bm of baseMaps; track bm.id) {
-        <mat-card
-          [class.selected]="selectedBaseMapId === bm.id"
-          (click)="applyBaseMap(bm.id)">
+        <mat-card [class.selected]="selectedBaseMapId === bm.id" (click)="applyBaseMap(bm.id)">
           <div class="thumbnail">
             @if (bm.thumbnail) {
-              <img [src]="bm.thumbnail" [alt]="bm.name" (error)="onThumbnailError(bm)">
+              <img [src]="bm.thumbnail" [alt]="bm.name" (error)="onThumbnailError(bm)" />
             } @else if (bm.id === 'none') {
               <mat-icon class="placeholder-icon">block</mat-icon>
             } @else {

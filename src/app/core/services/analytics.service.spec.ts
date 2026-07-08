@@ -11,10 +11,7 @@ describe('AnalyticsService', () => {
     apiSpy = jasmine.createSpyObj('ApiService', ['post']);
 
     TestBed.configureTestingModule({
-      providers: [
-        AnalyticsService,
-        { provide: ApiService, useValue: apiSpy },
-      ],
+      providers: [AnalyticsService, { provide: ApiService, useValue: apiSpy }],
     });
 
     service = TestBed.inject(AnalyticsService);

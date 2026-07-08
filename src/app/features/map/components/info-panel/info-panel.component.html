@@ -25,7 +25,13 @@
       <span>{{ 'infoPanel.openSource.title' | translate }}</span>
     </div>
     <p class="info-text">{{ 'infoPanel.openSource.description' | translate }}</p>
-    <a mat-stroked-button [href]="repoUrl" target="_blank" rel="noopener noreferrer" class="full-width">
+    <a
+      mat-stroked-button
+      [href]="repoUrl"
+      target="_blank"
+      rel="noopener noreferrer"
+      class="full-width"
+    >
       <mat-icon>open_in_new</mat-icon>
       {{ 'infoPanel.openSource.viewRepo' | translate }}
     </a>
@@ -40,7 +46,14 @@
       <span>{{ 'infoPanel.guide.title' | translate }}</span>
     </div>
     <p class="info-text">{{ 'infoPanel.guide.description' | translate }}</p>
-    <a mat-flat-button color="primary" [href]="guidePdfUrl" target="_blank" download class="full-width">
+    <a
+      mat-flat-button
+      color="primary"
+      [href]="guidePdfUrl"
+      target="_blank"
+      download
+      class="full-width"
+    >
       <mat-icon>picture_as_pdf</mat-icon>
       {{ 'infoPanel.guide.download' | translate }}
     </a>
@@ -69,10 +82,16 @@
       <mat-form-field appearance="outline" class="full-width">
         <mat-label>{{ 'infoPanel.feedback.descriptionLabel' | translate }}</mat-label>
         <textarea matInput formControlName="description" rows="4" maxlength="5000"></textarea>
-        @if (feedbackForm.get('description')?.hasError('required') && feedbackForm.get('description')?.touched) {
+        @if (
+          feedbackForm.get('description')?.hasError('required') &&
+          feedbackForm.get('description')?.touched
+        ) {
           <mat-error>{{ 'infoPanel.feedback.descriptionRequired' | translate }}</mat-error>
         }
-        @if (feedbackForm.get('description')?.hasError('minlength') && feedbackForm.get('description')?.touched) {
+        @if (
+          feedbackForm.get('description')?.hasError('minlength') &&
+          feedbackForm.get('description')?.touched
+        ) {
           <mat-error>{{ 'infoPanel.feedback.descriptionTooShort' | translate }}</mat-error>
         }
       </mat-form-field>
@@ -80,12 +99,21 @@
       <mat-form-field appearance="outline" class="full-width">
         <mat-label>{{ 'infoPanel.feedback.emailLabel' | translate }}</mat-label>
         <input matInput type="email" formControlName="contactEmail" />
-        @if (feedbackForm.get('contactEmail')?.hasError('email') && feedbackForm.get('contactEmail')?.touched) {
+        @if (
+          feedbackForm.get('contactEmail')?.hasError('email') &&
+          feedbackForm.get('contactEmail')?.touched
+        ) {
           <mat-error>{{ 'infoPanel.feedback.emailInvalid' | translate }}</mat-error>
         }
       </mat-form-field>
 
-      <button mat-flat-button color="primary" type="submit" class="full-width" [disabled]="submitting()">
+      <button
+        mat-flat-button
+        color="primary"
+        type="submit"
+        class="full-width"
+        [disabled]="submitting()"
+      >
         @if (submitting()) {
           <mat-spinner diameter="20"></mat-spinner>
         } @else {

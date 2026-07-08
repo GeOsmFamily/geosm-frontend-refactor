@@ -16,8 +16,14 @@ import { Sort } from '@angular/material/sort';
 
 import { UserService } from '../../../../core/services/user.service';
 import { Role, User } from '../../../../core/models/index';
-import { AdminDataTableComponent, AdminTableColumn } from '../../shared/components/admin-data-table/admin-data-table.component';
-import { UserFormDialogComponent, UserFormDialogData } from './user-form-dialog/user-form-dialog.component';
+import {
+  AdminDataTableComponent,
+  AdminTableColumn,
+} from '../../shared/components/admin-data-table/admin-data-table.component';
+import {
+  UserFormDialogComponent,
+  UserFormDialogData,
+} from './user-form-dialog/user-form-dialog.component';
 import { ConfirmDialogComponent } from '../../../../shared/components/confirm-dialog/confirm-dialog.component';
 
 @Component({
@@ -106,9 +112,12 @@ export class UsersComponent implements OnInit {
   }
 
   openCreateDialog(): void {
-    const ref = this.dialog.open<UserFormDialogComponent, UserFormDialogData>(UserFormDialogComponent, {
-      data: { mode: 'create' },
-    });
+    const ref = this.dialog.open<UserFormDialogComponent, UserFormDialogData>(
+      UserFormDialogComponent,
+      {
+        data: { mode: 'create' },
+      },
+    );
     ref.afterClosed().subscribe((dto) => {
       if (!dto) return;
       this.userService.create(dto).subscribe({
@@ -122,9 +131,12 @@ export class UsersComponent implements OnInit {
   }
 
   openEditDialog(user: User): void {
-    const ref = this.dialog.open<UserFormDialogComponent, UserFormDialogData>(UserFormDialogComponent, {
-      data: { mode: 'edit', user },
-    });
+    const ref = this.dialog.open<UserFormDialogComponent, UserFormDialogData>(
+      UserFormDialogComponent,
+      {
+        data: { mode: 'edit', user },
+      },
+    );
     ref.afterClosed().subscribe((dto) => {
       if (!dto) return;
       this.userService.update(user.id, dto).subscribe({
@@ -183,6 +195,8 @@ export class UsersComponent implements OnInit {
 
   private notifyError(err: unknown): void {
     const message = (err as { error?: { error?: { message?: string } } })?.error?.error?.message;
-    this.snackBar.open(message ?? this.translate.instant('common.error'), undefined, { duration: 4000 });
+    this.snackBar.open(message ?? this.translate.instant('common.error'), undefined, {
+      duration: 4000,
+    });
   }
 }

@@ -29,7 +29,18 @@ interface LayerStats {
 @Component({
   selector: 'app-statistics-tool',
   standalone: true,
-  imports: [CommonModule, FormsModule, MatButtonModule, MatIconModule, MatSelectModule, MatFormFieldModule, MatDividerModule, MatCardModule, TranslateModule, LoadingSpinnerComponent],
+  imports: [
+    CommonModule,
+    FormsModule,
+    MatButtonModule,
+    MatIconModule,
+    MatSelectModule,
+    MatFormFieldModule,
+    MatDividerModule,
+    MatCardModule,
+    TranslateModule,
+    LoadingSpinnerComponent,
+  ],
   templateUrl: './statistics-tool.component.html',
   styleUrl: './statistics-tool.component.scss',
 })
@@ -47,12 +58,20 @@ export class StatisticsToolComponent implements OnInit {
   narrativeLoading = false;
 
   private readonly colors = [
-    '#023f5f', '#00ada7', '#f44336', '#FF9800', '#4CAF50',
-    '#2196F3', '#9C27B0', '#795548', '#607D8B', '#E91E63',
+    '#023f5f',
+    '#00ada7',
+    '#f44336',
+    '#FF9800',
+    '#4CAF50',
+    '#2196F3',
+    '#9C27B0',
+    '#795548',
+    '#607D8B',
+    '#E91E63',
   ];
 
   ngOnInit(): void {
-    this.mapLayerService.activeLayers$.subscribe(layers => {
+    this.mapLayerService.activeLayers$.subscribe((layers) => {
       this.activeLayers = layers;
     });
   }
@@ -103,7 +122,7 @@ export class StatisticsToolComponent implements OnInit {
     }
 
     const sampleProps = features[0]?.properties || features[0] || {};
-    const stringProps = Object.keys(sampleProps).filter(k => {
+    const stringProps = Object.keys(sampleProps).filter((k) => {
       const val = sampleProps[k];
       return typeof val === 'string' && k !== 'id' && k !== 'geometry' && k !== 'geom';
     });

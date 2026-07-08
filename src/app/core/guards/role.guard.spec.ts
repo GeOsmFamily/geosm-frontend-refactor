@@ -57,7 +57,9 @@ describe('roleGuard', () => {
 
   it('allows access using the cached user when role matches', () => {
     authServiceSpy.isAuthenticated.and.returnValue(true);
-    (authServiceSpy.currentUser$ as unknown as { value: User | null }).value = mockUser(Role.SUPER_ADMIN);
+    (authServiceSpy.currentUser$ as unknown as { value: User | null }).value = mockUser(
+      Role.SUPER_ADMIN,
+    );
 
     const result = runGuard([Role.SUPER_ADMIN, Role.ADMIN_INSTANCE]);
 
@@ -66,7 +68,9 @@ describe('roleGuard', () => {
 
   it('redirects to /map using the cached user when role does not match', () => {
     authServiceSpy.isAuthenticated.and.returnValue(true);
-    (authServiceSpy.currentUser$ as unknown as { value: User | null }).value = mockUser(Role.VIEWER);
+    (authServiceSpy.currentUser$ as unknown as { value: User | null }).value = mockUser(
+      Role.VIEWER,
+    );
 
     const result = runGuard([Role.SUPER_ADMIN]);
 
@@ -78,7 +82,9 @@ describe('roleGuard', () => {
     authServiceSpy.isAuthenticated.and.returnValue(true);
     authServiceSpy.getProfile.and.returnValue(of(mockUser(Role.ADMIN_INSTANCE)));
 
-    const result$ = runGuard([Role.SUPER_ADMIN, Role.ADMIN_INSTANCE]) as Observable<boolean | UrlTree>;
+    const result$ = runGuard([Role.SUPER_ADMIN, Role.ADMIN_INSTANCE]) as Observable<
+      boolean | UrlTree
+    >;
 
     result$.subscribe((result) => {
       expect(result).toBe(true);

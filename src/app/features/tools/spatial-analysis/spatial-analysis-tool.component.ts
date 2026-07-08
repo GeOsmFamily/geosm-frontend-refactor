@@ -20,7 +20,10 @@ import { Fill, Stroke, Style, Circle as CircleStyle } from 'ol/style';
 import { getArea, getLength } from 'ol/sphere';
 
 import { MapService } from '../../map/services/map.service';
-import { SpatialAnalysisService, SpatialAnalysisOperation } from '../../../core/services/spatial-analysis.service';
+import {
+  SpatialAnalysisService,
+  SpatialAnalysisOperation,
+} from '../../../core/services/spatial-analysis.service';
 import { LoadingSpinnerComponent } from '../../../shared/components/loading-spinner/loading-spinner.component';
 
 type DrawGeomType = 'Point' | 'LineString' | 'Polygon';
@@ -30,8 +33,16 @@ type PickTarget = 'A' | 'B' | null;
   selector: 'app-spatial-analysis-tool',
   standalone: true,
   imports: [
-    TranslateModule, CommonModule, FormsModule, MatButtonModule, MatButtonToggleModule,
-    MatIconModule, MatFormFieldModule, MatInputModule, MatDividerModule, MatSnackBarModule,
+    TranslateModule,
+    CommonModule,
+    FormsModule,
+    MatButtonModule,
+    MatButtonToggleModule,
+    MatIconModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatDividerModule,
+    MatSnackBarModule,
     LoadingSpinnerComponent,
   ],
   templateUrl: './spatial-analysis-tool.component.html',
@@ -71,7 +82,11 @@ export class SpatialAnalysisToolComponent implements AfterViewInit, OnDestroy {
       new Style({
         stroke: new Stroke({ color: '#023f5f', width: 2, lineDash: [6, 4] }),
         fill: new Fill({ color: 'rgba(2, 63, 95, 0.06)' }),
-        image: new CircleStyle({ radius: 6, stroke: new Stroke({ color: '#023f5f', width: 2 }), fill: new Fill({ color: '#ffffff' }) }),
+        image: new CircleStyle({
+          radius: 6,
+          stroke: new Stroke({ color: '#023f5f', width: 2 }),
+          fill: new Fill({ color: '#ffffff' }),
+        }),
       }),
     );
     this.resultLayer = this.mapService.addVectorLayer(
@@ -80,7 +95,11 @@ export class SpatialAnalysisToolComponent implements AfterViewInit, OnDestroy {
       new Style({
         stroke: new Stroke({ color: '#00ada7', width: 3 }),
         fill: new Fill({ color: 'rgba(0, 173, 167, 0.25)' }),
-        image: new CircleStyle({ radius: 7, stroke: new Stroke({ color: '#00ada7', width: 2 }), fill: new Fill({ color: '#ffffff' }) }),
+        image: new CircleStyle({
+          radius: 7,
+          stroke: new Stroke({ color: '#00ada7', width: 2 }),
+          fill: new Fill({ color: '#ffffff' }),
+        }),
       }),
     );
   }
@@ -105,7 +124,10 @@ export class SpatialAnalysisToolComponent implements AfterViewInit, OnDestroy {
     this.pickingTarget.set(target);
     this.mapService.isPicking = true;
 
-    this.drawInteraction = new Draw({ source: this.inputLayer.getSource()!, type: this.geomType() });
+    this.drawInteraction = new Draw({
+      source: this.inputLayer.getSource()!,
+      type: this.geomType(),
+    });
     this.drawInteraction.on('drawend', (event) => {
       event.feature.set('role', target);
       if (target === 'A') {
@@ -129,7 +151,9 @@ export class SpatialAnalysisToolComponent implements AfterViewInit, OnDestroy {
     // Différé (voir AltimetryToolComponent.stopPicking()) : le clic qui termine le tracé
     // (double-clic pour Ligne/Polygone) est vu par FeatureInfoComponent APRÈS ce callback ;
     // sans ce délai, isPicking repasserait à false trop tôt et ouvrirait la fiche descriptive.
-    setTimeout(() => { this.mapService.isPicking = false; }, 300);
+    setTimeout(() => {
+      this.mapService.isPicking = false;
+    }, 300);
   }
 
   calculate(): void {
@@ -138,34 +162,57 @@ export class SpatialAnalysisToolComponent implements AfterViewInit, OnDestroy {
     this.resultStat.set(null);
 
     const format = new GeoJSON();
-    const geometryA = format.writeGeometryObject(this.geomA3857, { featureProjection: 'EPSG:3857', dataProjection: 'EPSG:4326' });
+    const geometryA = format.writeGeometryObject(this.geomA3857, {
+      featureProjection: 'EPSG:3857',
+      dataProjection: 'EPSG:4326',
+    });
     const geometryB = this.geomB3857
-      ? format.writeGeometryObject(this.geomB3857, { featureProjection: 'EPSG:3857', dataProjection: 'EPSG:4326' })
+      ? format.writeGeometryObject(this.geomB3857, {
+          featureProjection: 'EPSG:3857',
+          dataProjection: 'EPSG:4326',
+        })
       : undefined;
 
-    this.spatialAnalysisService.analyze({
-      operation: this.operation(),
-      geometryA: geometryA as unknown as Record<string, unknown>,
-      geometryB: geometryB as unknown as Record<string, unknown>,
-      distance: this.operation() === 'buffer' ? this.distance() : undefined,
-    }).subscribe({
-      next: (result) => {
-        this.loading.set(false);
-        if (!result.geometry) {
-          this.snackBar.open(this.translate.instant('tools.spatialAnalysisErrors.noResult') || 'Aucun résultat (géométries disjointes ?).', 'OK', { duration: 4000 });
-          return;
-        }
-        const resultGeom = format.readGeometry(result.geometry, { featureProjection: 'EPSG:3857', dataProjection: 'EPSG:4326' });
-        this.resultLayer.getSource()!.clear();
-        this.resultLayer.getSource()!.addFeature(new Feature(resultGeom));
-        this.map.getView().fit(resultGeom.getExtent(), { padding: [80, 80, 80, 80], duration: 400, maxZoom: 18 });
-        this.resultStat.set(this.formatStat(resultGeom));
-      },
-      error: () => {
-        this.loading.set(false);
-        this.snackBar.open(this.translate.instant('tools.spatialAnalysisErrors.analysisFailed') || 'Échec de l\'analyse spatiale. Vérifiez les géométries tracées.', 'OK', { duration: 4000 });
-      },
-    });
+    this.spatialAnalysisService
+      .analyze({
+        operation: this.operation(),
+        geometryA: geometryA as unknown as Record<string, unknown>,
+        geometryB: geometryB as unknown as Record<string, unknown>,
+        distance: this.operation() === 'buffer' ? this.distance() : undefined,
+      })
+      .subscribe({
+        next: (result) => {
+          this.loading.set(false);
+          if (!result.geometry) {
+            this.snackBar.open(
+              this.translate.instant('tools.spatialAnalysisErrors.noResult') ||
+                'Aucun résultat (géométries disjointes ?).',
+              'OK',
+              { duration: 4000 },
+            );
+            return;
+          }
+          const resultGeom = format.readGeometry(result.geometry, {
+            featureProjection: 'EPSG:3857',
+            dataProjection: 'EPSG:4326',
+          });
+          this.resultLayer.getSource()!.clear();
+          this.resultLayer.getSource()!.addFeature(new Feature(resultGeom));
+          this.map
+            .getView()
+            .fit(resultGeom.getExtent(), { padding: [80, 80, 80, 80], duration: 400, maxZoom: 18 });
+          this.resultStat.set(this.formatStat(resultGeom));
+        },
+        error: () => {
+          this.loading.set(false);
+          this.snackBar.open(
+            this.translate.instant('tools.spatialAnalysisErrors.analysisFailed') ||
+              "Échec de l'analyse spatiale. Vérifiez les géométries tracées.",
+            'OK',
+            { duration: 4000 },
+          );
+        },
+      });
   }
 
   private formatStat(geom: Geometry): string {

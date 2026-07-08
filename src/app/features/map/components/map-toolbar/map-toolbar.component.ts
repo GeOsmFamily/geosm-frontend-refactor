@@ -27,7 +27,14 @@ interface MapPosition {
 @Component({
   selector: 'app-map-toolbar',
   standalone: true,
-  imports: [TranslateModule, CommonModule, MatButtonModule, MatIconModule, MatTooltipModule, MatDialogModule],
+  imports: [
+    TranslateModule,
+    CommonModule,
+    MatButtonModule,
+    MatIconModule,
+    MatTooltipModule,
+    MatDialogModule,
+  ],
   templateUrl: './map-toolbar.component.html',
   styleUrl: './map-toolbar.component.scss',
 })
@@ -103,8 +110,12 @@ export class MapToolbarComponent implements OnInit, OnDestroy {
     }
   }
 
-  get canGoBack(): boolean { return this.historyIndex > 0; }
-  get canGoForward(): boolean { return this.historyIndex < this.history.length - 1; }
+  get canGoBack(): boolean {
+    return this.historyIndex > 0;
+  }
+  get canGoForward(): boolean {
+    return this.historyIndex < this.history.length - 1;
+  }
 
   goBack(): void {
     if (!this.canGoBack) return;
@@ -201,17 +212,16 @@ export class MapToolbarComponent implements OnInit, OnDestroy {
   }
 
   private clearLocationMarker(): void {
-    const layer = this.mapService.getLayerByName(GEOLOCATION_LAYER_NAME) as VectorLayer<VectorSource> | undefined;
+    const layer = this.mapService.getLayerByName(GEOLOCATION_LAYER_NAME) as
+      VectorLayer<VectorSource> | undefined;
     layer?.getSource()?.clear();
     this.hasLocationMarker.set(false);
   }
 
   private showLocationError(): void {
-    this.snackBar.open(
-      this.translate.instant('naviguation_tools.locate_me_denied'),
-      'OK',
-      { duration: 4000 },
-    );
+    this.snackBar.open(this.translate.instant('naviguation_tools.locate_me_denied'), 'OK', {
+      duration: 4000,
+    });
   }
 
   private showPositionMarker(lonLat: [number, number], accuracyMeters: number): void {
@@ -219,24 +229,29 @@ export class MapToolbarComponent implements OnInit, OnDestroy {
     const accuracyRadiusPx = this.metersToMapUnits(accuracyMeters);
 
     const markerFeature = new Feature(new Point(center));
-    markerFeature.setStyle(new Style({
-      image: new CircleStyle({
-        radius: 8,
-        fill: new Fill({ color: '#1a73e8' }),
-        stroke: new Stroke({ color: '#ffffff', width: 3 }),
+    markerFeature.setStyle(
+      new Style({
+        image: new CircleStyle({
+          radius: 8,
+          fill: new Fill({ color: '#1a73e8' }),
+          stroke: new Stroke({ color: '#ffffff', width: 3 }),
+        }),
       }),
-    }));
+    );
 
     const accuracyFeature = new Feature(new Point(center));
-    accuracyFeature.setStyle(new Style({
-      image: new CircleStyle({
-        radius: accuracyRadiusPx,
-        fill: new Fill({ color: 'rgba(26, 115, 232, 0.15)' }),
-        stroke: new Stroke({ color: 'rgba(26, 115, 232, 0.4)', width: 1 }),
+    accuracyFeature.setStyle(
+      new Style({
+        image: new CircleStyle({
+          radius: accuracyRadiusPx,
+          fill: new Fill({ color: 'rgba(26, 115, 232, 0.15)' }),
+          stroke: new Stroke({ color: 'rgba(26, 115, 232, 0.4)', width: 1 }),
+        }),
       }),
-    }));
+    );
 
-    const existingLayer = this.mapService.getLayerByName(GEOLOCATION_LAYER_NAME) as VectorLayer<VectorSource> | undefined;
+    const existingLayer = this.mapService.getLayerByName(GEOLOCATION_LAYER_NAME) as
+      VectorLayer<VectorSource> | undefined;
     if (existingLayer) {
       const source = existingLayer.getSource();
       source?.clear();

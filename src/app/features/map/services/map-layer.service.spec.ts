@@ -110,7 +110,11 @@ describe('MapLayerService', () => {
       service.addLayer(makeLayer());
 
       expect(analyticsServiceSpy.trackEvent).toHaveBeenCalledWith(
-        jasmine.objectContaining({ instanceId: 'inst-1', eventType: 'layer_activated', layerId: 'layer-1' }),
+        jasmine.objectContaining({
+          instanceId: 'inst-1',
+          eventType: 'layer_activated',
+          layerId: 'layer-1',
+        }),
       );
     });
 
@@ -220,7 +224,7 @@ describe('MapLayerService', () => {
 
       service.reorder(0, 2);
 
-      const ids = service.getActiveLayers().map(al => al.layer.id);
+      const ids = service.getActiveLayers().map((al) => al.layer.id);
       expect(ids).toEqual(['layer-2', 'layer-3', 'layer-1']);
     });
   });

@@ -58,11 +58,13 @@ export class MapLayerService {
   private trackLayerEvent(eventType: string, layerId: string): void {
     const instanceId = this.instanceService.currentInstance$.value?.id;
     if (!instanceId) return;
-    this.analyticsService.trackEvent({ instanceId, eventType, layerId }).subscribe({ error: () => {} });
+    this.analyticsService
+      .trackEvent({ instanceId, eventType, layerId })
+      .subscribe({ error: () => {} });
   }
 
   addLayer(layer: Layer): void {
-    const existing = this.activeLayersSubject.value.find(al => al.layer.id === layer.id);
+    const existing = this.activeLayersSubject.value.find((al) => al.layer.id === layer.id);
     if (existing) return;
 
     const geometryType = (layer.geometryType || layer.metadata?.geometryType || '').toLowerCase();
@@ -75,7 +77,14 @@ export class MapLayerService {
       const { clusterLayer, heatmapLayer } = this.createVectorClusterAndHeatmapLayers(layer);
       this.mapService.addLayer(clusterLayer);
       this.mapService.addLayer(heatmapLayer);
-      activeLayer = { layer, olLayer: clusterLayer, heatmapLayer, viewMode: 'cluster', visible: true, opacity: 1 };
+      activeLayer = {
+        layer,
+        olLayer: clusterLayer,
+        heatmapLayer,
+        viewMode: 'cluster',
+        visible: true,
+        opacity: 1,
+      };
     } else {
       const olLayer = this.createWmsLayer(layer);
       this.mapService.addLayer(olLayer);
@@ -131,7 +140,10 @@ export class MapLayerService {
    * tuiles WMS, ceci ne se découpe pas aux frontières de tuile et permet un
    * style de cluster personnalisé (icône de la couche + badge de comptage).
    */
-  private createVectorClusterAndHeatmapLayers(layer: Layer): { clusterLayer: VectorLayer<Cluster>; heatmapLayer: Heatmap } {
+  private createVectorClusterAndHeatmapLayers(layer: Layer): {
+    clusterLayer: VectorLayer<Cluster>;
+    heatmapLayer: Heatmap;
+  } {
     const source = new VectorSource({
       strategy: bboxLoadingStrategy,
       loader: (extent, _resolution, projection, success, failure) => {
@@ -185,11 +197,11 @@ export class MapLayerService {
 
   removeLayer(layerId: string): void {
     const current = this.activeLayersSubject.value;
-    const found = current.find(al => al.layer.id === layerId);
+    const found = current.find((al) => al.layer.id === layerId);
     if (found) {
       this.mapService.removeLayer(found.olLayer);
       if (found.heatmapLayer) this.mapService.removeLayer(found.heatmapLayer);
-      this.activeLayersSubject.next(current.filter(al => al.layer.id !== layerId));
+      this.activeLayersSubject.next(current.filter((al) => al.layer.id !== layerId));
       this.trackLayerEvent('layer_deactivated', layerId);
     }
   }
@@ -203,7 +215,7 @@ export class MapLayerService {
   }
 
   toggleVisibility(layerId: string): void {
-    const current = this.activeLayersSubject.value.map(al => {
+    const current = this.activeLayersSubject.value.map((al) => {
       if (al.layer.id === layerId) {
         const visible = !al.visible;
         this.applyVisibility(al, visible);
@@ -215,7 +227,7 @@ export class MapLayerService {
   }
 
   setVisibility(layerId: string, visible: boolean): void {
-    const current = this.activeLayersSubject.value.map(al => {
+    const current = this.activeLayersSubject.value.map((al) => {
       if (al.layer.id === layerId) {
         this.applyVisibility(al, visible);
         return { ...al, visible };
@@ -238,7 +250,7 @@ export class MapLayerService {
   }
 
   setOpacity(layerId: string, opacity: number): void {
-    const current = this.activeLayersSubject.value.map(al => {
+    const current = this.activeLayersSubject.value.map((al) => {
       if (al.layer.id === layerId) {
         al.olLayer.setOpacity(opacity);
         al.heatmapLayer?.setOpacity(opacity);
@@ -262,6 +274,6 @@ export class MapLayerService {
   }
 
   isLayerActive(layerId: string): boolean {
-    return this.activeLayersSubject.value.some(al => al.layer.id === layerId);
+    return this.activeLayersSubject.value.some((al) => al.layer.id === layerId);
   }
 }

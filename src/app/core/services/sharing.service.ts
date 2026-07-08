@@ -16,4 +16,3 @@ export class SharingService {
     return this.api.get<ShareMap>(`/share/${code}`);
   }
 }
-

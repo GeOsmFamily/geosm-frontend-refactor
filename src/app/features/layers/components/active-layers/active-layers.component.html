@@ -1,5 +1,5 @@
 <div class="active-layers">
-  @if ((activeLayers$ | async); as layers) {
+  @if (activeLayers$ | async; as layers) {
     @if (layers.length === 0) {
       <div class="empty-state">
         <mat-icon>layers_clear</mat-icon>
@@ -8,9 +8,13 @@
       </div>
     } @else {
       @if (viewSummaryLoading) {
-        <p class="view-summary loading"><mat-icon class="ai-icon">auto_awesome</mat-icon> Analyse de la vue en cours...</p>
+        <p class="view-summary loading">
+          <mat-icon class="ai-icon">auto_awesome</mat-icon> Analyse de la vue en cours...
+        </p>
       } @else if (viewSummary?.narrative) {
-        <p class="view-summary"><mat-icon class="ai-icon">auto_awesome</mat-icon> {{ viewSummary!.narrative }}</p>
+        <p class="view-summary">
+          <mat-icon class="ai-icon">auto_awesome</mat-icon> {{ viewSummary!.narrative }}
+        </p>
       }
 
       <div cdkDropList (cdkDropListDropped)="onDrop($event)" class="layer-list">
@@ -23,23 +27,40 @@
             <div class="layer-info">
               <div class="layer-header">
                 <span class="layer-name" [matTooltip]="activeLayer.layer.name">
-                  {{ activeLayer.layer.name | truncate:28 }}
+                  {{ activeLayer.layer.name | truncate: 28 }}
                 </span>
                 <div class="layer-actions">
                   @if (activeLayer.heatmapLayer) {
-                    <button [matTooltip]="(activeLayer.viewMode === 'heatmap' ? 'map.viewCluster' : 'map.viewHeatmap') | translate"
-                            [class.active]="activeLayer.viewMode === 'heatmap'"
-                            (click)="toggleHeatmap(activeLayer)">
-                      <mat-icon>{{ activeLayer.viewMode === 'heatmap' ? 'grain' : 'whatshot' }}</mat-icon>
+                    <button
+                      [matTooltip]="
+                        (activeLayer.viewMode === 'heatmap' ? 'map.viewCluster' : 'map.viewHeatmap')
+                          | translate
+                      "
+                      [class.active]="activeLayer.viewMode === 'heatmap'"
+                      (click)="toggleHeatmap(activeLayer)"
+                    >
+                      <mat-icon>{{
+                        activeLayer.viewMode === 'heatmap' ? 'grain' : 'whatshot'
+                      }}</mat-icon>
                     </button>
                   }
-                  <button [matTooltip]="'sharing.share' | translate" (click)="shareLayer(activeLayer)">
+                  <button
+                    [matTooltip]="'sharing.share' | translate"
+                    (click)="shareLayer(activeLayer)"
+                  >
                     <mat-icon>share</mat-icon>
                   </button>
-                  <button [matTooltip]="'map.visibility' | translate" (click)="toggleVisibility(activeLayer)">
+                  <button
+                    [matTooltip]="'map.visibility' | translate"
+                    (click)="toggleVisibility(activeLayer)"
+                  >
                     <mat-icon>{{ activeLayer.visible ? 'visibility' : 'visibility_off' }}</mat-icon>
                   </button>
-                  <button class="danger" [matTooltip]="'common.delete' | translate" (click)="removeLayer(activeLayer)">
+                  <button
+                    class="danger"
+                    [matTooltip]="'common.delete' | translate"
+                    (click)="removeLayer(activeLayer)"
+                  >
                     <mat-icon>close</mat-icon>
                   </button>
                 </div>
@@ -58,19 +79,32 @@
                   (input)="onOpacityChange(activeLayer, $event)"
                   class="opacity-slider"
                 />
-                <span class="opacity-value">{{ (activeLayer.opacity * 100) | number:'1.0-0' }}%</span>
+                <span class="opacity-value"
+                  >{{ activeLayer.opacity * 100 | number: '1.0-0' }}%</span
+                >
               </div>
 
               @if (canResync()) {
                 <div class="freshness-row">
-                  @if (activeLayer.layer.metadata?.lastSyncedAt || activeLayer.layer.metadata?.importedAt) {
+                  @if (
+                    activeLayer.layer.metadata?.lastSyncedAt ||
+                    activeLayer.layer.metadata?.importedAt
+                  ) {
                     <span class="freshness-date">
                       <mat-icon>schedule</mat-icon>
                       {{ 'map.lastSynced' | translate }}
-                      {{ (activeLayer.layer.metadata?.lastSyncedAt || activeLayer.layer.metadata?.importedAt) | date:'dd/MM/yyyy HH:mm' }}
+                      {{
+                        activeLayer.layer.metadata?.lastSyncedAt ||
+                          activeLayer.layer.metadata?.importedAt | date: 'dd/MM/yyyy HH:mm'
+                      }}
                     </span>
                   }
-                  <button class="resync-btn" type="button" [disabled]="isResyncing(activeLayer)" (click)="resyncLayer(activeLayer)">
+                  <button
+                    class="resync-btn"
+                    type="button"
+                    [disabled]="isResyncing(activeLayer)"
+                    (click)="resyncLayer(activeLayer)"
+                  >
                     <mat-icon>{{ isResyncing(activeLayer) ? 'hourglass_empty' : 'sync' }}</mat-icon>
                     {{ 'map.resync' | translate }}
                   </button>
@@ -83,12 +117,23 @@
 
       @if (recommendations.length > 0) {
         <div class="recommendations">
-          <p class="recommendations-title"><mat-icon class="ai-icon">auto_awesome</mat-icon> Vous pourriez aussi aimer</p>
+          <p class="recommendations-title">
+            <mat-icon class="ai-icon">auto_awesome</mat-icon> Vous pourriez aussi aimer
+          </p>
           @for (rec of recommendations; track rec.id) {
             <div class="recommendation-card">
-              <span class="recommendation-name" [matTooltip]="rec.name">{{ rec.name | truncate:24 }}</span>
-              <button class="add-recommendation-btn" type="button" [disabled]="addingRecommendationId === rec.id" (click)="addRecommendedLayer(rec)">
-                <mat-icon>{{ addingRecommendationId === rec.id ? 'hourglass_empty' : 'add' }}</mat-icon>
+              <span class="recommendation-name" [matTooltip]="rec.name">{{
+                rec.name | truncate: 24
+              }}</span>
+              <button
+                class="add-recommendation-btn"
+                type="button"
+                [disabled]="addingRecommendationId === rec.id"
+                (click)="addRecommendedLayer(rec)"
+              >
+                <mat-icon>{{
+                  addingRecommendationId === rec.id ? 'hourglass_empty' : 'add'
+                }}</mat-icon>
               </button>
             </div>
           }

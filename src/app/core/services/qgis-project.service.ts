@@ -39,21 +39,42 @@ export class QgisProjectService {
     formData.append('name', dto.name);
     if (dto.description) formData.append('description', dto.description);
     return this.http
-      .post<ApiResponse<QgisProjectModel>>(`${environment.apiUrl}/instances/${instanceId}/qgis-project/upload`, formData)
+      .post<ApiResponse<QgisProjectModel>>(
+        `${environment.apiUrl}/instances/${instanceId}/qgis-project/upload`,
+        formData,
+      )
       .pipe(map((res) => res.data));
   }
 
   listLayers(instanceId: string, qgisProjectId: string): Observable<QgisProjectLayerInfo[]> {
-    return this.api.get<QgisProjectLayerInfo[]>(`/instances/${instanceId}/qgis-project/${qgisProjectId}/layers`);
+    return this.api.get<QgisProjectLayerInfo[]>(
+      `/instances/${instanceId}/qgis-project/${qgisProjectId}/layers`,
+    );
   }
 
-  confirmLayers(instanceId: string, qgisProjectId: string, subGroupId: string, layers: QgisLayerSelection[]): Observable<Layer[]> {
-    return this.api.post<Layer[]>(`/instances/${instanceId}/qgis-project/${qgisProjectId}/layers/confirm`, { subGroupId, layers });
+  confirmLayers(
+    instanceId: string,
+    qgisProjectId: string,
+    subGroupId: string,
+    layers: QgisLayerSelection[],
+  ): Observable<Layer[]> {
+    return this.api.post<Layer[]>(
+      `/instances/${instanceId}/qgis-project/${qgisProjectId}/layers/confirm`,
+      { subGroupId, layers },
+    );
   }
 
   /** Empaquette le projet complet (données + styles) en une archive .zip autonome, ouvrable
    * directement dans QGIS Desktop - voir ExportQgisProjectBundleUseCase. */
-  exportBundle(instanceId: string, qgisProjectId: string): Observable<{ name: string; url: string; convertedLayerCount: number; totalLayerCount: number }> {
+  exportBundle(
+    instanceId: string,
+    qgisProjectId: string,
+  ): Observable<{
+    name: string;
+    url: string;
+    convertedLayerCount: number;
+    totalLayerCount: number;
+  }> {
     return this.api.get(`/instances/${instanceId}/qgis-project/${qgisProjectId}/export`);
   }
 }

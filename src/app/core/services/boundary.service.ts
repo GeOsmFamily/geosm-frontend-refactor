@@ -29,7 +29,11 @@ export class BoundaryService {
   private readonly http = inject(HttpClient);
 
   search(table: string, q?: string, limit = 20): Observable<BoundarySearchResult[]> {
-    return this.api.get<BoundarySearchResult[]>('/geoportail/admin-boundaries/search', { table, q, limit });
+    return this.api.get<BoundarySearchResult[]>('/geoportail/admin-boundaries/search', {
+      table,
+      q,
+      limit,
+    });
   }
 
   getDetail(table: string, id: number, geomCol?: string): Observable<BoundaryDetail> {
@@ -49,7 +53,10 @@ export class BoundaryService {
     formData.append('mode', dto.mode);
 
     return this.http
-      .post<ApiResponse<ImportBoundariesResult>>(`${environment.apiUrl}/geoportail/admin-boundaries/import`, formData)
+      .post<ApiResponse<ImportBoundariesResult>>(
+        `${environment.apiUrl}/geoportail/admin-boundaries/import`,
+        formData,
+      )
       .pipe(map((res) => res.data));
   }
 }

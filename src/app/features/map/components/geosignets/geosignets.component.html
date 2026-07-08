@@ -10,15 +10,23 @@
     <div class="save-form">
       <div class="input-wrapper">
         <mat-icon class="input-icon">bookmark_border</mat-icon>
-        <input type="text"
-               id="bookmark-name-input"
-               aria-label="Nom du geosignet"
-               [placeholder]="'geosignets.name' | translate"
-               [(ngModel)]="bookmarkName"
-               (keyup.enter)="saveCurrentView()"
-               class="custom-input" />
+        <input
+          type="text"
+          id="bookmark-name-input"
+          aria-label="Nom du geosignet"
+          [placeholder]="'geosignets.name' | translate"
+          [(ngModel)]="bookmarkName"
+          (keyup.enter)="saveCurrentView()"
+          class="custom-input"
+        />
       </div>
-      <button mat-flat-button color="primary" class="save-btn" (click)="saveCurrentView()" [disabled]="!bookmarkName.trim()">
+      <button
+        mat-flat-button
+        color="primary"
+        class="save-btn"
+        (click)="saveCurrentView()"
+        [disabled]="!bookmarkName.trim()"
+      >
         <mat-icon>bookmark_add</mat-icon>
         <span>{{ 'geosignets.save' | translate }}</span>
       </button>
@@ -40,16 +48,25 @@
                   {{ bm.name }}
                 </span>
                 <span class="bookmark-coords">
-                  {{ bm.center[1] | number:'1.4-4' }}° N, {{ bm.center[0] | number:'1.4-4' }}° E (z{{ bm.zoom | number:'1.0-0' }})
+                  {{ bm.center[1] | number: '1.4-4' }}° N, {{ bm.center[0] | number: '1.4-4' }}° E
+                  (z{{ bm.zoom | number: '1.0-0' }})
                 </span>
               </div>
             </button>
 
             <div class="bookmark-actions">
-              <button class="share-btn" (click)="share(bm)" [matTooltip]="'geosignets.share' | translate">
+              <button
+                class="share-btn"
+                (click)="share(bm)"
+                [matTooltip]="'geosignets.share' | translate"
+              >
                 <mat-icon>share</mat-icon>
               </button>
-              <button class="delete-btn" (click)="delete(bm.id)" [matTooltip]="'geosignets.delete' | translate">
+              <button
+                class="delete-btn"
+                (click)="delete(bm.id)"
+                [matTooltip]="'geosignets.delete' | translate"
+              >
                 <mat-icon>delete</mat-icon>
               </button>
             </div>

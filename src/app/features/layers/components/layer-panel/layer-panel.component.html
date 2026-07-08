@@ -2,18 +2,33 @@
   <!-- Panel Header with Tab Pills -->
   <div class="panel-header">
     <div class="tab-pills">
-      <button class="tab-pill" [class.active]="activeTab === 0" (click)="setTab(0)" id="tab-catalog">
+      <button
+        class="tab-pill"
+        [class.active]="activeTab === 0"
+        (click)="setTab(0)"
+        id="tab-catalog"
+      >
         <mat-icon>explore</mat-icon>
         <span>{{ 'map.catalog' | translate }}</span>
       </button>
-      <button class="tab-pill" [class.active]="activeTab === 1" (click)="setTab(1)" id="tab-active-layers">
+      <button
+        class="tab-pill"
+        [class.active]="activeTab === 1"
+        (click)="setTab(1)"
+        id="tab-active-layers"
+      >
         <mat-icon>layers</mat-icon>
         <span>{{ 'map.activeLayers' | translate }}</span>
         @if (activeLayerCount > 0) {
           <span class="tab-badge">{{ activeLayerCount }}</span>
         }
       </button>
-      <button class="tab-pill" [class.active]="activeTab === 2" (click)="setTab(2)" id="tab-basemaps">
+      <button
+        class="tab-pill"
+        [class.active]="activeTab === 2"
+        (click)="setTab(2)"
+        id="tab-basemaps"
+      >
         <mat-icon>map</mat-icon>
         <span>{{ 'map.baseMaps' | translate }}</span>
       </button>

@@ -46,16 +46,30 @@
   <ng-template #actions let-comment>
     <div class="row-actions">
       @if (comment.flagged) {
-        <mat-chip color="warn" highlighted [matTooltip]="comment.flagReason || ''">{{ 'admin.content.flaggedOnly' | translate }}</mat-chip>
-        <button mat-icon-button (click)="unflag(comment)" [matTooltip]="'admin.content.unflag' | translate">
+        <mat-chip color="warn" highlighted [matTooltip]="comment.flagReason || ''">{{
+          'admin.content.flaggedOnly' | translate
+        }}</mat-chip>
+        <button
+          mat-icon-button
+          (click)="unflag(comment)"
+          [matTooltip]="'admin.content.unflag' | translate"
+        >
           <mat-icon>flag_circle</mat-icon>
         </button>
       } @else {
-        <button mat-icon-button (click)="flag(comment)" [matTooltip]="'admin.content.flag' | translate">
+        <button
+          mat-icon-button
+          (click)="flag(comment)"
+          [matTooltip]="'admin.content.flag' | translate"
+        >
           <mat-icon>outlined_flag</mat-icon>
         </button>
       }
-      <button mat-icon-button (click)="confirmDelete(comment)" [matTooltip]="'common.delete' | translate">
+      <button
+        mat-icon-button
+        (click)="confirmDelete(comment)"
+        [matTooltip]="'common.delete' | translate"
+      >
         <mat-icon>delete</mat-icon>
       </button>
     </div>

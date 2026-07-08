@@ -10,7 +10,12 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(160deg, var(--primary) 0%, var(--primary-light) 50%, var(--accent) 100%);
+  background: linear-gradient(
+    160deg,
+    var(--primary) 0%,
+    var(--primary-light) 50%,
+    var(--accent) 100%
+  );
   position: relative;
   overflow: hidden;
   padding: 48px;
@@ -39,8 +44,13 @@
 }
 
 @keyframes float {
-  0%, 100% { transform: translateY(0) rotate(0deg); }
-  50% { transform: translateY(-30px) rotate(2deg); }
+  0%,
+  100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-30px) rotate(2deg);
+  }
 }
 
 .brand-area {
@@ -256,7 +266,8 @@
   align-items: center;
   margin: 24px 0;
 
-  &::before, &::after {
+  &::before,
+  &::after {
     content: '';
     flex: 1;
     height: 1px;

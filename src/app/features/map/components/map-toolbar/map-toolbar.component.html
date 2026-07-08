@@ -1,37 +1,89 @@
 <div class="map-toolbar">
-  <button mat-mini-fab class="toolbar-btn primary" (click)="zoomIn()" [matTooltip]="'naviguation_tools.zoom_plus' | translate" matTooltipPosition="left">
+  <button
+    mat-mini-fab
+    class="toolbar-btn primary"
+    (click)="zoomIn()"
+    [matTooltip]="'naviguation_tools.zoom_plus' | translate"
+    matTooltipPosition="left"
+  >
     <mat-icon>add</mat-icon>
   </button>
-  <button mat-mini-fab class="toolbar-btn primary" (click)="zoomOut()" [matTooltip]="'naviguation_tools.zoom_minus' | translate" matTooltipPosition="left">
+  <button
+    mat-mini-fab
+    class="toolbar-btn primary"
+    (click)="zoomOut()"
+    [matTooltip]="'naviguation_tools.zoom_minus' | translate"
+    matTooltipPosition="left"
+  >
     <mat-icon>remove</mat-icon>
   </button>
 
   <div class="toolbar-divider"></div>
 
-  <button mat-mini-fab class="toolbar-btn" (click)="goBack()" [disabled]="!canGoBack" [matTooltip]="'naviguation_tools.past_view' | translate" matTooltipPosition="left">
+  <button
+    mat-mini-fab
+    class="toolbar-btn"
+    (click)="goBack()"
+    [disabled]="!canGoBack"
+    [matTooltip]="'naviguation_tools.past_view' | translate"
+    matTooltipPosition="left"
+  >
     <mat-icon>undo</mat-icon>
   </button>
-  <button mat-mini-fab class="toolbar-btn" (click)="goForward()" [disabled]="!canGoForward" [matTooltip]="'naviguation_tools.next_view' | translate" matTooltipPosition="left">
+  <button
+    mat-mini-fab
+    class="toolbar-btn"
+    (click)="goForward()"
+    [disabled]="!canGoForward"
+    [matTooltip]="'naviguation_tools.next_view' | translate"
+    matTooltipPosition="left"
+  >
     <mat-icon>redo</mat-icon>
   </button>
 
   <div class="toolbar-divider"></div>
 
-  <button mat-mini-fab class="toolbar-btn" (click)="fitExtent()" [matTooltip]="'naviguation_tools.general_vieuw' | translate" matTooltipPosition="left">
+  <button
+    mat-mini-fab
+    class="toolbar-btn"
+    (click)="fitExtent()"
+    [matTooltip]="'naviguation_tools.general_vieuw' | translate"
+    matTooltipPosition="left"
+  >
     <mat-icon>public</mat-icon>
   </button>
-  <button mat-mini-fab class="toolbar-btn" (click)="openZoomModal()" [matTooltip]="'naviguation_tools.zoom_to_coordinates' | translate" matTooltipPosition="left">
+  <button
+    mat-mini-fab
+    class="toolbar-btn"
+    (click)="openZoomModal()"
+    [matTooltip]="'naviguation_tools.zoom_to_coordinates' | translate"
+    matTooltipPosition="left"
+  >
     <mat-icon>my_location</mat-icon>
   </button>
-  <button mat-mini-fab class="toolbar-btn"
-          [class.primary]="hasLocationMarker()"
-          (click)="locateMe()"
-          [disabled]="locating()"
-          [matTooltip]="(hasLocationMarker() ? 'naviguation_tools.locate_me_clear' : 'naviguation_tools.locate_me') | translate"
-          matTooltipPosition="left">
-    <mat-icon [class.spin]="locating()">{{ locating() ? 'refresh' : (hasLocationMarker() ? 'location_off' : 'near_me') }}</mat-icon>
+  <button
+    mat-mini-fab
+    class="toolbar-btn"
+    [class.primary]="hasLocationMarker()"
+    (click)="locateMe()"
+    [disabled]="locating()"
+    [matTooltip]="
+      (hasLocationMarker() ? 'naviguation_tools.locate_me_clear' : 'naviguation_tools.locate_me')
+        | translate
+    "
+    matTooltipPosition="left"
+  >
+    <mat-icon [class.spin]="locating()">{{
+      locating() ? 'refresh' : hasLocationMarker() ? 'location_off' : 'near_me'
+    }}</mat-icon>
   </button>
-  <button mat-mini-fab class="toolbar-btn" (click)="toggleCompare()" [matTooltip]="'naviguation_tools.compare_maps' | translate" matTooltipPosition="left">
+  <button
+    mat-mini-fab
+    class="toolbar-btn"
+    (click)="toggleCompare()"
+    [matTooltip]="'naviguation_tools.compare_maps' | translate"
+    matTooltipPosition="left"
+  >
     <mat-icon>compare</mat-icon>
   </button>
 </div>

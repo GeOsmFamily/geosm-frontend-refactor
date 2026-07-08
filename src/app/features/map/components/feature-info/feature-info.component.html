@@ -15,7 +15,12 @@
       } @else {
         @if (imageUrl() && !imageFailed()) {
           <a class="feature-image-link" [href]="imageUrl()" target="_blank" rel="noopener">
-            <img class="feature-image" [src]="imageUrl()" (error)="onImageError()" [alt]="title()" />
+            <img
+              class="feature-image"
+              [src]="imageUrl()"
+              (error)="onImageError()"
+              [alt]="title()"
+            />
           </a>
         }
         <div class="info-rows">
@@ -45,14 +50,24 @@
           }
         </div>
 
-        @if (!openingHours() && !phone() && !website() && !address() && !imageUrl() && otherProperties().length === 0) {
+        @if (
+          !openingHours() &&
+          !phone() &&
+          !website() &&
+          !address() &&
+          !imageUrl() &&
+          otherProperties().length === 0
+        ) {
           <p class="no-data">{{ 'featureInfo.noData' | translate }}</p>
         }
 
         @if (otherProperties().length > 0) {
           <button mat-button class="toggle-more" (click)="toggleAllProperties()">
             <mat-icon>{{ showAllProperties() ? 'expand_less' : 'expand_more' }}</mat-icon>
-            {{ (showAllProperties() ? 'featureInfo.hideDetails' : 'featureInfo.showDetails') | translate }}
+            {{
+              (showAllProperties() ? 'featureInfo.hideDetails' : 'featureInfo.showDetails')
+                | translate
+            }}
           </button>
           @if (showAllProperties()) {
             <table class="properties-table">

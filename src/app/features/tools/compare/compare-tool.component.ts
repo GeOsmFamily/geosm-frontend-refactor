@@ -69,31 +69,33 @@ export class CompareToolComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.map = this.mapService.getMap();
-    this.subscription = this.instanceService.currentInstance$.subscribe((instance: Instance | null) => {
-      if (instance) {
-        this.baseMapService.list(instance.id).subscribe({
-          next: (maps: BaseMap[]) => {
-            this.baseMaps = [
-              ...this.defaultBaseMaps,
-              ...[...maps].sort((a: BaseMap, b: BaseMap) => a.order - b.order).map((bm: BaseMap) => ({
-                id: bm.id,
-                name: bm.name,
-                thumbnail: bm.thumbnail,
-                baseMap: bm,
-              })),
-
-            ];
-          },
-          error: () => {
-            this.baseMaps = [...this.defaultBaseMaps];
-          }
-        });
-      } else {
-        this.baseMaps = [...this.defaultBaseMaps];
-      }
-    });
+    this.subscription = this.instanceService.currentInstance$.subscribe(
+      (instance: Instance | null) => {
+        if (instance) {
+          this.baseMapService.list(instance.id).subscribe({
+            next: (maps: BaseMap[]) => {
+              this.baseMaps = [
+                ...this.defaultBaseMaps,
+                ...[...maps]
+                  .sort((a: BaseMap, b: BaseMap) => a.order - b.order)
+                  .map((bm: BaseMap) => ({
+                    id: bm.id,
+                    name: bm.name,
+                    thumbnail: bm.thumbnail,
+                    baseMap: bm,
+                  })),
+              ];
+            },
+            error: () => {
+              this.baseMaps = [...this.defaultBaseMaps];
+            },
+          });
+        } else {
+          this.baseMaps = [...this.defaultBaseMaps];
+        }
+      },
+    );
   }
-
 
   ngOnDestroy(): void {
     this.resetCompare();
@@ -104,13 +106,13 @@ export class CompareToolComponent implements OnInit, OnDestroy {
     if (id === 'osm') {
       return new TileLayer({ source: new OSM() });
     }
-    const option = this.baseMaps.find(bm => bm.id === id);
+    const option = this.baseMaps.find((bm) => bm.id === id);
     if (option?.baseMap) {
       return new TileLayer({
         source: new XYZ({
           url: option.baseMap.url,
           attributions: option.baseMap.attribution,
-        })
+        }),
       });
     }
     return new TileLayer({ visible: false });

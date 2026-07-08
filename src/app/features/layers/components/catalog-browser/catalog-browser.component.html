@@ -12,7 +12,11 @@
         placeholder="Rechercher une couche, un tag..."
       />
       @if (searchQuery) {
-        <button class="search-clear-btn" (click)="searchQuery = ''; onSearch()" aria-label="Effacer">
+        <button
+          class="search-clear-btn"
+          (click)="searchQuery = ''; onSearch()"
+          aria-label="Effacer"
+        >
           <mat-icon>close</mat-icon>
         </button>
       }
@@ -20,10 +24,18 @@
 
     @if (!selectedGroup && !searchQuery) {
       <div class="view-mode-toggle">
-        <button [class.active]="viewMode === 'list'" (click)="setViewMode('list')" matTooltip="Vue liste">
+        <button
+          [class.active]="viewMode === 'list'"
+          (click)="setViewMode('list')"
+          matTooltip="Vue liste"
+        >
           <mat-icon>view_list</mat-icon>
         </button>
-        <button [class.active]="viewMode === 'grid'" (click)="setViewMode('grid')" matTooltip="Vue grille">
+        <button
+          [class.active]="viewMode === 'grid'"
+          (click)="setViewMode('grid')"
+          matTooltip="Vue grille"
+        >
           <mat-icon>grid_view</mat-icon>
         </button>
       </div>
@@ -49,8 +61,16 @@
       @for (group of filteredGroups; track group.id) {
         @for (subGroup of group.subGroups; track subGroup.id) {
           @for (layer of subGroup.layers; track layer.id) {
-            <div class="layer-row" [class.active]="isLayerActive(layer.id)" (click)="toggleLayer(layer, $event)">
-              <div class="layer-row-icon" [style.background-color]="getAlphaColor(group.color, 0.12)" [style.color]="group.color || 'var(--accent)'">
+            <div
+              class="layer-row"
+              [class.active]="isLayerActive(layer.id)"
+              (click)="toggleLayer(layer, $event)"
+            >
+              <div
+                class="layer-row-icon"
+                [style.background-color]="getAlphaColor(group.color, 0.12)"
+                [style.color]="group.color || 'var(--accent)'"
+              >
                 @if (getLayerSvgUrl(layer); as iconUrl) {
                   <img [src]="iconUrl" [alt]="layer.name" class="layer-svg-icon" />
                 } @else {
@@ -58,12 +78,19 @@
                 }
               </div>
               <div class="layer-row-info">
-                <span class="layer-row-name">{{ layer.name | truncate:35 }}</span>
+                <span class="layer-row-name">{{ layer.name | truncate: 35 }}</span>
                 <span class="layer-row-group">{{ group.name }}</span>
               </div>
-              <button class="layer-toggle-btn" [class.active]="isLayerActive(layer.id)"
-                      [matTooltip]="isLayerActive(layer.id) ? 'Retirer de la carte' : 'Ajouter à la carte'">
-                <mat-icon>{{ isLayerActive(layer.id) ? 'check_circle' : 'add_circle_outline' }}</mat-icon>
+              <button
+                class="layer-toggle-btn"
+                [class.active]="isLayerActive(layer.id)"
+                [matTooltip]="
+                  isLayerActive(layer.id) ? 'Retirer de la carte' : 'Ajouter à la carte'
+                "
+              >
+                <mat-icon>{{
+                  isLayerActive(layer.id) ? 'check_circle' : 'add_circle_outline'
+                }}</mat-icon>
               </button>
             </div>
           }
@@ -79,16 +106,25 @@
       </button>
 
       <div class="group-hero" [style.border-color]="selectedGroup.color || 'var(--accent)'">
-        <div class="group-hero-icon" [style.background-color]="getAlphaColor(selectedGroup.color, 0.12)">
+        <div
+          class="group-hero-icon"
+          [style.background-color]="getAlphaColor(selectedGroup.color, 0.12)"
+        >
           @if (isUrl(selectedGroup.icon)) {
             <img [src]="selectedGroup.icon" alt="logo" />
           } @else {
-            <mat-icon [style.color]="selectedGroup.color || 'var(--accent)'">{{ selectedGroup.icon || 'folder' }}</mat-icon>
+            <mat-icon [style.color]="selectedGroup.color || 'var(--accent)'">{{
+              selectedGroup.icon || 'folder'
+            }}</mat-icon>
           }
         </div>
         <div class="group-hero-info">
           <h4>{{ selectedGroup.name }}</h4>
-          <span class="layer-badge">{{ selectedGroup.layerCount }} couche{{ selectedGroup.layerCount > 1 ? 's' : '' }}</span>
+          <span class="layer-badge"
+            >{{ selectedGroup.layerCount }} couche{{
+              selectedGroup.layerCount > 1 ? 's' : ''
+            }}</span
+          >
         </div>
       </div>
 
@@ -101,10 +137,16 @@
           </div>
           <div class="layers-list">
             @for (layer of subGroup.layers; track layer.id) {
-              <div class="layer-row" [class.active]="isLayerActive(layer.id)" (click)="toggleLayer(layer, $event)">
-                <div class="layer-row-icon"
-                     [style.background-color]="getAlphaColor(selectedGroup.color, 0.12)"
-                     [style.color]="selectedGroup.color || 'var(--accent)'">
+              <div
+                class="layer-row"
+                [class.active]="isLayerActive(layer.id)"
+                (click)="toggleLayer(layer, $event)"
+              >
+                <div
+                  class="layer-row-icon"
+                  [style.background-color]="getAlphaColor(selectedGroup.color, 0.12)"
+                  [style.color]="selectedGroup.color || 'var(--accent)'"
+                >
                   @if (getLayerSvgUrl(layer); as iconUrl) {
                     <img [src]="iconUrl" [alt]="layer.name" class="layer-svg-icon" />
                   } @else {
@@ -112,12 +154,19 @@
                   }
                 </div>
                 <div class="layer-row-info">
-                  <span class="layer-row-name">{{ layer.name | truncate:32 }}</span>
+                  <span class="layer-row-name">{{ layer.name | truncate: 32 }}</span>
                   <span class="layer-type-badge">{{ getGeometryLabel(layer) }}</span>
                 </div>
-                <button class="layer-toggle-btn" [class.active]="isLayerActive(layer.id)"
-                        [matTooltip]="isLayerActive(layer.id) ? 'Retirer de la carte' : 'Ajouter à la carte'">
-                  <mat-icon>{{ isLayerActive(layer.id) ? 'check_circle' : 'add_circle_outline' }}</mat-icon>
+                <button
+                  class="layer-toggle-btn"
+                  [class.active]="isLayerActive(layer.id)"
+                  [matTooltip]="
+                    isLayerActive(layer.id) ? 'Retirer de la carte' : 'Ajouter à la carte'
+                  "
+                >
+                  <mat-icon>{{
+                    isLayerActive(layer.id) ? 'check_circle' : 'add_circle_outline'
+                  }}</mat-icon>
                 </button>
               </div>
             }
@@ -129,17 +178,24 @@
     <!-- Themes Grid -->
     <div class="themes-grid animate-in" [class.grid-mode]="viewMode === 'grid'">
       @for (group of filteredGroups; track group.id) {
-        <div class="theme-card"
-             tabindex="0"
-             [style.--theme-color]="group.color || 'var(--accent)'"
-             (click)="selectGroup(group)"
-             (keydown.enter)="selectGroup(group)">
+        <div
+          class="theme-card"
+          tabindex="0"
+          [style.--theme-color]="group.color || 'var(--accent)'"
+          (click)="selectGroup(group)"
+          (keydown.enter)="selectGroup(group)"
+        >
           <div class="theme-card-accent-bar"></div>
-          <div class="theme-icon-wrapper" [style.background-color]="getAlphaColor(group.color, 0.12)">
+          <div
+            class="theme-icon-wrapper"
+            [style.background-color]="getAlphaColor(group.color, 0.12)"
+          >
             @if (isUrl(group.icon)) {
               <img [src]="group.icon" class="theme-icon-img" alt="logo" />
             } @else {
-              <mat-icon class="theme-icon-mat" [style.color]="group.color || 'var(--accent)'">{{ group.icon || 'folder' }}</mat-icon>
+              <mat-icon class="theme-icon-mat" [style.color]="group.color || 'var(--accent)'">{{
+                group.icon || 'folder'
+              }}</mat-icon>
             }
           </div>
           <div class="theme-card-body">

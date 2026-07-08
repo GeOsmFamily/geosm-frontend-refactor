@@ -11,9 +11,16 @@ describe('AuthService', () => {
 
   const mockTokens = { accessToken: 'access-123', refreshToken: 'refresh-456' };
   const mockUser = {
-    id: '1', email: 'test@test.com', firstName: 'John', lastName: 'Doe',
-    avatar: null, role: 'VIEWER' as any, isActive: true, emailVerified: true,
-    createdAt: '2024-01-01', updatedAt: '2024-01-01',
+    id: '1',
+    email: 'test@test.com',
+    firstName: 'John',
+    lastName: 'Doe',
+    avatar: null,
+    role: 'VIEWER' as any,
+    isActive: true,
+    emailVerified: true,
+    createdAt: '2024-01-01',
+    updatedAt: '2024-01-01',
   };
 
   beforeEach(() => {
@@ -52,7 +59,10 @@ describe('AuthService', () => {
     it('should call API with correct endpoint', () => {
       apiSpy.post.and.returnValue(of(mockTokens));
       service.login('test@test.com', 'pass');
-      expect(apiSpy.post).toHaveBeenCalledWith('/auth/login', { email: 'test@test.com', password: 'pass' });
+      expect(apiSpy.post).toHaveBeenCalledWith('/auth/login', {
+        email: 'test@test.com',
+        password: 'pass',
+      });
     });
   });
 

@@ -1,8 +1,14 @@
 <div class="spatial-analysis-tool">
   <h3>Analyse spatiale</h3>
-  <p class="hint">Tracez une ou deux géométries sur la carte, choisissez une opération, puis calculez le résultat.</p>
+  <p class="hint">
+    Tracez une ou deux géométries sur la carte, choisissez une opération, puis calculez le résultat.
+  </p>
 
-  <mat-button-toggle-group class="op-group" [value]="operation()" (change)="setOperation($event.value)">
+  <mat-button-toggle-group
+    class="op-group"
+    [value]="operation()"
+    (change)="setOperation($event.value)"
+  >
     <mat-button-toggle value="buffer">
       <mat-icon>blur_circular</mat-icon>
       Buffer
@@ -23,7 +29,11 @@
 
   <div class="geom-type-row">
     <span class="geom-type-label">Type de géométrie à tracer :</span>
-    <mat-button-toggle-group class="geom-type-group" [value]="geomType()" (change)="setGeomType($event.value)">
+    <mat-button-toggle-group
+      class="geom-type-group"
+      [value]="geomType()"
+      (change)="setGeomType($event.value)"
+    >
       <mat-button-toggle value="Point">Point</mat-button-toggle>
       <mat-button-toggle value="LineString">Ligne</mat-button-toggle>
       <mat-button-toggle value="Polygon">Zone</mat-button-toggle>
@@ -32,40 +42,64 @@
 
   <mat-divider></mat-divider>
 
-  <button mat-stroked-button
-          color="primary"
-          class="full-width pick-btn"
-          [class.active]="pickingTarget() === 'A'"
-          [disabled]="!!pickingTarget()"
-          (click)="pick('A')">
+  <button
+    mat-stroked-button
+    color="primary"
+    class="full-width pick-btn"
+    [class.active]="pickingTarget() === 'A'"
+    [disabled]="!!pickingTarget()"
+    (click)="pick('A')"
+  >
     <mat-icon>{{ pickingTarget() === 'A' ? 'close' : 'edit_location_alt' }}</mat-icon>
-    {{ pickingTarget() === 'A' ? 'Cliquez sur la carte...' : (hasA() ? 'Retracer la géométrie A' : 'Tracer la géométrie A') }}
+    {{
+      pickingTarget() === 'A'
+        ? 'Cliquez sur la carte...'
+        : hasA()
+          ? 'Retracer la géométrie A'
+          : 'Tracer la géométrie A'
+    }}
   </button>
 
   @if (needsB()) {
-    <button mat-stroked-button
-            color="primary"
-            class="full-width pick-btn"
-            [class.active]="pickingTarget() === 'B'"
-            [disabled]="!!pickingTarget() || !hasA()"
-            (click)="pick('B')">
+    <button
+      mat-stroked-button
+      color="primary"
+      class="full-width pick-btn"
+      [class.active]="pickingTarget() === 'B'"
+      [disabled]="!!pickingTarget() || !hasA()"
+      (click)="pick('B')"
+    >
       <mat-icon>{{ pickingTarget() === 'B' ? 'close' : 'edit_location_alt' }}</mat-icon>
-      {{ pickingTarget() === 'B' ? 'Cliquez sur la carte...' : (hasB() ? 'Retracer la géométrie B' : 'Tracer la géométrie B') }}
+      {{
+        pickingTarget() === 'B'
+          ? 'Cliquez sur la carte...'
+          : hasB()
+            ? 'Retracer la géométrie B'
+            : 'Tracer la géométrie B'
+      }}
     </button>
   }
 
   @if (operation() === 'buffer') {
     <mat-form-field appearance="outline" class="full-width distance-field">
       <mat-label>Distance du buffer (mètres)</mat-label>
-      <input matInput type="number" min="1" [ngModel]="distance()" (ngModelChange)="distance.set($event)" />
+      <input
+        matInput
+        type="number"
+        min="1"
+        [ngModel]="distance()"
+        (ngModelChange)="distance.set($event)"
+      />
     </mat-form-field>
   }
 
-  <button mat-flat-button
-          color="primary"
-          class="full-width calculate-btn"
-          [disabled]="!canCalculate() || loading()"
-          (click)="calculate()">
+  <button
+    mat-flat-button
+    color="primary"
+    class="full-width calculate-btn"
+    [disabled]="!canCalculate() || loading()"
+    (click)="calculate()"
+  >
     <mat-icon>calculate</mat-icon>
     Calculer
   </button>

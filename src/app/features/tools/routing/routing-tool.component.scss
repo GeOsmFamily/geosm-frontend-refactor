@@ -15,7 +15,7 @@
     border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
     padding: 12px;
     margin-bottom: 16px;
-    
+
     h4 {
       display: flex;
       align-items: center;
@@ -25,7 +25,7 @@
       font-weight: 600;
       color: var(--primary);
       font-family: 'Avenir Next Rounded Pro Demi', 'Roboto', sans-serif;
-      
+
       mat-icon {
         font-size: 16px;
         width: 16px;
@@ -40,7 +40,7 @@
       font-size: 11px;
       color: var(--text-secondary);
       line-height: 1.5;
-      
+
       li {
         margin-bottom: 6px;
         &:last-child {
@@ -93,14 +93,18 @@
       box-shadow: 0 3px 10px rgba(0, 173, 167, 0.25);
       transition: all 0.2s ease;
 
-      mat-icon { margin: 0; }
+      mat-icon {
+        margin: 0;
+      }
 
       &:not([disabled]):hover {
         box-shadow: 0 5px 14px rgba(0, 173, 167, 0.35);
         transform: translateY(-1px);
       }
 
-      &[disabled] { box-shadow: none; }
+      &[disabled] {
+        box-shadow: none;
+      }
     }
 
     .clear-btn {
@@ -114,7 +118,9 @@
       justify-content: center;
       border-radius: 10px;
 
-      mat-icon { margin: 0; }
+      mat-icon {
+        margin: 0;
+      }
     }
   }
 
@@ -147,7 +153,7 @@
   .routing-info-note {
     background: rgba(255, 255, 255, 0.03);
     border-left-color: var(--accent);
-    
+
     h4 {
       color: var(--accent);
     }
@@ -157,4 +163,3 @@
     color: var(--accent);
   }
 }
-

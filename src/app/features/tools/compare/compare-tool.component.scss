@@ -1,9 +1,21 @@
 .compare-tool {
   padding: 8px;
-  h4 { margin: 0 0 8px; }
-  .description { font-size: 13px; color: #666; margin-bottom: 12px; }
-  .hint { font-size: 12px; color: #999; font-style: italic; }
-  .full-width { width: 100%; }
+  h4 {
+    margin: 0 0 8px;
+  }
+  .description {
+    font-size: 13px;
+    color: #666;
+    margin-bottom: 12px;
+  }
+  .hint {
+    font-size: 12px;
+    color: #999;
+    font-style: italic;
+  }
+  .full-width {
+    width: 100%;
+  }
 
   .swipe-control {
     padding: 12px 0;
@@ -30,5 +42,7 @@
     }
   }
 
-  mat-divider { margin: 12px 0; }
+  mat-divider {
+    margin: 12px 0;
+  }
 }

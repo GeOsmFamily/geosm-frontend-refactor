@@ -4,7 +4,9 @@
   </button>
   @if (currentGroup(); as g) {
     <mat-icon>chevron_right</mat-icon>
-    <button mat-button (click)="backToSubGroups()" [class.active]="level() === 'subgroups'">{{ g.name }}</button>
+    <button mat-button (click)="backToSubGroups()" [class.active]="level() === 'subgroups'">
+      {{ g.name }}
+    </button>
   }
   @if (currentSubGroup(); as sg) {
     <mat-icon>chevron_right</mat-icon>
@@ -29,19 +31,39 @@
   >
     <ng-template #actions let-group>
       <div class="row-actions">
-        <button mat-icon-button (click)="moveGroup(group, -1)" [matTooltip]="'admin.catalog.moveUp' | translate">
+        <button
+          mat-icon-button
+          (click)="moveGroup(group, -1)"
+          [matTooltip]="'admin.catalog.moveUp' | translate"
+        >
           <mat-icon>arrow_upward</mat-icon>
         </button>
-        <button mat-icon-button (click)="moveGroup(group, 1)" [matTooltip]="'admin.catalog.moveDown' | translate">
+        <button
+          mat-icon-button
+          (click)="moveGroup(group, 1)"
+          [matTooltip]="'admin.catalog.moveDown' | translate"
+        >
           <mat-icon>arrow_downward</mat-icon>
         </button>
-        <button mat-icon-button (click)="openGroup(group)" [matTooltip]="'admin.catalog.open' | translate">
+        <button
+          mat-icon-button
+          (click)="openGroup(group)"
+          [matTooltip]="'admin.catalog.open' | translate"
+        >
           <mat-icon>folder_open</mat-icon>
         </button>
-        <button mat-icon-button (click)="openEditGroupDialog(group)" [matTooltip]="'common.save' | translate">
+        <button
+          mat-icon-button
+          (click)="openEditGroupDialog(group)"
+          [matTooltip]="'common.save' | translate"
+        >
           <mat-icon>edit</mat-icon>
         </button>
-        <button mat-icon-button (click)="confirmDeleteGroup(group)" [matTooltip]="'common.delete' | translate">
+        <button
+          mat-icon-button
+          (click)="confirmDeleteGroup(group)"
+          [matTooltip]="'common.delete' | translate"
+        >
           <mat-icon>delete</mat-icon>
         </button>
       </div>
@@ -66,13 +88,25 @@
   >
     <ng-template #actions let-subGroup>
       <div class="row-actions">
-        <button mat-icon-button (click)="openSubGroup(subGroup)" [matTooltip]="'admin.catalog.open' | translate">
+        <button
+          mat-icon-button
+          (click)="openSubGroup(subGroup)"
+          [matTooltip]="'admin.catalog.open' | translate"
+        >
           <mat-icon>folder_open</mat-icon>
         </button>
-        <button mat-icon-button (click)="openEditSubGroupDialog(subGroup)" [matTooltip]="'common.save' | translate">
+        <button
+          mat-icon-button
+          (click)="openEditSubGroupDialog(subGroup)"
+          [matTooltip]="'common.save' | translate"
+        >
           <mat-icon>edit</mat-icon>
         </button>
-        <button mat-icon-button (click)="confirmDeleteSubGroup(subGroup)" [matTooltip]="'common.delete' | translate">
+        <button
+          mat-icon-button
+          (click)="confirmDeleteSubGroup(subGroup)"
+          [matTooltip]="'common.delete' | translate"
+        >
           <mat-icon>delete</mat-icon>
         </button>
       </div>
@@ -97,10 +131,18 @@
   >
     <ng-template #actions let-layer>
       <div class="row-actions">
-        <button mat-icon-button (click)="openLayer(layer)" [matTooltip]="'admin.catalog.open' | translate">
+        <button
+          mat-icon-button
+          (click)="openLayer(layer)"
+          [matTooltip]="'admin.catalog.open' | translate"
+        >
           <mat-icon>tune</mat-icon>
         </button>
-        <button mat-icon-button (click)="confirmDeleteLayer(layer, $event)" [matTooltip]="'common.delete' | translate">
+        <button
+          mat-icon-button
+          (click)="confirmDeleteLayer(layer, $event)"
+          [matTooltip]="'common.delete' | translate"
+        >
           <mat-icon>delete</mat-icon>
         </button>
       </div>

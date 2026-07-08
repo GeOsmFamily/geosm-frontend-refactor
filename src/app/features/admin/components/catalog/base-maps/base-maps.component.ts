@@ -7,16 +7,29 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
-import { AdminDataTableComponent, AdminTableColumn } from '../../../shared/components/admin-data-table/admin-data-table.component';
+import {
+  AdminDataTableComponent,
+  AdminTableColumn,
+} from '../../../shared/components/admin-data-table/admin-data-table.component';
 import { ConfirmDialogComponent } from '../../../../../shared/components/confirm-dialog/confirm-dialog.component';
 import { BaseMapService } from '../../../../../core/services/base-map.service';
 import { BaseMap } from '../../../../../core/models/index';
-import { BaseMapFormDialogComponent, BaseMapFormDialogData } from './base-map-form-dialog.component';
+import {
+  BaseMapFormDialogComponent,
+  BaseMapFormDialogData,
+} from './base-map-form-dialog.component';
 
 @Component({
   selector: 'app-base-maps',
   standalone: true,
-  imports: [CommonModule, MatButtonModule, MatIconModule, MatTooltipModule, AdminDataTableComponent, TranslateModule],
+  imports: [
+    CommonModule,
+    MatButtonModule,
+    MatIconModule,
+    MatTooltipModule,
+    AdminDataTableComponent,
+    TranslateModule,
+  ],
   templateUrl: './base-maps.component.html',
   styleUrl: './base-maps.component.scss',
 })
@@ -46,7 +59,10 @@ export class BaseMapsComponent implements OnChanges {
     if (!this.instanceId) return;
     this.loading.set(true);
     this.baseMapService.list(this.instanceId).subscribe({
-      next: (list) => { this.baseMaps.set(list); this.loading.set(false); },
+      next: (list) => {
+        this.baseMaps.set(list);
+        this.loading.set(false);
+      },
       error: () => this.loading.set(false),
     });
   }
@@ -60,14 +76,22 @@ export class BaseMapsComponent implements OnChanges {
   }
 
   private openForm(data: BaseMapFormDialogData): void {
-    const ref = this.dialog.open(BaseMapFormDialogComponent, { data, width: '520px', maxWidth: '95vw' });
+    const ref = this.dialog.open(BaseMapFormDialogComponent, {
+      data,
+      width: '520px',
+      maxWidth: '95vw',
+    });
     ref.afterClosed().subscribe((result) => {
       if (!result) return;
-      const request$ = data.mode === 'edit' && data.baseMap
-        ? this.baseMapService.update(this.instanceId, data.baseMap.id, result)
-        : this.baseMapService.create(this.instanceId, result);
+      const request$ =
+        data.mode === 'edit' && data.baseMap
+          ? this.baseMapService.update(this.instanceId, data.baseMap.id, result)
+          : this.baseMapService.create(this.instanceId, result);
       request$.subscribe({
-        next: () => { this.load(); this.notify('admin.catalog.saved'); },
+        next: () => {
+          this.load();
+          this.notify('admin.catalog.saved');
+        },
         error: (err) => this.notifyError(err),
       });
     });
@@ -77,13 +101,18 @@ export class BaseMapsComponent implements OnChanges {
     const ref = this.dialog.open(ConfirmDialogComponent, {
       data: {
         title: this.translate.instant('admin.catalog.deleteBaseMapTitle'),
-        message: this.translate.instant('admin.catalog.deleteBaseMapMessage', { name: baseMap.name }),
+        message: this.translate.instant('admin.catalog.deleteBaseMapMessage', {
+          name: baseMap.name,
+        }),
       },
     });
     ref.afterClosed().subscribe((confirmed) => {
       if (!confirmed) return;
       this.baseMapService.delete(this.instanceId, baseMap.id).subscribe({
-        next: () => { this.load(); this.notify('admin.catalog.deleted'); },
+        next: () => {
+          this.load();
+          this.notify('admin.catalog.deleted');
+        },
         error: (err) => this.notifyError(err),
       });
     });
@@ -95,6 +124,8 @@ export class BaseMapsComponent implements OnChanges {
 
   private notifyError(err: unknown): void {
     const message = (err as { error?: { error?: { message?: string } } })?.error?.error?.message;
-    this.snackBar.open(message ?? this.translate.instant('common.error'), undefined, { duration: 4000 });
+    this.snackBar.open(message ?? this.translate.instant('common.error'), undefined, {
+      duration: 4000,
+    });
   }
 }

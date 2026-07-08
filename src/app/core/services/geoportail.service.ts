@@ -14,15 +14,24 @@ export class GeoportailService {
 
   /** narrative=true ajoute une synthèse textuelle générée par IA (Gemini), en plus des chiffres bruts. */
   getLayerStats(layerId: string, narrative = false): Observable<LayerStats> {
-    return this.api.post<LayerStats>(`/geoportail/layers/${layerId}/stats${narrative ? '?narrative=true' : ''}`, {});
+    return this.api.post<LayerStats>(
+      `/geoportail/layers/${layerId}/stats${narrative ? '?narrative=true' : ''}`,
+      {},
+    );
   }
 
   summarizeView(layerIds: string[]): Observable<ViewportSummary> {
     return this.api.post<ViewportSummary>('/geoportail/summarize-view', { layerIds });
   }
 
-  getElevationProfile(geometry: GeoJSON.Geometry, numPoints?: number): Observable<ElevationProfile> {
-    return this.api.post<ElevationProfile>('/geoportail/elevation-profile', { geometry, numPoints });
+  getElevationProfile(
+    geometry: GeoJSON.Geometry,
+    numPoints?: number,
+  ): Observable<ElevationProfile> {
+    return this.api.post<ElevationProfile>('/geoportail/elevation-profile', {
+      geometry,
+      numPoints,
+    });
   }
 
   getAdminBoundary(lat: number, lon: number, table?: string): Observable<any> {

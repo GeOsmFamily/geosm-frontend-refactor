@@ -23,7 +23,9 @@ export class IconCatalogService {
     return this.api.get<IconCatalogEntry[]>('/admin/icons/catalog');
   }
 
-  generatePreview(options: GenerateIconOptions | GenerateIconOptions[]): Observable<{ svgs: string[] }> {
+  generatePreview(
+    options: GenerateIconOptions | GenerateIconOptions[],
+  ): Observable<{ svgs: string[] }> {
     return this.api.post<{ svgs: string[] }>('/admin/icons/generate', options);
   }
 }

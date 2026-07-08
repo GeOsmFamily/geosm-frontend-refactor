@@ -13,9 +13,20 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { PageEvent } from '@angular/material/paginator';
 import { Sort } from '@angular/material/sort';
 
-import { FeedbackService, FeedbackSubmission, FeedbackType, FeedbackStatus } from '../../../../core/services/feedback.service';
-import { AdminDataTableComponent, AdminTableColumn } from '../../shared/components/admin-data-table/admin-data-table.component';
-import { FeedbackDetailDialogComponent, FeedbackDetailDialogResult } from './feedback-detail-dialog/feedback-detail-dialog.component';
+import {
+  FeedbackService,
+  FeedbackSubmission,
+  FeedbackType,
+  FeedbackStatus,
+} from '../../../../core/services/feedback.service';
+import {
+  AdminDataTableComponent,
+  AdminTableColumn,
+} from '../../shared/components/admin-data-table/admin-data-table.component';
+import {
+  FeedbackDetailDialogComponent,
+  FeedbackDetailDialogResult,
+} from './feedback-detail-dialog/feedback-detail-dialog.component';
 
 @Component({
   selector: 'app-feedback',
@@ -101,10 +112,11 @@ export class FeedbackComponent implements OnInit {
   }
 
   openDetail(item: FeedbackSubmission): void {
-    const ref = this.dialog.open<FeedbackDetailDialogComponent, { feedback: FeedbackSubmission }, FeedbackDetailDialogResult>(
+    const ref = this.dialog.open<
       FeedbackDetailDialogComponent,
-      { data: { feedback: item } },
-    );
+      { feedback: FeedbackSubmission },
+      FeedbackDetailDialogResult
+    >(FeedbackDetailDialogComponent, { data: { feedback: item } });
     ref.afterClosed().subscribe((result) => {
       if (!result) return;
       this.feedbackService.updateStatus(item.id, result.status, result.adminNotes).subscribe({
@@ -123,6 +135,8 @@ export class FeedbackComponent implements OnInit {
 
   private notifyError(err: unknown): void {
     const message = (err as { error?: { error?: { message?: string } } })?.error?.error?.message;
-    this.snackBar.open(message ?? this.translate.instant('common.error'), undefined, { duration: 4000 });
+    this.snackBar.open(message ?? this.translate.instant('common.error'), undefined, {
+      duration: 4000,
+    });
   }
 }

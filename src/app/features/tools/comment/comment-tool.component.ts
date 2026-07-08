@@ -49,7 +49,7 @@ interface MapComment {
   selector: 'app-comment-tool',
   standalone: true,
   imports: [
-    TranslateModule, 
+    TranslateModule,
     CommonModule,
     FormsModule,
     MatButtonModule,
@@ -125,9 +125,11 @@ export class CommentToolComponent implements OnInit, OnDestroy {
       return new Style({
         image: new Icon({
           anchor: [0.5, 1],
-          src: 'data:image/svg+xml,' + encodeURIComponent(
-            `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="${pinColor}" d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>`
-          ),
+          src:
+            'data:image/svg+xml,' +
+            encodeURIComponent(
+              `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="${pinColor}" d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>`,
+            ),
           scale: 1.5,
         }),
         text: label
@@ -148,7 +150,7 @@ export class CommentToolComponent implements OnInit, OnDestroy {
       }
     });
 
-    this.authSubscription = this.currentUser.subscribe(user => {
+    this.authSubscription = this.currentUser.subscribe((user) => {
       if (user) {
         this.loadComments();
       } else {
@@ -202,48 +204,54 @@ export class CommentToolComponent implements OnInit, OnDestroy {
     const [lon, lat] = this.pendingCoord;
     const text = this.commentText.trim();
 
-    this.commentService.create({
-      instanceId: instance.id,
-      text,
-      lat,
-      lon,
-    }).subscribe({
-      next: (savedComment) => {
-        this.analyticsService.trackEvent({ instanceId: instance.id, eventType: 'comment_created' }).subscribe({ error: () => {} });
-        const feature = new Feature(new Point(fromLonLat(this.pendingCoord!)));
-        feature.set('label', text);
-        feature.set('resolved', false);
-        feature.setId(`comment-${savedComment.id}`);
-        this.vectorSource.addFeature(feature);
+    this.commentService
+      .create({
+        instanceId: instance.id,
+        text,
+        lat,
+        lon,
+      })
+      .subscribe({
+        next: (savedComment) => {
+          this.analyticsService
+            .trackEvent({ instanceId: instance.id, eventType: 'comment_created' })
+            .subscribe({ error: () => {} });
+          const feature = new Feature(new Point(fromLonLat(this.pendingCoord!)));
+          feature.set('label', text);
+          feature.set('resolved', false);
+          feature.setId(`comment-${savedComment.id}`);
+          this.vectorSource.addFeature(feature);
 
-        this.comments.push({
-          id: savedComment.id,
-          text,
-          lon,
-          lat,
-          feature,
-          resolved: false,
-          authorName: savedComment.authorName,
-          createdAt: savedComment.createdAt,
-          replies: [],
-        });
+          this.comments.push({
+            id: savedComment.id,
+            text,
+            lon,
+            lat,
+            feature,
+            resolved: false,
+            authorName: savedComment.authorName,
+            createdAt: savedComment.createdAt,
+            replies: [],
+          });
 
-        this.commentText = '';
-        this.pendingCoord = null;
-        this.snackBar.open(
-          this.translate.instant('shared.savedSuccessfully') || 'Commentaire enregistré avec succès',
-          'OK',
-          { duration: 3000 }
-        );
-      },
-      error: () => {
-        this.snackBar.open(
-          this.translate.instant('shared.error') || 'Une erreur est survenue lors de l\'enregistrement',
-          'OK',
-          { duration: 3000 }
-        );
-      }
-    });
+          this.commentText = '';
+          this.pendingCoord = null;
+          this.snackBar.open(
+            this.translate.instant('shared.savedSuccessfully') ||
+              'Commentaire enregistré avec succès',
+            'OK',
+            { duration: 3000 },
+          );
+        },
+        error: () => {
+          this.snackBar.open(
+            this.translate.instant('shared.error') ||
+              "Une erreur est survenue lors de l'enregistrement",
+            'OK',
+            { duration: 3000 },
+          );
+        },
+      });
   }
 
   navigateTo(comment: MapComment): void {
@@ -254,20 +262,20 @@ export class CommentToolComponent implements OnInit, OnDestroy {
     this.commentService.delete(comment.id).subscribe({
       next: () => {
         this.vectorSource.removeFeature(comment.feature);
-        this.comments = this.comments.filter(c => c.id !== comment.id);
+        this.comments = this.comments.filter((c) => c.id !== comment.id);
         this.snackBar.open(
           this.translate.instant('shared.deletedSuccessfully') || 'Commentaire supprimé',
           'OK',
-          { duration: 3000 }
+          { duration: 3000 },
         );
       },
       error: () => {
         this.snackBar.open(
           this.translate.instant('shared.error') || 'Une erreur est survenue',
           'OK',
-          { duration: 3000 }
+          { duration: 3000 },
         );
-      }
+      },
     });
   }
 
@@ -317,9 +325,9 @@ export class CommentToolComponent implements OnInit, OnDestroy {
         this.snackBar.open(
           this.translate.instant('shared.error') || 'Une erreur est survenue',
           'OK',
-          { duration: 3000 }
+          { duration: 3000 },
         );
-      }
+      },
     });
   }
 
@@ -334,9 +342,9 @@ export class CommentToolComponent implements OnInit, OnDestroy {
         this.snackBar.open(
           this.translate.instant('shared.error') || 'Une erreur est survenue',
           'OK',
-          { duration: 3000 }
+          { duration: 3000 },
         );
-      }
+      },
     });
   }
 
@@ -349,9 +357,9 @@ export class CommentToolComponent implements OnInit, OnDestroy {
         this.snackBar.open(
           this.translate.instant('shared.error') || 'Une erreur est survenue',
           'OK',
-          { duration: 3000 }
+          { duration: 3000 },
         );
-      }
+      },
     });
   }
 
@@ -363,7 +371,7 @@ export class CommentToolComponent implements OnInit, OnDestroy {
       next: (data) => {
         this.vectorSource.clear();
         this.comments = [];
-        data.forEach(c => {
+        data.forEach((c) => {
           const feature = new Feature(new Point(fromLonLat([c.lon, c.lat])));
           feature.set('label', c.text);
           feature.set('resolved', c.resolved);
@@ -391,7 +399,7 @@ export class CommentToolComponent implements OnInit, OnDestroy {
       error: () => {
         this.vectorSource.clear();
         this.comments = [];
-      }
+      },
     });
   }
 }

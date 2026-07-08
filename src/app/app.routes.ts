@@ -12,27 +12,37 @@ export const routes: Routes = [
   {
     path: 'register',
     loadComponent: () =>
-      import('./features/auth/components/register/register.component').then((m) => m.RegisterComponent),
+      import('./features/auth/components/register/register.component').then(
+        (m) => m.RegisterComponent,
+      ),
   },
   {
     path: 'auth/callback',
     loadComponent: () =>
-      import('./features/auth/components/auth-callback/auth-callback.component').then((m) => m.AuthCallbackComponent),
+      import('./features/auth/components/auth-callback/auth-callback.component').then(
+        (m) => m.AuthCallbackComponent,
+      ),
   },
   {
     path: 'verify-email',
     loadComponent: () =>
-      import('./features/auth/components/verify-email/verify-email.component').then((m) => m.VerifyEmailComponent),
+      import('./features/auth/components/verify-email/verify-email.component').then(
+        (m) => m.VerifyEmailComponent,
+      ),
   },
   {
     path: 'forgot-password',
     loadComponent: () =>
-      import('./features/auth/components/forgot-password/forgot-password.component').then((m) => m.ForgotPasswordComponent),
+      import('./features/auth/components/forgot-password/forgot-password.component').then(
+        (m) => m.ForgotPasswordComponent,
+      ),
   },
   {
     path: 'reset-password',
     loadComponent: () =>
-      import('./features/auth/components/reset-password/reset-password.component').then((m) => m.ResetPasswordComponent),
+      import('./features/auth/components/reset-password/reset-password.component').then(
+        (m) => m.ResetPasswordComponent,
+      ),
   },
   {
     // Le géoportail est public : un visiteur anonyme doit pouvoir consulter la carte sans
@@ -41,12 +51,16 @@ export const routes: Routes = [
     // individuellement côté backend/composant.
     path: 'map',
     loadComponent: () =>
-      import('./features/map/components/map-layout/map-layout.component').then((m) => m.MapLayoutComponent),
+      import('./features/map/components/map-layout/map-layout.component').then(
+        (m) => m.MapLayoutComponent,
+      ),
   },
   {
     path: 'map/:instanceSlug',
     loadComponent: () =>
-      import('./features/map/components/map-layout/map-layout.component').then((m) => m.MapLayoutComponent),
+      import('./features/map/components/map-layout/map-layout.component').then(
+        (m) => m.MapLayoutComponent,
+      ),
   },
   {
     path: 'share/:code',
