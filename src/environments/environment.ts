@@ -8,5 +8,10 @@ export const environment = {
   accentColor: '#00ada7',
   instanceName: 'GeOSM',
   qgisServerUrl: 'http://localhost:8380/ows',
-  mapillaryToken: 'MLY|27232696753044973|162c805ddb2365b4a8765bb2cb346f2b',
+  // Un vrai token a ete committe ici par le passe et doit etre considere compromis (revoque-le
+  // sur mapillary.com/dashboard). Pour du dev local, generez votre propre token dev sur
+  // https://www.mapillary.com/dashboard/developers et collez-le ici SANS le committer :
+  // `git update-index --skip-worktree src/environments/environment.ts` pour eviter qu'un
+  // `git add` accidentel ne le recapture.
+  mapillaryToken: '',
 };
