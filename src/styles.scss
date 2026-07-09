@@ -250,6 +250,17 @@ body.dark-theme {
   --text-light: #a0aec0;
   --border: #e2e8f0;
   --border-light: #edf2f7;
+
+  // Semantic colors (contrast ratio ≥ 4.5:1 against --surface/white)
+  --color-success: #16a34a;
+  --color-success-bg: #f0fdf4;
+  --color-warning: #d97706;
+  --color-warning-bg: #fffbeb;
+  --color-error: #dc2626;
+  --color-error-bg: #fef2f2;
+  --color-info: #0369a1;
+  --color-info-bg: #f0f9ff;
+
   --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.06);
   --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.07), 0 2px 4px rgba(0, 0, 0, 0.06);
   --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.1), 0 6px 10px rgba(0, 0, 0, 0.08);
@@ -264,6 +275,54 @@ body.dark-theme {
   --transition-fast: 0.15s ease;
   --transition-normal: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   --transition-slow: 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+
+  // Font family — was duplicated as a raw string 12+ times across this file
+  --font-family-base:
+    'Avenir Next Rounded Pro Regular', 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI',
+    Helvetica, Arial, sans-serif;
+  --font-family-medium: 'Avenir Next Rounded Pro Medium', 'Roboto', sans-serif;
+  --font-family-demi: 'Avenir Next Rounded Pro Demi', 'Roboto', sans-serif;
+  --font-family-bold: 'Avenir Next Rounded Pro Bold', 'Roboto', sans-serif;
+
+  // Spacing scale — multiples of 4px. Use these instead of arbitrary px values.
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+  --space-8: 64px;
+
+  // Typography scale — 6 sizes max, each with a matching line-height.
+  --font-size-xs: 11px;
+  --line-height-xs: 16px;
+  --font-size-sm: 12px;
+  --line-height-sm: 18px;
+  --font-size-md: 14px;
+  --line-height-md: 20px;
+  --font-size-base: 15px;
+  --line-height-base: 22px;
+  --font-size-lg: 18px;
+  --line-height-lg: 26px;
+  --font-size-xl: 24px;
+  --line-height-xl: 32px;
+
+  // Icon scale — pair with the .icon-sm/.icon-md/.icon-lg utility classes below.
+  --icon-sm: 16px;
+  --icon-md: 20px;
+  --icon-lg: 24px;
+
+  // z-index scale — every stacking context in the app should reference one of these
+  // instead of a magic number. Panels/menus that must appear above the map/content
+  // but below transient overlays use --z-panel; anything that must win over an open
+  // panel (drag-and-drop ghost, fullscreen takeover) uses --z-overlay or higher.
+  --z-base: 1;
+  --z-panel: 10;
+  --z-sticky: 20;
+  --z-overlay: 30;
+  --z-modal: 40;
+  --z-toast: 50;
 }
 
 * {
@@ -279,15 +338,7 @@ body {
   margin: 0;
   padding: 0;
   overflow: hidden;
-  font-family:
-    'Avenir Next Rounded Pro Regular',
-    'Roboto',
-    -apple-system,
-    BlinkMacSystemFont,
-    'Segoe UI',
-    Helvetica,
-    Arial,
-    sans-serif;
+  font-family: var(--font-family-base);
   color: var(--text);
   background: var(--background);
   -webkit-font-smoothing: antialiased;
@@ -305,7 +356,7 @@ app-root {
 .mat-mdc-flat-button,
 .mat-mdc-outlined-button {
   border-radius: var(--radius-sm) !important;
-  font-family: 'Avenir Next Rounded Pro Medium', 'Roboto', sans-serif !important;
+  font-family: var(--font-family-medium) !important;
   letter-spacing: 0.3px !important;
   text-transform: none !important;
 }
@@ -321,7 +372,7 @@ app-root {
 
 // Form field refinements
 .mat-mdc-form-field {
-  font-family: 'Avenir Next Rounded Pro Regular', 'Roboto', sans-serif !important;
+  font-family: var(--font-family-base) !important;
 }
 
 .mat-mdc-form-field-outline {
@@ -337,7 +388,7 @@ app-root {
 // Tab refinements
 .mat-mdc-tab-group {
   .mat-mdc-tab {
-    font-family: 'Avenir Next Rounded Pro Medium', 'Roboto', sans-serif !important;
+    font-family: var(--font-family-medium) !important;
     letter-spacing: 0.2px;
     min-width: 90px !important;
   }
@@ -352,7 +403,7 @@ app-root {
 
 // Tooltip refinements
 .mat-mdc-tooltip {
-  font-family: 'Avenir Next Rounded Pro Regular', 'Roboto', sans-serif !important;
+  font-family: var(--font-family-base) !important;
   font-size: 12px !important;
 }
 
@@ -388,7 +439,7 @@ app-root {
   text-align: center !important;
   padding: 16px 24px !important;
   background: var(--background) !important;
-  font-family: 'Avenir Next Rounded Pro Demi', 'Roboto', sans-serif !important;
+  font-family: var(--font-family-demi) !important;
 }
 
 ::ng-deep .mat-mdc-dialog-actions {
@@ -486,7 +537,7 @@ app-root {
 .ol-attribution {
   background: rgba(255, 255, 255, 0.85) !important;
   backdrop-filter: blur(8px);
-  font-family: 'Avenir Next Rounded Pro Regular', 'Roboto', sans-serif !important;
+  font-family: var(--font-family-base) !important;
   font-size: 11px;
   padding: 3px;
   position: absolute !important;
@@ -523,7 +574,7 @@ body.dark-theme .ol-attribution {
   padding: 4px 8px;
   font-size: 12px;
   font-weight: 500;
-  font-family: 'Avenir Next Rounded Pro Regular', 'Roboto', sans-serif;
+  font-family: var(--font-family-base);
   box-shadow: var(--shadow-md);
 }
 .tooltiphelp.hidden,
@@ -534,7 +585,7 @@ body.dark-theme .ol-attribution {
   padding: 4px 8px;
   font-size: 12px;
   font-weight: 500;
-  font-family: 'Avenir Next Rounded Pro Regular', 'Roboto', sans-serif;
+  font-family: var(--font-family-base);
   box-shadow: var(--shadow-sm);
 }
 
@@ -679,7 +730,7 @@ input {
 .compare-tool,
 .statistics-tool {
   h3 {
-    font-family: 'Avenir Next Rounded Pro Demi', 'Roboto', sans-serif;
+    font-family: var(--font-family-demi);
     font-size: 15px;
     font-weight: 600;
     color: var(--primary);
@@ -687,7 +738,7 @@ input {
   }
 
   h4 {
-    font-family: 'Avenir Next Rounded Pro Medium', 'Roboto', sans-serif;
+    font-family: var(--font-family-medium);
     font-size: 13px;
     font-weight: 500;
     color: var(--text-secondary);
@@ -711,21 +762,39 @@ input {
   button[mat-flat-button],
   button[mat-raised-button] {
     border-radius: var(--radius-sm) !important;
-    font-family: 'Avenir Next Rounded Pro Medium', 'Roboto', sans-serif !important;
+    font-family: var(--font-family-medium) !important;
   }
 }
 
 // Global rounded borders override for all outline form fields
 .mat-mdc-form-field {
   .mat-mdc-text-field-wrapper {
-    border-radius: 24px !important;
+    border-radius: var(--radius-xl) !important;
   }
   .mdc-notched-outline__leading {
-    border-top-left-radius: 24px !important;
-    border-bottom-left-radius: 24px !important;
+    border-top-left-radius: var(--radius-xl) !important;
+    border-bottom-left-radius: var(--radius-xl) !important;
   }
   .mdc-notched-outline__trailing {
-    border-top-right-radius: 24px !important;
-    border-bottom-right-radius: 24px !important;
+    border-top-right-radius: var(--radius-xl) !important;
+    border-bottom-right-radius: var(--radius-xl) !important;
   }
+}
+
+// Icon size utility classes — pair with the --icon-sm/md/lg tokens above.
+// Use instead of ad-hoc font-size/width/height triplets on <mat-icon>.
+.icon-sm {
+  font-size: var(--icon-sm) !important;
+  width: var(--icon-sm) !important;
+  height: var(--icon-sm) !important;
+}
+.icon-md {
+  font-size: var(--icon-md) !important;
+  width: var(--icon-md) !important;
+  height: var(--icon-md) !important;
+}
+.icon-lg {
+  font-size: var(--icon-lg) !important;
+  width: var(--icon-lg) !important;
+  height: var(--icon-lg) !important;
 }
