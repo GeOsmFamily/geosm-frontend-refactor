@@ -33,6 +33,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
+  flex-shrink: 0;
 }
 
 .menu-btn {
@@ -67,6 +68,20 @@
   display: flex;
   align-items: center;
   gap: 4px;
+  // Sur mobile (.header-center masqué, voir la media query plus bas), les 8 boutons de
+  // header-right dépassaient encore la largeur de l'écran : par défaut un flex-item a
+  // min-width:auto (pas 0), donc ne peut pas rétrécir sous la taille de son contenu, et le
+  // header débordait au lieu de laisser header-right gérer son propre overflow.
+  min-width: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+
+  .header-action,
+  .user-btn {
+    flex-shrink: 0;
+  }
 }
 
 .header-action {
@@ -310,6 +325,17 @@
 @media (max-width: 768px) {
   .header-center {
     display: none;
+  }
+
+  // header-center masqué libère de la place, mais header-right (8 boutons) reste plus large
+  // que l'écran sur les téléphones étroits : resserre le padding/l'écart pour réduire au
+  // maximum ce qu'il faut faire défiler (voir overflow-x:auto sur .header-right ci-dessus).
+  .header {
+    padding: 0 8px;
+  }
+
+  .header-right {
+    gap: 0;
   }
 
   .left-panel {
