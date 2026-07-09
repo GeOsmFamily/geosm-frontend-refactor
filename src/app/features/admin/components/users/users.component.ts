@@ -20,6 +20,7 @@ import {
   AdminDataTableComponent,
   AdminTableColumn,
 } from '../../shared/components/admin-data-table/admin-data-table.component';
+import { AdminListPageComponent } from '../../shared/components/admin-list-page/admin-list-page.component';
 import {
   UserFormDialogComponent,
   UserFormDialogData,
@@ -43,6 +44,7 @@ import { ConfirmDialogComponent } from '../../../../shared/components/confirm-di
     MatSnackBarModule,
     TranslateModule,
     AdminDataTableComponent,
+    AdminListPageComponent,
   ],
   templateUrl: './users.component.html',
   styleUrl: './users.component.scss',

@@ -27,6 +27,7 @@ import {
   FeedbackDetailDialogComponent,
   FeedbackDetailDialogResult,
 } from './feedback-detail-dialog/feedback-detail-dialog.component';
+import { AdminListPageComponent } from '../../shared/components/admin-list-page/admin-list-page.component';
 
 @Component({
   selector: 'app-feedback',
@@ -44,6 +45,7 @@ import {
     MatChipsModule,
     TranslateModule,
     AdminDataTableComponent,
+    AdminListPageComponent,
   ],
   templateUrl: './feedback.component.html',
   styleUrl: './feedback.component.scss',

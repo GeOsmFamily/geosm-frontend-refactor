@@ -26,6 +26,7 @@ import {
 } from './instance-form-dialog/instance-form-dialog.component';
 import { InstanceTemplateDialogComponent } from './instance-template-dialog/instance-template-dialog.component';
 import { ConfirmDialogComponent } from '../../../../shared/components/confirm-dialog/confirm-dialog.component';
+import { AdminListPageComponent } from '../../shared/components/admin-list-page/admin-list-page.component';
 
 @Component({
   selector: 'app-instances',
@@ -42,6 +43,7 @@ import { ConfirmDialogComponent } from '../../../../shared/components/confirm-di
     MatTooltipModule,
     TranslateModule,
     AdminDataTableComponent,
+    AdminListPageComponent,
   ],
   templateUrl: './instances.component.html',
   styleUrl: './instances.component.scss',

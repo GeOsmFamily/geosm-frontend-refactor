@@ -23,6 +23,7 @@ import {
 } from '../../shared/components/admin-data-table/admin-data-table.component';
 import { ConfirmDialogComponent } from '../../../../shared/components/confirm-dialog/confirm-dialog.component';
 import { FlagCommentDialogComponent } from './flag-comment-dialog/flag-comment-dialog.component';
+import { AdminListPageComponent } from '../../shared/components/admin-list-page/admin-list-page.component';
 
 /**
  * File de modération de contenu (Lot A4) - liste TOUS les commentaires (pas seulement les
@@ -46,6 +47,7 @@ import { FlagCommentDialogComponent } from './flag-comment-dialog/flag-comment-d
     MatChipsModule,
     TranslateModule,
     AdminDataTableComponent,
+    AdminListPageComponent,
   ],
   templateUrl: './content.component.html',
   styleUrl: './content.component.scss',
