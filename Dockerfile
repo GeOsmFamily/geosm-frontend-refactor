@@ -15,7 +15,21 @@ RUN npx ng build --configuration production
 # l'historique de l'image (`docker history`) même après ce RUN - le mount secret n'existe que
 # le temps de cette seule commande, jamais persisté dans un layer. Sans secret fourni, le
 # placeholder reste inoffensif (aucune occurrence à remplacer, l'app tourne juste sans Mapillary).
+#
+# CACHEBUST : Docker (et le cache GitHub Actions, cache-from/cache-to: type=gha en CI) met en
+# cache les layers RUN par le TEXTE de la commande, PAS par le contenu du secret monté (choix
+# volontaire de BuildKit, pour ne jamais faire fuiter un hash de secret dans les métadonnées de
+# cache). Résultat vécu en production le 2026-07-09 : un premier build sans le secret configuré
+# (ou avec un secret vide) a mis ce layer en cache avec le placeholder toujours présent ; des
+# builds ultérieurs, même après avoir correctement configuré MAPILLARY_TOKEN sur GitHub,
+# réutilisaient ce même layer en cache car rien d'autre dans le Dockerfile ne changeait pour
+# l'invalider - le vrai token n'était donc jamais réellement injecté, silencieusement. Cet ARG
+# (rempli avec un horodatage unique par deploy.yml à chaque run CI) force ce layer précis à être
+# toujours recalculé, sans affecter la mise en cache légitime des étapes précédentes (npm ci,
+# ng build).
+ARG CACHEBUST=1
 RUN --mount=type=secret,id=mapillary_token \
+    echo "cachebust=${CACHEBUST}" > /dev/null && \
     if [ -s /run/secrets/mapillary_token ]; then \
       MAPILLARY_TOKEN="$(cat /run/secrets/mapillary_token)" node -e " \
         const fs = require('fs'); \
