@@ -36,5 +36,5 @@ export class AdminFormDialogComponent {
   @Input({ required: true }) form!: FormGroup;
   @Input() minWidth = 360;
 
-  @Output() readonly cancel = new EventEmitter<void>();
+  @Output() readonly canceled = new EventEmitter<void>();
 }

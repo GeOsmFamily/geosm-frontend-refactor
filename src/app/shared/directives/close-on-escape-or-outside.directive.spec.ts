@@ -15,7 +15,7 @@ import { CloseOnEscapeOrOutsideDirective } from './close-on-escape-or-outside.di
       [appCloseOnEscapeOrOutsideDisabled]="disabled"
       (closeRequested)="onCloseRequested()"
     >
-      <button id="inside"></button>
+      <button id="inside">Inside Button</button>
     </div>
   `,
 })

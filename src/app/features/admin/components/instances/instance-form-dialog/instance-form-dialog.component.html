@@ -3,7 +3,7 @@
     [title]="(isCreate ? 'admin.instances.createTitle' : 'admin.instances.editTitle') | translate"
     [form]="form"
     [minWidth]="400"
-    (cancel)="onCancel()"
+    (canceled)="onCancel()"
   >
     <mat-form-field appearance="outline" class="full-width">
       <mat-label>{{ 'admin.instances.name' | translate }}</mat-label>
