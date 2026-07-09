@@ -1,0 +1,143 @@
+:host {
+  display: block;
+}
+
+.auth-split-page {
+  display: flex;
+  min-height: 100vh;
+  background: var(--background);
+}
+
+// Left branding panel
+.auth-split-left {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(
+    160deg,
+    var(--primary) 0%,
+    var(--primary-light) 50%,
+    var(--accent) 100%
+  );
+  position: relative;
+  overflow: hidden;
+  padding: var(--space-7);
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -30%;
+    width: 80%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(0, 173, 167, 0.15) 0%, transparent 70%);
+    animation: auth-brand-float 20s ease-in-out infinite;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: -20%;
+    left: -20%;
+    width: 60%;
+    height: 60%;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.08) 0%, transparent 70%);
+    border-radius: 50%;
+  }
+}
+
+@keyframes auth-brand-float {
+  0%,
+  100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-30px) rotate(2deg);
+  }
+}
+
+.brand-area {
+  position: relative;
+  z-index: var(--z-base);
+  text-align: center;
+  color: white;
+  max-width: 380px;
+}
+
+.brand-logo {
+  width: 80px;
+  height: 80px;
+  border-radius: var(--radius-lg);
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(10px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto var(--space-5);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+
+  .globe-icon {
+    font-size: 40px;
+    width: 40px;
+    height: 40px;
+    color: white;
+  }
+}
+
+.brand-name {
+  font-family: var(--font-family-bold);
+  font-size: 42px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  margin: 0 0 var(--space-2);
+}
+
+.brand-tagline {
+  font-size: var(--font-size-base);
+  opacity: 0.85;
+  margin: 0 0 var(--space-7);
+  font-family: var(--font-family-base);
+}
+
+// Right form panel
+.auth-split-right {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-7);
+  background: var(--surface);
+  overflow-y: auto;
+}
+
+.auth-split-form-container {
+  width: 100%;
+  max-width: 420px;
+}
+
+// Responsive
+@media (max-width: 900px) {
+  .auth-split-page {
+    flex-direction: column;
+  }
+
+  .auth-split-left {
+    padding: var(--space-6) var(--space-5);
+    min-height: auto;
+  }
+
+  .brand-tagline {
+    margin-bottom: 0;
+  }
+
+  .auth-split-right {
+    padding: var(--space-6) var(--space-5);
+  }
+}
+
+@media (max-width: 480px) {
+  .auth-split-right {
+    padding: var(--space-5) var(--space-4);
+  }
+}

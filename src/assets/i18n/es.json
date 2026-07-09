@@ -133,7 +133,9 @@
     "verifyEmailError": "Este enlace de verificación no es válido o ha caducado.",
     "verifyEmailMissingToken": "No se encontró ningún token de verificación en el enlace.",
     "passwordTooShort": "La contraseña debe tener al menos 8 caracteres.",
-    "passwordsDoNotMatch": "Las contraseñas no coinciden."
+    "passwordsDoNotMatch": "Las contraseñas no coinciden.",
+    "allFieldsRequired": "Todos los campos son obligatorios.",
+    "registrationFailedGeneric": "El registro falló. Inténtalo de nuevo."
   },
   "map": {
     "zoom": "Zoom",

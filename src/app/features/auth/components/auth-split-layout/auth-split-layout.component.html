@@ -1,0 +1,18 @@
+<div class="auth-split-page">
+  <div class="auth-split-left">
+    <div class="brand-area">
+      <div class="brand-logo">
+        <mat-icon class="globe-icon">public</mat-icon>
+      </div>
+      <h1 class="brand-name">{{ brandName }}</h1>
+      <p class="brand-tagline">{{ tagline }}</p>
+      <ng-content select="[brandExtra]"></ng-content>
+    </div>
+  </div>
+
+  <div class="auth-split-right">
+    <div class="auth-split-form-container">
+      <ng-content></ng-content>
+    </div>
+  </div>
+</div>

@@ -11,7 +11,8 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 import { AuthService } from '../../../../core/services/auth.service';
 import { RegisterRequest } from '../../../../core/models/index';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { AuthSplitLayoutComponent } from '../auth-split-layout/auth-split-layout.component';
 
 @Component({
   selector: 'app-register',
@@ -27,6 +28,7 @@ import { TranslateModule } from '@ngx-translate/core';
     MatButtonModule,
     MatIconModule,
     MatProgressSpinnerModule,
+    AuthSplitLayoutComponent,
   ],
   templateUrl: './register.component.html',
   styleUrl: './register.component.scss',
@@ -34,6 +36,7 @@ import { TranslateModule } from '@ngx-translate/core';
 export class RegisterComponent {
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
+  private readonly translate = inject(TranslateService);
 
   firstName = '';
   lastName = '';
@@ -47,17 +50,24 @@ export class RegisterComponent {
 
   register(): void {
     if (!this.firstName || !this.lastName || !this.email || !this.password) {
-      this.errorMessage.set('All fields are required.');
+      this.errorMessage.set(
+        this.translate.instant('auth.allFieldsRequired') || 'All fields are required.',
+      );
       return;
     }
 
     if (this.password !== this.confirmPassword) {
-      this.errorMessage.set('Passwords do not match.');
+      this.errorMessage.set(
+        this.translate.instant('auth.passwordsDoNotMatch') || 'Passwords do not match.',
+      );
       return;
     }
 
     if (this.password.length < 8) {
-      this.errorMessage.set('Password must be at least 8 characters.');
+      this.errorMessage.set(
+        this.translate.instant('auth.passwordTooShort') ||
+          'Password must be at least 8 characters.',
+      );
       return;
     }
 
@@ -83,7 +93,9 @@ export class RegisterComponent {
       error: (err) => {
         this.loading.set(false);
         this.errorMessage.set(
-          err.error?.error?.message || 'Registration failed. Please try again.',
+          err.error?.error?.message ||
+            this.translate.instant('auth.registrationFailedGeneric') ||
+            'Registration failed. Please try again.',
         );
       },
     });

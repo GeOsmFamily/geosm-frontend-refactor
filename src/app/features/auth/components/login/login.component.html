@@ -1,123 +1,103 @@
-<div class="login-page">
-  <div class="login-left">
-    <div class="brand-area">
-      <div class="brand-logo">
-        <mat-icon class="globe-icon">public</mat-icon>
-      </div>
-      <h1 class="brand-name">GeOSM</h1>
-      <p class="brand-tagline">Plateforme Cartographique Collaborative</p>
-      <div class="brand-features">
-        <div class="feature-item">
-          <mat-icon>layers</mat-icon>
-          <span>Couches thématiques</span>
-        </div>
-        <div class="feature-item">
-          <mat-icon>share</mat-icon>
-          <span>Partage & collaboration</span>
-        </div>
-        <div class="feature-item">
-          <mat-icon>analytics</mat-icon>
-          <span>Outils d'analyse</span>
-        </div>
-      </div>
+<app-auth-split-layout tagline="Plateforme Cartographique Collaborative">
+  <div brandExtra class="brand-features">
+    <div class="feature-item">
+      <mat-icon>layers</mat-icon>
+      <span>Couches thématiques</span>
+    </div>
+    <div class="feature-item">
+      <mat-icon>share</mat-icon>
+      <span>Partage & collaboration</span>
+    </div>
+    <div class="feature-item">
+      <mat-icon>analytics</mat-icon>
+      <span>Outils d'analyse</span>
     </div>
   </div>
 
-  <div class="login-right">
-    <div class="login-form-container">
-      <div class="form-header">
-        <h2>Connexion</h2>
-        <p>Accédez à votre espace cartographique</p>
-      </div>
-
-      @if (errorMessage()) {
-        <div class="error-message animate-in">
-          <mat-icon>error_outline</mat-icon>
-          <span>{{ errorMessage() }}</span>
-        </div>
-      }
-
-      <form (ngSubmit)="login()" class="login-form">
-        <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Adresse email</mat-label>
-          <input
-            matInput
-            type="email"
-            [(ngModel)]="email"
-            name="email"
-            required
-            autocomplete="email"
-          />
-          <mat-icon matPrefix>email</mat-icon>
-        </mat-form-field>
-
-        <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Mot de passe</mat-label>
-          <input
-            matInput
-            [type]="hidePassword ? 'password' : 'text'"
-            [(ngModel)]="password"
-            name="password"
-            required
-            autocomplete="current-password"
-          />
-          <mat-icon matPrefix>lock</mat-icon>
-          <button mat-icon-button matSuffix (click)="hidePassword = !hidePassword" type="button">
-            <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
-          </button>
-        </mat-form-field>
-
-        <div class="form-options">
-          <mat-checkbox [(ngModel)]="rememberMe" name="rememberMe" color="primary">
-            {{ 'auth.rememberMe' | translate }}
-          </mat-checkbox>
-          <a routerLink="/forgot-password" class="forgot-link">{{
-            'auth.forgotPassword' | translate
-          }}</a>
-        </div>
-
-        <button
-          mat-flat-button
-          color="primary"
-          class="full-width login-btn"
-          type="submit"
-          [disabled]="loading()"
-        >
-          @if (loading()) {
-            <mat-spinner diameter="22" color="accent"></mat-spinner>
-          } @else {
-            <ng-container>Se connecter</ng-container>
-          }
-        </button>
-      </form>
-
-      <div class="divider">
-        <span>ou</span>
-      </div>
-
-      @if (osmConfigured()) {
-        <button
-          mat-stroked-button
-          class="full-width osm-login-btn"
-          type="button"
-          [disabled]="osmLoading()"
-          (click)="loginWithOsm()"
-        >
-          @if (osmLoading()) {
-            <mat-spinner diameter="20"></mat-spinner>
-          } @else {
-            <ng-container>
-              <mat-icon>public</mat-icon>
-              {{ 'auth.osmLoginButton' | translate }}
-            </ng-container>
-          }
-        </button>
-      }
-
-      <div class="register-prompt">
-        Pas encore de compte ?
-        <a routerLink="/register" class="register-link">Créer un compte</a>
-      </div>
-    </div>
+  <div class="form-header">
+    <h2>Connexion</h2>
+    <p>Accédez à votre espace cartographique</p>
   </div>
-</div>
+
+  @if (errorMessage()) {
+    <div class="error-message animate-in">
+      <mat-icon>error_outline</mat-icon>
+      <span>{{ errorMessage() }}</span>
+    </div>
+  }
+
+  <form (ngSubmit)="login()" class="login-form">
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Adresse email</mat-label>
+      <input matInput type="email" [(ngModel)]="email" name="email" required autocomplete="email" />
+      <mat-icon matPrefix>email</mat-icon>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Mot de passe</mat-label>
+      <input
+        matInput
+        [type]="hidePassword ? 'password' : 'text'"
+        [(ngModel)]="password"
+        name="password"
+        required
+        autocomplete="current-password"
+      />
+      <mat-icon matPrefix>lock</mat-icon>
+      <button mat-icon-button matSuffix (click)="hidePassword = !hidePassword" type="button">
+        <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+      </button>
+    </mat-form-field>
+
+    <div class="form-options">
+      <mat-checkbox [(ngModel)]="rememberMe" name="rememberMe" color="primary">
+        {{ 'auth.rememberMe' | translate }}
+      </mat-checkbox>
+      <a routerLink="/forgot-password" class="forgot-link">{{
+        'auth.forgotPassword' | translate
+      }}</a>
+    </div>
+
+    <button
+      mat-flat-button
+      color="primary"
+      class="full-width login-btn"
+      type="submit"
+      [disabled]="loading()"
+    >
+      @if (loading()) {
+        <mat-spinner diameter="22" color="accent"></mat-spinner>
+      } @else {
+        <ng-container>Se connecter</ng-container>
+      }
+    </button>
+  </form>
+
+  <div class="divider">
+    <span>ou</span>
+  </div>
+
+  @if (osmConfigured()) {
+    <button
+      mat-stroked-button
+      class="full-width osm-login-btn"
+      type="button"
+      [disabled]="osmLoading()"
+      (click)="loginWithOsm()"
+    >
+      @if (osmLoading()) {
+        <mat-spinner diameter="20"></mat-spinner>
+      } @else {
+        <ng-container>
+          <mat-icon>public</mat-icon>
+          {{ 'auth.osmLoginButton' | translate }}
+        </ng-container>
+      }
+    </button>
+  }
+
+  <div class="register-prompt">
+    Pas encore de compte ?
+    <a routerLink="/register" class="register-link">Créer un compte</a>
+  </div>
+</app-auth-split-layout>

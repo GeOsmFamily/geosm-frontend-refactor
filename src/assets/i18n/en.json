@@ -133,7 +133,9 @@
     "verifyEmailError": "This verification link is invalid or has expired.",
     "verifyEmailMissingToken": "No verification token found in the link.",
     "passwordTooShort": "Password must be at least 8 characters.",
-    "passwordsDoNotMatch": "Passwords do not match."
+    "passwordsDoNotMatch": "Passwords do not match.",
+    "allFieldsRequired": "All fields are required.",
+    "registrationFailedGeneric": "Registration failed. Please try again."
   },
   "map": {
     "zoom": "Zoom",
