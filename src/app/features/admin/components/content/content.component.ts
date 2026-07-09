@@ -23,6 +23,7 @@ import {
 } from '../../shared/components/admin-data-table/admin-data-table.component';
 import { ConfirmDialogComponent } from '../../../../shared/components/confirm-dialog/confirm-dialog.component';
 import { FlagCommentDialogComponent } from './flag-comment-dialog/flag-comment-dialog.component';
+import { AdminListPageComponent } from '../../shared/components/admin-list-page/admin-list-page.component';
 
 /**
  * File de modération de contenu (Lot A4) - liste TOUS les commentaires (pas seulement les
@@ -46,6 +47,7 @@ import { FlagCommentDialogComponent } from './flag-comment-dialog/flag-comment-d
     MatChipsModule,
     TranslateModule,
     AdminDataTableComponent,
+    AdminListPageComponent,
   ],
   templateUrl: './content.component.html',
   styleUrl: './content.component.scss',
@@ -67,6 +69,7 @@ export class ContentComponent implements OnInit {
 
   readonly comments = signal<Comment[]>([]);
   readonly loading = signal(false);
+  readonly loadError = signal(false);
   readonly total = signal(0);
   readonly pageIndex = signal(0);
   readonly pageSize = signal(20);
@@ -85,6 +88,7 @@ export class ContentComponent implements OnInit {
 
   load(): void {
     this.loading.set(true);
+    this.loadError.set(false);
     this.commentService
       .adminList({
         page: this.pageIndex() + 1,
@@ -99,7 +103,10 @@ export class ContentComponent implements OnInit {
           this.total.set(res.total);
           this.loading.set(false);
         },
-        error: () => this.loading.set(false),
+        error: () => {
+          this.loading.set(false);
+          this.loadError.set(true);
+        },
       });
   }
 

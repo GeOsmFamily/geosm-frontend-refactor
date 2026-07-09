@@ -133,7 +133,9 @@
     "verifyEmailError": "Ce lien de vérification est invalide ou a expiré.",
     "verifyEmailMissingToken": "Aucun jeton de vérification trouvé dans le lien.",
     "passwordTooShort": "Le mot de passe doit contenir au moins 8 caractères.",
-    "passwordsDoNotMatch": "Les mots de passe ne correspondent pas."
+    "passwordsDoNotMatch": "Les mots de passe ne correspondent pas.",
+    "allFieldsRequired": "Tous les champs sont obligatoires.",
+    "registrationFailedGeneric": "L'inscription a échoué. Veuillez réessayer."
   },
   "map": {
     "layers": "Couches",
@@ -152,6 +154,7 @@
     "opacity": "Opacite",
     "visibility": "Visibilite",
     "legend": "Legende",
+    "legendUnavailable": "Légende indisponible pour cette couche",
     "addToMap": "Ajouter a la carte",
     "removeFromMap": "Retirer de la carte",
     "addFromCatalog": "Ajoutez des couches depuis le catalogue",
@@ -269,7 +272,10 @@
     "linkedin": "LinkedIn",
     "sharedMap": "Carte partagee",
     "errors": {
-      "createFailed": "Erreur lors de la création du partage."
+      "createFailed": "Erreur lors de la création du partage.",
+      "invalidLink": "Lien de partage invalide.",
+      "notFoundOrExpired": "Cette carte partagée est introuvable ou a expiré.",
+      "instanceNotFound": "Cette carte partagée fait référence à une instance introuvable."
     }
   },
   "settings": {
@@ -391,6 +397,7 @@
   "admin": {
     "title": "Administration",
     "backToMap": "Retour à la carte",
+    "toggleNav": "Afficher/masquer le menu",
     "quickLinks": "Liens rapides",
     "nav": {
       "users": "Utilisateurs",
@@ -405,6 +412,7 @@
     },
     "common": {
       "noResults": "Aucun résultat",
+      "loadError": "Le chargement a échoué. Réessayez plus tard.",
       "search": "Rechercher",
       "all": "Tous",
       "status": "Statut",
@@ -413,6 +421,11 @@
       "schema": "Schéma"
     },
     "jobs": {
+      "statusWaiting": "En attente",
+      "statusActive": "Actif",
+      "statusCompleted": "Terminé",
+      "statusFailed": "Échoué",
+      "statusDelayed": "Différé",
       "triggerNow": "Déclencher maintenant",
       "pbfPath": "Chemin du fichier .osm.pbf",
       "triggerOsmImport": "Importer les données OSM",

@@ -26,6 +26,7 @@ import {
 } from './instance-form-dialog/instance-form-dialog.component';
 import { InstanceTemplateDialogComponent } from './instance-template-dialog/instance-template-dialog.component';
 import { ConfirmDialogComponent } from '../../../../shared/components/confirm-dialog/confirm-dialog.component';
+import { AdminListPageComponent } from '../../shared/components/admin-list-page/admin-list-page.component';
 
 @Component({
   selector: 'app-instances',
@@ -42,6 +43,7 @@ import { ConfirmDialogComponent } from '../../../../shared/components/confirm-di
     MatTooltipModule,
     TranslateModule,
     AdminDataTableComponent,
+    AdminListPageComponent,
   ],
   templateUrl: './instances.component.html',
   styleUrl: './instances.component.scss',
@@ -62,6 +64,7 @@ export class InstancesComponent implements OnInit {
 
   readonly instances = signal<Instance[]>([]);
   readonly loading = signal(false);
+  readonly loadError = signal(false);
   readonly total = signal(0);
   readonly pageIndex = signal(0);
   readonly pageSize = signal(20);
@@ -78,6 +81,7 @@ export class InstancesComponent implements OnInit {
 
   load(): void {
     this.loading.set(true);
+    this.loadError.set(false);
     this.instanceService
       .list({
         page: this.pageIndex() + 1,
@@ -90,7 +94,10 @@ export class InstancesComponent implements OnInit {
           this.total.set(res.meta.total);
           this.loading.set(false);
         },
-        error: () => this.loading.set(false),
+        error: () => {
+          this.loading.set(false);
+          this.loadError.set(true);
+        },
       });
   }
 

@@ -42,6 +42,7 @@ export class BaseMapsComponent implements OnChanges {
   private readonly translate = inject(TranslateService);
 
   readonly loading = signal(false);
+  readonly loadError = signal(false);
   readonly baseMaps = signal<BaseMap[]>([]);
 
   readonly columns: AdminTableColumn[] = [
@@ -58,12 +59,16 @@ export class BaseMapsComponent implements OnChanges {
   private load(): void {
     if (!this.instanceId) return;
     this.loading.set(true);
+    this.loadError.set(false);
     this.baseMapService.list(this.instanceId).subscribe({
       next: (list) => {
         this.baseMaps.set(list);
         this.loading.set(false);
       },
-      error: () => this.loading.set(false),
+      error: () => {
+        this.loading.set(false);
+        this.loadError.set(true);
+      },
     });
   }
 

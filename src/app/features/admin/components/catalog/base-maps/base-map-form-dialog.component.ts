@@ -10,6 +10,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { TranslateModule } from '@ngx-translate/core';
 
 import { BaseMap } from '../../../../../core/models/index';
+import { AdminFormDialogComponent } from '../../../shared/components/admin-form-dialog/admin-form-dialog.component';
 
 export interface BaseMapFormDialogData {
   mode: 'create' | 'edit';
@@ -31,6 +32,7 @@ const BASE_MAP_TYPES: BaseMap['type'][] = ['xyz', 'wms', 'wmts', 'mapbox'];
     MatSlideToggleModule,
     MatButtonModule,
     TranslateModule,
+    AdminFormDialogComponent,
   ],
   templateUrl: './base-map-form-dialog.component.html',
   styleUrl: './base-map-form-dialog.component.scss',

@@ -1,115 +1,18 @@
-.register-page {
-  display: flex;
-  min-height: 100vh;
-  background: var(--background);
-}
-
-.register-left {
-  flex: 0.8;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: linear-gradient(
-    160deg,
-    var(--primary) 0%,
-    var(--primary-light) 50%,
-    var(--accent) 100%
-  );
-  position: relative;
-  overflow: hidden;
-  padding: 48px;
-
-  &::before {
-    content: '';
-    position: absolute;
-    top: -50%;
-    right: -30%;
-    width: 80%;
-    height: 200%;
-    background: radial-gradient(circle, rgba(0, 173, 167, 0.15) 0%, transparent 70%);
-    animation: float 20s ease-in-out infinite;
-  }
-}
-
-@keyframes float {
-  0%,
-  100% {
-    transform: translateY(0) rotate(0deg);
-  }
-  50% {
-    transform: translateY(-30px) rotate(2deg);
-  }
-}
-
-.brand-area {
-  position: relative;
-  z-index: 1;
-  text-align: center;
-  color: white;
-}
-
-.brand-logo {
-  width: 72px;
-  height: 72px;
-  border-radius: 18px;
-  background: rgba(255, 255, 255, 0.15);
-  backdrop-filter: blur(10px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 0 auto 20px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-
-  .globe-icon {
-    font-size: 36px;
-    width: 36px;
-    height: 36px;
-    color: white;
-  }
-}
-
-.brand-name {
-  font-family: 'Avenir Next Rounded Pro Bold', 'Roboto', sans-serif;
-  font-size: 38px;
-  font-weight: 700;
-  letter-spacing: 3px;
-  margin: 0 0 8px;
-}
-
-.brand-tagline {
-  font-size: 15px;
-  opacity: 0.85;
-  margin: 0;
-  font-family: 'Avenir Next Rounded Pro Regular', 'Roboto', sans-serif;
-}
-
-.register-right {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 40px;
-  background: var(--surface);
-  overflow-y: auto;
-}
-
-.register-form-container {
-  width: 100%;
-  max-width: 440px;
-}
+// Contenu projeté dans <app-auth-split-layout> — voir la remarque équivalente dans
+// login.component.scss sur la projection de contenu Angular.
 
 .form-header {
-  margin-bottom: 28px;
+  margin-bottom: var(--space-6);
 
   h2 {
-    font-family: 'Avenir Next Rounded Pro Bold', 'Roboto', sans-serif;
+    font-family: var(--font-family-bold);
     font-size: 28px;
     color: var(--primary);
-    margin: 0 0 8px;
+    margin: 0 0 var(--space-2);
   }
 
   p {
-    font-size: 15px;
+    font-size: var(--font-size-base);
     color: var(--text-secondary);
     margin: 0;
   }
@@ -118,14 +21,14 @@
 .error-message {
   display: flex;
   align-items: center;
-  gap: 10px;
-  background: #fef2f2;
-  color: #dc2626;
-  padding: 12px 16px;
+  gap: var(--space-2);
+  background: var(--color-error-bg);
+  color: var(--color-error);
+  padding: var(--space-3) var(--space-4);
   border-radius: var(--radius-sm);
-  margin-bottom: 20px;
-  font-size: 13px;
-  border: 1px solid #fecaca;
+  margin-bottom: var(--space-5);
+  font-size: var(--font-size-sm);
+  border: 1px solid var(--color-error);
 
   mat-icon {
     font-size: 20px;
@@ -138,12 +41,12 @@
 .register-form {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 4px;
 }
 
 .name-row {
   display: flex;
-  gap: 12px;
+  gap: var(--space-3);
 
   mat-form-field {
     flex: 1;
@@ -156,14 +59,14 @@
 
 .register-btn {
   height: 48px !important;
-  font-size: 15px !important;
-  font-family: 'Avenir Next Rounded Pro Demi', 'Roboto', sans-serif !important;
+  font-size: var(--font-size-base) !important;
+  font-family: var(--font-family-demi) !important;
   border-radius: var(--radius-md) !important;
   display: flex !important;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  margin-top: 8px;
+  gap: var(--space-2);
+  margin-top: var(--space-2);
   transition: all var(--transition-fast) !important;
 
   &:not(:disabled):hover {
@@ -181,7 +84,7 @@
 .divider {
   display: flex;
   align-items: center;
-  margin: 24px 0;
+  margin: var(--space-5) 0;
 
   &::before,
   &::after {
@@ -192,9 +95,9 @@
   }
 
   span {
-    padding: 0 16px;
+    padding: 0 var(--space-4);
     color: var(--text-light);
-    font-size: 13px;
+    font-size: var(--font-size-sm);
     text-transform: uppercase;
     letter-spacing: 1px;
   }
@@ -202,7 +105,7 @@
 
 .login-prompt {
   text-align: center;
-  font-size: 14px;
+  font-size: var(--font-size-md);
   color: var(--text-secondary);
 }
 
@@ -219,23 +122,7 @@
   }
 }
 
-@media (max-width: 900px) {
-  .register-page {
-    flex-direction: column;
-  }
-  .register-left {
-    padding: 32px 24px;
-    min-height: auto;
-  }
-  .register-right {
-    padding: 32px 24px;
-  }
-}
-
 @media (max-width: 480px) {
-  .register-right {
-    padding: 24px 16px;
-  }
   .name-row {
     flex-direction: column;
     gap: 2px;

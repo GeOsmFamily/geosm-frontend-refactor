@@ -1,8 +1,10 @@
 .context-menu {
   position: fixed;
-  z-index: 1000;
+  // Doit gagner sur .header (même niveau --z-toast, résolu par ordre DOM — voir le
+  // commentaire de hiérarchie dans map-layout.component.scss).
+  z-index: var(--z-toast);
   background: var(--surface);
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   box-shadow: var(--shadow-md);
   border: 1px solid var(--border);
   min-width: 220px;

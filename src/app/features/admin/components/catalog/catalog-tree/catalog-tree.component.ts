@@ -54,6 +54,7 @@ export class CatalogTreeComponent implements OnChanges {
 
   readonly level = signal<Level>('groups');
   readonly loading = signal(false);
+  readonly loadError = signal(false);
 
   readonly groups = signal<Group[]>([]);
   readonly subGroups = signal<SubGroup[]>([]);
@@ -88,28 +89,37 @@ export class CatalogTreeComponent implements OnChanges {
 
   private loadGroups(): void {
     this.loading.set(true);
+    this.loadError.set(false);
     this.groupService.listGroups(this.instanceId).subscribe({
       next: (groups) => {
         this.groups.set([...groups].sort((a, b) => a.order - b.order));
         this.loading.set(false);
       },
-      error: () => this.loading.set(false),
+      error: () => {
+        this.loading.set(false);
+        this.loadError.set(true);
+      },
     });
   }
 
   private loadSubGroups(groupId: string): void {
     this.loading.set(true);
+    this.loadError.set(false);
     this.groupService.listSubGroups(groupId).subscribe({
       next: (subGroups) => {
         this.subGroups.set([...subGroups].sort((a, b) => a.order - b.order));
         this.loading.set(false);
       },
-      error: () => this.loading.set(false),
+      error: () => {
+        this.loading.set(false);
+        this.loadError.set(true);
+      },
     });
   }
 
   private loadLayers(): void {
     this.loading.set(true);
+    this.loadError.set(false);
     this.layerService
       .list(this.instanceId, { subGroupId: this.currentSubGroup()!.id, limit: 100 })
       .subscribe({
@@ -117,7 +127,10 @@ export class CatalogTreeComponent implements OnChanges {
           this.layers.set(res.data);
           this.loading.set(false);
         },
-        error: () => this.loading.set(false),
+        error: () => {
+          this.loading.set(false);
+          this.loadError.set(true);
+        },
       });
   }
 
@@ -278,6 +291,7 @@ export class CatalogTreeComponent implements OnChanges {
         },
         width: '760px',
         maxWidth: '95vw',
+        disableClose: true,
       },
     );
     ref.afterClosed().subscribe((created) => {

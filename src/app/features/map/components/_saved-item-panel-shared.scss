@@ -1,0 +1,272 @@
+// Styles partagés entre geosignets.component.scss et my-maps.component.scss (les deux
+// panneaux sont ~98% identiques : bulle d'info, formulaire de sauvegarde, état vide, carte
+// d'élément de liste, bloc "connexion requise"). Factorisé en mixins plutôt qu'en classes
+// globales pour que chaque composant garde ses propres noms de classe (.bookmark-* / .map-*)
+// sans toucher aux templates ni à la logique.
+
+@mixin saved-item-info-bubble {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: var(--space-3);
+  border-radius: var(--radius-md);
+  background: rgba(0, 173, 167, 0.06);
+  border: 1px solid rgba(0, 173, 167, 0.15);
+  margin-bottom: 4px;
+
+  .info-icon {
+    color: var(--primary);
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+  }
+
+  .info-text {
+    font-size: var(--font-size-xs);
+    line-height: 1.45;
+    color: var(--text-secondary);
+  }
+}
+
+@mixin saved-item-save-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: stretch;
+  width: 100%;
+
+  .input-wrapper {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    background: rgba(2, 63, 95, 0.04);
+    border: 1px solid var(--border-light);
+    border-radius: 20px;
+    padding: 0 14px;
+    transition: all var(--transition-fast);
+
+    &:focus-within {
+      background: rgba(255, 255, 255, 0.9);
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(2, 63, 95, 0.08);
+    }
+
+    .input-icon {
+      font-size: 18px;
+      width: 18px;
+      height: 18px;
+      color: var(--text-secondary);
+    }
+
+    .custom-input {
+      flex: 1;
+      border: none;
+      background: transparent;
+      height: 38px;
+      font-family: var(--font-family-base);
+      font-size: var(--font-size-md);
+      color: var(--text);
+      outline: none;
+
+      &::placeholder {
+        color: var(--text-light);
+      }
+    }
+  }
+
+  .save-btn {
+    height: 40px;
+    border-radius: 20px !important;
+    font-family: var(--font-family-medium);
+    font-size: var(--font-size-md);
+    padding: 0 var(--space-5);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    width: 100%;
+
+    mat-icon {
+      font-size: 18px;
+      width: 18px;
+      height: 18px;
+    }
+  }
+}
+
+@mixin saved-item-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-6) var(--space-4);
+  text-align: center;
+  background: rgba(2, 63, 95, 0.03);
+  border-radius: var(--radius-md);
+  border: 1px dashed var(--border-light);
+
+  .empty-icon {
+    font-size: 32px;
+    width: 32px;
+    height: 32px;
+    color: var(--text-light);
+    margin-bottom: var(--space-2);
+  }
+}
+
+@mixin saved-item-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  max-height: 280px;
+  overflow-y: auto;
+}
+
+@mixin saved-item-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px var(--space-3);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-light);
+  background: rgba(255, 255, 255, 0.5);
+  transition: all var(--transition-fast);
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.85);
+    border-color: rgba(2, 63, 95, 0.15);
+    transform: translateY(-1px);
+  }
+}
+
+// Zone cliquable principale de la carte (nom + coordonnées/méta). $icon-color permet de garder
+// la nuance d'origine (var(--accent) dans les deux fichiers actuellement, mais paramétrable).
+@mixin saved-item-card-info($icon-color: var(--accent)) {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: none;
+  border: none;
+  padding: 0;
+  text-align: left;
+  cursor: pointer;
+  font-family: inherit;
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: wait;
+  }
+
+  mat-icon:first-child {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+    color: $icon-color;
+  }
+}
+
+@mixin saved-item-card-actions {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
+
+// Bouton simple (pas mat-icon-button, voir le html) : la directive impose son propre modèle
+// de boîte MDC pensé pour sa taille par défaut (40/48px), incompatible avec la taille réduite
+// forcée ici (32px) — même correctif que .layer-actions button (active-layers.component.scss).
+@mixin saved-item-round-action-btn {
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  border-radius: 50%;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.8;
+  transition: all var(--transition-fast);
+
+  mat-icon {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+  }
+}
+
+@mixin saved-item-login-required {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: var(--space-4) var(--space-2);
+  width: 100%;
+
+  .login-card {
+    width: 100%;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border-light);
+    background: rgba(255, 255, 255, 0.45);
+    padding: var(--space-4);
+    box-shadow: var(--shadow-sm);
+
+    mat-card-header {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      margin-bottom: var(--space-3);
+
+      .lock-avatar {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(2, 63, 95, 0.08);
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        color: var(--primary);
+        flex-shrink: 0;
+
+        mat-icon {
+          font-size: 20px;
+          width: 20px;
+          height: 20px;
+        }
+      }
+
+      mat-card-title {
+        font-family: var(--font-family-bold);
+        font-size: var(--font-size-md);
+        color: var(--text);
+        margin: 0;
+      }
+    }
+
+    mat-card-content p {
+      font-size: var(--font-size-sm);
+      line-height: 1.5;
+      color: var(--text-secondary);
+      margin: 0 0 var(--space-4) 0;
+    }
+
+    mat-card-actions {
+      padding: 0;
+      display: flex;
+
+      .login-btn {
+        width: 100%;
+        height: 38px;
+        border-radius: 19px !important;
+        font-family: var(--font-family-medium);
+        font-size: var(--font-size-md);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: var(--space-2);
+      }
+    }
+  }
+}

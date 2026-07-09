@@ -1,9 +1,12 @@
-<h2 mat-dialog-title>
-  {{ (isEdit ? 'admin.catalog.editThemeTitle' : 'admin.catalog.createThemeTitle') | translate }}
-</h2>
-
 <form [formGroup]="form" (ngSubmit)="onSubmit()">
-  <mat-dialog-content>
+  <app-admin-form-dialog
+    [title]="
+      (isEdit ? 'admin.catalog.editThemeTitle' : 'admin.catalog.createThemeTitle') | translate
+    "
+    [form]="form"
+    [minWidth]="420"
+    (canceled)="onCancel()"
+  >
     <mat-form-field appearance="outline" class="full-width">
       <mat-label>{{ 'admin.catalog.name' | translate }}</mat-label>
       <input matInput formControlName="name" required />
@@ -28,12 +31,5 @@
         <input matInput type="number" formControlName="order" />
       </mat-form-field>
     </div>
-  </mat-dialog-content>
-
-  <mat-dialog-actions align="end">
-    <button mat-button type="button" (click)="onCancel()">{{ 'common.cancel' | translate }}</button>
-    <button mat-flat-button color="primary" type="submit" [disabled]="form.invalid">
-      {{ 'common.save' | translate }}
-    </button>
-  </mat-dialog-actions>
+  </app-admin-form-dialog>
 </form>

@@ -13,6 +13,9 @@
 }
 
 // Header
+// z-index : le chrome applicatif (header) doit rester au-dessus des panneaux/drawers mais
+// sous les overlays transitoires plein écran (menu contextuel, modale de partage) — voir la
+// hiérarchie complète documentée sur .floating-panel plus bas.
 .header {
   height: var(--header-height);
   min-height: var(--header-height);
@@ -22,7 +25,7 @@
   align-items: center;
   justify-content: space-between;
   padding: 0 12px;
-  z-index: 100;
+  z-index: var(--z-toast);
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
 }
 
@@ -30,6 +33,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
+  flex-shrink: 0;
 }
 
 .menu-btn {
@@ -64,6 +68,28 @@
   display: flex;
   align-items: center;
   gap: 4px;
+  // Sur mobile (.header-center masqué, voir la media query plus bas), les 8 boutons de
+  // header-right dépassaient encore la largeur de l'écran : par défaut un flex-item a
+  // min-width:auto (pas 0), donc ne peut pas rétrécir sous la taille de son contenu, et le
+  // header débordait au lieu de laisser header-right gérer son propre overflow.
+  min-width: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  // La barre de défilement elle-même reste invisible : au survol du dernier bouton, sa couche
+  // d'état (ripple/focus-indicator) ajoute ~1px à la largeur de contenu par arrondi sous-pixel,
+  // ce qui suffit à faire apparaître/disparaître une barre de défilement fantôme au survol sur
+  // desktop (où il n'y a jamais réellement besoin de scroller). Le défilement tactile/molette
+  // sur mobile (seul cas où c'est utile) reste fonctionnel, seule la barre visible est masquée.
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  .header-action,
+  .user-btn {
+    flex-shrink: 0;
+  }
 }
 
 .header-action {
@@ -133,9 +159,9 @@
 }
 
 .logout-item {
-  color: #dc2626 !important;
+  color: var(--color-error) !important;
   mat-icon {
-    color: #dc2626 !important;
+    color: var(--color-error) !important;
   }
 }
 
@@ -152,10 +178,11 @@
 .right-panel {
   width: var(--sidebar-width);
   min-width: var(--sidebar-width);
+  max-width: 100%;
   background: var(--surface);
   transition: all var(--transition-normal);
   overflow: hidden;
-  z-index: 50;
+  z-index: var(--z-panel);
 
   &.collapsed {
     width: 0;
@@ -176,7 +203,7 @@
 }
 
 .panel-content {
-  width: var(--sidebar-width);
+  width: 100%;
   height: 100%;
   display: flex;
   flex-direction: column;
@@ -211,7 +238,7 @@
 
 .panel-header h3 {
   margin: 0;
-  font-family: 'Avenir Next Rounded Pro Demi', 'Roboto', sans-serif;
+  font-family: var(--font-family-demi);
   font-size: 16px;
   font-weight: 600;
   color: var(--primary);
@@ -263,7 +290,7 @@
     position: absolute;
     top: 12px;
     right: 12px;
-    z-index: 10;
+    z-index: var(--z-panel);
   }
 }
 
@@ -276,7 +303,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  z-index: 10;
+  z-index: var(--z-panel);
   pointer-events: none;
 }
 
@@ -308,21 +335,47 @@
     display: none;
   }
 
+  // header-center masqué libère de la place, mais header-right (8 boutons) reste plus large
+  // que l'écran sur les téléphones étroits : resserre le padding/l'écart pour réduire au
+  // maximum ce qu'il faut faire défiler (voir overflow-x:auto sur .header-right ci-dessus).
+  .header {
+    padding: 0 8px;
+  }
+
+  .header-right {
+    gap: 0;
+  }
+
   .left-panel {
     position: absolute;
     top: 0;
     bottom: 0;
-    z-index: 60;
+    z-index: var(--z-modal);
     box-shadow: var(--shadow-xl);
     left: 0;
     right: auto;
+    // Sur un mobile étroit (ex. 360px), --sidebar-width (340px) occupe presque tout l'écran :
+    // on la clamp pour toujours garder un peu du fond de carte visible sur le bord droit.
+    width: min(var(--sidebar-width), calc(100vw - 32px));
+    min-width: 0;
   }
 }
 
 // Floating Panel Styles
+//
+// Hiérarchie de z-index de ce composant (du plus bas au plus haut) :
+//   var(--z-panel)  : toolbar carte, badges coordonnées/zoom, sidebar desktop (n'empiètent pas
+//                      visuellement les uns sur les autres à ces largeurs)
+//   var(--z-overlay): panneaux flottants (geosignets, outils, etc.)
+//   var(--z-modal)  : sidebar en mode drawer mobile (doit passer au-dessus d'un panneau flottant
+//                      resté ouvert)
+//   var(--z-toast)  : header (chrome toujours au-dessus des drawers/panneaux) ET les overlays
+//                      plein écran transitoires (modale de partage, menu contextuel) — ces
+//                      derniers gagnent le conflit d'égalité grâce à leur ordre plus tardif dans
+//                      le DOM (ils sont rendus après le header, dans .map-area).
 .floating-panel {
   position: absolute;
-  z-index: 55;
+  z-index: var(--z-overlay);
   display: flex;
   flex-direction: column;
   border-radius: var(--radius-lg);
@@ -546,7 +599,7 @@
   bottom: 0;
   background: rgba(0, 0, 0, 0.4);
   backdrop-filter: blur(4px);
-  z-index: 1000;
+  z-index: var(--z-toast);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -580,7 +633,7 @@
 
     h3 {
       margin: 0;
-      font-family: 'Avenir Next Rounded Pro Demi', 'Roboto', sans-serif;
+      font-family: var(--font-family-demi);
       font-size: 18px;
       font-weight: 600;
       color: var(--primary);

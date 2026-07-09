@@ -11,6 +11,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { TranslateModule } from '@ngx-translate/core';
 
 import { AuthService } from '../../../../core/services/auth.service';
+import { AuthCardLayoutComponent } from '../auth-card-layout/auth-card-layout.component';
 
 @Component({
   selector: 'app-forgot-password',
@@ -26,6 +27,7 @@ import { AuthService } from '../../../../core/services/auth.service';
     MatIconModule,
     MatProgressSpinnerModule,
     TranslateModule,
+    AuthCardLayoutComponent,
   ],
   templateUrl: './forgot-password.component.html',
   styleUrl: './forgot-password.component.scss',

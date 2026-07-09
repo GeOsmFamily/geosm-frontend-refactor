@@ -1,13 +1,10 @@
-<div class="page-header">
-  <h2 class="page-title">{{ 'admin.nav.users' | translate }}</h2>
-  <button mat-flat-button color="primary" (click)="openCreateDialog()">
+<app-admin-list-page [title]="'admin.nav.users' | translate">
+  <button pageActions mat-flat-button color="primary" (click)="openCreateDialog()">
     <mat-icon>add</mat-icon>
     {{ 'admin.users.create' | translate }}
   </button>
-</div>
 
-<div class="filters glass">
-  <mat-form-field appearance="outline" class="search-field">
+  <mat-form-field filters appearance="outline" class="search-field">
     <mat-label>{{ 'admin.common.search' | translate }}</mat-label>
     <input matInput [(ngModel)]="searchTerm" (keyup.enter)="onFilterChange()" />
     <button
@@ -20,7 +17,7 @@
     </button>
   </mat-form-field>
 
-  <mat-form-field appearance="outline">
+  <mat-form-field filters appearance="outline">
     <mat-label>{{ 'admin.users.role' | translate }}</mat-label>
     <mat-select [(ngModel)]="roleFilter" (selectionChange)="onFilterChange()">
       <mat-option [value]="null">{{ 'admin.common.all' | translate }}</mat-option>
@@ -30,7 +27,7 @@
     </mat-select>
   </mat-form-field>
 
-  <mat-form-field appearance="outline">
+  <mat-form-field filters appearance="outline">
     <mat-label>{{ 'admin.common.status' | translate }}</mat-label>
     <mat-select [(ngModel)]="activeFilter" (selectionChange)="onFilterChange()">
       <mat-option [value]="null">{{ 'admin.common.all' | translate }}</mat-option>
@@ -38,51 +35,52 @@
       <mat-option [value]="false">{{ 'admin.users.inactive' | translate }}</mat-option>
     </mat-select>
   </mat-form-field>
-</div>
 
-<app-admin-data-table
-  [columns]="columns"
-  [rows]="users()"
-  [loading]="loading()"
-  [total]="total()"
-  [pageIndex]="pageIndex()"
-  [pageSize]="pageSize()"
-  [hasActions]="true"
-  (sortChange)="onSortChange($event)"
-  (pageChange)="onPageChange($event)"
->
-  <ng-template #actions let-user>
-    <div class="row-actions">
-      <mat-form-field appearance="outline" subscriptSizing="dynamic" class="role-select">
-        <mat-select
-          [ngModel]="user.role"
-          (ngModelChange)="changeRole(user, $event)"
-          [matTooltip]="'admin.users.role' | translate"
+  <app-admin-data-table
+    [columns]="columns"
+    [rows]="users()"
+    [loading]="loading()"
+    [error]="loadError()"
+    [total]="total()"
+    [pageIndex]="pageIndex()"
+    [pageSize]="pageSize()"
+    [hasActions]="true"
+    (sortChange)="onSortChange($event)"
+    (pageChange)="onPageChange($event)"
+  >
+    <ng-template #actions let-user>
+      <div class="row-actions">
+        <mat-form-field appearance="outline" subscriptSizing="dynamic" class="role-select">
+          <mat-select
+            [ngModel]="user.role"
+            (ngModelChange)="changeRole(user, $event)"
+            [matTooltip]="'admin.users.role' | translate"
+          >
+            @for (role of roles; track role) {
+              <mat-option [value]="role">{{ role }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+        <mat-slide-toggle
+          [checked]="user.isActive"
+          (change)="toggleActive(user)"
+          [matTooltip]="'admin.users.active' | translate"
+        ></mat-slide-toggle>
+        <button
+          mat-icon-button
+          (click)="openEditDialog(user)"
+          [matTooltip]="'common.save' | translate"
         >
-          @for (role of roles; track role) {
-            <mat-option [value]="role">{{ role }}</mat-option>
-          }
-        </mat-select>
-      </mat-form-field>
-      <mat-slide-toggle
-        [checked]="user.isActive"
-        (change)="toggleActive(user)"
-        [matTooltip]="'admin.users.active' | translate"
-      ></mat-slide-toggle>
-      <button
-        mat-icon-button
-        (click)="openEditDialog(user)"
-        [matTooltip]="'common.save' | translate"
-      >
-        <mat-icon>edit</mat-icon>
-      </button>
-      <button
-        mat-icon-button
-        (click)="confirmDelete(user)"
-        [matTooltip]="'common.delete' | translate"
-      >
-        <mat-icon>delete</mat-icon>
-      </button>
-    </div>
-  </ng-template>
-</app-admin-data-table>
+          <mat-icon>edit</mat-icon>
+        </button>
+        <button
+          mat-icon-button
+          (click)="confirmDelete(user)"
+          [matTooltip]="'common.delete' | translate"
+        >
+          <mat-icon>delete</mat-icon>
+        </button>
+      </div>
+    </ng-template>
+  </app-admin-data-table>
+</app-admin-list-page>

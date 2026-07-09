@@ -63,31 +63,31 @@
       <h3>{{ queue.name }}</h3>
       <div class="stat-row">
         <app-stat-card
-          label="Waiting"
+          [label]="'admin.jobs.statusWaiting' | translate"
           [value]="countFor(queue, 'waiting')"
           icon="hourglass_empty"
           accentVar="--text-secondary"
         ></app-stat-card>
         <app-stat-card
-          label="Active"
+          [label]="'admin.jobs.statusActive' | translate"
           [value]="countFor(queue, 'active')"
           icon="play_circle"
           accentVar="--primary"
         ></app-stat-card>
         <app-stat-card
-          label="Completed"
+          [label]="'admin.jobs.statusCompleted' | translate"
           [value]="countFor(queue, 'completed')"
           icon="check_circle"
           accentVar="--accent"
         ></app-stat-card>
         <app-stat-card
-          label="Failed"
+          [label]="'admin.jobs.statusFailed' | translate"
           [value]="countFor(queue, 'failed')"
           icon="error"
-          accentVar="--warn"
+          accentVar="--color-error"
         ></app-stat-card>
         <app-stat-card
-          label="Delayed"
+          [label]="'admin.jobs.statusDelayed' | translate"
           [value]="countFor(queue, 'delayed')"
           icon="schedule"
           accentVar="--text-secondary"

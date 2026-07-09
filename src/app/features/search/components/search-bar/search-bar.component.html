@@ -29,7 +29,18 @@
     class="search-results"
   >
     @if (!searchQuery && history().length > 0) {
-      <mat-optgroup label="Recherches récentes">
+      <mat-optgroup class="history-optgroup">
+        <div class="optgroup-header">
+          <span class="optgroup-header-label">Recherches récentes</span>
+          <button
+            class="optgroup-header-action"
+            type="button"
+            (click)="clearHistory($event)"
+            aria-label="Effacer l'historique"
+          >
+            Effacer
+          </button>
+        </div>
         @for (item of history(); track item.label) {
           <mat-option [value]="item">
             <mat-icon class="result-icon history">history</mat-icon>
@@ -44,10 +55,6 @@
             </button>
           </mat-option>
         }
-        <button mat-button class="history-clear-btn" type="button" (click)="clearHistory($event)">
-          <mat-icon>delete_sweep</mat-icon>
-          Effacer l'historique
-        </button>
       </mat-optgroup>
     }
 

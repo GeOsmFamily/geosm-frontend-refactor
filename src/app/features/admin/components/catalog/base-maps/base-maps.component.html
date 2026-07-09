@@ -9,8 +9,9 @@
   [columns]="columns"
   [rows]="baseMaps()"
   [loading]="loading()"
+  [error]="loadError()"
   [total]="baseMaps().length"
-  [pageSize]="100"
+  [showPaginator]="false"
   [hasActions]="true"
 >
   <ng-template #actions let-baseMap>

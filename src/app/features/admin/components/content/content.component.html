@@ -1,9 +1,5 @@
-<div class="page-header">
-  <h2 class="page-title">{{ 'admin.nav.content' | translate }}</h2>
-</div>
-
-<div class="filters glass">
-  <mat-form-field appearance="outline">
+<app-admin-list-page [title]="'admin.nav.content' | translate">
+  <mat-form-field filters appearance="outline">
     <mat-label>{{ 'admin.common.instance' | translate }}</mat-label>
     <mat-select [(ngModel)]="instanceFilter" (selectionChange)="onFilterChange()">
       <mat-option [value]="null">{{ 'admin.common.all' | translate }}</mat-option>
@@ -13,7 +9,7 @@
     </mat-select>
   </mat-form-field>
 
-  <mat-form-field appearance="outline">
+  <mat-form-field filters appearance="outline">
     <mat-label>{{ 'admin.content.flaggedFilter' | translate }}</mat-label>
     <mat-select [(ngModel)]="flaggedFilter" (selectionChange)="onFilterChange()">
       <mat-option [value]="null">{{ 'admin.common.all' | translate }}</mat-option>
@@ -22,7 +18,7 @@
     </mat-select>
   </mat-form-field>
 
-  <mat-form-field appearance="outline">
+  <mat-form-field filters appearance="outline">
     <mat-label>{{ 'admin.content.resolvedFilter' | translate }}</mat-label>
     <mat-select [(ngModel)]="resolvedFilter" (selectionChange)="onFilterChange()">
       <mat-option [value]="null">{{ 'admin.common.all' | translate }}</mat-option>
@@ -30,48 +26,49 @@
       <mat-option [value]="false">{{ 'admin.content.unresolved' | translate }}</mat-option>
     </mat-select>
   </mat-form-field>
-</div>
 
-<app-admin-data-table
-  [columns]="columns"
-  [rows]="comments()"
-  [loading]="loading()"
-  [total]="total()"
-  [pageIndex]="pageIndex()"
-  [pageSize]="pageSize()"
-  [hasActions]="true"
-  (sortChange)="onSortChange($event)"
-  (pageChange)="onPageChange($event)"
->
-  <ng-template #actions let-comment>
-    <div class="row-actions">
-      @if (comment.flagged) {
-        <mat-chip color="warn" highlighted [matTooltip]="comment.flagReason || ''">{{
-          'admin.content.flaggedOnly' | translate
-        }}</mat-chip>
+  <app-admin-data-table
+    [columns]="columns"
+    [rows]="comments()"
+    [loading]="loading()"
+    [error]="loadError()"
+    [total]="total()"
+    [pageIndex]="pageIndex()"
+    [pageSize]="pageSize()"
+    [hasActions]="true"
+    (sortChange)="onSortChange($event)"
+    (pageChange)="onPageChange($event)"
+  >
+    <ng-template #actions let-comment>
+      <div class="row-actions">
+        @if (comment.flagged) {
+          <mat-chip color="warn" highlighted [matTooltip]="comment.flagReason || ''">{{
+            'admin.content.flaggedOnly' | translate
+          }}</mat-chip>
+          <button
+            mat-icon-button
+            (click)="unflag(comment)"
+            [matTooltip]="'admin.content.unflag' | translate"
+          >
+            <mat-icon>flag_circle</mat-icon>
+          </button>
+        } @else {
+          <button
+            mat-icon-button
+            (click)="flag(comment)"
+            [matTooltip]="'admin.content.flag' | translate"
+          >
+            <mat-icon>outlined_flag</mat-icon>
+          </button>
+        }
         <button
           mat-icon-button
-          (click)="unflag(comment)"
-          [matTooltip]="'admin.content.unflag' | translate"
+          (click)="confirmDelete(comment)"
+          [matTooltip]="'common.delete' | translate"
         >
-          <mat-icon>flag_circle</mat-icon>
+          <mat-icon>delete</mat-icon>
         </button>
-      } @else {
-        <button
-          mat-icon-button
-          (click)="flag(comment)"
-          [matTooltip]="'admin.content.flag' | translate"
-        >
-          <mat-icon>outlined_flag</mat-icon>
-        </button>
-      }
-      <button
-        mat-icon-button
-        (click)="confirmDelete(comment)"
-        [matTooltip]="'common.delete' | translate"
-      >
-        <mat-icon>delete</mat-icon>
-      </button>
-    </div>
-  </ng-template>
-</app-admin-data-table>
+      </div>
+    </ng-template>
+  </app-admin-data-table>
+</app-admin-list-page>

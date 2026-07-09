@@ -8,6 +8,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { TranslateModule } from '@ngx-translate/core';
 
 import { Group, SubGroup } from '../../../../../core/models/index';
+import { AdminFormDialogComponent } from '../../../shared/components/admin-form-dialog/admin-form-dialog.component';
 
 export interface GroupFormDialogData {
   kind: 'group' | 'subgroup';
@@ -28,6 +29,7 @@ export interface GroupFormDialogData {
     MatInputModule,
     MatButtonModule,
     TranslateModule,
+    AdminFormDialogComponent,
   ],
   templateUrl: './group-form-dialog.component.html',
   styleUrl: './group-form-dialog.component.scss',
@@ -40,6 +42,13 @@ export class GroupFormDialogComponent {
   readonly isCreate = this.data.mode === 'create';
   readonly isGroup = this.data.kind === 'group';
   private readonly entity = this.data.entity;
+
+  get titleKey(): string {
+    if (this.isGroup) {
+      return this.isCreate ? 'admin.catalog.createGroupTitle' : 'admin.catalog.editGroupTitle';
+    }
+    return this.isCreate ? 'admin.catalog.createSubGroupTitle' : 'admin.catalog.editSubGroupTitle';
+  }
 
   readonly form = this.fb.group({
     name: [this.entity?.name ?? '', Validators.required],

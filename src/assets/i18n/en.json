@@ -133,7 +133,9 @@
     "verifyEmailError": "This verification link is invalid or has expired.",
     "verifyEmailMissingToken": "No verification token found in the link.",
     "passwordTooShort": "Password must be at least 8 characters.",
-    "passwordsDoNotMatch": "Passwords do not match."
+    "passwordsDoNotMatch": "Passwords do not match.",
+    "allFieldsRequired": "All fields are required.",
+    "registrationFailedGeneric": "Registration failed. Please try again."
   },
   "map": {
     "zoom": "Zoom",
@@ -152,6 +154,7 @@
     "opacity": "Opacity",
     "visibility": "Visibility",
     "legend": "Legend",
+    "legendUnavailable": "Legend unavailable for this layer",
     "addToMap": "Add to map",
     "removeFromMap": "Remove from map",
     "addFromCatalog": "Add layers from the catalog",
@@ -269,7 +272,10 @@
     "linkedin": "LinkedIn",
     "sharedMap": "Shared map",
     "errors": {
-      "createFailed": "Failed to create the share link."
+      "createFailed": "Failed to create the share link.",
+      "invalidLink": "Invalid share link.",
+      "notFoundOrExpired": "This shared map could not be found or has expired.",
+      "instanceNotFound": "This shared map refers to an instance that could not be found."
     }
   },
   "settings": {
@@ -391,6 +397,7 @@
   "admin": {
     "title": "Administration",
     "backToMap": "Back to map",
+    "toggleNav": "Toggle navigation menu",
     "quickLinks": "Quick links",
     "nav": {
       "users": "Users",
@@ -405,6 +412,7 @@
     },
     "common": {
       "noResults": "No results",
+      "loadError": "Failed to load. Please try again later.",
       "search": "Search",
       "all": "All",
       "status": "Status",
@@ -413,6 +421,11 @@
       "schema": "Schema"
     },
     "jobs": {
+      "statusWaiting": "Waiting",
+      "statusActive": "Active",
+      "statusCompleted": "Completed",
+      "statusFailed": "Failed",
+      "statusDelayed": "Delayed",
       "triggerNow": "Trigger now",
       "pbfPath": ".osm.pbf file path",
       "triggerOsmImport": "Import OSM data",

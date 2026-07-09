@@ -7,6 +7,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { TranslateModule } from '@ngx-translate/core';
 
 import { AuthService } from '../../../../core/services/auth.service';
+import { AuthCardLayoutComponent } from '../auth-card-layout/auth-card-layout.component';
 
 type VerifyState = 'loading' | 'success' | 'error' | 'missing-token';
 
@@ -21,6 +22,7 @@ type VerifyState = 'loading' | 'success' | 'error' | 'missing-token';
     MatButtonModule,
     MatProgressSpinnerModule,
     TranslateModule,
+    AuthCardLayoutComponent,
   ],
   templateUrl: './verify-email.component.html',
   styleUrl: './verify-email.component.scss',

@@ -25,8 +25,9 @@
     [columns]="groupColumns"
     [rows]="groups()"
     [loading]="loading()"
+    [error]="loadError()"
     [total]="groups().length"
-    [pageSize]="100"
+    [showPaginator]="false"
     [hasActions]="true"
   >
     <ng-template #actions let-group>
@@ -82,8 +83,9 @@
     [columns]="subGroupColumns"
     [rows]="subGroups()"
     [loading]="loading()"
+    [error]="loadError()"
     [total]="subGroups().length"
-    [pageSize]="100"
+    [showPaginator]="false"
     [hasActions]="true"
   >
     <ng-template #actions let-subGroup>
@@ -125,8 +127,9 @@
     [columns]="layerColumns"
     [rows]="layers()"
     [loading]="loading()"
+    [error]="loadError()"
     [total]="layers().length"
-    [pageSize]="100"
+    [showPaginator]="false"
     [hasActions]="true"
   >
     <ng-template #actions let-layer>
