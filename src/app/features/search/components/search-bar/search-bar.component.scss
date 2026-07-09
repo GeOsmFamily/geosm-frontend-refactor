@@ -219,7 +219,10 @@
 .boundary-download-card {
   position: fixed;
   bottom: 20px;
-  left: 360px;
+  // Décalée pour ne pas chevaucher la sidebar carte (--sidebar-width) quand elle est ouverte,
+  // + 20px de respiration — dérivé du token plutôt qu'une valeur en dur (340+20) qui se
+  // désynchronisait silencieusement si --sidebar-width changeait.
+  left: calc(var(--sidebar-width) + 20px);
   width: 360px;
   display: flex;
   align-items: center;
@@ -229,7 +232,7 @@
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
   border: 1px solid rgba(0, 173, 167, 0.2);
   background: rgba(255, 255, 255, 0.92);
-  z-index: 100;
+  z-index: var(--z-panel);
   backdrop-filter: blur(12px);
 
   @media (max-width: 768px) {

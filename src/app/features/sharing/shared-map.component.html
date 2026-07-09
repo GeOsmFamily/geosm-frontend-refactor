@@ -2,8 +2,8 @@
   <!-- Info bar -->
   <div class="info-bar">
     <span class="brand">GeOSM</span>
-    @if (shareInfo(); as info) {
-      <span class="share-label">Shared Map</span>
+    @if (shareInfo()) {
+      <span class="share-label">{{ 'sharing.sharedMap' | translate }}</span>
     }
   </div>
 
@@ -11,7 +11,7 @@
   @if (loading()) {
     <div class="loading-overlay">
       <mat-spinner diameter="48"></mat-spinner>
-      <p>Loading shared map...</p>
+      <p>{{ 'common.loading' | translate }}</p>
     </div>
   }
 

@@ -149,7 +149,7 @@
         transition: color var(--transition-fast);
 
         &:hover {
-          color: var(--warn) !important;
+          color: var(--color-error) !important;
         }
 
         mat-icon {

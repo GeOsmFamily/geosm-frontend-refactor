@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatIconModule } from '@angular/material/icon';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 import { MapViewComponent } from '../map/components/map-view/map-view.component';
 import { MapService } from '../map/services/map.service';
@@ -15,7 +16,13 @@ import { ShareMap, Layer, Instance } from '../../core/models/index';
 @Component({
   selector: 'app-shared-map',
   standalone: true,
-  imports: [CommonModule, MatProgressSpinnerModule, MatIconModule, MapViewComponent],
+  imports: [
+    CommonModule,
+    MatProgressSpinnerModule,
+    MatIconModule,
+    MapViewComponent,
+    TranslateModule,
+  ],
   templateUrl: './shared-map.component.html',
   styleUrl: './shared-map.component.scss',
 })
@@ -26,6 +33,7 @@ export class SharedMapComponent implements OnInit {
   private readonly catalogService = inject(CatalogService);
   private readonly instanceService = inject(InstanceService);
   private readonly mapLayerService = inject(MapLayerService);
+  private readonly translate = inject(TranslateService);
 
   readonly loading = signal(true);
   readonly error = signal('');
@@ -34,7 +42,7 @@ export class SharedMapComponent implements OnInit {
   ngOnInit(): void {
     const code = this.route.snapshot.paramMap.get('code');
     if (!code) {
-      this.error.set('Invalid share link.');
+      this.error.set(this.translate.instant('sharing.errors.invalidLink'));
       this.loading.set(false);
       return;
     }
@@ -46,7 +54,7 @@ export class SharedMapComponent implements OnInit {
         this.loadInstanceAndApply(share);
       },
       error: () => {
-        this.error.set('This shared map could not be found or has expired.');
+        this.error.set(this.translate.instant('sharing.errors.notFoundOrExpired'));
         this.loading.set(false);
       },
     });
@@ -54,7 +62,7 @@ export class SharedMapComponent implements OnInit {
 
   private loadInstanceAndApply(share: ShareMap): void {
     if (!share.instanceSlug) {
-      this.error.set('Cette carte partagée fait référence à une instance introuvable.');
+      this.error.set(this.translate.instant('sharing.errors.instanceNotFound'));
       this.loading.set(false);
       return;
     }

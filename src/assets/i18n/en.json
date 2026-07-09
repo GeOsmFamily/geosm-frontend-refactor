@@ -154,6 +154,7 @@
     "opacity": "Opacity",
     "visibility": "Visibility",
     "legend": "Legend",
+    "legendUnavailable": "Legend unavailable for this layer",
     "addToMap": "Add to map",
     "removeFromMap": "Remove from map",
     "addFromCatalog": "Add layers from the catalog",
@@ -271,7 +272,10 @@
     "linkedin": "LinkedIn",
     "sharedMap": "Shared map",
     "errors": {
-      "createFailed": "Failed to create the share link."
+      "createFailed": "Failed to create the share link.",
+      "invalidLink": "Invalid share link.",
+      "notFoundOrExpired": "This shared map could not be found or has expired.",
+      "instanceNotFound": "This shared map refers to an instance that could not be found."
     }
   },
   "settings": {

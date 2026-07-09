@@ -10,8 +10,16 @@
         </div>
         @if (!item.collapsed) {
           <div class="legend-body">
-            @if (item.type === 'wms' && item.legendUrl) {
-              <img [src]="item.legendUrl" alt="Legend" class="legend-image" loading="lazy" />
+            @if (item.type === 'wms' && item.legendUrl && !failedImageLayerIds().has(item.layerId)) {
+              <img
+                [src]="item.legendUrl"
+                alt="Legend"
+                class="legend-image"
+                loading="lazy"
+                (error)="onLegendImageError(item)"
+              />
+            } @else if (item.type === 'wms') {
+              <p class="legend-unavailable">{{ 'map.legendUnavailable' | translate }}</p>
             } @else {
               <div class="color-swatch">
                 <span class="swatch" [style.background-color]="item.color"></span>

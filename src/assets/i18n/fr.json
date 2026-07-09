@@ -154,6 +154,7 @@
     "opacity": "Opacite",
     "visibility": "Visibilite",
     "legend": "Legende",
+    "legendUnavailable": "Légende indisponible pour cette couche",
     "addToMap": "Ajouter a la carte",
     "removeFromMap": "Retirer de la carte",
     "addFromCatalog": "Ajoutez des couches depuis le catalogue",
@@ -271,7 +272,10 @@
     "linkedin": "LinkedIn",
     "sharedMap": "Carte partagee",
     "errors": {
-      "createFailed": "Erreur lors de la création du partage."
+      "createFailed": "Erreur lors de la création du partage.",
+      "invalidLink": "Lien de partage invalide.",
+      "notFoundOrExpired": "Cette carte partagée est introuvable ou a expiré.",
+      "instanceNotFound": "Cette carte partagée fait référence à une instance introuvable."
     }
   },
   "settings": {

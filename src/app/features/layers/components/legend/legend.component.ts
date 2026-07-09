@@ -30,11 +30,13 @@ export class LegendComponent implements OnInit, OnDestroy {
   private readonly mapLayerService = inject(MapLayerService);
 
   readonly legendItems = signal<LegendItem[]>([]);
+  readonly failedImageLayerIds = signal<ReadonlySet<string>>(new Set());
   private subscription!: Subscription;
 
   ngOnInit(): void {
     this.subscription = this.mapLayerService.activeLayers$.subscribe((layers) => {
       this.legendItems.set(layers.map((al) => this.buildLegendItem(al)));
+      this.failedImageLayerIds.set(new Set());
     });
   }
 
@@ -76,5 +78,11 @@ export class LegendComponent implements OnInit, OnDestroy {
     this.legendItems.update((items) =>
       items.map((i) => (i.layerId === item.layerId ? { ...i, collapsed: !i.collapsed } : i)),
     );
+  }
+
+  // Certains serveurs WMS ne supportent pas GetLegendGraphic pour toutes les couches - sans ce
+  // gestionnaire, une icône "image cassée" du navigateur restait affichée indéfiniment.
+  onLegendImageError(item: LegendItem): void {
+    this.failedImageLayerIds.update((ids) => new Set(ids).add(item.layerId));
   }
 }
