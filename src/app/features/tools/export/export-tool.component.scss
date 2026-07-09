@@ -1,10 +1,4 @@
 .export-tool {
-  h3 {
-    margin: 0 0 12px;
-    font-size: 16px;
-    font-weight: 500;
-  }
-
   h4 {
     margin: 12px 0 8px;
     font-size: 13px;
@@ -110,18 +104,11 @@
     color: var(--text-secondary, rgba(0, 0, 0, 0.5));
   }
 
+  // Dégradé/ombre/états de base partagés avec print-tool et plan-localisation-tool
+  // (styles.scss, bloc "Tool sub-component shared styling") ; ce qui suit ne redéclare que
+  // les ajustements propres à export-tool (centrage MDC + margin-top).
   .export-btn {
-    height: 46px;
-    border-radius: 10px;
-    font-size: 14.5px;
-    font-weight: 600;
-    letter-spacing: 0.2px;
     margin-top: 4px;
-    background: linear-gradient(135deg, #023f5f 0%, #00ada7 100%) !important;
-    box-shadow: 0 4px 14px rgba(0, 173, 167, 0.3);
-    transition:
-      box-shadow 0.2s ease,
-      transform 0.2s ease;
 
     // Angular Material (MDC) enveloppe le contenu du bouton dans son propre
     // span interne : centrer icône + texte doit se faire sur un wrapper à nous
@@ -143,24 +130,9 @@
     }
 
     mat-icon {
-      margin: 0;
       display: inline-flex;
       align-items: center;
       justify-content: center;
-    }
-
-    &:not([disabled]):hover {
-      box-shadow: 0 6px 18px rgba(0, 173, 167, 0.4);
-      transform: translateY(-1px);
-    }
-
-    &:not([disabled]):active {
-      transform: translateY(0);
-    }
-
-    &[disabled] {
-      background: #cbd5e1 !important;
-      box-shadow: none;
     }
   }
 

@@ -1,10 +1,4 @@
 .routing-tool {
-  h3 {
-    margin: 0 0 12px;
-    font-size: 16px;
-    font-weight: 500;
-  }
-
   .full-width {
     width: 100%;
   }
@@ -64,7 +58,7 @@
     }
 
     .remove-wp {
-      color: #f44336;
+      color: var(--color-error);
     }
   }
 

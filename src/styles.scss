@@ -718,7 +718,9 @@ input {
   animation: fadeSlideIn 0.3s ease-out;
 }
 
-// Tool sub-component shared styling
+// Tool sub-component shared styling — s'applique aux 12 outils de la carte (rendus dans le
+// floating-panel "outil actif" de map-layout). Toute nouvelle propriété commune à plusieurs
+// outils doit être ajoutée ici plutôt que redupliquée par fichier.
 .drawing-tool,
 .measure-tool,
 .routing-tool,
@@ -728,7 +730,10 @@ input {
 .altimetry-tool,
 .mapillary-tool,
 .compare-tool,
-.statistics-tool {
+.statistics-tool,
+.nearest-search-tool,
+.plan-localisation-tool,
+.spatial-analysis-tool {
   h3 {
     font-family: var(--font-family-demi);
     font-size: 15px;
@@ -746,7 +751,7 @@ input {
   }
 
   .hint {
-    font-size: 12px;
+    font-size: var(--font-size-sm);
     color: var(--text-light);
   }
 
@@ -759,12 +764,59 @@ input {
     border: 1px solid var(--border) !important;
   }
 
-  button[mat-flat-button],
-  button[mat-raised-button] {
-    border-radius: var(--radius-sm) !important;
-    font-family: var(--font-family-medium) !important;
+  // "Choisir sur la carte" : état actif partagé par les outils qui font pointer/dessiner
+  // l'utilisateur sur la carte (altimetry, nearest-search, plan-localisation,
+  // spatial-analysis) — dupliqué à l'identique dans les 4 fichiers avant cette factorisation.
+  .pick-btn.active {
+    background: rgba(231, 76, 60, 0.08);
+    border-color: #e74c3c;
+    color: #e74c3c;
+  }
+
+  // Bouton d'action principal en dégradé ("Générer le PDF", "Exporter"...) — dupliqué à
+  // l'identique dans print-tool/plan-localisation-tool (.generate-pdf-btn) et export-tool
+  // (.export-btn) avant cette factorisation. Ciblé par nom de classe existant plutôt qu'une
+  // nouvelle classe générique, pour ne toucher aucun template.
+  .generate-pdf-btn,
+  .export-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    height: 46px;
+    border-radius: var(--radius-md);
+    font-size: 14.5px;
+    font-weight: 600;
+    letter-spacing: 0.2px;
+    background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%) !important;
+    box-shadow: 0 4px 14px rgba(0, 173, 167, 0.3);
+    transition:
+      box-shadow 0.2s ease,
+      transform 0.2s ease;
+
+    mat-icon {
+      margin: 0;
+    }
+
+    &:not([disabled]):hover {
+      box-shadow: 0 6px 18px rgba(0, 173, 167, 0.4);
+      transform: translateY(-1px);
+    }
+
+    &:not([disabled]):active {
+      transform: translateY(0);
+    }
+
+    &[disabled] {
+      background: var(--text-light) !important;
+      box-shadow: none;
+    }
   }
 }
+
+// button[mat-flat-button]/[mat-raised-button] radius+font-family sont déjà forcés globalement
+// ci-dessus (règle .mat-mdc-raised-button/.mat-mdc-flat-button/.mat-mdc-outlined-button) — pas
+// besoin de les redéclarer ici pour les outils.
 
 // Global rounded borders override for all outline form fields
 .mat-mdc-form-field {

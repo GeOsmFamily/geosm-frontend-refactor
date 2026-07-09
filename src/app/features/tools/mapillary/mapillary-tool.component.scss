@@ -1,5 +1,7 @@
 .mapillary-tool {
-  padding: 16px;
+  // Pas de padding ici : le panneau flottant "outil actif" (tool-panel.component.scss) fournit
+  // déjà 16px de padding autour de tout outil actif - en ajouter un ici doublait l'espace
+  // (24px effectifs) uniquement pour cet outil.
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -10,31 +12,39 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid var(--border-light);
     padding-bottom: 8px;
 
-    h4 {
+    h3 {
       margin: 0;
-      font-size: 16px;
-      font-weight: 600;
-      color: var(--text, #ffffff);
-      font-family: 'Avenir Next Rounded Pro', sans-serif;
     }
   }
 
   .description {
     font-size: 13px;
-    color: var(--text-light, rgba(255, 255, 255, 0.7));
+    color: var(--text-secondary);
     margin: 0;
     line-height: 1.4;
   }
 
+  .info-card-spaced {
+    margin-bottom: 8px;
+  }
+
+  .header-actions {
+    display: flex;
+    gap: 4px;
+  }
+
   /* GLASS CARD STYLES */
+  // Fond/bordure dérivés des tokens (au lieu de rgba(255,255,255,X) codé en dur) : ces cartes
+  // s'affichent sur le fond clair du panneau d'outil, où une bordure blanche à 10% d'opacité
+  // était quasi invisible.
   .glass {
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--surface-hover);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--border-light);
     border-radius: 12px;
     padding: 12px;
   }
@@ -68,7 +78,7 @@
     margin-top: 8px;
 
     .warn-icon {
-      color: #ef4444;
+      color: var(--color-error);
       font-size: 20px;
       width: 20px;
       height: 20px;
@@ -76,7 +86,7 @@
 
     .warn-text {
       font-size: 12px;
-      color: #d32f2f;
+      color: var(--color-error);
       font-weight: 500;
       line-height: 1.4;
     }
@@ -145,7 +155,7 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      border-bottom: 1px solid var(--border-light);
       padding-bottom: 6px;
 
       .viewer-title {
@@ -337,7 +347,7 @@
         }
 
         .stop-player-btn {
-          color: #ef4444 !important;
+          color: var(--color-error) !important;
         }
       }
 

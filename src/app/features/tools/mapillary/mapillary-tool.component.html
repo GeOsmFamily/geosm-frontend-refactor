@@ -1,6 +1,6 @@
 <div class="mapillary-tool">
   <div class="tool-header">
-    <h4>Mapillary Street View</h4>
+    <h3>Mapillary Street View</h3>
   </div>
 
   <p class="description">Explorez les images de rue Mapillary sur la carte.</p>
@@ -19,7 +19,7 @@
   </div>
 
   @if (active) {
-    <div class="images-info-card glass" style="margin-bottom: 8px">
+    <div class="images-info-card glass info-card-spaced">
       <mat-icon>info</mat-icon>
       <span
         >Zoomez à un niveau >= 14 pour afficher les points de vue (points verts). Survolez ou
@@ -42,7 +42,7 @@
             <mat-icon>photo_camera</mat-icon>
             <span>Image Mapillary</span>
           </div>
-          <div class="header-actions" style="display: flex; gap: 4px">
+          <div class="header-actions">
             <button
               mat-icon-button
               class="download-btn"
@@ -140,17 +140,6 @@
                   >
                     <mat-icon>download</mat-icon>
                   </button>
-
-                  @if (false) {
-                    <button
-                      mat-icon-button
-                      class="fullscreen-player-btn"
-                      (click)="toggleFullscreen()"
-                      matTooltip="Agrandir / Plein écran"
-                    >
-                      <mat-icon>{{ isFullscreen ? 'fullscreen_exit' : 'fullscreen' }}</mat-icon>
-                    </button>
-                  }
                 </div>
 
                 <!-- Timeline slider -->
