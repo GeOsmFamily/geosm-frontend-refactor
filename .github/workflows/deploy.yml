@@ -74,6 +74,14 @@ jobs:
             ghcr.io/${{ env.REPO_LC }}:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
+          # CACHEBUST unique a chaque run : voir le commentaire dans le Dockerfile a cote de
+          # "ARG CACHEBUST" - sans ca, le cache GitHub Actions (cache-from/cache-to ci-dessus)
+          # peut reutiliser le layer d'injection du token Mapillary d'un run precedent (le cache
+          # est indexe sur le TEXTE de la commande, pas sur la valeur du secret monte), figeant
+          # silencieusement un ancien token (voire le placeholder "__MAPILLARY_TOKEN__" jamais
+          # remplace) meme apres avoir corrige le secret MAPILLARY_TOKEN sur GitHub.
+          build-args: |
+            CACHEBUST=${{ github.run_id }}-${{ github.run_attempt }}
           secrets: |
             mapillary_token=${{ secrets.MAPILLARY_TOKEN }}
 
