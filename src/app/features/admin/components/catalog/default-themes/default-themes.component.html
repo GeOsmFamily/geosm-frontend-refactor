@@ -14,6 +14,7 @@
     [columns]="columns"
     [rows]="themes()"
     [loading]="loading()"
+    [error]="loadError()"
     [total]="themes().length"
     [pageSize]="100"
     [hasActions]="true"
@@ -66,6 +67,7 @@
     [columns]="tagColumns"
     [rows]="tags()"
     [loading]="loadingTags()"
+    [error]="tagsLoadError()"
     [total]="tags().length"
     [pageSize]="100"
   ></app-admin-data-table>

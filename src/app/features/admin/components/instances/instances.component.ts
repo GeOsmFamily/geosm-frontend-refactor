@@ -62,6 +62,7 @@ export class InstancesComponent implements OnInit {
 
   readonly instances = signal<Instance[]>([]);
   readonly loading = signal(false);
+  readonly loadError = signal(false);
   readonly total = signal(0);
   readonly pageIndex = signal(0);
   readonly pageSize = signal(20);
@@ -78,6 +79,7 @@ export class InstancesComponent implements OnInit {
 
   load(): void {
     this.loading.set(true);
+    this.loadError.set(false);
     this.instanceService
       .list({
         page: this.pageIndex() + 1,
@@ -90,7 +92,10 @@ export class InstancesComponent implements OnInit {
           this.total.set(res.meta.total);
           this.loading.set(false);
         },
-        error: () => this.loading.set(false),
+        error: () => {
+          this.loading.set(false);
+          this.loadError.set(true);
+        },
       });
   }
 

@@ -386,6 +386,7 @@
     },
     "common": {
       "noResults": "Sin resultados",
+      "loadError": "Error al cargar. Vuelve a intentarlo más tarde.",
       "search": "Buscar",
       "all": "Todos",
       "status": "Estado",
@@ -394,6 +395,11 @@
       "schema": "Esquema"
     },
     "jobs": {
+      "statusWaiting": "En espera",
+      "statusActive": "Activo",
+      "statusCompleted": "Completado",
+      "statusFailed": "Fallido",
+      "statusDelayed": "Retrasado",
       "triggerNow": "Ejecutar ahora",
       "pbfPath": "Ruta del archivo .osm.pbf",
       "triggerOsmImport": "Importar datos OSM",

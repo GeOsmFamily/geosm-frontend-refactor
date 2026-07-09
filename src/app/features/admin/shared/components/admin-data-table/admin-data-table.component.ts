@@ -4,6 +4,7 @@ import { MatTableModule } from '@angular/material/table';
 import { MatSortModule, Sort } from '@angular/material/sort';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatIconModule } from '@angular/material/icon';
 import { TranslateModule } from '@ngx-translate/core';
 
 export interface AdminTableColumn {
@@ -27,6 +28,7 @@ export interface AdminTableColumn {
     MatSortModule,
     MatPaginatorModule,
     MatProgressSpinnerModule,
+    MatIconModule,
     TranslateModule,
   ],
   templateUrl: './admin-data-table.component.html',
@@ -36,6 +38,8 @@ export class AdminDataTableComponent<T> {
   @Input() columns: AdminTableColumn[] = [];
   @Input() rows: T[] = [];
   @Input() loading = false;
+  /** Le dernier chargement a échoué (distinct d'une liste simplement vide). */
+  @Input() error = false;
   @Input() total = 0;
   @Input() pageSize = 20;
   @Input() pageIndex = 0;

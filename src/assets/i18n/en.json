@@ -412,6 +412,7 @@
     },
     "common": {
       "noResults": "No results",
+      "loadError": "Failed to load. Please try again later.",
       "search": "Search",
       "all": "All",
       "status": "Status",
@@ -420,6 +421,11 @@
       "schema": "Schema"
     },
     "jobs": {
+      "statusWaiting": "Waiting",
+      "statusActive": "Active",
+      "statusCompleted": "Completed",
+      "statusFailed": "Failed",
+      "statusDelayed": "Delayed",
       "triggerNow": "Trigger now",
       "pbfPath": ".osm.pbf file path",
       "triggerOsmImport": "Import OSM data",
