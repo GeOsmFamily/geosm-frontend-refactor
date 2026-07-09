@@ -1,4 +1,12 @@
-import { Directive, ElementRef, EventEmitter, HostListener, Input, Output, inject } from '@angular/core';
+import {
+  Directive,
+  ElementRef,
+  EventEmitter,
+  HostListener,
+  Input,
+  Output,
+  inject,
+} from '@angular/core';
 
 /**
  * Emits `closeRequested` when the user presses Escape or clicks/taps outside the host element.

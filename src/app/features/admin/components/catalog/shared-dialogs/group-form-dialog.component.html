@@ -1,5 +1,10 @@
 <form [formGroup]="form" (ngSubmit)="onSubmit()">
-  <app-admin-form-dialog [title]="titleKey | translate" [form]="form" [minWidth]="380" (cancel)="onCancel()">
+  <app-admin-form-dialog
+    [title]="titleKey | translate"
+    [form]="form"
+    [minWidth]="380"
+    (cancel)="onCancel()"
+  >
     <mat-form-field appearance="outline" class="full-width">
       <mat-label>{{ 'admin.catalog.name' | translate }}</mat-label>
       <input matInput formControlName="name" required />

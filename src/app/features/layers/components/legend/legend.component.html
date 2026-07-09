@@ -10,7 +10,9 @@
         </div>
         @if (!item.collapsed) {
           <div class="legend-body">
-            @if (item.type === 'wms' && item.legendUrl && !failedImageLayerIds().has(item.layerId)) {
+            @if (
+              item.type === 'wms' && item.legendUrl && !failedImageLayerIds().has(item.layerId)
+            ) {
               <img
                 [src]="item.legendUrl"
                 alt="Legend"
