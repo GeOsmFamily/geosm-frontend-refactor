@@ -209,6 +209,11 @@
     &.grid-mode {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
+      // Sans ça, .themes-grid (flex:1 pour occuper toute la hauteur scrollable du panneau)
+      // étire aussi ses rangées de grille par défaut (align-content: normal => stretch pour
+      // un conteneur grid), gonflant chaque carte pour combler l'espace vertical restant au
+      // lieu de le laisser sous forme de vide après la dernière rangée.
+      align-content: start;
       gap: 10px;
 
       .theme-card {
