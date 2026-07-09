@@ -1,6 +1,7 @@
 import { Component, ElementRef, OnDestroy, OnInit, ViewChild, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTooltipModule } from '@angular/material/tooltip';
@@ -18,6 +19,7 @@ import {
   AssistantConversationSummary,
 } from '../../../../core/services/assistant.service';
 import { InstanceService } from '../../../../core/services/instance.service';
+import { AuthService } from '../../../../core/services/auth.service';
 import { AnalyticsService } from '../../../../core/services/analytics.service';
 import { LayerService } from '../../../../core/services/layer.service';
 import { LocationPlanService } from '../../../../core/services/location-plan.service';
@@ -41,6 +43,8 @@ const WELCOME_TEXT =
 export class AssistantChatComponent implements OnInit, OnDestroy {
   private readonly assistantService = inject(AssistantService);
   private readonly instanceService = inject(InstanceService);
+  private readonly authService = inject(AuthService);
+  private readonly router = inject(Router);
   private readonly layerService = inject(LayerService);
   private readonly locationPlanService = inject(LocationPlanService);
   private readonly mapLayerService = inject(MapLayerService);
@@ -56,9 +60,19 @@ export class AssistantChatComponent implements OnInit, OnDestroy {
   readonly loadingConversation = signal(false);
   readonly downloadingId = signal<string | null>(null);
   readonly mapResultVisible = signal(false);
+  // L'assistant IA nécessite un compte (routes /assistant/* protégées côté API) - un visiteur
+  // anonyme du géoportail public ne peut pas en créer. Sans cette détection explicite, les
+  // appels échouaient en 401 silencieusement avalés (aucun gestionnaire d'erreur sur
+  // createConversation()), laissant l'utilisateur face à un panneau qui semblait ne rien faire
+  // au clic sur "Envoyer" ou "Nouvelle conversation" - voir requiresAuth() dans le template.
+  readonly requiresAuth = signal(false);
   inputText = '';
 
   private resultLayer: VectorLayer<VectorSource> | null = null;
+
+  navigateToLogin(): void {
+    this.router.navigate(['/login']);
+  }
 
   ngOnDestroy(): void {
     // Le calque de résultat (buffer/analyse spatiale affiché par l'assistant) est ajouté
@@ -71,6 +85,11 @@ export class AssistantChatComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    if (!this.authService.isAuthenticated()) {
+      this.requiresAuth.set(true);
+      return;
+    }
+
     const instance = this.instanceService.currentInstance$.value;
     if (!instance) return;
 
@@ -91,13 +110,20 @@ export class AssistantChatComponent implements OnInit, OnDestroy {
     const instance = this.instanceService.currentInstance$.value;
     if (!instance) return;
 
-    this.assistantService.createConversation(instance.id).subscribe((conv) => {
-      this.conversations.update((list) => [
-        { id: conv.id, title: conv.title, updatedAt: conv.updatedAt },
-        ...list,
-      ]);
-      this.activeConversationId.set(conv.id);
-      this.messages.set([{ role: 'model', text: WELCOME_TEXT }]);
+    this.assistantService.createConversation(instance.id).subscribe({
+      next: (conv) => {
+        this.conversations.update((list) => [
+          { id: conv.id, title: conv.title, updatedAt: conv.updatedAt },
+          ...list,
+        ]);
+        this.activeConversationId.set(conv.id);
+        this.messages.set([{ role: 'model', text: WELCOME_TEXT }]);
+      },
+      error: () => {
+        // Session expiree en cours d'utilisation (401 tardif) - meme message que le cas
+        // "jamais connecte" plutot que de laisser le panneau silencieusement inoperant.
+        this.requiresAuth.set(true);
+      },
     });
   }
 
