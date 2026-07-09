@@ -1,7 +1,6 @@
-<div class="page-header">
-  <h2 class="page-title">{{ 'admin.nav.instances' | translate }}</h2>
-  @if (isSuperAdmin) {
-    <div class="header-actions">
+<app-admin-list-page [title]="'admin.nav.instances' | translate">
+  <ng-container pageActions>
+    @if (isSuperAdmin) {
       <button mat-stroked-button (click)="openTemplateDialog()">
         <mat-icon>dashboard_customize</mat-icon>
         {{ 'admin.instances.createFromTemplate' | translate }}
@@ -10,12 +9,10 @@
         <mat-icon>add</mat-icon>
         {{ 'admin.instances.create' | translate }}
       </button>
-    </div>
-  }
-</div>
+    }
+  </ng-container>
 
-<div class="filters glass">
-  <mat-form-field appearance="outline" class="search-field">
+  <mat-form-field filters appearance="outline" class="search-field">
     <mat-label>{{ 'admin.common.search' | translate }}</mat-label>
     <input matInput [(ngModel)]="searchTerm" (keyup.enter)="onFilterChange()" />
     <button
@@ -27,44 +24,45 @@
       <mat-icon>search</mat-icon>
     </button>
   </mat-form-field>
-</div>
 
-<app-admin-data-table
-  [columns]="columns"
-  [rows]="instances()"
-  [loading]="loading()"
-  [total]="total()"
-  [pageIndex]="pageIndex()"
-  [pageSize]="pageSize()"
-  [hasActions]="true"
-  (sortChange)="onSortChange($event)"
-  (pageChange)="onPageChange($event)"
->
-  <ng-template #actions let-instance>
-    <div class="row-actions">
-      <button
-        mat-icon-button
-        (click)="manageUsers(instance)"
-        [matTooltip]="'admin.instances.usersTitle' | translate"
-      >
-        <mat-icon>group</mat-icon>
-      </button>
-      <button
-        mat-icon-button
-        (click)="openEditDialog(instance)"
-        [matTooltip]="'common.save' | translate"
-      >
-        <mat-icon>edit</mat-icon>
-      </button>
-      @if (isSuperAdmin) {
+  <app-admin-data-table
+    [columns]="columns"
+    [rows]="instances()"
+    [loading]="loading()"
+    [error]="loadError()"
+    [total]="total()"
+    [pageIndex]="pageIndex()"
+    [pageSize]="pageSize()"
+    [hasActions]="true"
+    (sortChange)="onSortChange($event)"
+    (pageChange)="onPageChange($event)"
+  >
+    <ng-template #actions let-instance>
+      <div class="row-actions">
         <button
           mat-icon-button
-          (click)="confirmDelete(instance)"
-          [matTooltip]="'common.delete' | translate"
+          (click)="manageUsers(instance)"
+          [matTooltip]="'admin.instances.usersTitle' | translate"
         >
-          <mat-icon>delete</mat-icon>
+          <mat-icon>group</mat-icon>
         </button>
-      }
-    </div>
-  </ng-template>
-</app-admin-data-table>
+        <button
+          mat-icon-button
+          (click)="openEditDialog(instance)"
+          [matTooltip]="'common.save' | translate"
+        >
+          <mat-icon>edit</mat-icon>
+        </button>
+        @if (isSuperAdmin) {
+          <button
+            mat-icon-button
+            (click)="confirmDelete(instance)"
+            [matTooltip]="'common.delete' | translate"
+          >
+            <mat-icon>delete</mat-icon>
+          </button>
+        }
+      </div>
+    </ng-template>
+  </app-admin-data-table>
+</app-admin-list-page>

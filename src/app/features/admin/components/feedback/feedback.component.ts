@@ -27,6 +27,7 @@ import {
   FeedbackDetailDialogComponent,
   FeedbackDetailDialogResult,
 } from './feedback-detail-dialog/feedback-detail-dialog.component';
+import { AdminListPageComponent } from '../../shared/components/admin-list-page/admin-list-page.component';
 
 @Component({
   selector: 'app-feedback',
@@ -44,6 +45,7 @@ import {
     MatChipsModule,
     TranslateModule,
     AdminDataTableComponent,
+    AdminListPageComponent,
   ],
   templateUrl: './feedback.component.html',
   styleUrl: './feedback.component.scss',
@@ -66,6 +68,7 @@ export class FeedbackComponent implements OnInit {
 
   readonly items = signal<FeedbackSubmission[]>([]);
   readonly loading = signal(false);
+  readonly loadError = signal(false);
   readonly total = signal(0);
   readonly pageIndex = signal(0);
   readonly pageSize = signal(20);
@@ -79,6 +82,7 @@ export class FeedbackComponent implements OnInit {
 
   load(): void {
     this.loading.set(true);
+    this.loadError.set(false);
     this.feedbackService
       .adminList({
         page: this.pageIndex() + 1,
@@ -92,7 +96,10 @@ export class FeedbackComponent implements OnInit {
           this.total.set(res.total);
           this.loading.set(false);
         },
-        error: () => this.loading.set(false),
+        error: () => {
+          this.loading.set(false);
+          this.loadError.set(true);
+        },
       });
   }
 

@@ -1,111 +1,90 @@
-<div class="register-page">
-  <div class="register-left">
-    <div class="brand-area">
-      <div class="brand-logo">
-        <mat-icon class="globe-icon">public</mat-icon>
-      </div>
-      <h1 class="brand-name">GeOSM</h1>
-      <p class="brand-tagline">Rejoignez la communauté cartographique</p>
-    </div>
+<app-auth-split-layout tagline="Rejoignez la communauté cartographique">
+  <div class="form-header">
+    <h2>Créer un compte</h2>
+    <p>Commencez à explorer vos données géospatiales</p>
   </div>
 
-  <div class="register-right">
-    <div class="register-form-container">
-      <div class="form-header">
-        <h2>Créer un compte</h2>
-        <p>Commencez à explorer vos données géospatiales</p>
-      </div>
+  @if (errorMessage()) {
+    <div class="error-message animate-in">
+      <mat-icon>error_outline</mat-icon>
+      <span>{{ errorMessage() }}</span>
+    </div>
+  }
 
-      @if (errorMessage()) {
-        <div class="error-message animate-in">
-          <mat-icon>error_outline</mat-icon>
-          <span>{{ errorMessage() }}</span>
-        </div>
+  <form (ngSubmit)="register()" class="register-form">
+    <div class="name-row">
+      <mat-form-field appearance="outline">
+        <mat-label>Prénom</mat-label>
+        <input matInput [(ngModel)]="firstName" name="firstName" required />
+        <mat-icon matPrefix>person</mat-icon>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Nom</mat-label>
+        <input matInput [(ngModel)]="lastName" name="lastName" required />
+        <mat-icon matPrefix>person_outline</mat-icon>
+      </mat-form-field>
+    </div>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Adresse email</mat-label>
+      <input matInput type="email" [(ngModel)]="email" name="email" required autocomplete="email" />
+      <mat-icon matPrefix>email</mat-icon>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Mot de passe</mat-label>
+      <input
+        matInput
+        [type]="hidePassword ? 'password' : 'text'"
+        [(ngModel)]="password"
+        name="password"
+        required
+        autocomplete="new-password"
+      />
+      <mat-icon matPrefix>lock</mat-icon>
+      <button mat-icon-button matSuffix (click)="hidePassword = !hidePassword" type="button">
+        <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+      </button>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Confirmer le mot de passe</mat-label>
+      <input
+        matInput
+        [type]="hideConfirm ? 'password' : 'text'"
+        [(ngModel)]="confirmPassword"
+        name="confirmPassword"
+        required
+        autocomplete="new-password"
+      />
+      <mat-icon matPrefix>lock_outline</mat-icon>
+      <button mat-icon-button matSuffix (click)="hideConfirm = !hideConfirm" type="button">
+        <mat-icon>{{ hideConfirm ? 'visibility_off' : 'visibility' }}</mat-icon>
+      </button>
+    </mat-form-field>
+
+    <button
+      mat-flat-button
+      color="primary"
+      class="full-width register-btn"
+      type="submit"
+      [disabled]="loading()"
+    >
+      @if (loading()) {
+        <mat-spinner diameter="22" color="accent"></mat-spinner>
+      } @else {
+        <ng-container>Créer mon compte</ng-container>
       }
+    </button>
+  </form>
 
-      <form (ngSubmit)="register()" class="register-form">
-        <div class="name-row">
-          <mat-form-field appearance="outline">
-            <mat-label>Prénom</mat-label>
-            <input matInput [(ngModel)]="firstName" name="firstName" required />
-            <mat-icon matPrefix>person</mat-icon>
-          </mat-form-field>
-
-          <mat-form-field appearance="outline">
-            <mat-label>Nom</mat-label>
-            <input matInput [(ngModel)]="lastName" name="lastName" required />
-            <mat-icon matPrefix>person_outline</mat-icon>
-          </mat-form-field>
-        </div>
-
-        <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Adresse email</mat-label>
-          <input
-            matInput
-            type="email"
-            [(ngModel)]="email"
-            name="email"
-            required
-            autocomplete="email"
-          />
-          <mat-icon matPrefix>email</mat-icon>
-        </mat-form-field>
-
-        <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Mot de passe</mat-label>
-          <input
-            matInput
-            [type]="hidePassword ? 'password' : 'text'"
-            [(ngModel)]="password"
-            name="password"
-            required
-            autocomplete="new-password"
-          />
-          <mat-icon matPrefix>lock</mat-icon>
-          <button mat-icon-button matSuffix (click)="hidePassword = !hidePassword" type="button">
-            <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
-          </button>
-        </mat-form-field>
-
-        <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Confirmer le mot de passe</mat-label>
-          <input
-            matInput
-            [type]="hideConfirm ? 'password' : 'text'"
-            [(ngModel)]="confirmPassword"
-            name="confirmPassword"
-            required
-            autocomplete="new-password"
-          />
-          <mat-icon matPrefix>lock_outline</mat-icon>
-          <button mat-icon-button matSuffix (click)="hideConfirm = !hideConfirm" type="button">
-            <mat-icon>{{ hideConfirm ? 'visibility_off' : 'visibility' }}</mat-icon>
-          </button>
-        </mat-form-field>
-
-        <button
-          mat-flat-button
-          color="primary"
-          class="full-width register-btn"
-          type="submit"
-          [disabled]="loading()"
-        >
-          @if (loading()) {
-            <mat-spinner diameter="22" color="accent"></mat-spinner>
-          } @else {
-            <ng-container>Créer mon compte</ng-container>
-          }
-        </button>
-      </form>
-
-      <div class="divider">
-        <span>ou</span>
-      </div>
-
-      <div class="login-prompt">
-        Déjà un compte ?
-        <a routerLink="/login" class="login-link">Se connecter</a>
-      </div>
-    </div>
+  <div class="divider">
+    <span>ou</span>
   </div>
-</div>
+
+  <div class="login-prompt">
+    Déjà un compte ?
+    <a routerLink="/login" class="login-link">Se connecter</a>
+  </div>
+</app-auth-split-layout>

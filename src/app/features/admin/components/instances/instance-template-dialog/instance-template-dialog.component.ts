@@ -8,6 +8,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { TranslateModule } from '@ngx-translate/core';
 
 import { CreateInstanceTemplateDTO } from '../../../../../core/services/instance.service';
+import { AdminFormDialogComponent } from '../../../shared/components/admin-form-dialog/admin-form-dialog.component';
 
 /**
  * Alternative légère à la création classique (POST /instances, qui provisionne tout le
@@ -27,6 +28,7 @@ import { CreateInstanceTemplateDTO } from '../../../../../core/services/instance
     MatInputModule,
     MatButtonModule,
     TranslateModule,
+    AdminFormDialogComponent,
   ],
   templateUrl: './instance-template-dialog.component.html',
   styleUrl: './instance-template-dialog.component.scss',

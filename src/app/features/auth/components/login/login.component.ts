@@ -12,6 +12,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 
 import { AuthService } from '../../../../core/services/auth.service';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { AuthSplitLayoutComponent } from '../auth-split-layout/auth-split-layout.component';
 
 @Component({
   selector: 'app-login',
@@ -28,6 +29,7 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
     MatIconModule,
     MatProgressSpinnerModule,
     MatCheckboxModule,
+    AuthSplitLayoutComponent,
   ],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss',

@@ -100,6 +100,10 @@
   background: rgba(255, 255, 255, 0.15) !important;
   width: 24px !important;
   height: 24px !important;
+  // Le padding par défaut de mat-icon-button (12px, pensé pour une cible tactile de 48px)
+  // ne laissait aucune place à l'icône une fois le bouton réduit à 24px - elle se
+  // retrouvait clippée à 0px de large (overflow:hidden de mat-icon) et donc invisible.
+  padding: 0 !important;
   display: inline-flex !important;
   align-items: center;
   justify-content: center;
@@ -109,6 +113,7 @@
   mat-icon {
     color: inherit !important;
     font-size: 16px;
+    line-height: 16px;
     width: 16px;
     height: 16px;
   }
@@ -122,69 +127,161 @@
 
 ::ng-deep .mat-mdc-autocomplete-panel {
   background-color: var(--surface) !important;
-  border-radius: 12px !important;
+  border-radius: 14px !important;
   box-shadow:
-    0 10px 25px rgba(0, 0, 0, 0.1),
-    0 6px 10px rgba(0, 0, 0, 0.08) !important;
+    0 12px 32px rgba(2, 22, 35, 0.12),
+    0 4px 10px rgba(2, 22, 35, 0.06) !important;
   border: 1px solid var(--border) !important;
-  margin-top: 4px;
+  margin-top: 6px;
+  // Le panneau hérite par défaut de la largeur (parfois étroite) du champ de recherche -
+  // une largeur plancher lui laisse la place d'afficher des libellés longs (adresses,
+  // limites administratives) sans les tronquer trop agressivement.
+  min-width: 340px;
+  padding: 6px 0 !important;
+
+  .mat-mdc-optgroup + .mat-mdc-optgroup {
+    border-top: 1px solid var(--border-light, var(--border));
+    margin-top: 4px;
+    padding-top: 2px;
+  }
 
   .mat-mdc-optgroup-label {
+    height: auto;
+    min-height: 0;
+    padding: 10px 16px 6px;
+  }
+
+  // Groupe "Recherches récentes" : pas de [label] passé à mat-optgroup, un en-tête
+  // personnalisé (libellé + action "Effacer") est projeté à la place - voir le template.
+  .optgroup-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    width: 100%;
+  }
+
+  .optgroup-header-label {
     font-size: 11px;
     font-weight: 600;
     color: var(--text-secondary) !important;
     text-transform: uppercase;
     letter-spacing: 0.8px;
-    padding: 12px 16px 4px;
+  }
+
+  .optgroup-header-action {
+    border: none;
+    background: transparent;
+    color: var(--accent);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.2px;
+    padding: 2px 6px;
+    border-radius: 6px;
+    cursor: pointer;
+    text-transform: none;
+
+    &:hover {
+      background: var(--accent-bg, rgba(0, 173, 167, 0.1));
+    }
+  }
+
+  // Autres groupes (Suggestions, Limites administratives, Lieux, Couches) : label
+  // standard de mat-optgroup, même typographie que .optgroup-header-label ci-dessus.
+  span[role='presentation'].mat-mdc-optgroup-label > .mdc-list-item__primary-text {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-secondary) !important;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
   }
 
   .mat-mdc-option {
     font-size: 14px;
-    min-height: 44px;
-    padding: 0 16px;
+    min-height: 46px;
+    padding: 0 12px;
+    margin: 0 6px;
+    border-radius: 9px;
     color: var(--text) !important;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: calc(100% - 12px);
 
+    &:hover:not(.mdc-list-item--disabled),
+    &.mat-mdc-option-active {
+      background: var(--surface-2, rgba(2, 63, 95, 0.05)) !important;
+    }
+
+    .mdc-list-item__primary-text {
+      display: flex;
+      align-items: center;
+      flex: 1;
+      min-width: 0;
+      gap: 8px;
+      color: inherit;
+    }
+
+    // Puce circulaire teintée derrière chaque icône de résultat plutôt qu'un glyphe nu -
+    // plus lisible et scannable qu'une simple couleur de texte.
     .result-icon {
-      margin-right: 10px;
-      font-size: 20px;
-      width: 20px;
-      height: 20px;
-      vertical-align: middle;
+      flex-shrink: 0;
+      box-sizing: border-box;
+      width: 30px;
+      height: 30px;
+      padding: 6px;
+      border-radius: 50%;
+      font-size: 18px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
 
       &.place {
         color: #ef4444 !important;
+        background: rgba(239, 68, 68, 0.1);
       }
       &.layer {
         color: #00ada7 !important;
+        background: rgba(0, 173, 167, 0.1);
       }
       &.boundary {
         color: #023f5f !important;
+        background: rgba(2, 63, 95, 0.08);
       }
       &.history {
         color: var(--text-secondary) !important;
+        background: var(--surface-2, rgba(100, 116, 139, 0.08));
       }
       &.suggestion {
         color: #f59e0b !important;
+        background: rgba(245, 158, 11, 0.1);
       }
     }
 
     .result-label {
-      font-size: 14px;
+      flex: 1;
+      min-width: 0;
+      font-size: 13.5px;
       color: var(--text) !important;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .history-remove-btn {
-      float: right;
+      flex-shrink: 0;
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      width: 22px;
-      height: 22px;
+      width: 24px;
+      height: 24px;
       border: none;
       background: transparent;
       color: var(--text-light, #9ca3af);
       border-radius: 50%;
       cursor: pointer;
+      opacity: 0;
+      transition: opacity 0.15s ease;
 
       mat-icon {
         font-size: 15px;
@@ -197,21 +294,10 @@
         color: #ef4444;
       }
     }
-  }
 
-  .history-clear-btn {
-    width: calc(100% - 16px);
-    margin: 4px 8px 8px;
-    font-size: 12px;
-    color: var(--text-secondary);
-    display: flex;
-    align-items: center;
-    gap: 6px;
-
-    mat-icon {
-      font-size: 16px;
-      width: 16px;
-      height: 16px;
+    &:hover .history-remove-btn,
+    &:focus-within .history-remove-btn {
+      opacity: 1;
     }
   }
 }
@@ -219,7 +305,10 @@
 .boundary-download-card {
   position: fixed;
   bottom: 20px;
-  left: 360px;
+  // Décalée pour ne pas chevaucher la sidebar carte (--sidebar-width) quand elle est ouverte,
+  // + 20px de respiration — dérivé du token plutôt qu'une valeur en dur (340+20) qui se
+  // désynchronisait silencieusement si --sidebar-width changeait.
+  left: calc(var(--sidebar-width) + 20px);
   width: 360px;
   display: flex;
   align-items: center;
@@ -229,7 +318,7 @@
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
   border: 1px solid rgba(0, 173, 167, 0.2);
   background: rgba(255, 255, 255, 0.92);
-  z-index: 100;
+  z-index: var(--z-panel);
   backdrop-filter: blur(12px);
 
   @media (max-width: 768px) {
@@ -294,6 +383,7 @@
     color: var(--text-light) !important;
     width: 28px !important;
     height: 28px !important;
+    padding: 0 !important;
     display: inline-flex !important;
     align-items: center;
     justify-content: center;
@@ -305,6 +395,7 @@
 
     mat-icon {
       font-size: 16px;
+      line-height: 16px;
       width: 16px;
       height: 16px;
       margin: 0;

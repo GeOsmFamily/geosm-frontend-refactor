@@ -46,12 +46,14 @@ export class DefaultThemesComponent implements OnInit {
   private readonly translate = inject(TranslateService);
 
   readonly loading = signal(false);
+  readonly loadError = signal(false);
   readonly seeding = signal(false);
   readonly themes = signal<DefaultTheme[]>([]);
 
   readonly currentTheme = signal<DefaultTheme | null>(null);
   readonly tags = signal<DefaultTag[]>([]);
   readonly loadingTags = signal(false);
+  readonly tagsLoadError = signal(false);
 
   readonly tagForm = this.fb.group({
     name: ['', Validators.required],
@@ -75,12 +77,16 @@ export class DefaultThemesComponent implements OnInit {
 
   private load(): void {
     this.loading.set(true);
+    this.loadError.set(false);
     this.themeService.list().subscribe({
       next: (list) => {
         this.themes.set(list);
         this.loading.set(false);
       },
-      error: () => this.loading.set(false),
+      error: () => {
+        this.loading.set(false);
+        this.loadError.set(true);
+      },
     });
   }
 
@@ -161,12 +167,16 @@ export class DefaultThemesComponent implements OnInit {
     this.currentTheme.set(theme);
     this.tagForm.reset();
     this.loadingTags.set(true);
+    this.tagsLoadError.set(false);
     this.themeService.listTags(theme.id).subscribe({
       next: (tags) => {
         this.tags.set(tags);
         this.loadingTags.set(false);
       },
-      error: () => this.loadingTags.set(false),
+      error: () => {
+        this.loadingTags.set(false);
+        this.tagsLoadError.set(true);
+      },
     });
   }
 

@@ -133,7 +133,9 @@
     "verifyEmailError": "Este enlace de verificación no es válido o ha caducado.",
     "verifyEmailMissingToken": "No se encontró ningún token de verificación en el enlace.",
     "passwordTooShort": "La contraseña debe tener al menos 8 caracteres.",
-    "passwordsDoNotMatch": "Las contraseñas no coinciden."
+    "passwordsDoNotMatch": "Las contraseñas no coinciden.",
+    "allFieldsRequired": "Todos los campos son obligatorios.",
+    "registrationFailedGeneric": "El registro falló. Inténtalo de nuevo."
   },
   "map": {
     "zoom": "Zoom",
@@ -152,6 +154,7 @@
     "opacity": "Opacidad",
     "visibility": "Visibilidad",
     "legend": "Leyenda",
+    "legendUnavailable": "Leyenda no disponible para esta capa",
     "addToMap": "Agregar al mapa",
     "removeFromMap": "Quitar del mapa",
     "addFromCatalog": "Agregue capas desde el catálogo",
@@ -269,7 +272,10 @@
     "linkedin": "LinkedIn",
     "sharedMap": "Mapa compartido",
     "errors": {
-      "createFailed": "Error al crear el enlace para compartir."
+      "createFailed": "Error al crear el enlace para compartir.",
+      "invalidLink": "Enlace de uso compartido no válido.",
+      "notFoundOrExpired": "No se encontró este mapa compartido o ha caducado.",
+      "instanceNotFound": "Este mapa compartido hace referencia a una instancia no encontrada."
     }
   },
   "geosignets": {
@@ -365,6 +371,7 @@
   "admin": {
     "title": "Administración",
     "backToMap": "Volver al mapa",
+    "toggleNav": "Mostrar/ocultar el menú",
     "quickLinks": "Enlaces rápidos",
     "nav": {
       "users": "Usuarios",
@@ -379,6 +386,7 @@
     },
     "common": {
       "noResults": "Sin resultados",
+      "loadError": "Error al cargar. Vuelve a intentarlo más tarde.",
       "search": "Buscar",
       "all": "Todos",
       "status": "Estado",
@@ -387,6 +395,11 @@
       "schema": "Esquema"
     },
     "jobs": {
+      "statusWaiting": "En espera",
+      "statusActive": "Activo",
+      "statusCompleted": "Completado",
+      "statusFailed": "Fallido",
+      "statusDelayed": "Retrasado",
       "triggerNow": "Ejecutar ahora",
       "pbfPath": "Ruta del archivo .osm.pbf",
       "triggerOsmImport": "Importar datos OSM",

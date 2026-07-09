@@ -156,13 +156,18 @@ export class SearchBarComponent implements OnInit, OnDestroy {
           if (country) {
             searchOpts['countrycodes'] = country;
           }
+          // Sans instanceId, la recherche de couches interrogeait MeiliSearch sans filtre et
+          // rivalisait avec les couches de TOUTES les instances de la plateforme pour les 5
+          // places du top résultats - une couche de l'instance courante pouvait donc ne pas
+          // remonter selon ce qui existait ailleurs, un comportement d'apparence aléatoire.
+          const instanceId = this.instanceService.currentInstance$.value?.id;
 
           return forkJoin({
             geocoding: this.geocodingService
               .search(query, searchOpts)
               .pipe(catchError(() => of([]))),
             layers: this.searchService
-              .searchLayers(query, undefined, 5)
+              .searchLayers(query, instanceId, 5)
               .pipe(catchError(() => of([]))),
           });
         }),
@@ -209,7 +214,13 @@ export class SearchBarComponent implements OnInit, OnDestroy {
         this.geocodingResults = allGeocoding.filter((item) => item.type === 'geocoding');
         this.boundaryResults = allGeocoding.filter((item) => item.type === 'boundary');
 
-        const layerArr = Array.isArray(layers) ? layers : (layers as any)?.data || [];
+        // SearchLayersUseCase (backend) renvoie un résultat façon MeiliSearch
+        // { hits: [...], estimatedTotalHits, ... } - ni un tableau brut, ni { data: [...] }.
+        // Sans lire .hits, layerArr valait toujours [] même quand la recherche trouvait
+        // effectivement une couche (aucune couche ne s'affichait jamais dans les résultats).
+        const layerArr = Array.isArray(layers)
+          ? layers
+          : (layers as any)?.hits || (layers as any)?.data || [];
         this.layerResults = layerArr.map((l: any) => ({
           type: 'layer' as const,
           label: l.name,

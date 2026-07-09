@@ -1,0 +1,12 @@
+<div class="page-header">
+  <h2 class="page-title">{{ title }}</h2>
+  <div class="header-actions">
+    <ng-content select="[pageActions]"></ng-content>
+  </div>
+</div>
+
+<div class="filters glass">
+  <ng-content select="[filters]"></ng-content>
+</div>
+
+<ng-content></ng-content>

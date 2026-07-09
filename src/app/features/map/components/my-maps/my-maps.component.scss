@@ -1,175 +1,39 @@
+@use '../saved-item-panel-shared' as shared;
+
 .my-maps {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: var(--space-4);
   padding: 4px;
 }
 
 .info-bubble {
-  display: flex;
-  align-items: flex-start;
-  gap: 10px;
-  padding: 12px;
-  border-radius: var(--radius-md);
-  background: rgba(0, 173, 167, 0.06);
-  border: 1px solid rgba(0, 173, 167, 0.15);
-  margin-bottom: 4px;
-
-  .info-icon {
-    color: var(--primary);
-    font-size: 18px;
-    width: 18px;
-    height: 18px;
-    flex-shrink: 0;
-  }
-
-  .info-text {
-    font-size: 11.5px;
-    line-height: 1.45;
-    color: var(--text-secondary);
-  }
+  @include shared.saved-item-info-bubble;
 }
 
 .save-form {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  align-items: stretch;
-  width: 100%;
-
-  .input-wrapper {
-    width: 100%;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    background: rgba(2, 63, 95, 0.04);
-    border: 1px solid var(--border-light);
-    border-radius: 20px;
-    padding: 0 14px;
-    transition: all var(--transition-fast);
-
-    &:focus-within {
-      background: rgba(255, 255, 255, 0.9);
-      border-color: var(--primary);
-      box-shadow: 0 0 0 3px rgba(2, 63, 95, 0.08);
-    }
-
-    .input-icon {
-      font-size: 18px;
-      width: 18px;
-      height: 18px;
-      color: var(--text-secondary);
-    }
-
-    .custom-input {
-      flex: 1;
-      border: none;
-      background: transparent;
-      height: 38px;
-      font-family: 'Avenir Next Rounded Pro Regular', sans-serif;
-      font-size: 13px;
-      color: var(--text);
-      outline: none;
-
-      &::placeholder {
-        color: var(--text-light);
-      }
-    }
-  }
-
-  .save-btn {
-    height: 40px;
-    border-radius: 20px !important;
-    font-family: 'Avenir Next Rounded Pro Medium', sans-serif;
-    font-size: 13px;
-    padding: 0 20px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-    width: 100%;
-
-    mat-icon {
-      font-size: 18px;
-      width: 18px;
-      height: 18px;
-    }
-  }
+  @include shared.saved-item-save-form;
 }
 
 .empty-state {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 32px 16px;
-  text-align: center;
-  background: rgba(2, 63, 95, 0.03);
-  border-radius: var(--radius-md);
-  border: 1px dashed var(--border-light);
-
-  .empty-icon {
-    font-size: 32px;
-    width: 32px;
-    height: 32px;
-    color: var(--text-light);
-    margin-bottom: 8px;
-  }
+  @include shared.saved-item-empty-state;
 
   .no-maps {
     margin: 0;
-    font-size: 12px;
+    font-size: var(--font-size-sm);
     color: var(--text-secondary);
   }
 }
 
 .map-list {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  max-height: 280px;
-  overflow-y: auto;
+  @include shared.saved-item-list;
 }
 
 .map-card {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 10px 12px;
-  border-radius: var(--radius-md);
-  border: 1px solid var(--border-light);
-  background: rgba(255, 255, 255, 0.5);
-  transition: all var(--transition-fast);
-
-  &:hover {
-    background: rgba(255, 255, 255, 0.85);
-    border-color: rgba(2, 63, 95, 0.15);
-    transform: translateY(-1px);
-  }
+  @include shared.saved-item-card;
 
   .map-info {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    background: none;
-    border: none;
-    padding: 0;
-    text-align: left;
-    cursor: pointer;
-    font-family: inherit;
-
-    &:disabled {
-      opacity: 0.6;
-      cursor: wait;
-    }
-
-    .map-icon {
-      font-size: 18px;
-      width: 18px;
-      height: 18px;
-      color: var(--accent);
-    }
+    @include shared.saved-item-card-info;
 
     .map-details {
       display: flex;
@@ -178,8 +42,8 @@
     }
 
     .map-name {
-      font-family: 'Avenir Next Rounded Pro Medium', 'Roboto', sans-serif;
-      font-size: 13px;
+      font-family: var(--font-family-medium);
+      font-size: var(--font-size-md);
       font-weight: 500;
       color: var(--text);
     }
@@ -191,115 +55,21 @@
   }
 
   .map-actions {
-    display: flex;
-    gap: 4px;
-    align-items: center;
+    @include shared.saved-item-card-actions;
   }
 
-  // Bouton simple (pas mat-icon-button, voir le html) : la directive apporte son propre
-  // modèle de boîte MDC pensé pour sa taille par défaut (40/48px), qui décentre visuellement
-  // l'icône une fois la taille forcée à 32px (voir active-layers.component.scss pour le
-  // même correctif déjà vérifié).
   .delete-btn {
+    @include shared.saved-item-round-action-btn;
     color: var(--text-secondary);
-    width: 32px;
-    height: 32px;
-    padding: 0;
-    border: none;
-    background: transparent;
-    border-radius: 50%;
-    cursor: pointer;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    opacity: 0.8;
-    transition: all var(--transition-fast);
 
     &:hover {
-      color: var(--warn);
+      color: var(--color-error);
       opacity: 1;
       background: rgba(244, 67, 54, 0.08);
-    }
-
-    mat-icon {
-      font-size: 18px;
-      width: 18px;
-      height: 18px;
     }
   }
 }
 
 .login-required-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 16px 8px;
-  width: 100%;
-
-  .login-card {
-    width: 100%;
-    border-radius: var(--radius-lg);
-    border: 1px solid var(--border-light);
-    background: rgba(255, 255, 255, 0.45);
-    padding: 16px;
-    box-shadow: var(--shadow-sm);
-
-    mat-card-header {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 12px;
-
-      .lock-avatar {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background: rgba(2, 63, 95, 0.08);
-        border-radius: 50%;
-        width: 40px;
-        height: 40px;
-        color: var(--primary);
-        flex-shrink: 0;
-
-        mat-icon {
-          font-size: 20px;
-          width: 20px;
-          height: 20px;
-        }
-      }
-
-      mat-card-title {
-        font-family: 'Avenir Next Rounded Pro Bold', sans-serif;
-        font-size: 14px;
-        color: var(--text);
-        margin: 0;
-      }
-    }
-
-    mat-card-content {
-      p {
-        font-size: 12px;
-        line-height: 1.5;
-        color: var(--text-secondary);
-        margin: 0 0 16px 0;
-      }
-    }
-
-    mat-card-actions {
-      padding: 0;
-      display: flex;
-
-      .login-btn {
-        width: 100%;
-        height: 38px;
-        border-radius: 19px !important;
-        font-family: 'Avenir Next Rounded Pro Medium', sans-serif;
-        font-size: 13px;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        gap: 8px;
-      }
-    }
-  }
+  @include shared.saved-item-login-required;
 }

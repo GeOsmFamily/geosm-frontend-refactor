@@ -173,6 +173,8 @@
           class="floating-panel geosignets-panel glass animate-in"
           cdkDrag
           cdkDragBoundary=".map-area"
+          appCloseOnEscapeOrOutside
+          (closeRequested)="closeGeosignets()"
         >
           <div class="panel-header">
             <div class="panel-title-group" cdkDragHandle>
@@ -194,6 +196,8 @@
           class="floating-panel geosignets-panel glass animate-in"
           cdkDrag
           cdkDragBoundary=".map-area"
+          appCloseOnEscapeOrOutside
+          (closeRequested)="closeMyMaps()"
         >
           <div class="panel-header">
             <div class="panel-title-group" cdkDragHandle>
@@ -215,6 +219,8 @@
           class="floating-panel assistant-panel glass animate-in"
           cdkDrag
           cdkDragBoundary=".map-area"
+          appCloseOnEscapeOrOutside
+          (closeRequested)="closeAssistant()"
         >
           <div class="panel-header">
             <div class="panel-title-group" cdkDragHandle>
@@ -236,6 +242,8 @@
           class="floating-panel geosignets-panel glass animate-in"
           cdkDrag
           cdkDragBoundary=".map-area"
+          appCloseOnEscapeOrOutside
+          (closeRequested)="closeBaseMaps()"
         >
           <div class="panel-header">
             <div class="panel-title-group" cdkDragHandle>
@@ -257,6 +265,8 @@
           class="floating-panel active-tool-panel glass animate-in"
           cdkDrag
           cdkDragBoundary=".map-area"
+          appCloseOnEscapeOrOutside
+          (closeRequested)="closeSettings()"
         >
           <div class="panel-header">
             <div class="panel-title-group" cdkDragHandle>
@@ -278,6 +288,8 @@
           class="floating-panel active-tool-panel glass animate-in"
           cdkDrag
           cdkDragBoundary=".map-area"
+          appCloseOnEscapeOrOutside
+          (closeRequested)="closeInfo()"
         >
           <div class="panel-header">
             <div class="panel-title-group" cdkDragHandle>
@@ -299,6 +311,8 @@
           class="floating-panel share-panel glass animate-in"
           cdkDrag
           cdkDragBoundary=".map-area"
+          appCloseOnEscapeOrOutside
+          (closeRequested)="closeLocationInfo()"
         >
           <div class="panel-header">
             <div class="panel-title-group" cdkDragHandle>
@@ -375,6 +389,8 @@
           class="floating-panel tools-menu-panel glass animate-in"
           cdkDrag
           cdkDragBoundary=".map-area"
+          appCloseOnEscapeOrOutside
+          (closeRequested)="closeToolsMenu()"
         >
           <div class="panel-header">
             <div class="panel-title-group" cdkDragHandle>
@@ -409,6 +425,8 @@
           class="floating-panel active-tool-panel glass animate-in"
           cdkDrag
           cdkDragBoundary=".map-area"
+          appCloseOnEscapeOrOutside
+          (closeRequested)="closeActiveTool()"
         >
           <div class="panel-header">
             <div class="panel-title-group" cdkDragHandle>

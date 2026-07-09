@@ -51,11 +51,17 @@
 
     .base-map-name {
       padding: 8px;
-      font-family: 'Avenir Next Rounded Pro Medium', 'Roboto', sans-serif;
+      font-family: var(--font-family-medium);
       font-size: 12px;
       font-weight: 500;
       text-align: center;
       color: var(--text);
+      overflow-wrap: break-word;
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 2;
+      line-clamp: 2;
+      overflow: hidden;
     }
 
     .check-icon {

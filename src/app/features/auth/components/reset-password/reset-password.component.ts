@@ -11,6 +11,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { TranslateModule } from '@ngx-translate/core';
 
 import { AuthService } from '../../../../core/services/auth.service';
+import { AuthCardLayoutComponent } from '../auth-card-layout/auth-card-layout.component';
 
 @Component({
   selector: 'app-reset-password',
@@ -26,6 +27,7 @@ import { AuthService } from '../../../../core/services/auth.service';
     MatIconModule,
     MatProgressSpinnerModule,
     TranslateModule,
+    AuthCardLayoutComponent,
   ],
   templateUrl: './reset-password.component.html',
   styleUrl: './reset-password.component.scss',
@@ -39,6 +41,7 @@ export class ResetPasswordComponent implements OnInit {
   password = '';
   confirmPassword = '';
   hidePassword = true;
+  hideConfirm = true;
   readonly loading = signal(false);
   readonly success = signal(false);
   readonly errorMessage = signal('');

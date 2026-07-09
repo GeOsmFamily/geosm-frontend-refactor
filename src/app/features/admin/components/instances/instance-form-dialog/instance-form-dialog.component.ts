@@ -19,6 +19,7 @@ import {
   BoundaryPickerDialogComponent,
   BoundaryPickerResult,
 } from '../boundary-picker-dialog/boundary-picker-dialog.component';
+import { AdminFormDialogComponent } from '../../../shared/components/admin-form-dialog/admin-form-dialog.component';
 
 export interface InstanceFormDialogData {
   mode: 'create' | 'edit';
@@ -38,6 +39,7 @@ export interface InstanceFormDialogData {
     MatButtonModule,
     MatIconModule,
     TranslateModule,
+    AdminFormDialogComponent,
   ],
   templateUrl: './instance-form-dialog.component.html',
   styleUrl: './instance-form-dialog.component.scss',

@@ -10,6 +10,7 @@ import { TranslateModule } from '@ngx-translate/core';
 
 import { Role, User } from '../../../../../core/models/index';
 import { CreateUserDTO, UpdateUserDTO } from '../../../../../core/services/user.service';
+import { AdminFormDialogComponent } from '../../../shared/components/admin-form-dialog/admin-form-dialog.component';
 
 export interface UserFormDialogData {
   mode: 'create' | 'edit';
@@ -28,6 +29,7 @@ export interface UserFormDialogData {
     MatSelectModule,
     MatButtonModule,
     TranslateModule,
+    AdminFormDialogComponent,
   ],
   templateUrl: './user-form-dialog.component.html',
   styleUrl: './user-form-dialog.component.scss',

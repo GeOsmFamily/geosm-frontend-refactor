@@ -1,15 +1,9 @@
 .drawing-tool {
-  h3 {
-    margin: 0 0 12px;
-    font-size: 16px;
-    font-weight: 500;
-  }
-
   h4 {
     margin: 12px 0 8px;
     font-size: 13px;
     font-weight: 500;
-    color: rgba(0, 0, 0, 0.7);
+    color: var(--text-secondary);
   }
 
   .draw-types {
@@ -19,11 +13,11 @@
     margin-bottom: 12px;
 
     button {
-      background-color: #f5f5f5;
-      color: rgba(0, 0, 0, 0.7);
+      background-color: var(--surface-hover);
+      color: var(--text-secondary);
 
       &.active {
-        background-color: #1976d2;
+        background-color: var(--accent);
         color: white;
       }
     }
@@ -35,15 +29,15 @@
     .text-field {
       width: 100%;
       padding: 8px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
       font-size: 14px;
     }
   }
 
   .draw-hint {
     font-size: 12px;
-    color: #1976d2;
+    color: var(--accent-dark);
     font-style: italic;
     margin-bottom: 12px;
   }
@@ -64,10 +58,10 @@
       transition: border-color 0.2s;
 
       &.selected {
-        border-color: #333;
+        border-color: var(--text);
         box-shadow:
           0 0 0 2px white,
-          0 0 0 4px #333;
+          0 0 0 4px var(--text);
       }
     }
 
@@ -80,8 +74,8 @@
       .hex-input {
         width: 80px;
         padding: 6px 8px;
-        border: 1px solid #ccc;
-        border-radius: 4px;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-sm);
         font-family: monospace;
       }
     }

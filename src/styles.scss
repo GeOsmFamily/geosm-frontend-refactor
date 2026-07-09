@@ -250,6 +250,17 @@ body.dark-theme {
   --text-light: #a0aec0;
   --border: #e2e8f0;
   --border-light: #edf2f7;
+
+  // Semantic colors (contrast ratio ≥ 4.5:1 against --surface/white)
+  --color-success: #16a34a;
+  --color-success-bg: #f0fdf4;
+  --color-warning: #d97706;
+  --color-warning-bg: #fffbeb;
+  --color-error: #dc2626;
+  --color-error-bg: #fef2f2;
+  --color-info: #0369a1;
+  --color-info-bg: #f0f9ff;
+
   --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.06);
   --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.07), 0 2px 4px rgba(0, 0, 0, 0.06);
   --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.1), 0 6px 10px rgba(0, 0, 0, 0.08);
@@ -264,6 +275,54 @@ body.dark-theme {
   --transition-fast: 0.15s ease;
   --transition-normal: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   --transition-slow: 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+
+  // Font family — was duplicated as a raw string 12+ times across this file
+  --font-family-base:
+    'Avenir Next Rounded Pro Regular', 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI',
+    Helvetica, Arial, sans-serif;
+  --font-family-medium: 'Avenir Next Rounded Pro Medium', 'Roboto', sans-serif;
+  --font-family-demi: 'Avenir Next Rounded Pro Demi', 'Roboto', sans-serif;
+  --font-family-bold: 'Avenir Next Rounded Pro Bold', 'Roboto', sans-serif;
+
+  // Spacing scale — multiples of 4px. Use these instead of arbitrary px values.
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+  --space-8: 64px;
+
+  // Typography scale — 6 sizes max, each with a matching line-height.
+  --font-size-xs: 11px;
+  --line-height-xs: 16px;
+  --font-size-sm: 12px;
+  --line-height-sm: 18px;
+  --font-size-md: 14px;
+  --line-height-md: 20px;
+  --font-size-base: 15px;
+  --line-height-base: 22px;
+  --font-size-lg: 18px;
+  --line-height-lg: 26px;
+  --font-size-xl: 24px;
+  --line-height-xl: 32px;
+
+  // Icon scale — pair with the .icon-sm/.icon-md/.icon-lg utility classes below.
+  --icon-sm: 16px;
+  --icon-md: 20px;
+  --icon-lg: 24px;
+
+  // z-index scale — every stacking context in the app should reference one of these
+  // instead of a magic number. Panels/menus that must appear above the map/content
+  // but below transient overlays use --z-panel; anything that must win over an open
+  // panel (drag-and-drop ghost, fullscreen takeover) uses --z-overlay or higher.
+  --z-base: 1;
+  --z-panel: 10;
+  --z-sticky: 20;
+  --z-overlay: 30;
+  --z-modal: 40;
+  --z-toast: 50;
 }
 
 * {
@@ -279,15 +338,7 @@ body {
   margin: 0;
   padding: 0;
   overflow: hidden;
-  font-family:
-    'Avenir Next Rounded Pro Regular',
-    'Roboto',
-    -apple-system,
-    BlinkMacSystemFont,
-    'Segoe UI',
-    Helvetica,
-    Arial,
-    sans-serif;
+  font-family: var(--font-family-base);
   color: var(--text);
   background: var(--background);
   -webkit-font-smoothing: antialiased;
@@ -305,7 +356,7 @@ app-root {
 .mat-mdc-flat-button,
 .mat-mdc-outlined-button {
   border-radius: var(--radius-sm) !important;
-  font-family: 'Avenir Next Rounded Pro Medium', 'Roboto', sans-serif !important;
+  font-family: var(--font-family-medium) !important;
   letter-spacing: 0.3px !important;
   text-transform: none !important;
 }
@@ -321,7 +372,7 @@ app-root {
 
 // Form field refinements
 .mat-mdc-form-field {
-  font-family: 'Avenir Next Rounded Pro Regular', 'Roboto', sans-serif !important;
+  font-family: var(--font-family-base) !important;
 }
 
 .mat-mdc-form-field-outline {
@@ -337,7 +388,7 @@ app-root {
 // Tab refinements
 .mat-mdc-tab-group {
   .mat-mdc-tab {
-    font-family: 'Avenir Next Rounded Pro Medium', 'Roboto', sans-serif !important;
+    font-family: var(--font-family-medium) !important;
     letter-spacing: 0.2px;
     min-width: 90px !important;
   }
@@ -352,7 +403,7 @@ app-root {
 
 // Tooltip refinements
 .mat-mdc-tooltip {
-  font-family: 'Avenir Next Rounded Pro Regular', 'Roboto', sans-serif !important;
+  font-family: var(--font-family-base) !important;
   font-size: 12px !important;
 }
 
@@ -388,7 +439,7 @@ app-root {
   text-align: center !important;
   padding: 16px 24px !important;
   background: var(--background) !important;
-  font-family: 'Avenir Next Rounded Pro Demi', 'Roboto', sans-serif !important;
+  font-family: var(--font-family-demi) !important;
 }
 
 ::ng-deep .mat-mdc-dialog-actions {
@@ -483,31 +534,62 @@ app-root {
 #ghostMap .ol-attribution {
   display: none !important;
 }
+// Même langage visuel que .coord-badge/.zoom-badge/.ol-scale-line (pilule bleu nuit
+// translucide) plutôt que le bloc blanc par défaut d'OpenLayers, qui détonnait au milieu
+// des autres badges de la carte.
 .ol-attribution {
-  background: rgba(255, 255, 255, 0.85) !important;
+  display: flex !important;
+  align-items: center;
+  background: rgba(2, 63, 95, 0.85) !important;
   backdrop-filter: blur(8px);
-  font-family: 'Avenir Next Rounded Pro Regular', 'Roboto', sans-serif !important;
+  font-family: var(--font-family-base) !important;
   font-size: 11px;
-  padding: 3px;
+  color: rgba(255, 255, 255, 0.85);
+  padding: 3px 4px 3px 10px;
   position: absolute !important;
-  display: block !important;
-  border-radius: var(--radius-sm);
+  border-radius: 20px;
   // Alignment: bottom-right, same vertical level as coord bar
   bottom: 8px !important;
   right: 8px !important;
   top: auto !important;
+
+  ul {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  a {
+    color: rgba(255, 255, 255, 0.95) !important;
+    text-decoration: none;
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
   button {
-    width: 22px !important;
-    height: 22px !important;
-    margin-bottom: 0;
-    border-radius: 4px !important;
-    background: var(--primary) !important;
+    width: 20px !important;
+    height: 20px !important;
+    margin: 0 0 0 6px !important;
+    border-radius: 50% !important;
+    background: rgba(255, 255, 255, 0.12) !important;
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 12px !important;
+    line-height: 1 !important;
+    box-shadow: none;
+    &:hover {
+      background: rgba(255, 255, 255, 0.22) !important;
+      transform: none;
+    }
   }
 }
 
-// Dark mode: attribution
+// Dark mode: attribution (même teinte que les autres badges en thème sombre)
 body.dark-theme .ol-attribution {
-  background: rgba(15, 23, 42, 0.85) !important;
+  background: rgba(15, 23, 42, 0.9) !important;
   color: #cbd5e1 !important;
   border: 1px solid rgba(255, 255, 255, 0.1);
   a {
@@ -523,7 +605,7 @@ body.dark-theme .ol-attribution {
   padding: 4px 8px;
   font-size: 12px;
   font-weight: 500;
-  font-family: 'Avenir Next Rounded Pro Regular', 'Roboto', sans-serif;
+  font-family: var(--font-family-base);
   box-shadow: var(--shadow-md);
 }
 .tooltiphelp.hidden,
@@ -534,7 +616,7 @@ body.dark-theme .ol-attribution {
   padding: 4px 8px;
   font-size: 12px;
   font-weight: 500;
-  font-family: 'Avenir Next Rounded Pro Regular', 'Roboto', sans-serif;
+  font-family: var(--font-family-base);
   box-shadow: var(--shadow-sm);
 }
 
@@ -667,7 +749,9 @@ input {
   animation: fadeSlideIn 0.3s ease-out;
 }
 
-// Tool sub-component shared styling
+// Tool sub-component shared styling — s'applique aux 12 outils de la carte (rendus dans le
+// floating-panel "outil actif" de map-layout). Toute nouvelle propriété commune à plusieurs
+// outils doit être ajoutée ici plutôt que redupliquée par fichier.
 .drawing-tool,
 .measure-tool,
 .routing-tool,
@@ -677,9 +761,12 @@ input {
 .altimetry-tool,
 .mapillary-tool,
 .compare-tool,
-.statistics-tool {
+.statistics-tool,
+.nearest-search-tool,
+.plan-localisation-tool,
+.spatial-analysis-tool {
   h3 {
-    font-family: 'Avenir Next Rounded Pro Demi', 'Roboto', sans-serif;
+    font-family: var(--font-family-demi);
     font-size: 15px;
     font-weight: 600;
     color: var(--primary);
@@ -687,7 +774,7 @@ input {
   }
 
   h4 {
-    font-family: 'Avenir Next Rounded Pro Medium', 'Roboto', sans-serif;
+    font-family: var(--font-family-medium);
     font-size: 13px;
     font-weight: 500;
     color: var(--text-secondary);
@@ -695,7 +782,7 @@ input {
   }
 
   .hint {
-    font-size: 12px;
+    font-size: var(--font-size-sm);
     color: var(--text-light);
   }
 
@@ -708,24 +795,89 @@ input {
     border: 1px solid var(--border) !important;
   }
 
-  button[mat-flat-button],
-  button[mat-raised-button] {
-    border-radius: var(--radius-sm) !important;
-    font-family: 'Avenir Next Rounded Pro Medium', 'Roboto', sans-serif !important;
+  // "Choisir sur la carte" : état actif partagé par les outils qui font pointer/dessiner
+  // l'utilisateur sur la carte (altimetry, nearest-search, plan-localisation,
+  // spatial-analysis) — dupliqué à l'identique dans les 4 fichiers avant cette factorisation.
+  .pick-btn.active {
+    background: rgba(231, 76, 60, 0.08);
+    border-color: #e74c3c;
+    color: #e74c3c;
+  }
+
+  // Bouton d'action principal en dégradé ("Générer le PDF", "Exporter"...) — dupliqué à
+  // l'identique dans print-tool/plan-localisation-tool (.generate-pdf-btn) et export-tool
+  // (.export-btn) avant cette factorisation. Ciblé par nom de classe existant plutôt qu'une
+  // nouvelle classe générique, pour ne toucher aucun template.
+  .generate-pdf-btn,
+  .export-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    height: 46px;
+    border-radius: var(--radius-md);
+    font-size: 14.5px;
+    font-weight: 600;
+    letter-spacing: 0.2px;
+    background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%) !important;
+    box-shadow: 0 4px 14px rgba(0, 173, 167, 0.3);
+    transition:
+      box-shadow 0.2s ease,
+      transform 0.2s ease;
+
+    mat-icon {
+      margin: 0;
+    }
+
+    &:not([disabled]):hover {
+      box-shadow: 0 6px 18px rgba(0, 173, 167, 0.4);
+      transform: translateY(-1px);
+    }
+
+    &:not([disabled]):active {
+      transform: translateY(0);
+    }
+
+    &[disabled] {
+      background: var(--text-light) !important;
+      box-shadow: none;
+    }
   }
 }
+
+// button[mat-flat-button]/[mat-raised-button] radius+font-family sont déjà forcés globalement
+// ci-dessus (règle .mat-mdc-raised-button/.mat-mdc-flat-button/.mat-mdc-outlined-button) — pas
+// besoin de les redéclarer ici pour les outils.
 
 // Global rounded borders override for all outline form fields
 .mat-mdc-form-field {
   .mat-mdc-text-field-wrapper {
-    border-radius: 24px !important;
+    border-radius: var(--radius-xl) !important;
   }
   .mdc-notched-outline__leading {
-    border-top-left-radius: 24px !important;
-    border-bottom-left-radius: 24px !important;
+    border-top-left-radius: var(--radius-xl) !important;
+    border-bottom-left-radius: var(--radius-xl) !important;
   }
   .mdc-notched-outline__trailing {
-    border-top-right-radius: 24px !important;
-    border-bottom-right-radius: 24px !important;
+    border-top-right-radius: var(--radius-xl) !important;
+    border-bottom-right-radius: var(--radius-xl) !important;
   }
+}
+
+// Icon size utility classes — pair with the --icon-sm/md/lg tokens above.
+// Use instead of ad-hoc font-size/width/height triplets on <mat-icon>.
+.icon-sm {
+  font-size: var(--icon-sm) !important;
+  width: var(--icon-sm) !important;
+  height: var(--icon-sm) !important;
+}
+.icon-md {
+  font-size: var(--icon-md) !important;
+  width: var(--icon-md) !important;
+  height: var(--icon-md) !important;
+}
+.icon-lg {
+  font-size: var(--icon-lg) !important;
+  width: var(--icon-lg) !important;
+  height: var(--icon-lg) !important;
 }
