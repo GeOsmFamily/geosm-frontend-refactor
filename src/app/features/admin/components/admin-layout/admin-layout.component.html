@@ -1,5 +1,15 @@
 <div class="admin-shell">
-  <aside class="admin-sidebar glass">
+  @if (sidebarOpen()) {
+    <div class="sidebar-backdrop" (click)="closeSidebar()"></div>
+  }
+
+  <aside
+    class="admin-sidebar glass"
+    [class.open]="sidebarOpen()"
+    appCloseOnEscapeOrOutside
+    [appCloseOnEscapeOrOutsideDisabled]="!sidebarOpen()"
+    (closeRequested)="closeSidebar()"
+  >
     <div class="sidebar-header">
       <button mat-icon-button [matTooltip]="'admin.backToMap' | translate" (click)="backToMap()">
         <mat-icon>arrow_back</mat-icon>
@@ -29,6 +39,15 @@
 
   <div class="admin-content">
     <header class="admin-topbar glass">
+      <button
+        mat-icon-button
+        class="sidebar-toggle"
+        [attr.aria-label]="'admin.toggleNav' | translate"
+        [attr.aria-expanded]="sidebarOpen()"
+        (click)="toggleSidebar()"
+      >
+        <mat-icon>menu</mat-icon>
+      </button>
       @if (currentUser | async; as user) {
         <span class="role-badge">{{ user.role }}</span>
         <span class="user-name">{{ user.firstName }} {{ user.lastName }}</span>

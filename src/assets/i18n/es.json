@@ -365,6 +365,7 @@
   "admin": {
     "title": "Administración",
     "backToMap": "Volver al mapa",
+    "toggleNav": "Mostrar/ocultar el menú",
     "quickLinks": "Enlaces rápidos",
     "nav": {
       "users": "Usuarios",

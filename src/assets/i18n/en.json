@@ -391,6 +391,7 @@
   "admin": {
     "title": "Administration",
     "backToMap": "Back to map",
+    "toggleNav": "Toggle navigation menu",
     "quickLinks": "Quick links",
     "nav": {
       "users": "Users",
