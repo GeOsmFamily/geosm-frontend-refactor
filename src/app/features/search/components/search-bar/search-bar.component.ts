@@ -214,7 +214,13 @@ export class SearchBarComponent implements OnInit, OnDestroy {
         this.geocodingResults = allGeocoding.filter((item) => item.type === 'geocoding');
         this.boundaryResults = allGeocoding.filter((item) => item.type === 'boundary');
 
-        const layerArr = Array.isArray(layers) ? layers : (layers as any)?.data || [];
+        // SearchLayersUseCase (backend) renvoie un résultat façon MeiliSearch
+        // { hits: [...], estimatedTotalHits, ... } - ni un tableau brut, ni { data: [...] }.
+        // Sans lire .hits, layerArr valait toujours [] même quand la recherche trouvait
+        // effectivement une couche (aucune couche ne s'affichait jamais dans les résultats).
+        const layerArr = Array.isArray(layers)
+          ? layers
+          : (layers as any)?.hits || (layers as any)?.data || [];
         this.layerResults = layerArr.map((l: any) => ({
           type: 'layer' as const,
           label: l.name,
