@@ -137,16 +137,16 @@
             @for (l of qgisLayers(); track l.name) {
               <div class="qgis-layer-row">
                 <mat-checkbox
-                  [checked]="qgisSelected()[l.name]?.selected"
+                  [checked]="qgisSelected()[l.name].selected"
                   (change)="toggleQgisLayer(l.name, $event.checked)"
                 ></mat-checkbox>
                 <input
                   matInput
-                  [value]="qgisSelected()[l.name]?.displayName"
+                  [value]="qgisSelected()[l.name].displayName"
                   (input)="updateQgisDisplayName(l.name, $any($event.target).value)"
                 />
                 <mat-select
-                  [value]="qgisSelected()[l.name]?.geometryType"
+                  [value]="qgisSelected()[l.name].geometryType"
                   (selectionChange)="updateQgisGeometryType(l.name, $event.value)"
                 >
                   @for (gt of geometryTypes; track gt) {
