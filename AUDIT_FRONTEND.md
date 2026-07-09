@@ -149,12 +149,59 @@ Côté admin, à l'inverse, **aucun dialog n'utilise `disableClose`**, y compris
 
 ## 5. Suivi des corrections
 
-*(Cette section sera mise à jour au fur et à mesure des commits de la Phase 2 — chaque problème listé ci-dessus sera marqué corrigé avec référence au fichier et à la nature du correctif.)*
+Toutes les phases planifiées ont été traitées, chacune en commit séparé sur `claude/frontend-refactor-audit-567qe2`, vérifiée par build de production + suite de tests unitaires (109/109 au final) et, pour les zones les plus structurelles, par des captures d'écran réelles en navigateur (Playwright, avec authentification/API mockées pour atteindre les zones admin/carte).
 
-- [ ] Phase 1 — Design system consolidé
-- [ ] Layout global / admin-layout responsive
-- [ ] Navigation carte (panneaux : Escape + backdrop + z-index)
-- [ ] Auth (layouts partagés)
-- [ ] Carte / Layers / Search / Sharing
-- [ ] Tools (12 composants)
-- [ ] Admin (listes + dialogs)
+- [x] **Phase 1 — Design system consolidé** (`design-system: add spacing/typography/z-index/icon tokens...`)
+  - Ajout de `--space-1..8`, `--font-size-xs..xl` + line-heights, `--z-base/panel/sticky/overlay/modal/toast`, `--icon-sm/md/lg`, couleurs sémantiques `--color-success/warning/error/info`.
+  - `--font-family-base/medium/demi/bold` : suppression de 12+ répétitions littérales de la pile de polices.
+  - Classes utilitaires `.icon-sm/.icon-md/.icon-lg`.
+  - Suppression de `bootstrap.css`, `bootstrap.min.css`, `animate.css` (confirmés non référencés).
+  - `CloseOnEscapeOrOutsideDirective` créée et testée (4 tests unitaires), réutilisée ensuite par les panneaux carte et le drawer admin.
+  - Audit des icônes orphelines dans `assets/icones/` effectué mais **suppression volontairement non faite** : les icônes de couches sont résolues dynamiquement depuis des données back-end (`layer.metadata.icon`), impossible de garantir l'absence de référence sans accès à la base de données de production. Nécessite une vérification manuelle côté équipe backend avant suppression.
+
+- [x] **Layout global / admin-layout responsive**
+  - `admin-layout` : sidebar fixe 240px non responsive → drawer mobile avec bouton hamburger, backdrop, fermeture Escape/clic extérieur (`CloseOnEscapeOrOutsideDirective`), fermeture auto au changement de route. Vérifié en navigateur à 375/768/1440px + interaction ouverture/fermeture du drawer.
+
+- [x] **Navigation carte (panneaux flottants)**
+  - Les 9 panneaux flottants (geosignets, mes cartes, assistant, fonds de carte, réglages, info, info de localisation, menu d'outils, outil actif) se ferment maintenant à l'Escape et au clic extérieur — vérifié en navigateur avec assertions DOM (ouverture, fermeture Escape, fermeture clic extérieur, clic intérieur ne ferme pas).
+  - z-index de `map-layout` et `context-menu` migrés vers l'échelle `--z-*`, hiérarchie documentée en commentaire.
+  - `--sidebar-width` clampée en mode mobile pour ne jamais dépasser l'écran.
+
+- [x] **Auth (layouts partagés)**
+  - `AuthSplitLayoutComponent` (login/register) et `AuthCardLayoutComponent` (mot de passe oublié/réinitialisation/vérification) : ~500 lignes dupliquées supprimées.
+  - Couleurs hexadécimales en dur corrigées sur les 3 écrans "carte" (cassaient le dark mode).
+  - Bug i18n corrigé sur `register` (messages d'erreur anglais en dur).
+  - Bouton afficher/masquer manquant ajouté sur le champ "confirmer le mot de passe" de `reset-password`.
+  - Vérifié en navigateur à 375/900/1440px (login, register, forgot-password) — conforme aux maquettes fournies.
+
+- [x] **Carte / Layers / Search / Sharing**
+  - `geosignets`/`my-maps` (~98% de CSS dupliqué) factorisés en mixins Sass partagés, sans toucher aux templates/logique.
+  - Bug réel trouvé : `var(--warn)` utilisé dans 3 fichiers sans jamais être défini → corrigé (`var(--color-error)`).
+  - `legend.component` : ajout d'un état "légende indisponible" avec gestion `(error)` sur les images WMS.
+  - `shared-map.component` : mélange anglais/français codé en dur → branché sur ngx-translate.
+  - `search-bar` : magic number `left: 360px` dérivé de `--sidebar-width` via `calc()`.
+  - Vérifié : `metadata-modal`/`descriptive-sheet` (tables larges dans une dialog) déjà correctement gérés par l'`overflow:auto` global des `mat-dialog-content` — pas de correctif nécessaire.
+
+- [x] **Tools (12 composants)**
+  - Bloc CSS partagé étendu à `nearest-search-tool`, `plan-localisation-tool`, `spatial-analysis-tool` (absents à tort).
+  - `.pick-btn.active` et le bouton CTA dégradé factorisés dans le bloc partagé (~150 lignes dupliquées supprimées au total).
+  - Titres `<h4>` incorrects (compare-tool, statistics-tool, mapillary-tool) corrigés en `<h3>` — cohérence visuelle + hiérarchie de headings.
+  - Couleurs hors palette (`#1976d2`, `#ccc`, `#f5f5f5`, `#333`, `#f44336`) remplacées par les tokens.
+  - `mapillary-tool` : bouton plein-écran mort supprimé (l'API Fullscreen native reste fonctionnelle), padding en double corrigé, bordures blanches à 10% d'opacité (invisibles sur fond clair) corrigées.
+
+- [x] **Admin (listes + dialogs)** — traitement partiel, voir "Points restants" ci-dessous.
+  - `admin-data-table` : `overflow:hidden` (coins arrondis) empêchait tout scroll horizontal → wrapper interne dédié `overflow-x:auto`, corrige les 9 tables qui réutilisent ce composant.
+  - États d'erreur de chargement distincts des listes vides (`@Input() error`) ajoutés et câblés sur les 7 pages/9 instances de table (users, instances, content, feedback, base-maps, catalog-tree ×3, default-themes ×2) — vérifié en navigateur (le message d'erreur apparaît correctement).
+  - `jobs.component` : libellés anglais en dur → clés i18n ; `accentVar="--warn"` (même bug que ci-dessus) → `--color-error`.
+  - `system-tools.component` : "Oui"/"Non" en dur → `common.yes`/`common.no`.
+
+### Points restants (nécessitent un arbitrage produit/design avant d'être traités)
+
+Ces éléments de l'audit initial sont **volontairement non traités** dans cette passe, par prudence face au risque de régression sur un périmètre déjà très large, ou parce qu'ils demandent une décision produit :
+
+1. **Factoriser le squelette "page liste admin"** (header + filtres + `admin-data-table`, dupliqué sur 7 pages) en un layout partagé. Gain de maintenabilité réel, mais touche la structure de 7 fichiers ; à faire dans une passe dédiée avec revue.
+2. **Factoriser le squelette "dialog formulaire admin"** (7 `*-form-dialog.component.*` quasi identiques) en base/partial commun.
+3. **`disableClose` sur `layer-creation-wizard`** : ce wizard 4 étapes perd tout son état sur un Escape/clic accidentel, contrairement aux autres dialogs admin. Décision produit à prendre (bloquer la fermeture accidentelle vs. garder le comportement standard Material) plutôt qu'un choix arbitraire de ma part.
+4. **Pagination fantôme** : plusieurs listes (`base-maps`, `default-themes`, `catalog-tree` ×3) affichent un `mat-paginator` avec `pageSize=100` uniquement pour désactiver la pagination réelle — cosmétique, faible priorité.
+5. **`mapillary-tool`** : le thème "glass" sombre d'origine (texte blanc, fonds semi-transparents) n'a été que partiellement corrigé pour le mode clair (bordures/fond du `.glass`) faute de pouvoir vérifier visuellement l'outil (nécessite un token Mapillary, absent de cet environnement — voir le commentaire dans `environment.ts`). À revérifier visuellement avec un vrai token avant de pousser plus loin.
+6. **Icônes orphelines dans `assets/icones/`** : ~30 fichiers sans référence trouvée dans le code frontend, mais potentiellement référencés par des données stockées en base (icônes de couches). Nécessite une vérification côté backend avant suppression.
