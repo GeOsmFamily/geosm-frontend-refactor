@@ -54,6 +54,7 @@ import { PlanLocalisationToolComponent } from '../../../../features/tools/plan-l
 import { SpatialAnalysisToolComponent } from '../../../../features/tools/spatial-analysis/spatial-analysis-tool.component';
 import { NearestSearchToolComponent } from '../../../../features/tools/nearest-search/nearest-search-tool.component';
 import { AnalyticsService } from '../../../../core/services/analytics.service';
+import { CloseOnEscapeOrOutsideDirective } from '../../../../shared/directives/close-on-escape-or-outside.directive';
 
 @Component({
   selector: 'app-map-layout',
@@ -99,6 +100,7 @@ import { AnalyticsService } from '../../../../core/services/analytics.service';
     BaseMapSwitcherComponent,
     SettingsComponent,
     InfoPanelComponent,
+    CloseOnEscapeOrOutsideDirective,
   ],
   templateUrl: './map-layout.component.html',
   styleUrl: './map-layout.component.scss',
