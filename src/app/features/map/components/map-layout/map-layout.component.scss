@@ -76,7 +76,15 @@
   overflow-x: auto;
   overflow-y: hidden;
   -webkit-overflow-scrolling: touch;
-  scrollbar-width: thin;
+  // La barre de défilement elle-même reste invisible : au survol du dernier bouton, sa couche
+  // d'état (ripple/focus-indicator) ajoute ~1px à la largeur de contenu par arrondi sous-pixel,
+  // ce qui suffit à faire apparaître/disparaître une barre de défilement fantôme au survol sur
+  // desktop (où il n'y a jamais réellement besoin de scroller). Le défilement tactile/molette
+  // sur mobile (seul cas où c'est utile) reste fonctionnel, seule la barre visible est masquée.
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
 
   .header-action,
   .user-btn {
