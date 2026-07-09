@@ -534,31 +534,62 @@ app-root {
 #ghostMap .ol-attribution {
   display: none !important;
 }
+// Même langage visuel que .coord-badge/.zoom-badge/.ol-scale-line (pilule bleu nuit
+// translucide) plutôt que le bloc blanc par défaut d'OpenLayers, qui détonnait au milieu
+// des autres badges de la carte.
 .ol-attribution {
-  background: rgba(255, 255, 255, 0.85) !important;
+  display: flex !important;
+  align-items: center;
+  background: rgba(2, 63, 95, 0.85) !important;
   backdrop-filter: blur(8px);
   font-family: var(--font-family-base) !important;
   font-size: 11px;
-  padding: 3px;
+  color: rgba(255, 255, 255, 0.85);
+  padding: 3px 4px 3px 10px;
   position: absolute !important;
-  display: block !important;
-  border-radius: var(--radius-sm);
+  border-radius: 20px;
   // Alignment: bottom-right, same vertical level as coord bar
   bottom: 8px !important;
   right: 8px !important;
   top: auto !important;
+
+  ul {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  a {
+    color: rgba(255, 255, 255, 0.95) !important;
+    text-decoration: none;
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
   button {
-    width: 22px !important;
-    height: 22px !important;
-    margin-bottom: 0;
-    border-radius: 4px !important;
-    background: var(--primary) !important;
+    width: 20px !important;
+    height: 20px !important;
+    margin: 0 0 0 6px !important;
+    border-radius: 50% !important;
+    background: rgba(255, 255, 255, 0.12) !important;
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 12px !important;
+    line-height: 1 !important;
+    box-shadow: none;
+    &:hover {
+      background: rgba(255, 255, 255, 0.22) !important;
+      transform: none;
+    }
   }
 }
 
-// Dark mode: attribution
+// Dark mode: attribution (même teinte que les autres badges en thème sombre)
 body.dark-theme .ol-attribution {
-  background: rgba(15, 23, 42, 0.85) !important;
+  background: rgba(15, 23, 42, 0.9) !important;
   color: #cbd5e1 !important;
   border: 1px solid rgba(255, 255, 255, 0.1);
   a {
