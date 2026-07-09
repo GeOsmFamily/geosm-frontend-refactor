@@ -156,13 +156,18 @@ export class SearchBarComponent implements OnInit, OnDestroy {
           if (country) {
             searchOpts['countrycodes'] = country;
           }
+          // Sans instanceId, la recherche de couches interrogeait MeiliSearch sans filtre et
+          // rivalisait avec les couches de TOUTES les instances de la plateforme pour les 5
+          // places du top résultats - une couche de l'instance courante pouvait donc ne pas
+          // remonter selon ce qui existait ailleurs, un comportement d'apparence aléatoire.
+          const instanceId = this.instanceService.currentInstance$.value?.id;
 
           return forkJoin({
             geocoding: this.geocodingService
               .search(query, searchOpts)
               .pipe(catchError(() => of([]))),
             layers: this.searchService
-              .searchLayers(query, undefined, 5)
+              .searchLayers(query, instanceId, 5)
               .pipe(catchError(() => of([]))),
           });
         }),
