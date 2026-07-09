@@ -1,9 +1,10 @@
-<h2 mat-dialog-title>
-  {{ (isCreate ? 'admin.users.createTitle' : 'admin.users.editTitle') | translate }}
-</h2>
-
 <form [formGroup]="form" (ngSubmit)="onSubmit()">
-  <mat-dialog-content>
+  <app-admin-form-dialog
+    [title]="(isCreate ? 'admin.users.createTitle' : 'admin.users.editTitle') | translate"
+    [form]="form"
+    [minWidth]="360"
+    (cancel)="onCancel()"
+  >
     <mat-form-field appearance="outline" class="full-width">
       <mat-label>{{ 'admin.users.firstName' | translate }}</mat-label>
       <input matInput formControlName="firstName" required />
@@ -34,12 +35,5 @@
         </mat-select>
       </mat-form-field>
     }
-  </mat-dialog-content>
-
-  <mat-dialog-actions align="end">
-    <button mat-button type="button" (click)="onCancel()">{{ 'common.cancel' | translate }}</button>
-    <button mat-flat-button color="primary" type="submit" [disabled]="form.invalid">
-      {{ 'common.save' | translate }}
-    </button>
-  </mat-dialog-actions>
+  </app-admin-form-dialog>
 </form>

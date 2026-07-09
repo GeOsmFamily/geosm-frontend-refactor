@@ -291,6 +291,7 @@ export class CatalogTreeComponent implements OnChanges {
         },
         width: '760px',
         maxWidth: '95vw',
+        disableClose: true,
       },
     );
     ref.afterClosed().subscribe((created) => {

@@ -16,7 +16,7 @@
     [loading]="loading()"
     [error]="loadError()"
     [total]="themes().length"
-    [pageSize]="100"
+    [showPaginator]="false"
     [hasActions]="true"
   >
     <ng-template #actions let-theme>
@@ -69,6 +69,6 @@
     [loading]="loadingTags()"
     [error]="tagsLoadError()"
     [total]="tags().length"
-    [pageSize]="100"
+    [showPaginator]="false"
   ></app-admin-data-table>
 }

@@ -41,11 +41,13 @@
     <p class="table-empty">{{ 'admin.common.noResults' | translate }}</p>
   }
 
-  <mat-paginator
-    [length]="total"
-    [pageSize]="pageSize"
-    [pageIndex]="pageIndex"
-    [pageSizeOptions]="[10, 20, 50, 100]"
-    (page)="pageChange.emit($event)"
-  ></mat-paginator>
+  @if (showPaginator) {
+    <mat-paginator
+      [length]="total"
+      [pageSize]="pageSize"
+      [pageIndex]="pageIndex"
+      [pageSizeOptions]="[10, 20, 50, 100]"
+      (page)="pageChange.emit($event)"
+    ></mat-paginator>
+  }
 </div>

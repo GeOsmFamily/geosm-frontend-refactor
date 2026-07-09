@@ -8,6 +8,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { TranslateModule } from '@ngx-translate/core';
 
 import { DefaultTheme } from '../../../../../core/models/index';
+import { AdminFormDialogComponent } from '../../../shared/components/admin-form-dialog/admin-form-dialog.component';
 
 export interface ThemeFormDialogData {
   mode: 'create' | 'edit';
@@ -25,6 +26,7 @@ export interface ThemeFormDialogData {
     MatInputModule,
     MatButtonModule,
     TranslateModule,
+    AdminFormDialogComponent,
   ],
   templateUrl: './theme-form-dialog.component.html',
   styleUrl: './theme-form-dialog.component.scss',

@@ -44,6 +44,8 @@ export class AdminDataTableComponent<T> {
   @Input() pageSize = 20;
   @Input() pageIndex = 0;
   @Input() hasActions = false;
+  /** Désactive le paginateur pour les listes chargées en entier côté client (pas de pagination serveur). */
+  @Input() showPaginator = true;
 
   @Output() readonly sortChange = new EventEmitter<Sort>();
   @Output() readonly pageChange = new EventEmitter<PageEvent>();

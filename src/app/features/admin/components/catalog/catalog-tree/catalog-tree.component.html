@@ -27,7 +27,7 @@
     [loading]="loading()"
     [error]="loadError()"
     [total]="groups().length"
-    [pageSize]="100"
+    [showPaginator]="false"
     [hasActions]="true"
   >
     <ng-template #actions let-group>
@@ -85,7 +85,7 @@
     [loading]="loading()"
     [error]="loadError()"
     [total]="subGroups().length"
-    [pageSize]="100"
+    [showPaginator]="false"
     [hasActions]="true"
   >
     <ng-template #actions let-subGroup>
@@ -129,7 +129,7 @@
     [loading]="loading()"
     [error]="loadError()"
     [total]="layers().length"
-    [pageSize]="100"
+    [showPaginator]="false"
     [hasActions]="true"
   >
     <ng-template #actions let-layer>

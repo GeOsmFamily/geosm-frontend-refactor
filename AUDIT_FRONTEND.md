@@ -195,13 +195,29 @@ Toutes les phases planifiées ont été traitées, chacune en commit séparé su
   - `jobs.component` : libellés anglais en dur → clés i18n ; `accentVar="--warn"` (même bug que ci-dessus) → `--color-error`.
   - `system-tools.component` : "Oui"/"Non" en dur → `common.yes`/`common.no`.
 
+- [x] **Panneau des couches (Couches) — audit responsive** (`map: fix real header overflow bug on narrow phones, polish base-map-switcher`)
+  - Audit complet des 4 composants du panneau (liste des couches, groupes/sous-groupes, `base-map-switcher`, en-tête de carte) : la plupart des patterns responsive (troncature, `min-width:0`, `flex-shrink`) étaient déjà correctement en place.
+  - Bug réel trouvé et corrigé : la rangée d'icônes d'action de l'en-tête de carte (`.header-right`) débordait sur téléphones étroits (`min-width:auto` par défaut de flexbox empêchait le rétrécissement) → `min-width:0` + `overflow-x:auto` avec défilement tactile, `flex-shrink:0` sur les icônes pour éviter leur écrasement. Vérifié par mesure DOM (`scrollWidth` vs `clientWidth`) avant/après à plusieurs largeurs d'écran.
+  - `base-map-switcher` : nom de fond de carte trop long tronqué proprement (`line-clamp:2`, `overflow-wrap:break-word`).
+
+- [x] **Squelette "page liste admin" factorisé** (`admin: extract shared AdminListPageComponent, remove 4-way duplication`)
+  - Nouveau `AdminListPageComponent` partagé (titre + slots de projection `pageActions`/`filters` + tableau) appliqué aux 4 pages qui partageaient un pattern identique : `users`, `instances`, `content`, `feedback`. `base-maps`/`catalog-tree`/`default-themes` volontairement exclus (structure différente, aurait sur-généralisé l'abstraction).
+
+- [x] **Squelette "dialog formulaire admin" factorisé** (`admin: extract shared AdminFormDialogComponent`)
+  - Nouveau `AdminFormDialogComponent` partagé (titre + `mat-dialog-content` + actions annuler/enregistrer) appliqué aux 6 dialogs de formulaire : `base-map-form-dialog`, `user-form-dialog`, `theme-form-dialog`, `group-form-dialog`, `instance-form-dialog`, `instance-template-dialog`.
+  - Piège découvert en cours de route et documenté en commentaire dans le composant : `<form [formGroup]>` ne peut **pas** vivre dans le composant partagé lui-même, car la résolution `@Host()` de `ControlContainer` pour `formControlName` est bornée à la vue du composant qui déclare le champ, pas à sa position finale après projection de contenu (`<ng-content>`). Le premier essai compilait (`ng build` propre) mais échouait silencieusement à l'exécution (`NG01050`). Design final : chaque dialog appelant garde son propre `<form [formGroup] (ngSubmit)>` autour de `<app-admin-form-dialog>` ; l'événement natif `submit` remonte normalement à travers la frontière de composant. Vérifié en navigateur (Playwright, auth mockée) : état désactivé du bouton "Enregistrer" correct avant/après remplissage, aucune erreur console, rendu visuel identique à l'original.
+
+- [x] **`disableClose` sur `layer-creation-wizard`**
+  - Le wizard 4 étapes perdait tout son état sur un Escape/clic extérieur accidentel. `disableClose: true` ajouté à l'appel `dialog.open()` dans `catalog-tree.component.ts` ; le bouton "Fermer" explicite du wizard (`close()`) reste pleinement fonctionnel (n'est pas affecté par `disableClose`, qui ne bloque que l'Escape/le clic sur le fond).
+
+- [x] **Pagination fantôme supprimée**
+  - `AdminDataTableComponent` : nouvel `@Input() showPaginator = true`, le `mat-paginator` est maintenant conditionnel (`@if`). Les 6 instances de table chargées entièrement côté client (`base-maps`, `default-themes` ×2, `catalog-tree` ×3) passent désormais `[showPaginator]="false"` au lieu du `[pageSize]="100"` cosmétique.
+
+- [x] **`mapillary-tool` — conversion des tokens light-theme terminée**
+  - Fallbacks `rgba(255,255,255,X)` codés en dur (hérités du thème "glass" sombre d'origine) supprimés sur les éléments du panneau standard (titre du visualiseur, boutons fermer/télécharger, méta-données d'image, texte de chargement, badge de statut) — ces fallbacks ne s'appliquaient jamais réellement (`--text`/`--text-light` sont toujours définis globalement) mais induisaient en erreur sur l'intention de design.
+  - Le lecteur de séquence plein écran (`.playback-player`, mode "visionneuse") reste volontairement sombre indépendamment du thème de l'appli (comme un lightbox photo) — commentaire ajouté pour expliquer que ce n'est pas un oubli.
+
 ### Points restants (nécessitent un arbitrage produit/design avant d'être traités)
 
-Ces éléments de l'audit initial sont **volontairement non traités** dans cette passe, par prudence face au risque de régression sur un périmètre déjà très large, ou parce qu'ils demandent une décision produit :
-
-1. **Factoriser le squelette "page liste admin"** (header + filtres + `admin-data-table`, dupliqué sur 7 pages) en un layout partagé. Gain de maintenabilité réel, mais touche la structure de 7 fichiers ; à faire dans une passe dédiée avec revue.
-2. **Factoriser le squelette "dialog formulaire admin"** (7 `*-form-dialog.component.*` quasi identiques) en base/partial commun.
-3. **`disableClose` sur `layer-creation-wizard`** : ce wizard 4 étapes perd tout son état sur un Escape/clic accidentel, contrairement aux autres dialogs admin. Décision produit à prendre (bloquer la fermeture accidentelle vs. garder le comportement standard Material) plutôt qu'un choix arbitraire de ma part.
-4. **Pagination fantôme** : plusieurs listes (`base-maps`, `default-themes`, `catalog-tree` ×3) affichent un `mat-paginator` avec `pageSize=100` uniquement pour désactiver la pagination réelle — cosmétique, faible priorité.
-5. **`mapillary-tool`** : le thème "glass" sombre d'origine (texte blanc, fonds semi-transparents) n'a été que partiellement corrigé pour le mode clair (bordures/fond du `.glass`) faute de pouvoir vérifier visuellement l'outil (nécessite un token Mapillary, absent de cet environnement — voir le commentaire dans `environment.ts`). À revérifier visuellement avec un vrai token avant de pousser plus loin.
-6. **Icônes orphelines dans `assets/icones/`** : ~30 fichiers sans référence trouvée dans le code frontend, mais potentiellement référencés par des données stockées en base (icônes de couches). Nécessite une vérification côté backend avant suppression.
+1. **Icônes orphelines dans `assets/icones/`** : ~30 fichiers sans référence trouvée dans le code frontend, mais potentiellement référencés par des données stockées en base (icônes de couches). Décision produit prise : **laissées telles quelles** (risque de casser des couches existantes en production supérieur au gain de nettoyage). Nécessiterait une vérification côté backend avant toute suppression future.
+2. **`mapillary-tool`** : la conversion des tokens de texte est terminée, mais l'outil n'a pas pu être vérifié visuellement avec de vraies données Mapillary (nécessite un token API, absent de cet environnement — voir le commentaire dans `environment.ts`). À revérifier visuellement avec un vrai token si des incohérences visuelles étaient rapportées.
