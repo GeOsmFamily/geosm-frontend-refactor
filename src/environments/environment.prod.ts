@@ -8,6 +8,16 @@ export const environment = {
   accentColor: '#00ada7',
   instanceName: 'GeOSM',
   qgisServerUrl: '/ows',
+  // Sous-domaines dedies (voir docs/deploiement.md backend, section "Sous-domaines pour les
+  // outils d'observabilite") - Prometheus/Jaeger sont proteges par une authentification basique
+  // Apache cote serveur (ils n'ont pas d'authentification native), Grafana/Graylog ont leur
+  // propre ecran de connexion.
+  observabilityLinks: {
+    grafana: 'https://grafana.geosm.app',
+    prometheus: 'https://prometheus.geosm.app',
+    jaeger: 'https://jaeger.geosm.app',
+    graylog: 'https://graylog.geosm.app',
+  },
   // Placeholder injecté au build par le pipeline CI (secret MAPILLARY_TOKEN, voir ci.yml) -
   // ne JAMAIS committer de vrai token ici (l'ancien token en dur committé doit être révoqué
   // sur mapillary.com/dashboard et remplacé par un nouveau, seulement stocké en secret CI).
