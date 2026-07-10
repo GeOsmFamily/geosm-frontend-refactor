@@ -67,7 +67,17 @@ export class PrintToolComponent {
         map.renderSync();
       });
 
-      const domtoimage = await import('dom-to-image-more');
+      // dom-to-image-more est un module CommonJS qui fait `module.exports = v` en bloc (pas
+      // d'`exports.toPng = ...` individuel détectable statiquement) - le bundler ESM place donc
+      // l'API réelle sous `.default` plutôt qu'en export nommé direct. En dev, le pré-bundling
+      // Vite masque parfois cette différence ; en build de production, `domtoimage.toPng`
+      // n'existe pas sur le namespace ESM brut, d'où le "toPng is not a function" observé
+      // uniquement en prod. `.default` est toujours présent (confirmé dans le bundle UMD).
+      const domtoimageModule = (await import('dom-to-image-more')) as unknown as {
+        default?: typeof import('dom-to-image-more');
+      };
+      const domtoimage =
+        domtoimageModule.default ?? (domtoimageModule as typeof import('dom-to-image-more'));
       const dataUrl = await domtoimage.toPng(mapElement, { quality: 0.95 });
       const mapImg = await this.loadImg(dataUrl);
 
