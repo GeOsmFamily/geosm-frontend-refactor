@@ -1,4 +1,4 @@
-import { Injectable, NgZone, inject } from '@angular/core';
+import { Injectable, NgZone, inject, signal } from '@angular/core';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import Map from 'ol/Map';
 import View from 'ol/View';
@@ -14,7 +14,8 @@ import VectorLayer from 'ol/layer/Vector';
 import VectorSource from 'ol/source/Vector';
 import Cluster from 'ol/source/Cluster';
 import { Feature } from 'ol';
-import { Style } from 'ol/style';
+import Point from 'ol/geom/Point';
+import { Style, Icon } from 'ol/style';
 import { Coordinate } from 'ol/coordinate';
 import { Extent, getWidth } from 'ol/extent';
 import BaseLayer from 'ol/layer/Base';
@@ -22,6 +23,13 @@ import { BaseMap } from '../../../core/models/index';
 
 /** URL du fond de carte sombre (CartoDB Dark Matter) */
 const DARK_BASEMAP_URL = 'https://{a-c}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png';
+
+const ZOOM_MARKER_LAYER_NAME = 'zoom-target-marker';
+const ZOOM_MARKER_SVG =
+  'data:image/svg+xml,' +
+  encodeURIComponent(
+    `<svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24"><path fill="#e53935" stroke="#ffffff" stroke-width="0.8" d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>`,
+  );
 
 @Injectable({ providedIn: 'root' })
 export class MapService {
@@ -53,6 +61,9 @@ export class MapService {
    */
   isPicking = false;
   readonly mapReady$ = new BehaviorSubject<boolean>(false);
+
+  /** Vrai tant qu'un repère de "point zoomé" (showZoomMarker/zoomToWithMarker) est affiché. */
+  readonly hasZoomMarker = signal(false);
 
   initMap(target: string | HTMLElement, center: [number, number] = [0, 0], zoom = 2): Map {
     // `crossOrigin: 'anonymous'` sur TOUTES les sources de tuiles (ici et dans
@@ -239,6 +250,45 @@ export class MapService {
       zoom,
       duration: 500,
     });
+  }
+
+  /**
+   * Affiche un repère (pin) sur la carte au point donné - sans ça, une fois centré/zoomé sur
+   * une coordonnée saisie manuellement (ZoomModal) ou reçue via un lien partagé (?lat=&lon=),
+   * rien ne distingue visuellement ce point précis du reste de la carte.
+   */
+  showZoomMarker(coordinate: [number, number]): void {
+    const feature = new Feature(new Point(fromLonLat(coordinate)));
+    feature.setStyle(
+      new Style({
+        image: new Icon({ anchor: [0.5, 1], src: ZOOM_MARKER_SVG }),
+      }),
+    );
+
+    const existingLayer = this.getLayerByName(ZOOM_MARKER_LAYER_NAME) as
+      VectorLayer<VectorSource> | undefined;
+    if (existingLayer) {
+      const source = existingLayer.getSource();
+      source?.clear();
+      source?.addFeature(feature);
+    } else {
+      this.addVectorLayer(ZOOM_MARKER_LAYER_NAME, [feature]);
+    }
+    this.hasZoomMarker.set(true);
+  }
+
+  /** zoomTo() + showZoomMarker() en un appel, pour les points explicitement recherchés/saisis. */
+  zoomToWithMarker(coordinate: [number, number], zoom = 16): void {
+    this.zoomTo(coordinate, zoom);
+    this.showZoomMarker(coordinate);
+  }
+
+  /** Retire le repère posé par showZoomMarker()/zoomToWithMarker(), une fois qu'on n'en a plus besoin. */
+  clearZoomMarker(): void {
+    const layer = this.getLayerByName(ZOOM_MARKER_LAYER_NAME) as
+      VectorLayer<VectorSource> | undefined;
+    layer?.getSource()?.clear();
+    this.hasZoomMarker.set(false);
   }
 
   fitExtent(extent: Extent, padding: number[] = [50, 50, 50, 50]): void {

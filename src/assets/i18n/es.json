@@ -10,6 +10,7 @@
     "fonds": "Fondos de mapa"
   },
   "naviguation_tools": {
+    "clear_zoom_marker": "Borrar el marcador del punto ampliado",
     "compare_maps": "Comparar mapas",
     "general_vieuw": "Vista general",
     "locate_me": "Acercar a mi ubicación actual",

@@ -61,6 +61,17 @@
   >
     <mat-icon>my_location</mat-icon>
   </button>
+  @if (mapService.hasZoomMarker()) {
+    <button
+      mat-mini-fab
+      class="toolbar-btn"
+      (click)="mapService.clearZoomMarker()"
+      [matTooltip]="'naviguation_tools.clear_zoom_marker' | translate"
+      matTooltipPosition="left"
+    >
+      <mat-icon>location_off</mat-icon>
+    </button>
+  }
   <button
     mat-mini-fab
     class="toolbar-btn"

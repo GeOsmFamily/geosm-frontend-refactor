@@ -10,6 +10,7 @@
     "fonds": "Basemaps"
   },
   "naviguation_tools": {
+    "clear_zoom_marker": "Clear the zoomed point marker",
     "compare_maps": "Compare maps",
     "general_vieuw": "General view",
     "locate_me": "Zoom to my current location",
