@@ -39,7 +39,9 @@ interface MapPosition {
   styleUrl: './map-toolbar.component.scss',
 })
 export class MapToolbarComponent implements OnInit, OnDestroy {
-  private readonly mapService = inject(MapService);
+  // Non privé : le template lit directement mapService.hasZoomMarker() et appelle
+  // mapService.clearZoomMarker() pour le bouton d'effacement du repère de point zoomé.
+  readonly mapService = inject(MapService);
   private readonly dialog = inject(MatDialog);
   private readonly ngZone = inject(NgZone);
   private readonly instanceService = inject(InstanceService);
@@ -170,8 +172,7 @@ export class MapToolbarComponent implements OnInit, OnDestroy {
     const ref = this.dialog.open(ZoomModalComponent, { width: '400px' });
     ref.afterClosed().subscribe((result) => {
       if (result) {
-        const center = fromLonLat([result.longitude, result.latitude]);
-        this.map.getView().animate({ center, zoom: 14, duration: 500 });
+        this.mapService.zoomToWithMarker([result.longitude, result.latitude], 14);
       }
     });
   }

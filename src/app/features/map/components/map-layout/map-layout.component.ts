@@ -202,7 +202,7 @@ export class MapLayoutComponent implements OnInit {
               const numLat = Number.parseFloat(lat);
               const numLon = Number.parseFloat(lon);
               const numZoom = zoom ? Number.parseInt(zoom, 10) : 15;
-              this.mapService.zoomTo([numLon, numLat], numZoom);
+              this.mapService.zoomToWithMarker([numLon, numLat], numZoom);
               this.queryReverseGeocoding(numLat, numLon);
             }, 500);
           });

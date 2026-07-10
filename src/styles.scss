@@ -544,7 +544,7 @@ app-root {
   backdrop-filter: blur(8px);
   font-family: var(--font-family-base) !important;
   font-size: 11px;
-  color: rgba(255, 255, 255, 0.85);
+  color: #ffffff !important;
   padding: 3px 4px 3px 10px;
   position: absolute !important;
   border-radius: 20px;
@@ -560,10 +560,15 @@ app-root {
     list-style: none;
     margin: 0;
     padding: 0;
+    color: #ffffff !important;
+  }
+
+  li {
+    color: #ffffff !important;
   }
 
   a {
-    color: rgba(255, 255, 255, 0.95) !important;
+    color: #ffffff !important;
     text-decoration: none;
     &:hover {
       text-decoration: underline;

@@ -10,6 +10,7 @@
     "fonds": "Fonds"
   },
   "naviguation_tools": {
+    "clear_zoom_marker": "Effacer le repère du point zoomé",
     "compare_maps": "Comparer des cartes",
     "general_vieuw": "Vue générale",
     "locate_me": "Zoomer sur ma position actuelle",

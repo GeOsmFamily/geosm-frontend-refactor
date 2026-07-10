@@ -21,25 +21,6 @@
         </button>
       }
     </div>
-
-    @if (!selectedGroup && !searchQuery) {
-      <div class="view-mode-toggle">
-        <button
-          [class.active]="viewMode === 'list'"
-          (click)="setViewMode('list')"
-          matTooltip="Vue liste"
-        >
-          <mat-icon>view_list</mat-icon>
-        </button>
-        <button
-          [class.active]="viewMode === 'grid'"
-          (click)="setViewMode('grid')"
-          matTooltip="Vue grille"
-        >
-          <mat-icon>grid_view</mat-icon>
-        </button>
-      </div>
-    }
   </div>
 
   <!-- Loading -->
@@ -132,7 +113,7 @@
         <div class="subgroup-section">
           <div class="subgroup-header">
             <mat-icon>folder_open</mat-icon>
-            <span>{{ subGroup.name }}</span>
+            <span class="subgroup-name">{{ subGroup.name }}</span>
             <span class="subgroup-count">{{ subGroup.layers.length }}</span>
           </div>
           <div class="layers-list">
@@ -176,7 +157,7 @@
     </div>
   } @else {
     <!-- Themes Grid -->
-    <div class="themes-grid animate-in" [class.grid-mode]="viewMode === 'grid'">
+    <div class="themes-grid animate-in">
       @for (group of filteredGroups; track group.id) {
         <div
           class="theme-card"
@@ -202,7 +183,9 @@
             <span class="theme-name">{{ group.name }}</span>
             <span class="theme-count">
               <mat-icon>layers</mat-icon>
-              {{ group.layerCount }} couche{{ group.layerCount > 1 ? 's' : '' }}
+              <span class="theme-count-text"
+                >{{ group.layerCount }} couche{{ group.layerCount > 1 ? 's' : '' }}</span
+              >
             </span>
           </div>
           <mat-icon class="theme-chevron">chevron_right</mat-icon>

@@ -49,16 +49,6 @@ export class CatalogBrowserComponent implements OnInit, OnDestroy {
   searchQuery = '';
   loading = true;
 
-  private static readonly VIEW_MODE_STORAGE_KEY = 'geosm.catalog.viewMode';
-  viewMode: 'list' | 'grid' =
-    (localStorage.getItem(CatalogBrowserComponent.VIEW_MODE_STORAGE_KEY) as 'list' | 'grid') ||
-    'list';
-
-  setViewMode(mode: 'list' | 'grid'): void {
-    this.viewMode = mode;
-    localStorage.setItem(CatalogBrowserComponent.VIEW_MODE_STORAGE_KEY, mode);
-  }
-
   ngOnInit(): void {
     this.instanceService.currentInstance$.pipe(takeUntil(this.destroy$)).subscribe((instance) => {
       if (instance) {
