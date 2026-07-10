@@ -26,10 +26,17 @@ describe('MapToolbarComponent', () => {
     mapSpy = jasmine.createSpyObj('Map', ['getView', 'on', 'un']);
     mapSpy.getView.and.returnValue(viewSpy);
 
-    mapServiceSpy = jasmine.createSpyObj('MapService', ['getMap'], {
-      mapReady$: mapReadySubject.asObservable(),
-    });
+    mapServiceSpy = jasmine.createSpyObj(
+      'MapService',
+      ['getMap', 'hasZoomMarker', 'clearZoomMarker'],
+      {
+        mapReady$: mapReadySubject.asObservable(),
+      },
+    );
     mapServiceSpy.getMap.and.returnValue(mapSpy);
+    // hasZoomMarker est un signal (Angular l'appelle comme une fonction dans le template) -
+    // le mock doit se comporter pareil, sinon "ctx.mapService.hasZoomMarker is not a function".
+    mapServiceSpy.hasZoomMarker.and.returnValue(false);
 
     dialogSpy = jasmine.createSpyObj('MatDialog', ['open']);
 
