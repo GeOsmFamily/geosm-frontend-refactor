@@ -55,7 +55,13 @@ export class MapService {
   readonly mapReady$ = new BehaviorSubject<boolean>(false);
 
   initMap(target: string | HTMLElement, center: [number, number] = [0, 0], zoom = 2): Map {
-    this.baseLayer = new TileLayer({ source: new OSM() });
+    // `crossOrigin: 'anonymous'` sur TOUTES les sources de tuiles (ici et dans
+    // applyBaseMap/switchBasemap/createWmtsSource/addWmsLayer/addXyzLayer) : sans ça, les
+    // tuiles cross-origin (OSM, CartoDB, WMTS IGN...) se chargent en mode opaque - la carte
+    // s'affiche normalement, mais le canvas interne d'OpenLayers devient "taint" dès qu'une
+    // seule tuile cross-origin y est dessinée, et tout export (impression PDF via
+    // dom-to-image-more) échoue avec "SecurityError: Tainted canvases may not be exported".
+    this.baseLayer = new TileLayer({ source: new OSM({ crossOrigin: 'anonymous' }) });
 
     this.drawingLayer = new VectorLayer({
       source: this.drawingSource,
@@ -135,6 +141,7 @@ export class MapService {
           source: new XYZ({
             url: baseMap.url,
             attributions: baseMap.attribution,
+            crossOrigin: 'anonymous',
           }),
           properties: { name: baseMap.name },
         });
@@ -145,6 +152,7 @@ export class MapService {
             url: baseMap.url,
             params: { LAYERS: (baseMap.config?.['layers'] as string) || '', TILED: true },
             attributions: baseMap.attribution,
+            crossOrigin: 'anonymous',
           }),
           properties: { name: baseMap.name },
         });
@@ -157,7 +165,7 @@ export class MapService {
         break;
       default:
         layer = new TileLayer({
-          source: new OSM(),
+          source: new OSM({ crossOrigin: 'anonymous' }),
           properties: { name: 'OpenStreetMap' },
         });
         break;
@@ -200,6 +208,7 @@ export class MapService {
       projection,
       tileGrid,
       attributions: baseMap.attribution,
+      crossOrigin: 'anonymous',
     });
   }
 
@@ -213,8 +222,9 @@ export class MapService {
       ? new XYZ({
           url: DARK_BASEMAP_URL,
           attributions: '&copy; <a href="https://carto.com/">CartoDB</a>',
+          crossOrigin: 'anonymous',
         })
-      : new OSM();
+      : new OSM({ crossOrigin: 'anonymous' });
     this.baseLayer.setSource(source);
   }
 
@@ -261,6 +271,7 @@ export class MapService {
         url,
         params: { ...params, TILED: true },
         serverType: 'geoserver',
+        crossOrigin: 'anonymous',
       }),
       properties: { name },
     });
@@ -270,7 +281,7 @@ export class MapService {
 
   addXyzLayer(name: string, url: string): TileLayer<XYZ> {
     const layer = new TileLayer({
-      source: new XYZ({ url }),
+      source: new XYZ({ url, crossOrigin: 'anonymous' }),
       properties: { name },
     });
     this.map.addLayer(layer);
