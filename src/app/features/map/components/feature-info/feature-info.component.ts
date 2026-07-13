@@ -143,9 +143,14 @@ export class FeatureInfoComponent implements OnInit, OnDestroy {
         // exclure par son nom serait une liste noire fragile, vite incomplète à chaque nouvel
         // outil ajouté - la liste blanche est correcte par construction et n'a jamais besoin
         // d'être mise à jour.
+        // Une couche peut aussi se déclarer éligible au cas par cas via la propriété OL
+        // "isIdentifiable" (voir PersonalDataToolComponent) sans être une couche catalogue
+        // enregistrée dans MapLayerService - cas des données personnelles, privées, jamais
+        // ajoutées au catalogue de l'instance.
         const activeLayers = this.mapLayerService.getActiveLayers();
         const features = map.getFeaturesAtPixel(pixel, {
-          layerFilter: (layer) => activeLayers.some((al) => al.olLayer === layer),
+          layerFilter: (layer) =>
+            activeLayers.some((al) => al.olLayer === layer) || layer.get('isIdentifiable') === true,
         });
         if (features && features.length > 0) {
           const feature = features[0];

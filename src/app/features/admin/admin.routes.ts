@@ -56,6 +56,13 @@ export const ADMIN_ROUTES: Routes = [
           import('./components/feedback/feedback.component').then((m) => m.FeedbackComponent),
       },
       {
+        path: 'personal-data',
+        loadComponent: () =>
+          import('./components/personal-data/personal-data-publications.component').then(
+            (m) => m.PersonalDataPublicationsComponent,
+          ),
+      },
+      {
         path: 'jobs',
         loadComponent: () =>
           import('./components/jobs/jobs.component').then((m) => m.JobsComponent),

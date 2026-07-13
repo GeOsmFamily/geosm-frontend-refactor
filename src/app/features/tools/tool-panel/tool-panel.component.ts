@@ -14,6 +14,7 @@ import { MapillaryToolComponent } from '../mapillary/mapillary-tool.component';
 import { CompareToolComponent } from '../compare/compare-tool.component';
 import { StatisticsToolComponent } from '../statistics/statistics-tool.component';
 import { SpatialAnalysisToolComponent } from '../spatial-analysis/spatial-analysis-tool.component';
+import { PersonalDataToolComponent } from '../personal-data/personal-data-tool.component';
 import { TranslateModule } from '@ngx-translate/core';
 
 interface ToolItem {
@@ -42,6 +43,7 @@ interface ToolItem {
     CompareToolComponent,
     StatisticsToolComponent,
     SpatialAnalysisToolComponent,
+    PersonalDataToolComponent,
   ],
   templateUrl: './tool-panel.component.html',
   styleUrl: './tool-panel.component.scss',
@@ -61,6 +63,7 @@ export class ToolPanelComponent {
     { id: 'compare', icon: 'compare', label: 'compare_maps.compare' },
     { id: 'statistics', icon: 'bar_chart', label: 'tools.statistics' },
     { id: 'spatial-analysis', icon: 'blur_circular', label: 'tools.spatialAnalysis' },
+    { id: 'personal-data', icon: 'upload_file', label: 'tools.personalData.label' },
   ];
 
   toggleTool(toolId: string): void {

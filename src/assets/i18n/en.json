@@ -168,10 +168,87 @@
       "genericFeature": "Feature"
     }
   },
+  "fileDropZone": {
+    "title": "Drag and drop your file here",
+    "subtitle": "or click to browse"
+  },
   "tools": {
     "drawing": "Drawing",
     "statistics": "Statistics",
     "spatialAnalysis": "Spatial analysis",
+    "personalData": {
+      "label": "My data",
+      "infoTitle": "How it works",
+      "infoStep1": "Drop a data file (GeoJSON, GPKG, KML, zipped Shapefile, CSV) or a full QGIS project (.qgz/.qgs/.zip).",
+      "infoStep2": "For a data file, choose a theme, a name and a style before saving. A QGIS project automatically extracts its themes, layers and styles.",
+      "infoStep3": "Your data stays private, visible only to you, until you click \"Publish\".",
+      "infoStep4": "Once published, your data is reviewed by an administrator, who can approve it (it then becomes visible to everyone) or reject it.",
+      "dropHint": "Drag and drop a file, or click to browse.",
+      "importing": "Importing…",
+      "confirmImportTitle": "Confirm import",
+      "stagedSummary": "{{count}} feature(s) detected ({{geometryType}})",
+      "nameLabel": "Layer name",
+      "groupLabel": "Theme",
+      "groupPlaceholder": "e.g. My projects",
+      "subGroupLabel": "Sub-theme",
+      "subGroupPlaceholder": "e.g. Fieldwork 2026",
+      "colorLabel": "Color",
+      "shapeLabel": "Shape",
+      "shapes": {
+        "circle": "Circle",
+        "square": "Square",
+        "triangle": "Triangle",
+        "star": "Star",
+        "pin": "Pin"
+      },
+      "cancel": "Cancel",
+      "save": "Save",
+      "myDataTitle": "My data ({{count}})",
+      "emptyState": "No personal data yet.",
+      "showOnMap": "Show on map",
+      "hideFromMap": "Hide from map",
+      "styleBtn": "Style",
+      "publishBtn": "Publish",
+      "deleteBtn": "Delete",
+      "qmlLabel": "Native QML style",
+      "qmlHint": "Automatically applied on publication (used by QGIS)",
+      "qmlUploaded": "QML style saved",
+      "qmlUploadBtn": "Upload a .qml",
+      "publishNoteLabel": "Note for the team (optional)",
+      "publishSendBtn": "Send request",
+      "status": {
+        "private": "Private",
+        "pending_publication": "Pending review",
+        "published": "Published",
+        "rejected": "Rejected"
+      },
+      "deleteConfirm": {
+        "title": "Delete this data",
+        "message": "Are you sure you want to delete \"{{name}}\"? This action is irreversible."
+      },
+      "loginRequiredTitle": "Login required",
+      "loginRequiredMessage": "Log in to import and manage your own data on the geoportal.",
+      "loginBtn": "Log in",
+      "notify": {
+        "dataImported": "Data imported.",
+        "qgisImported": "{{count}} layer(s) imported from the QGIS project.",
+        "styleUpdated": "Style updated.",
+        "qmlUploaded": "QML style saved, will be applied on publication.",
+        "publicationRequested": "Publication request sent."
+      },
+      "errors": {
+        "fileImportFailed": "File import failed.",
+        "qgisImportFailed": "QGIS project import failed.",
+        "saveFailed": "Failed to save the data.",
+        "featuresLoadFailed": "Could not load the data on the map.",
+        "styleUpdateFailed": "Failed to update the style.",
+        "qmlUploadFailed": "Failed to upload the QML style.",
+        "deleteFailed": "Failed to delete.",
+        "publishFailed": "Failed to request publication.",
+        "tooLarge": "File too large.",
+        "unsupportedFormat": "Unsupported format."
+      }
+    },
     "nearestSearch": "Nearest search",
     "planLocalisation": "Location plan",
     "measure": {
@@ -406,6 +483,7 @@
       "catalog": "Catalog",
       "content": "Content & moderation",
       "feedback": "Feedback",
+      "personalData": "Personal data",
       "jobs": "Jobs & backups",
       "observability": "Observability",
       "infra": "Infrastructure",
@@ -698,6 +776,8 @@
         "qgisPublishHint": "The layers selected in the previous step will be published.",
         "qgisStyleHint": "Layers imported from a QGIS project keep the style defined in that project.",
         "styleColorIcon": "Color and icon",
+        "styleQml": "Import a QGIS style (.qml)",
+        "styleQmlHint": "Native QGIS style file (exported from QGIS Desktop) - applied directly to the layer, no conversion.",
         "styleKml": "Import a styled KML",
         "applyStyle": "Apply style",
         "published": "Layer published successfully",

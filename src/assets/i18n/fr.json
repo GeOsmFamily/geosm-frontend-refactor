@@ -168,10 +168,87 @@
       "genericFeature": "Entité"
     }
   },
+  "fileDropZone": {
+    "title": "Glissez-déposez votre fichier ici",
+    "subtitle": "ou cliquez pour parcourir"
+  },
   "tools": {
     "drawing": "Dessin",
     "statistics": "Statistiques",
     "spatialAnalysis": "Analyse spatiale",
+    "personalData": {
+      "label": "Mes données",
+      "infoTitle": "Mode d'emploi",
+      "infoStep1": "Déposez un fichier de données (GeoJSON, GPKG, KML, Shapefile zippé, CSV) ou un projet QGIS complet (.qgz/.qgs/.zip).",
+      "infoStep2": "Pour un fichier de données, choisissez une thématique, un nom et un style avant l'enregistrement. Un projet QGIS extrait automatiquement ses thématiques, couches et styles.",
+      "infoStep3": "Vos données restent privées, visibles uniquement par vous, jusqu'à ce que vous cliquiez sur « Publier ».",
+      "infoStep4": "Une fois publiée, votre donnée est examinée par un administrateur, qui peut la valider (elle devient alors visible par tous) ou la refuser.",
+      "dropHint": "Glissez-déposez un fichier ou cliquez pour parcourir.",
+      "importing": "Import en cours…",
+      "confirmImportTitle": "Confirmer l'import",
+      "stagedSummary": "{{count}} entité(s) détectée(s) ({{geometryType}})",
+      "nameLabel": "Nom de la couche",
+      "groupLabel": "Thématique",
+      "groupPlaceholder": "ex. Mes projets",
+      "subGroupLabel": "Sous-thématique",
+      "subGroupPlaceholder": "ex. Terrain 2026",
+      "colorLabel": "Couleur",
+      "shapeLabel": "Forme",
+      "shapes": {
+        "circle": "Cercle",
+        "square": "Carré",
+        "triangle": "Triangle",
+        "star": "Étoile",
+        "pin": "Punaise"
+      },
+      "cancel": "Annuler",
+      "save": "Enregistrer",
+      "myDataTitle": "Mes données ({{count}})",
+      "emptyState": "Aucune donnée personnelle pour le moment.",
+      "showOnMap": "Afficher sur la carte",
+      "hideFromMap": "Masquer de la carte",
+      "styleBtn": "Style",
+      "publishBtn": "Publier",
+      "deleteBtn": "Supprimer",
+      "qmlLabel": "Style QML natif",
+      "qmlHint": "Appliqué automatiquement à la publication (utilisé par QGIS)",
+      "qmlUploaded": "Style QML enregistré",
+      "qmlUploadBtn": "Téléverser un .qml",
+      "publishNoteLabel": "Note pour l'équipe (optionnel)",
+      "publishSendBtn": "Envoyer la demande",
+      "status": {
+        "private": "Privé",
+        "pending_publication": "En attente de validation",
+        "published": "Publié",
+        "rejected": "Refusé"
+      },
+      "deleteConfirm": {
+        "title": "Supprimer cette donnée",
+        "message": "Voulez-vous vraiment supprimer « {{name}} » ? Cette action est irréversible."
+      },
+      "loginRequiredTitle": "Connexion requise",
+      "loginRequiredMessage": "Connectez-vous pour importer et gérer vos propres données sur le géoportail.",
+      "loginBtn": "Se connecter",
+      "notify": {
+        "dataImported": "Donnée importée.",
+        "qgisImported": "{{count}} couche(s) importée(s) depuis le projet QGIS.",
+        "styleUpdated": "Style mis à jour.",
+        "qmlUploaded": "Style QML enregistré, appliqué à la publication.",
+        "publicationRequested": "Demande de publication envoyée."
+      },
+      "errors": {
+        "fileImportFailed": "Échec de l'import du fichier.",
+        "qgisImportFailed": "Échec de l'import du projet QGIS.",
+        "saveFailed": "Échec de l'enregistrement de la donnée.",
+        "featuresLoadFailed": "Impossible de charger les données sur la carte.",
+        "styleUpdateFailed": "Échec de la mise à jour du style.",
+        "qmlUploadFailed": "Échec de l'envoi du style QML.",
+        "deleteFailed": "Échec de la suppression.",
+        "publishFailed": "Échec de la demande de publication.",
+        "tooLarge": "Fichier trop volumineux.",
+        "unsupportedFormat": "Format non supporté."
+      }
+    },
     "nearestSearch": "Le plus proche",
     "planLocalisation": "Plan de localisation",
     "measure": {
@@ -406,6 +483,7 @@
       "catalog": "Catalogue",
       "content": "Contenu & modération",
       "feedback": "Signalements",
+      "personalData": "Données personnelles",
       "jobs": "Jobs & sauvegardes",
       "observability": "Observabilité",
       "infra": "Infrastructure",
@@ -698,6 +776,8 @@
         "qgisPublishHint": "Les couches sélectionnées à l'étape précédente seront publiées.",
         "qgisStyleHint": "Les couches importées depuis un projet QGIS conservent le style défini dans ce projet.",
         "styleColorIcon": "Couleur et icône",
+        "styleQml": "Importer un style QGIS (.qml)",
+        "styleQmlHint": "Fichier de style natif QGIS (exporté depuis QGIS Desktop) - appliqué directement à la couche, sans conversion.",
         "styleKml": "Importer un KML stylé",
         "applyStyle": "Appliquer le style",
         "published": "Couche publiée avec succès",

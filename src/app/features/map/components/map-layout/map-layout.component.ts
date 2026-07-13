@@ -53,6 +53,7 @@ import { StatisticsToolComponent } from '../../../../features/tools/statistics/s
 import { PlanLocalisationToolComponent } from '../../../../features/tools/plan-localisation/plan-localisation-tool.component';
 import { SpatialAnalysisToolComponent } from '../../../../features/tools/spatial-analysis/spatial-analysis-tool.component';
 import { NearestSearchToolComponent } from '../../../../features/tools/nearest-search/nearest-search-tool.component';
+import { PersonalDataToolComponent } from '../../../../features/tools/personal-data/personal-data-tool.component';
 import { AnalyticsService } from '../../../../core/services/analytics.service';
 import { CloseOnEscapeOrOutsideDirective } from '../../../../shared/directives/close-on-escape-or-outside.directive';
 
@@ -97,6 +98,7 @@ import { CloseOnEscapeOrOutsideDirective } from '../../../../shared/directives/c
     PlanLocalisationToolComponent,
     SpatialAnalysisToolComponent,
     NearestSearchToolComponent,
+    PersonalDataToolComponent,
     BaseMapSwitcherComponent,
     SettingsComponent,
     InfoPanelComponent,
@@ -157,6 +159,7 @@ export class MapLayoutComponent implements OnInit {
     { id: 'plan-localisation', icon: 'my_location', label: 'tools.planLocalisation' },
     { id: 'spatial-analysis', icon: 'blur_circular', label: 'tools.spatialAnalysis' },
     { id: 'nearest-search', icon: 'social_distance', label: 'tools.nearestSearch' },
+    { id: 'personal-data', icon: 'upload_file', label: 'tools.personalData.label' },
   ];
 
   constructor() {

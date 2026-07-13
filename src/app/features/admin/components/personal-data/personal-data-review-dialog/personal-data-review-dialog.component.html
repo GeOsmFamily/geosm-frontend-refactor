@@ -1,0 +1,58 @@
+<h2 mat-dialog-title>{{ data.personalLayer.name }}</h2>
+
+<mat-dialog-content>
+  <div class="review-layout">
+    <div class="review-preview">
+      @if (previewLoading()) {
+        <div class="centered">
+          <mat-progress-spinner diameter="28" mode="indeterminate"></mat-progress-spinner>
+        </div>
+      } @else if (previewError()) {
+        <p class="hint">Aperçu indisponible pour cette donnée.</p>
+      }
+      <div #previewMap class="preview-map" [class.hidden]="previewLoading() || previewError()"></div>
+    </div>
+
+    <div class="review-form">
+      <p class="source-meta">
+        <mat-icon>{{ data.personalLayer.sourceType === 'FILE' ? 'insert_drive_file' : 'map' }}</mat-icon>
+        {{ data.personalLayer.sourceType === 'FILE' ? 'Fichier importé' : 'Projet QGIS' }}
+        · {{ data.personalLayer.geometryType || '—' }}
+      </p>
+
+      @if (data.personalLayer.publicationNote) {
+        <p class="publication-note">
+          <mat-icon>chat</mat-icon>
+          {{ data.personalLayer.publicationNote }}
+        </p>
+      }
+
+      <mat-form-field appearance="outline" subscriptSizing="dynamic" class="full-width">
+        <mat-label>Nom (modifiable)</mat-label>
+        <input matInput [(ngModel)]="overrideName" />
+      </mat-form-field>
+      <mat-form-field appearance="outline" subscriptSizing="dynamic" class="full-width">
+        <mat-label>Thématique</mat-label>
+        <input matInput [(ngModel)]="overrideGroupName" />
+      </mat-form-field>
+      <mat-form-field appearance="outline" subscriptSizing="dynamic" class="full-width">
+        <mat-label>Sous-thématique</mat-label>
+        <input matInput [(ngModel)]="overrideSubGroupName" />
+      </mat-form-field>
+      <mat-form-field appearance="outline" subscriptSizing="dynamic" class="full-width">
+        <mat-label>Note (visible par le demandeur)</mat-label>
+        <textarea matInput [(ngModel)]="reviewNote" rows="2"></textarea>
+      </mat-form-field>
+    </div>
+  </div>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="onCancel()">Annuler</button>
+  <button mat-flat-button color="warn" (click)="reject()">
+    <mat-icon>block</mat-icon> Refuser
+  </button>
+  <button mat-flat-button color="primary" [disabled]="!canApprove" (click)="approve()">
+    <mat-icon>check_circle</mat-icon> Valider et publier
+  </button>
+</mat-dialog-actions>

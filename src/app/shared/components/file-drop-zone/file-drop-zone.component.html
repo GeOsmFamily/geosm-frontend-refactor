@@ -1,0 +1,32 @@
+<div class="drop-zone" [class.drag-over]="isDragOver()" (click)="openFilePicker()">
+  <input
+    #fileInput
+    type="file"
+    class="hidden-input"
+    [attr.accept]="acceptAttr"
+    [attr.multiple]="multiple ? '' : null"
+    (change)="onFileInputChange($event)"
+  />
+
+  <mat-icon class="drop-icon">{{ isDragOver() ? 'file_download' : 'cloud_upload' }}</mat-icon>
+
+  <p class="drop-title">
+    {{ 'fileDropZone.title' | translate }}
+  </p>
+  <p class="drop-subtitle">
+    {{ 'fileDropZone.subtitle' | translate }}
+  </p>
+
+  <div class="format-chips">
+    <span class="chip">GeoJSON</span>
+    <span class="chip">GPKG</span>
+    <span class="chip">KML</span>
+    <span class="chip">Shapefile (.zip)</span>
+    <span class="chip">CSV</span>
+    <span class="chip accent">QGIS (.qgs/.qgz)</span>
+  </div>
+
+  @if (hint) {
+    <p class="drop-hint">{{ hint }}</p>
+  }
+</div>

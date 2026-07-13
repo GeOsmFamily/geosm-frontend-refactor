@@ -168,10 +168,87 @@
       "genericFeature": "Entidad"
     }
   },
+  "fileDropZone": {
+    "title": "Arrastra y suelta tu archivo aquí",
+    "subtitle": "o haz clic para explorar"
+  },
   "tools": {
     "drawing": "Dibujo",
     "statistics": "Estadísticas",
     "spatialAnalysis": "Análisis espacial",
+    "personalData": {
+      "label": "Mis datos",
+      "infoTitle": "Cómo funciona",
+      "infoStep1": "Suelta un archivo de datos (GeoJSON, GPKG, KML, Shapefile comprimido, CSV) o un proyecto QGIS completo (.qgz/.qgs/.zip).",
+      "infoStep2": "Para un archivo de datos, elige una temática, un nombre y un estilo antes de guardar. Un proyecto QGIS extrae automáticamente sus temáticas, capas y estilos.",
+      "infoStep3": "Tus datos permanecen privados, visibles solo para ti, hasta que hagas clic en «Publicar».",
+      "infoStep4": "Una vez publicados, un administrador revisa tus datos y puede aprobarlos (se vuelven visibles para todos) o rechazarlos.",
+      "dropHint": "Arrastra y suelta un archivo, o haz clic para explorar.",
+      "importing": "Importando…",
+      "confirmImportTitle": "Confirmar importación",
+      "stagedSummary": "{{count}} entidad(es) detectada(s) ({{geometryType}})",
+      "nameLabel": "Nombre de la capa",
+      "groupLabel": "Temática",
+      "groupPlaceholder": "ej. Mis proyectos",
+      "subGroupLabel": "Subtemática",
+      "subGroupPlaceholder": "ej. Terreno 2026",
+      "colorLabel": "Color",
+      "shapeLabel": "Forma",
+      "shapes": {
+        "circle": "Círculo",
+        "square": "Cuadrado",
+        "triangle": "Triángulo",
+        "star": "Estrella",
+        "pin": "Marcador"
+      },
+      "cancel": "Cancelar",
+      "save": "Guardar",
+      "myDataTitle": "Mis datos ({{count}})",
+      "emptyState": "Aún no hay datos personales.",
+      "showOnMap": "Mostrar en el mapa",
+      "hideFromMap": "Ocultar del mapa",
+      "styleBtn": "Estilo",
+      "publishBtn": "Publicar",
+      "deleteBtn": "Eliminar",
+      "qmlLabel": "Estilo QML nativo",
+      "qmlHint": "Se aplica automáticamente al publicar (usado por QGIS)",
+      "qmlUploaded": "Estilo QML guardado",
+      "qmlUploadBtn": "Subir un .qml",
+      "publishNoteLabel": "Nota para el equipo (opcional)",
+      "publishSendBtn": "Enviar solicitud",
+      "status": {
+        "private": "Privado",
+        "pending_publication": "Pendiente de validación",
+        "published": "Publicado",
+        "rejected": "Rechazado"
+      },
+      "deleteConfirm": {
+        "title": "Eliminar este dato",
+        "message": "¿Seguro que quieres eliminar «{{name}}»? Esta acción es irreversible."
+      },
+      "loginRequiredTitle": "Inicio de sesión requerido",
+      "loginRequiredMessage": "Inicia sesión para importar y gestionar tus propios datos en el geoportal.",
+      "loginBtn": "Iniciar sesión",
+      "notify": {
+        "dataImported": "Dato importado.",
+        "qgisImported": "{{count}} capa(s) importada(s) desde el proyecto QGIS.",
+        "styleUpdated": "Estilo actualizado.",
+        "qmlUploaded": "Estilo QML guardado, se aplicará al publicar.",
+        "publicationRequested": "Solicitud de publicación enviada."
+      },
+      "errors": {
+        "fileImportFailed": "Error al importar el archivo.",
+        "qgisImportFailed": "Error al importar el proyecto QGIS.",
+        "saveFailed": "Error al guardar el dato.",
+        "featuresLoadFailed": "No se pudieron cargar los datos en el mapa.",
+        "styleUpdateFailed": "Error al actualizar el estilo.",
+        "qmlUploadFailed": "Error al subir el estilo QML.",
+        "deleteFailed": "Error al eliminar.",
+        "publishFailed": "Error al solicitar la publicación.",
+        "tooLarge": "Archivo demasiado grande.",
+        "unsupportedFormat": "Formato no soportado."
+      }
+    },
     "nearestSearch": "El más cercano",
     "planLocalisation": "Plano de localización",
     "measure": {
@@ -380,6 +457,7 @@
       "catalog": "Catálogo",
       "content": "Contenido y moderación",
       "feedback": "Reportes",
+      "personalData": "Datos personales",
       "jobs": "Tareas y copias de seguridad",
       "observability": "Observabilidad",
       "infra": "Infraestructura",
@@ -672,6 +750,8 @@
         "qgisPublishHint": "Las capas seleccionadas en el paso anterior se publicarán.",
         "qgisStyleHint": "Las capas importadas desde un proyecto QGIS conservan el estilo definido en ese proyecto.",
         "styleColorIcon": "Color e icono",
+        "styleQml": "Importar un estilo QGIS (.qml)",
+        "styleQmlHint": "Archivo de estilo nativo de QGIS (exportado desde QGIS Desktop) - aplicado directamente a la capa, sin conversión.",
         "styleKml": "Importar un KML con estilo",
         "applyStyle": "Aplicar estilo",
         "published": "Capa publicada con éxito",
