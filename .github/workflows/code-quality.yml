@@ -11,7 +11,7 @@ jobs:
     name: Vérification du build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: actions/setup-node@v4
         with:
           node-version: 22
@@ -24,7 +24,7 @@ jobs:
     name: Formatage Prettier
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: actions/setup-node@v4
         with:
           node-version: 22
@@ -36,7 +36,7 @@ jobs:
     name: Taille du bundle
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: actions/setup-node@v4
         with:
           node-version: 22
@@ -60,7 +60,7 @@ jobs:
     name: Vérification i18n
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Vérifier la parité des clés entre fr/en/es
         run: |
           # Ne se contente plus de compter les clés (deux fichiers pouvaient avoir le même
