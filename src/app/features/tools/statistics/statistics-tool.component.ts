@@ -56,6 +56,12 @@ export class StatisticsToolComponent implements OnInit {
   stats: LayerStats | null = null;
   narrative: string | null = null;
   narrativeLoading = false;
+  /** Distinct d'un vrai "0 entité" - une couche dont la donnée vient d'un projet QGIS (import
+   * admin ou publication depuis "Mes données") n'a pas de table PostGIS suivie par GeOSM,
+   * /layers/:id/features échoue alors avec un 404 : sans ce distinguo, l'ancien code affichait
+   * silencieusement "0 entités", ce qui semblait indiquer une couche vide plutôt qu'une
+   * limitation connue (statistiques non calculables pour une source WMS externe). */
+  statsUnavailable = false;
 
   private readonly colors = [
     '#023f5f',
@@ -80,6 +86,7 @@ export class StatisticsToolComponent implements OnInit {
     if (!this.selectedLayerId) return;
     this.loading = true;
     this.stats = null;
+    this.statsUnavailable = false;
     this.selectedProperty = null;
     this.narrative = null;
 
@@ -93,7 +100,7 @@ export class StatisticsToolComponent implements OnInit {
         this.loading = false;
       },
       error: () => {
-        this.stats = { totalFeatures: 0, properties: [], propertyDistribution: {} };
+        this.statsUnavailable = true;
         this.loading = false;
       },
     });

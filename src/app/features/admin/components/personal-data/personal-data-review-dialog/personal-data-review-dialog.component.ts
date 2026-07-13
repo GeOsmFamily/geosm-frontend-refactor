@@ -1,4 +1,12 @@
-import { Component, ElementRef, OnDestroy, OnInit, ViewChild, inject, signal } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  OnDestroy,
+  ViewChild,
+  inject,
+  signal,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
@@ -57,7 +65,7 @@ export interface PersonalDataReviewResult {
   templateUrl: './personal-data-review-dialog.component.html',
   styleUrl: './personal-data-review-dialog.component.scss',
 })
-export class PersonalDataReviewDialogComponent implements OnInit, OnDestroy {
+export class PersonalDataReviewDialogComponent implements AfterViewInit, OnDestroy {
   private readonly personalLayerService = inject(PersonalLayerService);
   readonly dialogRef = inject(MatDialogRef<PersonalDataReviewDialogComponent>);
   readonly data: PersonalDataReviewDialogData = inject(MAT_DIALOG_DATA);
@@ -74,7 +82,12 @@ export class PersonalDataReviewDialogComponent implements OnInit, OnDestroy {
 
   private map: Map | null = null;
 
-  ngOnInit(): void {
+  ngAfterViewInit(): void {
+    // @ViewChild('previewMap') n'est peuplé qu'à partir de ngAfterViewInit (query de vue, pas de
+    // contenu) - l'appeler depuis ngOnInit fonctionnait "par chance" pour les données FILE (l'appel
+    // HTTP getFeatures() laisse largement le temps à la vue de s'initialiser avant la réponse),
+    // mais échouait silencieusement à chaque fois pour les projets QGIS (renderWmsPreview() est
+    // synchrone, donc previewMapEl était encore undefined et la carte n'était jamais créée).
     this.loadPreview();
   }
 

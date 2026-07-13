@@ -20,10 +20,26 @@
       <textarea matInput formControlName="description" rows="2"></textarea>
     </mat-form-field>
 
-    <div class="row">
+    <div class="row icon-row">
+      <div class="icon-preview" [matTooltip]="iconPreview">
+        <mat-icon>{{ iconPreview }}</mat-icon>
+      </div>
       <mat-form-field appearance="outline">
         <mat-label>{{ 'admin.catalog.icon' | translate }}</mat-label>
-        <input matInput formControlName="icon" placeholder="folder" />
+        <input
+          matInput
+          formControlName="icon"
+          placeholder="folder"
+          [matAutocomplete]="iconAuto"
+        />
+        <mat-autocomplete #iconAuto="matAutocomplete">
+          @for (icon of filteredIcons(); track icon) {
+            <mat-option [value]="icon">
+              <mat-icon class="option-icon">{{ icon }}</mat-icon>
+              {{ icon }}
+            </mat-option>
+          }
+        </mat-autocomplete>
       </mat-form-field>
 
       @if (isGroup) {

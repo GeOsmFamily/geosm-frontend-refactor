@@ -176,16 +176,18 @@
                 </div>
 
                 <div class="qml-upload-row">
-                  <mat-icon>description</mat-icon>
-                  <div class="qml-upload-text">
-                    <span>{{ 'tools.personalData.qmlLabel' | translate }}</span>
-                    <span class="qml-hint">{{ 'tools.personalData.qmlHint' | translate }}</span>
-                    @if (layer.style?.qmlPath) {
-                      <span class="qml-uploaded">
-                        <mat-icon>check_circle</mat-icon>
-                        {{ 'tools.personalData.qmlUploaded' | translate }}
-                      </span>
-                    }
+                  <div class="qml-upload-header">
+                    <mat-icon>description</mat-icon>
+                    <div class="qml-upload-text">
+                      <span>{{ 'tools.personalData.qmlLabel' | translate }}</span>
+                      <span class="qml-hint">{{ 'tools.personalData.qmlHint' | translate }}</span>
+                      @if (layer.style?.qmlPath) {
+                        <span class="qml-uploaded">
+                          <mat-icon>check_circle</mat-icon>
+                          {{ 'tools.personalData.qmlUploaded' | translate }}
+                        </span>
+                      }
+                    </div>
                   </div>
                   <input
                     #qmlInput

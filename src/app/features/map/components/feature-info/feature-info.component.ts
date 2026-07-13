@@ -202,6 +202,11 @@ export class FeatureInfoComponent implements OnInit, OnDestroy {
           .filter((l): l is TileLayer<TileWMS> => {
             if (!(l instanceof TileLayer) || !(l.getSource() instanceof TileWMS) || !l.getVisible())
               return false;
+            // Une donnée personnelle (voir PersonalDataToolComponent) est toujours affichée à la
+            // demande explicite de l'utilisateur depuis son propre panneau - contrairement au
+            // catalogue, il n'y a pas de risque de "fond de contexte" ambiant, donc pas besoin de
+            // la restreindre aux géométries point.
+            if (l.get('isIdentifiable') === true) return true;
             const activeLayer = activeLayers.find((al) => al.olLayer === l);
             const geometryType = (
               activeLayer?.layer.geometryType ||

@@ -267,6 +267,11 @@ export class PersonalDataToolComponent implements OnInit, OnDestroy {
       FORMAT: 'image/png',
       TRANSPARENT: 'true',
     });
+    // Même repli que pour le rendu vectoriel (FILE) ci-dessus : rend la couche éligible au clic
+    // "fiche descriptive" côté FeatureInfoComponent (GetFeatureInfo WMS), et lui donne un nom
+    // lisible pour le titre de la fiche à la place de l'id technique "personal-<uuid>".
+    olLayer.set('isIdentifiable', true);
+    olLayer.set('name', layer.name);
     this.activeMapLayers.set(layer.id, olLayer);
   }
 

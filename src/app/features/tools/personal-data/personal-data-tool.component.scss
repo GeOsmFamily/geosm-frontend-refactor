@@ -292,30 +292,42 @@
       }
 
       .publish-form {
-        margin: 8px 0 0 40px;
+        margin: 8px 0 0 12px;
       }
 
       .style-editor {
-        margin: 8px 0 0 40px;
+        margin: 8px 0 0 12px;
         padding: 10px;
         border-radius: var(--radius-sm, 8px);
         background: rgba(2, 63, 95, 0.03);
+        min-width: 0;
 
         .style-row.inline-form {
           margin: 0 0 10px;
+          flex-wrap: wrap;
         }
 
         .qml-upload-row {
           display: flex;
-          align-items: center;
+          flex-direction: column;
           gap: 8px;
+          min-width: 0;
 
-          > mat-icon {
+          .qml-upload-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            min-width: 0;
+          }
+
+          > mat-icon,
+          .qml-upload-header > mat-icon {
             font-size: 20px;
             width: 20px;
             height: 20px;
             color: var(--text-secondary, rgba(0, 0, 0, 0.5));
             flex-shrink: 0;
+            margin-top: 1px;
           }
 
           .qml-upload-text {
@@ -328,6 +340,7 @@
             span {
               font-size: 11px;
               color: var(--text, #1e293b);
+              overflow-wrap: break-word;
             }
 
             .qml-hint {
@@ -351,8 +364,12 @@
           }
 
           button {
-            flex-shrink: 0;
+            width: 100%;
             font-size: 11px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
 
             app-loading-spinner {
               display: inline-flex;

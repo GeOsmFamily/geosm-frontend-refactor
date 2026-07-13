@@ -15,6 +15,13 @@
     <app-loading-spinner></app-loading-spinner>
   }
 
+  @if (statsUnavailable && !loading) {
+    <p class="hint">
+      Statistiques non disponibles pour cette couche (donnée servie depuis un projet QGIS externe,
+      sans table interrogeable par le géoportail).
+    </p>
+  }
+
   @if (stats && !loading) {
     <mat-card class="stats-card">
       <mat-card-content>
