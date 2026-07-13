@@ -16,7 +16,7 @@ jobs:
     outputs:
       version: ${{ steps.version.outputs.tag }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
       - name: Générer le tag de version
@@ -38,7 +38,7 @@ jobs:
     name: Build et tests avant déploiement
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: actions/setup-node@v4
         with:
           node-version: 22
@@ -54,7 +54,7 @@ jobs:
     env:
       REPO_LC: ""
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Convertir le nom du repo en minuscules
         run: echo "REPO_LC=$(echo '${{ github.repository }}' | tr '[:upper:]' '[:lower:]')" >> "$GITHUB_ENV"
       - uses: docker/setup-buildx-action@v4
@@ -132,7 +132,7 @@ jobs:
     env:
       REPO_LC: ""
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
       - name: Convertir le nom du repo en minuscules
