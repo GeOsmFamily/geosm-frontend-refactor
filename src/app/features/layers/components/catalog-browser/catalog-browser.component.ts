@@ -48,8 +48,14 @@ export class CatalogBrowserComponent implements OnInit, OnDestroy {
   selectedGroup: CatalogGroup | null = null;
   searchQuery = '';
   loading = true;
+  viewType: 'list' | 'grid' = 'list';
 
   ngOnInit(): void {
+    const savedView = localStorage.getItem('catalog-view-type');
+    if (savedView === 'grid' || savedView === 'list') {
+      this.viewType = savedView;
+    }
+
     this.instanceService.currentInstance$.pipe(takeUntil(this.destroy$)).subscribe((instance) => {
       if (instance) {
         this.loadCatalog(instance.slug);
@@ -62,6 +68,11 @@ export class CatalogBrowserComponent implements OnInit, OnDestroy {
         this.loadCatalog(instance.slug);
       }
     });
+  }
+
+  toggleViewType(): void {
+    this.viewType = this.viewType === 'list' ? 'grid' : 'list';
+    localStorage.setItem('catalog-view-type', this.viewType);
   }
 
   ngOnDestroy(): void {

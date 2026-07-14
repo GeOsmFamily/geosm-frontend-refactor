@@ -231,8 +231,6 @@ export class FeatureInfoComponent implements OnInit, OnDestroy {
     resolution: number,
   ): void {
     this.loading.set(true);
-    this.visible.set(true);
-    this.overlay.setPosition(coordinate);
 
     const layer = layers.at(-1)!;
     const source = layer.getSource()!;
@@ -245,7 +243,6 @@ export class FeatureInfoComponent implements OnInit, OnDestroy {
 
     if (!url) {
       this.loading.set(false);
-      this.close();
       return;
     }
 
