@@ -167,7 +167,12 @@ export class MapLayoutComponent implements OnInit {
     // profil que si une session existe réellement, sinon /auth/me renvoie 401 pour rien à
     // chaque chargement de page.
     if (this.authService.isAuthenticated()) {
-      this.authService.getProfile().subscribe({ error: () => {} });
+      this.authService.getProfile().subscribe({
+        // Erreur ignorée intentionnellement : un token expiré/invalide ne doit pas bloquer
+        // l'affichage du géoportail public, l'utilisateur reste simplement non authentifié.
+        // eslint-disable-next-line @typescript-eslint/no-empty-function
+        error: () => {},
+      });
     }
     this.mapService.mapReady$.subscribe((ready) => {
       if (ready) {
@@ -285,7 +290,7 @@ export class MapLayoutComponent implements OnInit {
     this.settingsOpen.set(false);
 
     this.geocodingService.reverse(lat, lon).subscribe({
-      next: (res: any) => {
+      next: (res: GeocodingResult & { display_name?: string }) => {
         this.locationInfo.set({
           ...res,
           displayName:
@@ -300,7 +305,7 @@ export class MapLayoutComponent implements OnInit {
           displayName: `${lat.toFixed(6)}, ${lon.toFixed(6)}`,
           lat,
           lon,
-        } as any);
+        } as GeocodingResult);
         this.locationInfoLoading.set(false);
       },
     });
@@ -349,6 +354,10 @@ export class MapLayoutComponent implements OnInit {
             }
           });
       },
+      // Erreur ignorée intentionnellement : le slug d'instance est déjà validé côté routage
+      // (sinon on tomberait sur loadDefaultInstance) ; un échec ponctuel de cet appel ne doit
+      // pas empêcher l'affichage de la carte, seul le recentrage initial sera manqué.
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
       error: () => {},
     });
   }
@@ -605,7 +614,12 @@ export class MapLayoutComponent implements OnInit {
     if (!instanceId) return;
     this.analyticsService
       .trackEvent({ instanceId, eventType: 'tool_opened', metadata: { toolId } })
-      .subscribe({ error: () => {} });
+      .subscribe({
+        // Erreur ignorée intentionnellement : le tracking analytique est un effet de bord non
+        // essentiel, un échec ne doit jamais perturber l'ouverture de l'outil pour l'utilisateur.
+        // eslint-disable-next-line @typescript-eslint/no-empty-function
+        error: () => {},
+      });
   }
 
   closeActiveTool(): void {

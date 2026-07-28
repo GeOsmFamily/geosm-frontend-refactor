@@ -60,10 +60,7 @@ export class LayerService {
   private readonly api = inject(ApiService);
   private readonly http = inject(HttpClient);
 
-  list(
-    instanceId: string,
-    params?: Record<string, unknown>,
-  ): Observable<PaginatedResponse<Layer>> {
+  list(instanceId: string, params?: Record<string, unknown>): Observable<PaginatedResponse<Layer>> {
     return this.api.getPaginated<Layer>(`/instances/${instanceId}/layers`, params);
   }
 

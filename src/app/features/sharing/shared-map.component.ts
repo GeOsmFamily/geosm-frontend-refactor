@@ -11,7 +11,20 @@ import { ApiService } from '../../core/services/api.service';
 import { CatalogService } from '../../core/services/catalog.service';
 import { InstanceService } from '../../core/services/instance.service';
 import { MapLayerService } from '../map/services/map-layer.service';
-import { ShareMap, Layer, Instance } from '../../core/models/index';
+import { ShareMap, Layer, Instance, Group, SubGroup } from '../../core/models/index';
+
+/** Formes brutes renvoyées par /catalog/:slug avant enrichissement local (bbox/tags peuvent
+ * être absents) - voir CatalogBrowserComponent qui type la même réponse à l'identique. */
+type RawCatalogLayer = Omit<Layer, 'instanceId' | 'subGroupId' | 'bbox' | 'tags'> & {
+  bbox?: Layer['bbox'];
+  tags?: Layer['tags'];
+};
+type RawCatalogSubGroup = SubGroup & { layers?: RawCatalogLayer[] };
+type RawCatalogGroup = Group & { subGroups?: RawCatalogSubGroup[] };
+interface RawCatalogInstance {
+  id: string;
+  groups?: RawCatalogGroup[];
+}
 
 @Component({
   selector: 'app-shared-map',
@@ -75,7 +88,8 @@ export class SharedMapComponent implements OnInit {
         this.instanceService.setCurrentInstance(instance);
         // Load the catalog to resolve layers
         this.catalogService.getCatalogByInstance(instance.slug).subscribe({
-          next: (instances: any[]) => {
+          next: (raw) => {
+            const instances = raw as RawCatalogInstance[];
             const catalogInstance = instances?.[0];
             const allLayers = this.extractLayers(catalogInstance?.groups || []);
             this.applyMapState(share, allLayers);
@@ -95,7 +109,7 @@ export class SharedMapComponent implements OnInit {
     });
   }
 
-  private extractLayers(groups: any[]): Layer[] {
+  private extractLayers(groups: RawCatalogGroup[]): Layer[] {
     const layers: Layer[] = [];
     if (!groups) return layers;
     for (const group of groups) {
@@ -119,7 +133,7 @@ export class SharedMapComponent implements OnInit {
   }
 
   private applyMapCoordinates(share: ShareMap): void {
-    const state = share.mapState as Record<string, any>;
+    const state = share.mapState;
     if (state && state['center'] && state['zoom']) {
       const center = state['center'] as [number, number];
       const zoom = state['zoom'] as number;
@@ -132,7 +146,7 @@ export class SharedMapComponent implements OnInit {
   private applyMapState(share: ShareMap, catalogLayers: Layer[]): void {
     this.applyMapCoordinates(share);
 
-    const state = share.mapState as Record<string, any>;
+    const state = share.mapState;
     if (state && Array.isArray(state['layers'])) {
       const layersState = state['layers'] as {
         layerId: string;

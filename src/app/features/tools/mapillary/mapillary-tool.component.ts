@@ -17,6 +17,7 @@ import MVT from 'ol/format/MVT';
 import Overlay from 'ol/Overlay';
 import { fromLonLat } from 'ol/proj';
 import { Fill, Stroke, Style, Circle as CircleStyle, RegularShape } from 'ol/style';
+import type { MapBrowserEvent } from 'ol';
 import { MapService } from '../../map/services/map.service';
 import { MapillaryService, MapillaryImage } from '../../../core/services/mapillary.service';
 import { LoadingSpinnerComponent } from '../../../shared/components/loading-spinner/loading-spinner.component';
@@ -42,8 +43,8 @@ export class MapillaryToolComponent implements OnInit, OnDestroy {
   private readonly sanitizer = inject(DomSanitizer);
 
   private map!: Map;
-  private clickListener: ((evt: any) => void) | null = null;
-  private pointerMoveListener: ((evt: any) => void) | null = null;
+  private clickListener: ((evt: MapBrowserEvent) => void) | null = null;
+  private pointerMoveListener: ((evt: MapBrowserEvent) => void) | null = null;
 
   private vectorTileLayer!: VectorTileLayer;
   private readonly markerSource = new VectorSource();
@@ -70,7 +71,7 @@ export class MapillaryToolComponent implements OnInit, OnDestroy {
   playbackIndex = 0;
   playbackSpeed = 800; // ms per frame
   isFullscreen = false;
-  private playbackTimer: any = null;
+  private playbackTimer: ReturnType<typeof setInterval> | null = null;
 
   ngOnInit(): void {
     this.map = this.mapService.getMap();
@@ -193,7 +194,7 @@ export class MapillaryToolComponent implements OnInit, OnDestroy {
     this.map.addLayer(this.vectorTileLayer);
 
     // Map click selection
-    this.clickListener = (evt: any) => {
+    this.clickListener = (evt: MapBrowserEvent) => {
       const pixel = this.map.getEventPixel(evt.originalEvent);
       const feature = this.map.forEachFeatureAtPixel(pixel, (f) => f, {
         layerFilter: (layer) => layer === this.vectorTileLayer,
@@ -241,7 +242,7 @@ export class MapillaryToolComponent implements OnInit, OnDestroy {
     this.map.on('singleclick', this.clickListener);
 
     // Hover popup handler
-    this.pointerMoveListener = (evt: any) => {
+    this.pointerMoveListener = (evt: MapBrowserEvent) => {
       if (this.playing || evt.dragging) {
         this.popupOverlay.setPosition(undefined);
         return;
@@ -315,7 +316,7 @@ export class MapillaryToolComponent implements OnInit, OnDestroy {
     }
 
     if (this.vectorTileLayer) {
-      this.vectorTileLayer.setSource(null as any); // Clear internal caches
+      this.vectorTileLayer.setSource(null); // Clear internal caches
       this.map.removeLayer(this.vectorTileLayer);
     }
     if (this.markerLayer) {

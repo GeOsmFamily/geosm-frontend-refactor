@@ -154,7 +154,7 @@ export function createClusterLayer(
   source: VectorSource,
   layerIconUrl: string = DEFAULT_CLUSTER_ICON,
   distance = 40,
-  style?: Style | ((feature: any) => Style | Style[]),
+  style?: Style | ((feature: FeatureLike) => Style | Style[]),
   badgeColor: string = DEFAULT_BADGE_COLOR,
 ): VectorLayer<Cluster> {
   const clusterSource = new Cluster({

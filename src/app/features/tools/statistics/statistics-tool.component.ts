@@ -8,7 +8,7 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatCardModule } from '@angular/material/card';
 import { FormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
-import { MapLayerService } from '../../map/services/map-layer.service';
+import { MapLayerService, ActiveLayer } from '../../map/services/map-layer.service';
 import { LayerService } from '../../../core/services/layer.service';
 import { GeoportailService } from '../../../core/services/geoportail.service';
 import { LoadingSpinnerComponent } from '../../../shared/components/loading-spinner/loading-spinner.component';
@@ -49,7 +49,7 @@ export class StatisticsToolComponent implements OnInit {
   private readonly layerService = inject(LayerService);
   private readonly geoportailService = inject(GeoportailService);
 
-  activeLayers: any[] = [];
+  activeLayers: ActiveLayer[] = [];
   selectedLayerId: string | null = null;
   selectedProperty: string | null = null;
   loading = false;
@@ -123,12 +123,15 @@ export class StatisticsToolComponent implements OnInit {
     });
   }
 
-  private computeStats(features: any[]): LayerStats {
+  private computeStats(features: unknown[]): LayerStats {
     if (features.length === 0) {
       return { totalFeatures: 0, properties: [], propertyDistribution: {} };
     }
 
-    const sampleProps = features[0]?.properties || features[0] || {};
+    // Normalement un GeoJSON Feature avec `.properties`, mais certaines couches renvoient des
+    // données déjà aplaties - d'où le repli sur l'objet lui-même quand `.properties` est absent.
+    const first = features[0] as Record<string, unknown>;
+    const sampleProps = (first?.['properties'] as Record<string, unknown>) || first || {};
     const stringProps = Object.keys(sampleProps).filter((k) => {
       const val = sampleProps[k];
       return typeof val === 'string' && k !== 'id' && k !== 'geometry' && k !== 'geom';
@@ -138,8 +141,9 @@ export class StatisticsToolComponent implements OnInit {
 
     for (const prop of stringProps) {
       const counts: Record<string, number> = {};
-      for (const f of features) {
-        const val = (f.properties || f)[prop];
+      for (const feature of features) {
+        const f = feature as Record<string, unknown>;
+        const val = ((f['properties'] as Record<string, unknown>) || f)[prop];
         if (val != null && val !== '') {
           const key = String(val).substring(0, 30);
           counts[key] = (counts[key] || 0) + 1;

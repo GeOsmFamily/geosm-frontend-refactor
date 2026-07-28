@@ -466,7 +466,7 @@ export class LayerCreationWizardComponent {
     const isPointGeometry =
       olFeatures.length > 0 &&
       ['Point', 'MultiPoint'].includes(olFeatures[0].getGeometry()?.getType() ?? '');
-    const layer: VectorLayer<any> = isPointGeometry
+    const layer: VectorLayer<VectorSource> = isPointGeometry
       ? createClusterLayer(source, undefined, 40, undefined, '#00ada7')
       : new VectorLayer({
           source,

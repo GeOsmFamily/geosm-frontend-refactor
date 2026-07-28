@@ -503,12 +503,12 @@
 
       <!-- Share Copied Dialog / Modal -->
       @if (shareModalOpen()) {
-        <div
-          class="share-modal-overlay animate-in"
-          role="presentation"
-          (click)="closeShareModal()"
-        >
-          <div class="share-modal-card glass" role="presentation" (click)="$event.stopPropagation()">
+        <div class="share-modal-overlay animate-in" role="presentation" (click)="closeShareModal()">
+          <div
+            class="share-modal-card glass"
+            role="presentation"
+            (click)="$event.stopPropagation()"
+          >
             <div class="share-modal-header">
               <mat-icon class="share-modal-icon">check_circle</mat-icon>
               <h3>Lien copié !</h3>

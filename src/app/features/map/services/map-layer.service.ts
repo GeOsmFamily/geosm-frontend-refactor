@@ -60,6 +60,7 @@ export class MapLayerService {
     if (!instanceId) return;
     this.analyticsService
       .trackEvent({ instanceId, eventType, layerId })
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
       .subscribe({ error: () => {} });
   }
 

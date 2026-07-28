@@ -7,16 +7,17 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MatTableModule } from '@angular/material/table';
 import { MatDividerModule } from '@angular/material/divider';
 import Map from 'ol/Map';
+import Feature from 'ol/Feature';
 import VectorLayer from 'ol/layer/Vector';
 import VectorSource from 'ol/source/Vector';
-import GeoJSON from 'ol/format/GeoJSON';
+import GeoJSONFormat from 'ol/format/GeoJSON';
 import { Fill, Stroke, Style } from 'ol/style';
 import { MapService } from '../../services/map.service';
 import { TranslateModule } from '@ngx-translate/core';
 
 export interface DescriptiveSheetData {
-  properties: Record<string, any>;
-  geometry: any;
+  properties: Record<string, unknown>;
+  geometry: GeoJSON.Geometry;
   layerName?: string;
 }
 
@@ -45,7 +46,7 @@ export class DescriptiveSheetComponent implements OnInit, OnDestroy {
   private highlightLayer!: VectorLayer<VectorSource>;
   private highlightSource = new VectorSource();
 
-  properties: { key: string; value: any }[] = [];
+  properties: { key: string; value: unknown }[] = [];
   wikipediaUrl: string | null = null;
   wikidataUrl: string | null = null;
   osmUrl: string | null = null;
@@ -87,11 +88,11 @@ export class DescriptiveSheetComponent implements OnInit, OnDestroy {
 
     if (this.data.geometry) {
       try {
-        const format = new GeoJSON();
+        const format = new GeoJSONFormat();
         const feature = format.readFeature(
           { type: 'Feature', geometry: this.data.geometry, properties: {} },
           { featureProjection: 'EPSG:3857', dataProjection: 'EPSG:4326' },
-        ) as any;
+        ) as Feature;
         this.highlightSource.addFeature(feature);
         const extent = feature.getGeometry()!.getExtent();
         this.map.getView().fit(extent, { padding: [50, 50, 50, 50], duration: 500, maxZoom: 18 });

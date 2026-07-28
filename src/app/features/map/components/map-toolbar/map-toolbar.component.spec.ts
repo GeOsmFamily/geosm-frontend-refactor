@@ -89,7 +89,12 @@ describe('MapToolbarComponent', () => {
     fixture.detectChanges();
 
     expect(mapServiceSpy.getMap).toHaveBeenCalled();
-    expect(mapSpy.on).toHaveBeenCalledWith('moveend', jasmine.any(Function));
+    // `Map.on()` a trop de surcharges par nom d'événement pour que Jasmine infère un type
+    // de matcher unique ici - le spy reste bien typé `jasmine.SpyObj<Map>` par ailleurs.
+    expect(mapSpy.on as unknown as jasmine.Spy).toHaveBeenCalledWith(
+      'moveend',
+      jasmine.any(Function),
+    );
   });
 
   it('should zoom in', () => {

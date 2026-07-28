@@ -51,7 +51,7 @@ export class MapToolbarComponent implements OnInit, OnDestroy {
   private history: MapPosition[] = [];
   private historyIndex = -1;
   private navigating = false;
-  private moveEndListener: any;
+  private moveEndListener?: () => void;
 
   readonly locating = signal(false);
   readonly hasLocationMarker = signal(false);

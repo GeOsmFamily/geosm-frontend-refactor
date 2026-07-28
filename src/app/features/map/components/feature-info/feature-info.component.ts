@@ -40,6 +40,11 @@ const KNOWN_KEYS = new Set([
   'wikimedia_commons',
 ]);
 
+/** Réponse brute du GetFeatureInfo WMS (GeoServer/QGIS Server), au format GeoJSON minimal. */
+interface WmsFeatureInfoResponse {
+  features?: { properties?: Record<string, unknown> }[];
+}
+
 // Les valeurs doivent correspondre à l'enum backend ExportFormat (majuscules),
 // sinon la validation Zod côté API rejette la requête ("impossible de créer l'export").
 const DOWNLOAD_FORMATS: { value: string; label: string }[] = [
@@ -251,7 +256,7 @@ export class FeatureInfoComponent implements OnInit, OnDestroy {
     const activeLayer = this.mapLayerService.getActiveLayers().find((al) => al.olLayer === layer);
     this.lastLayerId = activeLayer?.layer.id || null;
 
-    this.http.get<any>(url).subscribe({
+    this.http.get<WmsFeatureInfoResponse>(url).subscribe({
       next: (response) => {
         this.loading.set(false);
         if (response.features && response.features.length > 0) {
@@ -273,9 +278,13 @@ export class FeatureInfoComponent implements OnInit, OnDestroy {
     });
   }
 
-  private showProperties(title: string, props: Record<string, any>, coordinate: number[]): void {
+  private showProperties(
+    title: string,
+    props: Record<string, unknown>,
+    coordinate: number[],
+  ): void {
     const tags = typeof props['tags'] === 'object' && props['tags'] !== null ? props['tags'] : {};
-    const merged: Record<string, any> = { ...props, ...tags };
+    const merged: Record<string, unknown> = { ...props, ...tags };
     const get = (key: string): string | null => {
       const v = merged[key];
       return v !== null && v !== undefined && v !== '' ? String(v) : null;
@@ -316,7 +325,7 @@ export class FeatureInfoComponent implements OnInit, OnDestroy {
    * URL d'image directe ; sinon on se tait plutôt que d'afficher un lien cassé ou une capture
    * d'écran Google Maps (valeurs `image=` non standard rencontrées dans les données réelles).
    */
-  private resolveImageUrl(merged: Record<string, any>): string | null {
+  private resolveImageUrl(merged: Record<string, unknown>): string | null {
     const image = typeof merged['image'] === 'string' ? merged['image'].trim() : '';
     if (/^https?:\/\//i.test(image) || image.startsWith('data:image/')) {
       return image;

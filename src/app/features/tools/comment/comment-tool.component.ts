@@ -16,6 +16,7 @@ import Feature from 'ol/Feature';
 import Point from 'ol/geom/Point';
 import { fromLonLat, toLonLat } from 'ol/proj';
 import { Fill, Stroke, Style, Icon, Text, Circle as CircleStyle } from 'ol/style';
+import type { MapBrowserEvent } from 'ol';
 
 import { MapService } from '../../map/services/map.service';
 import { ToolActionService } from '../../../core/services/tool-action.service';
@@ -77,7 +78,7 @@ export class CommentToolComponent implements OnInit, OnDestroy {
 
   private map!: Map;
   private vectorSource!: VectorSource;
-  private clickListener: ((evt: any) => void) | null = null;
+  private clickListener: ((evt: MapBrowserEvent) => void) | null = null;
   private authSubscription!: Subscription;
 
   readonly currentUser = this.authService.currentUser$;
@@ -174,7 +175,7 @@ export class CommentToolComponent implements OnInit, OnDestroy {
     // FeatureInfoComponent qui ignore les clics quand ce flag est vrai.
     this.mapService.isPicking = true;
 
-    this.clickListener = (evt: any) => {
+    this.clickListener = (evt: MapBrowserEvent) => {
       const lonLat = toLonLat(evt.coordinate) as [number, number];
       this.pendingCoord = lonLat;
       this.isPlacing = false;
@@ -215,7 +216,11 @@ export class CommentToolComponent implements OnInit, OnDestroy {
         next: (savedComment) => {
           this.analyticsService
             .trackEvent({ instanceId: instance.id, eventType: 'comment_created' })
-            .subscribe({ error: () => {} });
+            .subscribe({
+              error: () => {
+                // best-effort analytics ping — a tracking failure must not disrupt the comment flow
+              },
+            });
           const feature = new Feature(new Point(fromLonLat(this.pendingCoord!)));
           feature.set('label', text);
           feature.set('resolved', false);
