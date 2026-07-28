@@ -26,6 +26,7 @@ describe('MapLayerService', () => {
     url: 'http://qgis/ows',
     sourceUrl: 'http://qgis/ows',
     tableName: 'cameroon_hopitaux',
+    schemaName: 'cameroon',
     sourceLayer: 'cameroon:cameroon_hopitaux',
     description: '',
     bbox: null,
