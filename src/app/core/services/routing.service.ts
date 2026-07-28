@@ -14,10 +14,10 @@ export class RoutingService {
   getRoute(
     coordinates: [number, number][],
     profile = 'driving',
-    options?: Record<string, any>,
+    options?: Record<string, unknown>,
   ): Observable<RouteResult> {
     const coordsStr = coordinates.map((c) => `${c[0]},${c[1]}`).join(';');
-    const params: Record<string, any> = {
+    const params: Record<string, unknown> = {
       coordinates: coordsStr,
       profile,
       geometries: 'geojson',
@@ -27,7 +27,7 @@ export class RoutingService {
     return this.api.get<RouteResult>('/routing/route', params);
   }
 
-  getNearest(lon: number, lat: number): Observable<any> {
-    return this.api.get<any>('/routing/nearest', { lon, lat });
+  getNearest(lon: number, lat: number): Observable<unknown> {
+    return this.api.get<unknown>('/routing/nearest', { lon, lat });
   }
 }

@@ -145,7 +145,7 @@ export interface Layer {
     totalLength?: number | null;
     importedAt?: string | null;
     lastSyncedAt?: string | null;
-    [key: string]: any;
+    [key: string]: unknown;
   } | null;
 }
 
@@ -390,7 +390,7 @@ export interface PaginatedResponse<T> {
 export interface ApiResponse<T> {
   success: boolean;
   data: T;
-  meta?: any;
+  meta?: unknown;
 }
 
 export interface SearchResult {

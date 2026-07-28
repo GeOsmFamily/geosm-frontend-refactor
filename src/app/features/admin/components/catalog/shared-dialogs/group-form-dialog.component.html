@@ -26,12 +26,7 @@
       </div>
       <mat-form-field appearance="outline">
         <mat-label>{{ 'admin.catalog.icon' | translate }}</mat-label>
-        <input
-          matInput
-          formControlName="icon"
-          placeholder="folder"
-          [matAutocomplete]="iconAuto"
-        />
+        <input matInput formControlName="icon" placeholder="folder" [matAutocomplete]="iconAuto" />
         <mat-autocomplete #iconAuto="matAutocomplete">
           @for (icon of filteredIcons(); track icon) {
             <mat-option [value]="icon">

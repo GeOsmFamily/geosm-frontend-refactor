@@ -3,19 +3,22 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { TranslateModule } from '@ngx-translate/core';
 import { MatDialog } from '@angular/material/dialog';
 import { BehaviorSubject } from 'rxjs';
+import Map from 'ol/Map';
+import View from 'ol/View';
 import { MapToolbarComponent } from './map-toolbar.component';
 import { MapService } from '../../services/map.service';
 import { InstanceService } from '../../../../core/services/instance.service';
+import { Instance } from '../../../../core/models/index';
 
 describe('MapToolbarComponent', () => {
   let component: MapToolbarComponent;
   let fixture: ComponentFixture<MapToolbarComponent>;
-  let mapSpy: jasmine.SpyObj<any>;
-  let viewSpy: jasmine.SpyObj<any>;
+  let mapSpy: jasmine.SpyObj<Map>;
+  let viewSpy: jasmine.SpyObj<View>;
   let dialogSpy: jasmine.SpyObj<MatDialog>;
   let mapServiceSpy: jasmine.SpyObj<MapService>;
   let mapReadySubject: BehaviorSubject<boolean>;
-  let instanceServiceMock: any;
+  let instanceServiceMock: { currentInstance$: BehaviorSubject<Instance | null> };
 
   beforeEach(async () => {
     mapReadySubject = new BehaviorSubject<boolean>(false);
@@ -41,13 +44,21 @@ describe('MapToolbarComponent', () => {
     dialogSpy = jasmine.createSpyObj('MatDialog', ['open']);
 
     instanceServiceMock = {
-      currentInstance$: new BehaviorSubject<any>({
+      currentInstance$: new BehaviorSubject<Instance | null>({
         id: 'cameroon',
+        name: 'Cameroon',
         slug: 'cameroon',
+        description: '',
+        logo: null,
         bbox: [8.4, 1.6, 16.2, 13.1],
         centerLat: 7.37,
         centerLon: 12.35,
         defaultZoom: 6,
+        boundaryTable: null,
+        boundaryId: null,
+        boundaryGeomCol: null,
+        adminLevel: null,
+        isActive: true,
       }),
     };
 

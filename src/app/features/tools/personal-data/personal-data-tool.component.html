@@ -31,7 +31,10 @@
           {{
             'tools.personalData.stagedSummary'
               | translate
-                : { count: stagedImport()!.featureCount, geometryType: stagedImport()!.geometryType }
+                : {
+                    count: stagedImport()!.featureCount,
+                    geometryType: stagedImport()!.geometryType,
+                  }
           }}
         </p>
 
@@ -109,8 +112,10 @@
                 class="visibility-btn"
                 type="button"
                 [matTooltip]="
-                  (isVisible(layer) ? 'tools.personalData.hideFromMap' : 'tools.personalData.showOnMap')
-                    | translate
+                  (isVisible(layer)
+                    ? 'tools.personalData.hideFromMap'
+                    : 'tools.personalData.showOnMap'
+                  ) | translate
                 "
                 (click)="toggleVisibility(layer)"
               >
@@ -125,7 +130,9 @@
               <span
                 class="status-chip"
                 [class]="'status-' + layer.status.toLowerCase()"
-                [matTooltip]="layer.status === 'REJECTED' && layer.reviewNote ? layer.reviewNote : ''"
+                [matTooltip]="
+                  layer.status === 'REJECTED' && layer.reviewNote ? layer.reviewNote : ''
+                "
               >
                 <mat-icon>{{ statusIcon(layer.status) }}</mat-icon>
                 {{ statusLabelKey(layer.status) | translate }}

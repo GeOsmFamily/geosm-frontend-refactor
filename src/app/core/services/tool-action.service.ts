@@ -4,7 +4,7 @@ import { Subject } from 'rxjs';
 export interface ToolAction {
   tool: string;
   action: string;
-  data?: any;
+  data?: unknown;
 }
 
 @Injectable({ providedIn: 'root' })

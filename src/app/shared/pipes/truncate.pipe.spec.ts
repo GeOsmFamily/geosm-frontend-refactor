@@ -12,7 +12,7 @@ describe('TruncatePipe', () => {
   });
 
   it('should return empty string for null', () => {
-    expect(pipe.transform(null as any)).toBe('');
+    expect(pipe.transform(null as unknown as string)).toBe('');
   });
 
   it('should not truncate short strings', () => {

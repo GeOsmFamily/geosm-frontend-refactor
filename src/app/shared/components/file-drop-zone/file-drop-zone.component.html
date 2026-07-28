@@ -1,4 +1,11 @@
-<div class="drop-zone" [class.drag-over]="isDragOver()" (click)="openFilePicker()">
+<div
+  class="drop-zone"
+  role="button"
+  tabindex="0"
+  [class.drag-over]="isDragOver()"
+  (click)="openFilePicker()"
+  (keydown.enter)="openFilePicker()"
+>
   <input
     #fileInput
     type="file"

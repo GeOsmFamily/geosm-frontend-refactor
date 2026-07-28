@@ -99,6 +99,9 @@ export class MyMapsComponent implements OnInit {
           this.mapName = '';
           this.analyticsService
             .trackEvent({ instanceId: instance.id, eventType: 'map_composition_saved' })
+            // Erreur ignorée intentionnellement : le suivi analytique ne doit jamais faire
+            // échouer l'enregistrement de la carte, qui a déjà réussi côté serveur.
+            // eslint-disable-next-line @typescript-eslint/no-empty-function
             .subscribe({ error: () => {} });
           this.snackBar.open(
             this.translate.instant('shared.savedSuccessfully') || 'Enregistré avec succès',
@@ -123,6 +126,9 @@ export class MyMapsComponent implements OnInit {
     this.loadingMapId.set(composition.id);
     this.analyticsService
       .trackEvent({ instanceId: instance.id, eventType: 'map_composition_loaded' })
+      // Erreur ignorée intentionnellement : le suivi analytique ne doit jamais bloquer le
+      // chargement de la carte enregistrée.
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
       .subscribe({ error: () => {} });
 
     this.mapLayerService.removeAll();

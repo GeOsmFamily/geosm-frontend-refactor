@@ -125,9 +125,7 @@ export class GroupFormDialogComponent {
 
   filterIcons(value: string | null): void {
     const query = (value || '').trim().toLowerCase();
-    this.filteredIcons.set(
-      query ? this.allIcons.filter((i) => i.includes(query)) : this.allIcons,
-    );
+    this.filteredIcons.set(query ? this.allIcons.filter((i) => i.includes(query)) : this.allIcons);
   }
 
   get titleKey(): string {

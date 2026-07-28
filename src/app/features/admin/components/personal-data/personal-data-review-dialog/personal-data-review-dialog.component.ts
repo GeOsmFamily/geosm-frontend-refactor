@@ -189,7 +189,8 @@ export class PersonalDataReviewDialogComponent implements AfterViewInit, OnDestr
     const result: PersonalDataReviewResult = {
       decision: 'APPROVE',
       reviewNote: this.reviewNote.trim() || undefined,
-      overrideName: this.overrideName.trim() !== original.name ? this.overrideName.trim() : undefined,
+      overrideName:
+        this.overrideName.trim() !== original.name ? this.overrideName.trim() : undefined,
       overrideGroupName:
         this.overrideGroupName.trim() !== original.groupName
           ? this.overrideGroupName.trim()

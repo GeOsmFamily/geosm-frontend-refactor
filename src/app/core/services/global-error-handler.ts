@@ -16,7 +16,6 @@ import { environment } from '../../../environments/environment';
 @Injectable()
 export class GlobalErrorHandler implements ErrorHandler {
   handleError(error: unknown): void {
-    // eslint-disable-next-line no-console
     console.error('Unhandled error', error);
 
     // Les erreurs HTTP sont déjà journalisées côté serveur (elles y sont nées) - ne pas les

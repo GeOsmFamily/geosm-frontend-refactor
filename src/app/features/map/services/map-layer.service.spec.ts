@@ -10,7 +10,7 @@ import { MapService } from './map.service';
 import { LayerService } from '../../../core/services/layer.service';
 import { AnalyticsService } from '../../../core/services/analytics.service';
 import { InstanceService } from '../../../core/services/instance.service';
-import { Layer } from '../../../core/models/index';
+import { Instance, Layer } from '../../../core/models/index';
 
 describe('MapLayerService', () => {
   let service: MapLayerService;
@@ -34,6 +34,24 @@ describe('MapLayerService', () => {
     subGroupId: 'sg-1',
     geometryType: 'point',
     metadata: null,
+    ...overrides,
+  });
+
+  const makeInstance = (overrides: Partial<Instance> = {}): Instance => ({
+    id: 'inst-1',
+    name: 'Test Instance',
+    slug: 'inst-1',
+    description: '',
+    logo: null,
+    bbox: null,
+    centerLat: 0,
+    centerLon: 0,
+    defaultZoom: 6,
+    boundaryTable: null,
+    boundaryId: null,
+    boundaryGeomCol: null,
+    adminLevel: null,
+    isActive: true,
     ...overrides,
   });
 
@@ -65,7 +83,7 @@ describe('MapLayerService', () => {
 
   describe('addLayer', () => {
     it('should create a vector cluster layer (+ hidden heatmap) for a point layer under the feature cap', () => {
-      const layer = makeLayer({ geometryType: 'point', metadata: { featureCount: 100 } as any });
+      const layer = makeLayer({ geometryType: 'point', metadata: { featureCount: 100 } });
 
       service.addLayer(layer);
 
@@ -89,7 +107,7 @@ describe('MapLayerService', () => {
     });
 
     it('should fall back to WMS for a point layer over the client-side feature cap', () => {
-      const layer = makeLayer({ geometryType: 'point', metadata: { featureCount: 999999 } as any });
+      const layer = makeLayer({ geometryType: 'point', metadata: { featureCount: 999999 } });
 
       service.addLayer(layer);
 
@@ -105,7 +123,7 @@ describe('MapLayerService', () => {
     });
 
     it('should track a layer_activated analytics event when an instance is set', () => {
-      instanceService.currentInstance$.next({ id: 'inst-1' } as any);
+      instanceService.currentInstance$.next(makeInstance());
 
       service.addLayer(makeLayer());
 
@@ -129,7 +147,7 @@ describe('MapLayerService', () => {
 
   describe('removeLayer', () => {
     it('should remove the layer from the map and active list, and track layer_deactivated', () => {
-      instanceService.currentInstance$.next({ id: 'inst-1' } as any);
+      instanceService.currentInstance$.next(makeInstance());
       const layer = makeLayer();
       service.addLayer(layer);
       mapServiceSpy.addLayer.calls.reset();

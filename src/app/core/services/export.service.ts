@@ -19,7 +19,7 @@ export class ExportService {
     return this.api.post<Export>('/exports/bulk', dto);
   }
 
-  list(params?: Record<string, any>): Observable<PaginatedResponse<Export>> {
+  list(params?: Record<string, unknown>): Observable<PaginatedResponse<Export>> {
     return this.api.getPaginated<Export>('/exports', params);
   }
 

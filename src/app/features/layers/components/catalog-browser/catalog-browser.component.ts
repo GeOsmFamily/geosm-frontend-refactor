@@ -22,6 +22,22 @@ interface CatalogSubGroup extends SubGroup {
   layers: Layer[];
 }
 
+/** Formes brutes renvoyées par l'API catalogue, avant enrichissement local pour l'affichage
+ * (bbox/tags peuvent être absents, contrairement au modèle `Layer` utilisé une fois normalisé). */
+type RawCatalogLayer = Omit<Layer, 'instanceId' | 'subGroupId' | 'bbox' | 'tags'> & {
+  bbox?: Layer['bbox'];
+  tags?: Layer['tags'];
+};
+
+type RawCatalogSubGroup = SubGroup & { layers?: RawCatalogLayer[] };
+
+type RawCatalogGroup = Group & { subGroups?: RawCatalogSubGroup[] };
+
+interface RawCatalogInstance {
+  id: string;
+  groups?: RawCatalogGroup[];
+}
+
 @Component({
   selector: 'app-catalog-browser',
   standalone: true,
@@ -80,7 +96,7 @@ export class CatalogBrowserComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
-  private mapLayer(l: any, instanceId: string, subGroupId: string): Layer {
+  private mapLayer(l: RawCatalogLayer, instanceId: string, subGroupId: string): Layer {
     return {
       ...l,
       bbox: l.bbox || null,
@@ -90,26 +106,27 @@ export class CatalogBrowserComponent implements OnInit, OnDestroy {
     };
   }
 
-  private mapSubGroup(sg: any, instanceId: string): any {
+  private mapSubGroup(sg: RawCatalogSubGroup, instanceId: string): CatalogSubGroup {
     return {
       ...sg,
-      layers: (sg.layers || []).map((l: any) => this.mapLayer(l, instanceId, sg.id)),
+      layers: (sg.layers || []).map((l) => this.mapLayer(l, instanceId, sg.id)),
     };
   }
 
-  private mapGroup(group: any, instanceId: string): CatalogGroup {
-    const subGroups = (group.subGroups || []).map((sg: any) => this.mapSubGroup(sg, instanceId));
-    const layerCount = subGroups.reduce((acc: number, sg: any) => acc + sg.layers.length, 0);
+  private mapGroup(group: RawCatalogGroup, instanceId: string): CatalogGroup {
+    const subGroups = (group.subGroups || []).map((sg) => this.mapSubGroup(sg, instanceId));
+    const layerCount = subGroups.reduce((acc, sg) => acc + sg.layers.length, 0);
     return { ...group, subGroups, layerCount };
   }
 
   private loadCatalog(slug: string): void {
     this.loading = true;
     this.catalogService.getCatalogByInstance(slug).subscribe({
-      next: (instances: any[]) => {
+      next: (raw) => {
+        const instances = raw as RawCatalogInstance[];
         const instance = instances?.[0];
         if (instance?.groups) {
-          this.groups = instance.groups.map((group: any) => this.mapGroup(group, instance.id));
+          this.groups = instance.groups.map((group) => this.mapGroup(group, instance.id));
           this.filteredGroups = this.groups;
           if (this.selectedGroup) {
             const found = this.groups.find((g) => g.id === this.selectedGroup?.id);
@@ -162,7 +179,7 @@ export class CatalogBrowserComponent implements OnInit, OnDestroy {
       .filter((g) => g.subGroups.length > 0 || g.name.toLowerCase().includes(q));
   }
 
-  toggleLayer(layer: Layer, event: MouseEvent): void {
+  toggleLayer(layer: Layer, event: Event): void {
     event.stopPropagation();
     if (this.isLayerActive(layer.id)) {
       this.mapLayerService.removeLayer(layer.id);

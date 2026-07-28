@@ -10,12 +10,18 @@
       } @else if (previewError()) {
         <p class="hint">Aperçu indisponible pour cette donnée.</p>
       }
-      <div #previewMap class="preview-map" [class.hidden]="previewLoading() || previewError()"></div>
+      <div
+        #previewMap
+        class="preview-map"
+        [class.hidden]="previewLoading() || previewError()"
+      ></div>
     </div>
 
     <div class="review-form">
       <p class="source-meta">
-        <mat-icon>{{ data.personalLayer.sourceType === 'FILE' ? 'insert_drive_file' : 'map' }}</mat-icon>
+        <mat-icon>{{
+          data.personalLayer.sourceType === 'FILE' ? 'insert_drive_file' : 'map'
+        }}</mat-icon>
         {{ data.personalLayer.sourceType === 'FILE' ? 'Fichier importé' : 'Projet QGIS' }}
         · {{ data.personalLayer.geometryType || '—' }}
       </p>

@@ -179,7 +179,9 @@ export class PersonalDataToolComponent implements OnInit, OnDestroy {
     const reason = rejections[0]?.reason;
     this.notify(
       this.translate.instant(
-        reason === 'tooLarge' ? `${I18N_PREFIX}.errors.tooLarge` : `${I18N_PREFIX}.errors.unsupportedFormat`,
+        reason === 'tooLarge'
+          ? `${I18N_PREFIX}.errors.tooLarge`
+          : `${I18N_PREFIX}.errors.unsupportedFormat`,
       ),
     );
   }
@@ -340,7 +342,9 @@ export class PersonalDataToolComponent implements OnInit, OnDestroy {
     const ref = this.dialog.open(ConfirmDialogComponent, {
       data: {
         title: this.translate.instant(`${I18N_PREFIX}.deleteConfirm.title`),
-        message: this.translate.instant(`${I18N_PREFIX}.deleteConfirm.message`, { name: layer.name }),
+        message: this.translate.instant(`${I18N_PREFIX}.deleteConfirm.message`, {
+          name: layer.name,
+        }),
       },
     });
     ref.afterClosed().subscribe((confirmed) => {

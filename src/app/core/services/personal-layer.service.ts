@@ -115,9 +115,7 @@ export class PersonalLayerService {
   }
 
   delete(instanceId: string, personalLayerId: string): Observable<void> {
-    return this.api.delete<void>(
-      `/instances/${instanceId}/personal-layers/${personalLayerId}`,
-    );
+    return this.api.delete<void>(`/instances/${instanceId}/personal-layers/${personalLayerId}`);
   }
 
   requestPublication(

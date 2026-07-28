@@ -185,6 +185,9 @@ export class AssistantChatComponent implements OnInit, OnDestroy {
     this.scrollToBottom();
     this.analyticsService
       .trackEvent({ instanceId: instance.id, eventType: 'assistant_message_sent' })
+      // Erreur ignorée intentionnellement : le suivi analytique ne doit jamais empêcher
+      // l'envoi du message à l'assistant.
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
       .subscribe({ error: () => {} });
 
     this.assistantService.chat(instance.id, conversationId, text).subscribe({

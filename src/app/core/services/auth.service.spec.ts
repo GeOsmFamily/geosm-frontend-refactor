@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { of } from 'rxjs';
 import { AuthService } from './auth.service';
 import { ApiService } from './api.service';
+import { Role } from '../models/index';
 
 describe('AuthService', () => {
   let service: AuthService;
@@ -16,7 +17,7 @@ describe('AuthService', () => {
     firstName: 'John',
     lastName: 'Doe',
     avatar: null,
-    role: 'VIEWER' as any,
+    role: Role.VIEWER,
     isActive: true,
     emailVerified: true,
     createdAt: '2024-01-01',

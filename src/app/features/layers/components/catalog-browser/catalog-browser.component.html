@@ -53,8 +53,11 @@
           @for (layer of subGroup.layers; track layer.id) {
             <div
               class="layer-row"
+              role="button"
+              tabindex="0"
               [class.active]="isLayerActive(layer.id)"
               (click)="toggleLayer(layer, $event)"
+              (keydown.enter)="toggleLayer(layer, $event)"
             >
               <div
                 class="layer-row-icon"
@@ -129,8 +132,11 @@
             @for (layer of subGroup.layers; track layer.id) {
               <div
                 class="layer-row"
+                role="button"
+                tabindex="0"
                 [class.active]="isLayerActive(layer.id)"
                 (click)="toggleLayer(layer, $event)"
+                (keydown.enter)="toggleLayer(layer, $event)"
               >
                 <div
                   class="layer-row-icon"
