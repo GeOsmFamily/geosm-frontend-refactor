@@ -17,7 +17,7 @@ export interface BaseMapFormDialogData {
   baseMap?: BaseMap;
 }
 
-const BASE_MAP_TYPES: BaseMap['type'][] = ['xyz', 'wms', 'wmts', 'mapbox'];
+const BASE_MAP_TYPES: BaseMap['type'][] = ['XYZ', 'WMS', 'WMTS', 'MAPBOX'];
 
 @Component({
   selector: 'app-base-map-form-dialog',
@@ -48,7 +48,7 @@ export class BaseMapFormDialogComponent {
   readonly form = this.fb.group({
     name: [this.data.baseMap?.name ?? '', Validators.required],
     slug: [this.data.baseMap?.slug ?? '', Validators.required],
-    type: [this.data.baseMap?.type ?? ('xyz' as BaseMap['type']), Validators.required],
+    type: [this.data.baseMap?.type ?? ('XYZ' as BaseMap['type']), Validators.required],
     url: [this.data.baseMap?.url ?? '', Validators.required],
     attribution: [this.data.baseMap?.attribution ?? ''],
     thumbnail: [this.data.baseMap?.thumbnail ?? ''],
@@ -59,10 +59,13 @@ export class BaseMapFormDialogComponent {
   onSubmit(): void {
     if (this.form.invalid) return;
     const value = this.form.getRawValue();
+
+    // Le endpoint PATCH ne permet pas de modifier `slug`/`type` (ni ne les accepte dans
+    // son body, dont le schéma refuse toute propriété additionnelle) - les envoyer lors
+    // d'une édition fait échouer la requête entière, y compris pour les autres champs.
     this.dialogRef.close({
+      ...(this.isEdit ? {} : { slug: value.slug, type: value.type }),
       name: value.name,
-      slug: value.slug,
-      type: value.type,
       url: value.url,
       attribution: value.attribution || '',
       thumbnail: value.thumbnail || null,

@@ -234,7 +234,7 @@ export interface BaseMap {
   id: string;
   name: string;
   slug: string;
-  type: 'xyz' | 'wms' | 'wmts' | 'mapbox';
+  type: 'XYZ' | 'WMS' | 'WMTS' | 'MAPBOX';
   url: string;
   thumbnail: string | null;
   attribution: string;

@@ -37,6 +37,14 @@ export class MapService {
 
   private map!: Map;
   private baseLayer!: TileLayer<any>;
+  /**
+   * Vrai dès qu'un fond de carte a été choisi explicitement (via applyBaseMap() ou
+   * setBaseLayer(), utilisé par le sélecteur "OSM"/"Aucun"). Sans ce garde-fou,
+   * switchBasemap() - appelé à chaque bascule clair/sombre du thème - écrasait
+   * inconditionnellement le fond de carte actif (ex: un fond Mapbox personnalisé) par
+   * OSM/CartoDB, donnant l'impression que le fond choisi "ne prend pas".
+   */
+  private explicitBaseMapSelected = false;
 
   readonly drawingSource = new VectorSource();
   readonly measureSource = new VectorSource();
@@ -128,6 +136,7 @@ export class MapService {
     this.map.removeLayer(this.baseLayer);
     this.baseLayer = layer;
     this.map.getLayers().insertAt(0, this.baseLayer);
+    this.explicitBaseMapSelected = true;
   }
 
   /**
@@ -228,7 +237,7 @@ export class MapService {
    * et le thème sombre (CartoDB Dark Matter).
    */
   switchBasemap(dark: boolean): void {
-    if (!this.map) return;
+    if (!this.map || this.explicitBaseMapSelected) return;
     const source = dark
       ? new XYZ({
           url: DARK_BASEMAP_URL,
