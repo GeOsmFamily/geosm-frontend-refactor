@@ -60,6 +60,7 @@ export class MapLayerService {
     if (!instanceId) return;
     this.analyticsService
       .trackEvent({ instanceId, eventType, layerId })
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
       .subscribe({ error: () => {} });
   }
 
@@ -71,9 +72,17 @@ export class MapLayerService {
     const featureCount = layer.metadata?.featureCount;
     const isPointLayer = geometryType === 'point' || geometryType === 'multipoint';
     const underCap = featureCount == null || featureCount <= VECTOR_MODE_FEATURE_CAP;
+    // Le rendu vectoriel client interroge /layers/:id/features, qui lit directement la table
+    // PostGIS de la couche (tableName/schemaName) - une couche "projet QGIS" (créée par l'admin
+    // via CreateLayersFromQgisProjectUseCase, ou publiée depuis une donnée personnelle QGIS_PROJECT
+    // via ReviewPersonalLayerPublicationUseCase) n'a PAS de table suivie par Prisma : la requête
+    // features renvoie alors 0 entité et la couche paraît vide, alors que le WMS lui-même a bien
+    // les données. Sans table interrogeable, il faut donc toujours retomber sur le rendu WMS,
+    // quel que soit le type de géométrie ou le nombre de features.
+    const hasQueryableTable = !!(layer.tableName && layer.schemaName);
 
     let activeLayer: ActiveLayer;
-    if (isPointLayer && underCap) {
+    if (isPointLayer && underCap && hasQueryableTable) {
       const { clusterLayer, heatmapLayer } = this.createVectorClusterAndHeatmapLayers(layer);
       this.mapService.addLayer(clusterLayer);
       this.mapService.addLayer(heatmapLayer);

@@ -1,0 +1,264 @@
+@if (currentUser | async) {
+  <div class="personal-data-tool">
+    <div class="personal-data-info-note">
+      <h4><mat-icon>info</mat-icon> {{ 'tools.personalData.infoTitle' | translate }}</h4>
+      <ul>
+        <li>{{ 'tools.personalData.infoStep1' | translate }}</li>
+        <li>{{ 'tools.personalData.infoStep2' | translate }}</li>
+        <li>{{ 'tools.personalData.infoStep3' | translate }}</li>
+        <li>{{ 'tools.personalData.infoStep4' | translate }}</li>
+      </ul>
+    </div>
+
+    @if (!stagedImport()) {
+      <app-file-drop-zone
+        [hint]="'tools.personalData.dropHint' | translate"
+        (filesDropped)="onFilesDropped($event)"
+        (rejected)="onFilesRejected($event)"
+      ></app-file-drop-zone>
+
+      @if (importing()) {
+        <div class="importing-row">
+          <app-loading-spinner></app-loading-spinner>
+          <span>{{ 'tools.personalData.importing' | translate }}</span>
+        </div>
+      }
+    } @else {
+      <div class="confirm-import-form">
+        <h4>{{ 'tools.personalData.confirmImportTitle' | translate }}</h4>
+        <p class="staged-summary">
+          <mat-icon>check_circle</mat-icon>
+          {{
+            'tools.personalData.stagedSummary'
+              | translate
+                : {
+                    count: stagedImport()!.featureCount,
+                    geometryType: stagedImport()!.geometryType,
+                  }
+          }}
+        </p>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>{{ 'tools.personalData.nameLabel' | translate }}</mat-label>
+          <input matInput [(ngModel)]="form.name" />
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>{{ 'tools.personalData.groupLabel' | translate }}</mat-label>
+          <input
+            matInput
+            [(ngModel)]="form.groupName"
+            [placeholder]="'tools.personalData.groupPlaceholder' | translate"
+          />
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>{{ 'tools.personalData.subGroupLabel' | translate }}</mat-label>
+          <input
+            matInput
+            [(ngModel)]="form.subGroupName"
+            [placeholder]="'tools.personalData.subGroupPlaceholder' | translate"
+          />
+        </mat-form-field>
+
+        <div class="style-row">
+          <label class="style-label">
+            {{ 'tools.personalData.colorLabel' | translate }}
+            <input type="color" [(ngModel)]="form.color" />
+          </label>
+          <mat-form-field appearance="outline" class="shape-field">
+            <mat-label>{{ 'tools.personalData.shapeLabel' | translate }}</mat-label>
+            <mat-select [(ngModel)]="form.shape">
+              @for (shape of shapes; track shape) {
+                <mat-option [value]="shape">{{
+                  'tools.personalData.shapes.' + shape | translate
+                }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div class="form-actions">
+          <button mat-button (click)="cancelStagedImport()">
+            {{ 'tools.personalData.cancel' | translate }}
+          </button>
+          <button
+            mat-flat-button
+            color="primary"
+            [disabled]="!canConfirmImport || importing()"
+            (click)="confirmImport()"
+          >
+            <mat-icon>check</mat-icon> {{ 'tools.personalData.save' | translate }}
+          </button>
+        </div>
+      </div>
+    }
+
+    <mat-divider></mat-divider>
+
+    <div class="my-data">
+      <h4>{{ 'tools.personalData.myDataTitle' | translate: { count: layers().length } }}</h4>
+
+      @if (loading()) {
+        <app-loading-spinner></app-loading-spinner>
+      } @else if (layers().length === 0) {
+        <div class="empty-state">
+          <mat-icon>folder_open</mat-icon>
+          <p>{{ 'tools.personalData.emptyState' | translate }}</p>
+        </div>
+      } @else {
+        @for (layer of layers(); track layer.id) {
+          <div class="personal-layer-item">
+            <div class="item-row">
+              <button
+                class="visibility-btn"
+                type="button"
+                [matTooltip]="
+                  (isVisible(layer)
+                    ? 'tools.personalData.hideFromMap'
+                    : 'tools.personalData.showOnMap'
+                  ) | translate
+                "
+                (click)="toggleVisibility(layer)"
+              >
+                <mat-icon>{{ isVisible(layer) ? 'visibility' : 'visibility_off' }}</mat-icon>
+              </button>
+
+              <div class="item-detail">
+                <span class="item-name">{{ layer.name }}</span>
+                <span class="item-meta">{{ layer.groupName }} › {{ layer.subGroupName }}</span>
+              </div>
+
+              <span
+                class="status-chip"
+                [class]="'status-' + layer.status.toLowerCase()"
+                [matTooltip]="
+                  layer.status === 'REJECTED' && layer.reviewNote ? layer.reviewNote : ''
+                "
+              >
+                <mat-icon>{{ statusIcon(layer.status) }}</mat-icon>
+                {{ statusLabelKey(layer.status) | translate }}
+              </span>
+            </div>
+
+            <div class="item-actions">
+              @if (layer.sourceType === 'FILE') {
+                <button class="thread-btn" type="button" (click)="openStyleEditor(layer)">
+                  <mat-icon>palette</mat-icon> {{ 'tools.personalData.styleBtn' | translate }}
+                </button>
+              }
+              @if (canRequestPublication(layer)) {
+                <button class="thread-btn" type="button" (click)="togglePublishForm(layer)">
+                  <mat-icon>publish</mat-icon> {{ 'tools.personalData.publishBtn' | translate }}
+                </button>
+              }
+              <button class="thread-btn delete-btn" type="button" (click)="deleteLayer(layer)">
+                <mat-icon>delete</mat-icon> {{ 'tools.personalData.deleteBtn' | translate }}
+              </button>
+            </div>
+
+            @if (isStyleEditorOpen(layer)) {
+              <div class="style-editor">
+                <div class="style-row inline-form">
+                  <label class="style-label">
+                    {{ 'tools.personalData.colorLabel' | translate }}
+                    <input type="color" [(ngModel)]="styleForm.color" />
+                  </label>
+                  <mat-form-field appearance="outline" class="shape-field">
+                    <mat-label>{{ 'tools.personalData.shapeLabel' | translate }}</mat-label>
+                    <mat-select [(ngModel)]="styleForm.shape">
+                      @for (shape of shapes; track shape) {
+                        <mat-option [value]="shape">{{
+                          'tools.personalData.shapes.' + shape | translate
+                        }}</mat-option>
+                      }
+                    </mat-select>
+                  </mat-form-field>
+                  <button
+                    class="style-confirm-btn"
+                    mat-flat-button
+                    color="primary"
+                    (click)="saveStyle(layer)"
+                  >
+                    <mat-icon>check</mat-icon>
+                  </button>
+                </div>
+
+                <div class="qml-upload-row">
+                  <div class="qml-upload-header">
+                    <mat-icon>description</mat-icon>
+                    <div class="qml-upload-text">
+                      <span>{{ 'tools.personalData.qmlLabel' | translate }}</span>
+                      <span class="qml-hint">{{ 'tools.personalData.qmlHint' | translate }}</span>
+                      @if (layer.style?.qmlPath) {
+                        <span class="qml-uploaded">
+                          <mat-icon>check_circle</mat-icon>
+                          {{ 'tools.personalData.qmlUploaded' | translate }}
+                        </span>
+                      }
+                    </div>
+                  </div>
+                  <input
+                    #qmlInput
+                    type="file"
+                    accept=".qml"
+                    class="hidden-input"
+                    (change)="onQmlFileSelected($event, layer)"
+                  />
+                  <button
+                    mat-stroked-button
+                    type="button"
+                    [disabled]="isQmlUploading(layer)"
+                    (click)="qmlInput.click()"
+                  >
+                    @if (isQmlUploading(layer)) {
+                      <app-loading-spinner [diameter]="16" [message]="''"></app-loading-spinner>
+                    } @else {
+                      <mat-icon>upload_file</mat-icon>
+                    }
+                    {{ 'tools.personalData.qmlUploadBtn' | translate }}
+                  </button>
+                </div>
+              </div>
+            }
+
+            @if (isPublishFormOpen(layer)) {
+              <div class="publish-form">
+                <mat-form-field appearance="outline" class="full-width">
+                  <mat-label>{{ 'tools.personalData.publishNoteLabel' | translate }}</mat-label>
+                  <textarea matInput [(ngModel)]="publishNote" rows="2"></textarea>
+                </mat-form-field>
+                <div class="form-actions">
+                  <button mat-button (click)="togglePublishForm(layer)">
+                    {{ 'tools.personalData.cancel' | translate }}
+                  </button>
+                  <button mat-flat-button color="primary" (click)="submitPublication(layer)">
+                    <mat-icon>send</mat-icon> {{ 'tools.personalData.publishSendBtn' | translate }}
+                  </button>
+                </div>
+              </div>
+            }
+          </div>
+        }
+      }
+    </div>
+  </div>
+} @else {
+  <div class="login-required-container">
+    <mat-card class="login-card glass">
+      <mat-card-header>
+        <div mat-card-avatar class="lock-avatar">
+          <mat-icon>lock</mat-icon>
+        </div>
+        <mat-card-title>{{ 'tools.personalData.loginRequiredTitle' | translate }}</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <p>{{ 'tools.personalData.loginRequiredMessage' | translate }}</p>
+      </mat-card-content>
+      <mat-card-actions>
+        <button mat-flat-button color="primary" class="login-btn" (click)="navigateToLogin()">
+          <mat-icon>login</mat-icon>
+          <span>{{ 'tools.personalData.loginBtn' | translate }}</span>
+        </button>
+      </mat-card-actions>
+    </mat-card>
+  </div>
+}

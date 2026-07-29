@@ -14,6 +14,7 @@ import { getLength, getArea } from 'ol/sphere';
 import { Fill, Stroke, Style, Circle as CircleStyle } from 'ol/style';
 import { Geometry, LineString, Polygon, Circle } from 'ol/geom';
 import { fromCircle } from 'ol/geom/Polygon';
+import type { Type as GeometryDrawType } from 'ol/geom/Geometry';
 import Feature from 'ol/Feature';
 
 import { MapService } from '../../map/services/map.service';
@@ -107,7 +108,7 @@ export class MeasureToolComponent implements OnInit, OnDestroy {
     // qui ignore les clics quand ce flag est vrai.
     this.mapService.isPicking = true;
 
-    let olType = 'Polygon';
+    let olType: GeometryDrawType = 'Polygon';
     if (this.mode === 'distance') {
       olType = 'LineString';
     } else if (this.mode === 'circle') {
@@ -116,7 +117,7 @@ export class MeasureToolComponent implements OnInit, OnDestroy {
 
     this.drawInteraction = new Draw({
       source: this.vectorSource,
-      type: olType as any,
+      type: olType,
     });
 
     this.drawInteraction.on('drawend', (event) => {

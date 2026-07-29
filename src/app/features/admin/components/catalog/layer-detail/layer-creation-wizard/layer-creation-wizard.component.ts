@@ -148,7 +148,8 @@ export class LayerCreationWizardComponent {
   readonly styleShape = signal<IconShape>('circle');
   readonly shapes: IconShape[] = ['circle', 'square', 'triangle', 'star', 'pin'];
   private kmlStyleFile: File | null = null;
-  readonly styleMode = signal<'color-icon' | 'kml'>('color-icon');
+  private qmlStyleFile: File | null = null;
+  readonly styleMode = signal<'color-icon' | 'kml' | 'qml'>('color-icon');
   readonly applyingStyle = signal(false);
   readonly styleApplied = signal(false);
 
@@ -386,18 +387,29 @@ export class LayerCreationWizardComponent {
     this.kmlStyleFile = input.files?.[0] ?? null;
   }
 
+  onQmlStyleSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    this.qmlStyleFile = input.files?.[0] ?? null;
+  }
+
   applyStyle(): void {
     const layer = this.createdLayer();
     if (!layer) return;
     this.applyingStyle.set(true);
 
-    if (this.styleMode() === 'kml') {
-      if (!this.kmlStyleFile) {
+    if (this.styleMode() === 'kml' || this.styleMode() === 'qml') {
+      const mode = this.styleMode() as 'kml' | 'qml';
+      const file = mode === 'kml' ? this.kmlStyleFile : this.qmlStyleFile;
+      if (!file) {
         this.applyingStyle.set(false);
         return;
       }
       this.layerService
-        .applyStyle(this.data.instanceId, layer.id, { mode: 'kml', kmlFile: this.kmlStyleFile })
+        .applyStyle(
+          this.data.instanceId,
+          layer.id,
+          mode === 'kml' ? { mode: 'kml', kmlFile: file } : { mode: 'qml', qmlFile: file },
+        )
         .subscribe({
           next: () => {
             this.applyingStyle.set(false);
@@ -454,7 +466,7 @@ export class LayerCreationWizardComponent {
     const isPointGeometry =
       olFeatures.length > 0 &&
       ['Point', 'MultiPoint'].includes(olFeatures[0].getGeometry()?.getType() ?? '');
-    const layer: VectorLayer<any> = isPointGeometry
+    const layer: VectorLayer<VectorSource> = isPointGeometry
       ? createClusterLayer(source, undefined, 40, undefined, '#00ada7')
       : new VectorLayer({
           source,

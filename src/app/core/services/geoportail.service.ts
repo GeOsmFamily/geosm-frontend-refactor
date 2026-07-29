@@ -8,8 +8,8 @@ import { ElevationProfile, LayerStats, ViewportSummary } from '../models/index';
 export class GeoportailService {
   private readonly api = inject(ApiService);
 
-  getAltitude(lon: number, lat: number): Observable<any> {
-    return this.api.get<any>('/geoportail/altitude', { lon, lat });
+  getAltitude(lon: number, lat: number): Observable<unknown> {
+    return this.api.get<unknown>('/geoportail/altitude', { lon, lat });
   }
 
   /** narrative=true ajoute une synthèse textuelle générée par IA (Gemini), en plus des chiffres bruts. */
@@ -34,11 +34,11 @@ export class GeoportailService {
     });
   }
 
-  getAdminBoundary(lat: number, lon: number, table?: string): Observable<any> {
-    return this.api.get<any>('/geoportail/admin-boundary', { lat, lon, table });
+  getAdminBoundary(lat: number, lon: number, table?: string): Observable<unknown> {
+    return this.api.get<unknown>('/geoportail/admin-boundary', { lat, lon, table });
   }
 
-  geolocate(): Observable<any> {
-    return this.api.get<any>('/geoportail/geolocate');
+  geolocate(): Observable<unknown> {
+    return this.api.get<unknown>('/geoportail/geolocate');
   }
 }

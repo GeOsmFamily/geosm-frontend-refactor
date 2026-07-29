@@ -10,7 +10,7 @@ export class ApiService {
   private readonly http = inject(HttpClient);
   private readonly baseUrl = environment.apiUrl;
 
-  get<T>(path: string, params?: Record<string, any>): Observable<T> {
+  get<T>(path: string, params?: Record<string, unknown>): Observable<T> {
     let httpParams = new HttpParams();
     if (params) {
       Object.entries(params).forEach(([key, value]) => {
@@ -24,7 +24,10 @@ export class ApiService {
       .pipe(map((res) => res.data));
   }
 
-  getPaginated<T>(path: string, params?: Record<string, any>): Observable<PaginatedResponse<T>> {
+  getPaginated<T>(
+    path: string,
+    params?: Record<string, unknown>,
+  ): Observable<PaginatedResponse<T>> {
     let httpParams = new HttpParams();
     if (params) {
       Object.entries(params).forEach(([key, value]) => {
@@ -45,19 +48,19 @@ export class ApiService {
       .pipe(map((res) => ({ data: res.data, meta: res.meta.pagination })));
   }
 
-  post<T>(path: string, body: any): Observable<T> {
+  post<T>(path: string, body: unknown): Observable<T> {
     return this.http
       .post<ApiResponse<T>>(`${this.baseUrl}${path}`, body)
       .pipe(map((res) => res.data));
   }
 
-  put<T>(path: string, body: any): Observable<T> {
+  put<T>(path: string, body: unknown): Observable<T> {
     return this.http
       .put<ApiResponse<T>>(`${this.baseUrl}${path}`, body)
       .pipe(map((res) => res.data));
   }
 
-  patch<T>(path: string, body: any): Observable<T> {
+  patch<T>(path: string, body: unknown): Observable<T> {
     return this.http
       .patch<ApiResponse<T>>(`${this.baseUrl}${path}`, body)
       .pipe(map((res) => res.data));

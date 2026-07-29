@@ -69,7 +69,9 @@ export class InfraComponent implements OnInit {
   private loadStats(id: string): void {
     this.dockerService.getStats(id).subscribe({
       next: (res) => this.stats.update((s) => ({ ...s, [id]: res })),
-      error: () => {},
+      // Le conteneur a pu s'arrêter/disparaître entre le listing et cet appel de stats -
+      // pas d'action à faire, la carte reste simplement sans stats pour ce conteneur.
+      error: () => undefined,
     });
   }
 

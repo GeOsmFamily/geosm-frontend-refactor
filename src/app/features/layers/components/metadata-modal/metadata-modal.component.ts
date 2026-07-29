@@ -7,7 +7,7 @@ import { TranslateModule } from '@ngx-translate/core';
 
 export interface MetadataModalData {
   layerName: string;
-  metadata: Record<string, any>;
+  metadata: Record<string, unknown>;
 }
 
 @Component({
@@ -21,7 +21,7 @@ export class MetadataModalComponent {
   private readonly dialogRef = inject(MatDialogRef<MetadataModalComponent>);
   readonly data: MetadataModalData = inject(MAT_DIALOG_DATA);
 
-  get entries(): { key: string; value: any }[] {
+  get entries(): { key: string; value: unknown }[] {
     return Object.entries(this.data.metadata || {})
       .filter(([, v]) => v != null && v !== '')
       .map(([key, value]) => ({ key, value }));

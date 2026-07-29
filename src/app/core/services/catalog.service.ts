@@ -7,11 +7,11 @@ import { ApiService } from './api.service';
 export class CatalogService {
   private readonly api = inject(ApiService);
 
-  getCatalog(): Observable<any> {
-    return this.api.get<any>('/catalog');
+  getCatalog(): Observable<unknown[]> {
+    return this.api.get<unknown[]>('/catalog');
   }
 
-  getCatalogByInstance(slug: string): Observable<any> {
-    return this.api.get<any>(`/catalog/${slug}`);
+  getCatalogByInstance(slug: string): Observable<unknown[]> {
+    return this.api.get<unknown[]>(`/catalog/${slug}`);
   }
 }

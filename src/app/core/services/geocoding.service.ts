@@ -8,7 +8,7 @@ import { GeocodingResult } from '../models/index';
 export class GeocodingService {
   private readonly api = inject(ApiService);
 
-  search(q: string, options?: Record<string, any>): Observable<GeocodingResult[]> {
+  search(q: string, options?: Record<string, unknown>): Observable<GeocodingResult[]> {
     return this.api.get<GeocodingResult[]>('/geocode/search', { q, ...options });
   }
 

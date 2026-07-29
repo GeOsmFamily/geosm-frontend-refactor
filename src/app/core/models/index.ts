@@ -145,7 +145,7 @@ export interface Layer {
     totalLength?: number | null;
     importedAt?: string | null;
     lastSyncedAt?: string | null;
-    [key: string]: any;
+    [key: string]: unknown;
   } | null;
 }
 
@@ -176,6 +176,39 @@ export interface QgisProjectLayerInfo {
   title: string;
 }
 
+export type PersonalLayerSourceType = 'FILE' | 'QGIS_PROJECT';
+export type PersonalLayerStatus = 'PRIVATE' | 'PENDING_PUBLICATION' | 'PUBLISHED' | 'REJECTED';
+
+/** Donnée PRIVÉE importée par un utilisateur (fichier ou projet QGIS), visible uniquement dans sa
+ * propre session tant qu'elle n'est pas publiée - voir PersonalLayer côté backend. */
+export interface PersonalLayer {
+  id: string;
+  userId: string;
+  instanceId: string;
+  name: string;
+  description?: string | null;
+  groupName: string;
+  subGroupName: string;
+  geometryType?: GeometryTypeEnum | null;
+  sourceType: PersonalLayerSourceType;
+  schemaName?: string | null;
+  tableName?: string | null;
+  qgisProjectPath?: string | null;
+  sourceLayerName?: string | null;
+  /** URL WMS publique prête à l'emploi, calculée côté serveur pour les données QGIS_PROJECT
+   * uniquement (voir toDto() dans personal-layers.routes.ts) - null pour les données FILE. */
+  sourceUrl?: string | null;
+  style?: { color?: string; iconKey?: string; shape?: string; qmlPath?: string } | null;
+  status: PersonalLayerStatus;
+  publicationNote?: string | null;
+  reviewNote?: string | null;
+  reviewedBy?: string | null;
+  reviewedAt?: string | null;
+  publishedLayerId?: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export interface IconCatalogEntry {
   key: string;
   label: string;
@@ -201,7 +234,7 @@ export interface BaseMap {
   id: string;
   name: string;
   slug: string;
-  type: 'xyz' | 'wms' | 'wmts' | 'mapbox';
+  type: 'XYZ' | 'WMS' | 'WMTS' | 'MAPBOX';
   url: string;
   thumbnail: string | null;
   attribution: string;
@@ -357,7 +390,7 @@ export interface PaginatedResponse<T> {
 export interface ApiResponse<T> {
   success: boolean;
   data: T;
-  meta?: any;
+  meta?: unknown;
 }
 
 export interface SearchResult {

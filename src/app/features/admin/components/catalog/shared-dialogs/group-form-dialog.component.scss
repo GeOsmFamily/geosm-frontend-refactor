@@ -10,3 +10,25 @@
     flex: 1;
   }
 }
+
+.icon-row {
+  align-items: flex-start;
+
+  .icon-preview {
+    flex-shrink: 0;
+    width: 40px;
+    height: 40px;
+    margin-top: 4px;
+    border-radius: 8px;
+    background: rgba(2, 63, 95, 0.06);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--primary, #023f5f);
+  }
+}
+
+.option-icon {
+  margin-right: 8px;
+  vertical-align: middle;
+}

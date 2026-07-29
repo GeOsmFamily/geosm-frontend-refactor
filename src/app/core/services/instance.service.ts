@@ -17,7 +17,7 @@ export class InstanceService {
 
   readonly currentInstance$ = new BehaviorSubject<Instance | null>(null);
 
-  list(params?: Record<string, any>): Observable<PaginatedResponse<Instance>> {
+  list(params?: Record<string, unknown>): Observable<PaginatedResponse<Instance>> {
     return this.api.getPaginated<Instance>('/instances', params);
   }
 

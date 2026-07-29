@@ -21,6 +21,15 @@
         </button>
       }
     </div>
+    @if (!selectedGroup && !searchQuery) {
+      <button
+        class="view-toggle-btn"
+        (click)="toggleViewType()"
+        [matTooltip]="viewType === 'list' ? 'Passer en vue grille' : 'Passer en vue liste'"
+      >
+        <mat-icon>{{ viewType === 'list' ? 'grid_view' : 'view_list' }}</mat-icon>
+      </button>
+    }
   </div>
 
   <!-- Loading -->
@@ -44,8 +53,11 @@
           @for (layer of subGroup.layers; track layer.id) {
             <div
               class="layer-row"
+              role="button"
+              tabindex="0"
               [class.active]="isLayerActive(layer.id)"
               (click)="toggleLayer(layer, $event)"
+              (keydown.enter)="toggleLayer(layer, $event)"
             >
               <div
                 class="layer-row-icon"
@@ -120,8 +132,11 @@
             @for (layer of subGroup.layers; track layer.id) {
               <div
                 class="layer-row"
+                role="button"
+                tabindex="0"
                 [class.active]="isLayerActive(layer.id)"
                 (click)="toggleLayer(layer, $event)"
+                (keydown.enter)="toggleLayer(layer, $event)"
               >
                 <div
                   class="layer-row-icon"
@@ -157,10 +172,11 @@
     </div>
   } @else {
     <!-- Themes Grid -->
-    <div class="themes-grid animate-in">
+    <div class="themes-grid animate-in" [class.grid-layout]="viewType === 'grid'">
       @for (group of filteredGroups; track group.id) {
         <div
           class="theme-card"
+          [class.grid-card]="viewType === 'grid'"
           tabindex="0"
           [style.--theme-color]="group.color || 'var(--accent)'"
           (click)="selectGroup(group)"
@@ -188,7 +204,9 @@
               >
             </span>
           </div>
-          <mat-icon class="theme-chevron">chevron_right</mat-icon>
+          @if (viewType === 'list') {
+            <mat-icon class="theme-chevron">chevron_right</mat-icon>
+          }
         </div>
       }
     </div>

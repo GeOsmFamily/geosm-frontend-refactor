@@ -44,11 +44,15 @@ export interface ConfirmOsmImportDTO {
 }
 
 export interface ApplyLayerStyleDTO {
-  mode: 'color-icon' | 'kml';
+  mode: 'color-icon' | 'kml' | 'qml';
   color?: string;
   iconKey?: string;
   shape?: 'circle' | 'square' | 'triangle' | 'star' | 'pin';
   kmlFile?: File;
+  /** Fichier de style QGIS natif (.qml), appliqué directement sans conversion - le cas le plus
+   * courant pour un admin qui a déjà stylé sa couche dans QGIS Desktop (le mode "kml" reste
+   * pour le cas distinct d'un style OGR embarqué dans un fichier KML). */
+  qmlFile?: File;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -56,7 +60,7 @@ export class LayerService {
   private readonly api = inject(ApiService);
   private readonly http = inject(HttpClient);
 
-  list(instanceId: string, params?: Record<string, any>): Observable<PaginatedResponse<Layer>> {
+  list(instanceId: string, params?: Record<string, unknown>): Observable<PaginatedResponse<Layer>> {
     return this.api.getPaginated<Layer>(`/instances/${instanceId}/layers`, params);
   }
 
@@ -98,7 +102,7 @@ export class LayerService {
    */
   getFeatures(
     layerId: string,
-    params?: Record<string, any>,
+    params?: Record<string, unknown>,
   ): Observable<FeatureCollectionResponse> {
     return this.api.get<FeatureCollectionResponse>(`/layers/${layerId}/features`, params);
   }
@@ -123,12 +127,13 @@ export class LayerService {
     return this.api.post<Layer>(`/instances/${instanceId}/layers/import/osm/confirm`, dto);
   }
 
-  /** Multipart uniquement en mode 'kml' (fichier requis) ; JSON simple sinon. */
+  /** Multipart en mode 'kml'/'qml' (fichier requis) ; JSON simple sinon. */
   applyStyle(instanceId: string, layerId: string, dto: ApplyLayerStyleDTO): Observable<Layer> {
-    if (dto.mode === 'kml') {
+    if (dto.mode === 'kml' || dto.mode === 'qml') {
+      const file = dto.mode === 'kml' ? dto.kmlFile : dto.qmlFile;
       const formData = new FormData();
       formData.append('mode', dto.mode);
-      if (dto.kmlFile) formData.append('file', dto.kmlFile);
+      if (file) formData.append('file', file);
       return this.http
         .post<ApiResponse<Layer>>(
           `${environment.apiUrl}/instances/${instanceId}/layers/${layerId}/style/apply`,

@@ -4,6 +4,7 @@ import Map from 'ol/Map';
 import View from 'ol/View';
 import { fromLonLat, toLonLat, get as getProjection } from 'ol/proj';
 import TileLayer from 'ol/layer/Tile';
+import TileSource from 'ol/source/Tile';
 import Overlay from 'ol/Overlay';
 import OSM from 'ol/source/OSM';
 import XYZ from 'ol/source/XYZ';
@@ -14,6 +15,7 @@ import VectorLayer from 'ol/layer/Vector';
 import VectorSource from 'ol/source/Vector';
 import Cluster from 'ol/source/Cluster';
 import { Feature } from 'ol';
+import type { MapBrowserEvent } from 'ol';
 import Point from 'ol/geom/Point';
 import { Style, Icon } from 'ol/style';
 import { Coordinate } from 'ol/coordinate';
@@ -31,25 +33,43 @@ const ZOOM_MARKER_SVG =
     `<svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24"><path fill="#e53935" stroke="#ffffff" stroke-width="0.8" d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>`,
   );
 
+/** Résultat d'une mesure (distance/aire/cercle) - même forme que MeasureResult dans
+ * measure-tool.component.ts, qui lit/écrit ce tableau partagé (this.mapService.measurements). */
+interface MeasurementEntry {
+  id: number;
+  mode: 'distance' | 'area' | 'circle';
+  value: string;
+  feature: Feature;
+  overlay: Overlay;
+}
+
 @Injectable({ providedIn: 'root' })
 export class MapService {
   private readonly zone = inject(NgZone);
 
   private map!: Map;
-  private baseLayer!: TileLayer<any>;
+  private baseLayer!: TileLayer<TileSource>;
+  /**
+   * Vrai dès qu'un fond de carte a été choisi explicitement (via applyBaseMap() ou
+   * setBaseLayer(), utilisé par le sélecteur "OSM"/"Aucun"). Sans ce garde-fou,
+   * switchBasemap() - appelé à chaque bascule clair/sombre du thème - écrasait
+   * inconditionnellement le fond de carte actif (ex: un fond Mapbox personnalisé) par
+   * OSM/CartoDB, donnant l'impression que le fond choisi "ne prend pas".
+   */
+  private explicitBaseMapSelected = false;
 
   readonly drawingSource = new VectorSource();
   readonly measureSource = new VectorSource();
   readonly commentSource = new VectorSource();
   readonly measureOverlays: Overlay[] = [];
-  readonly measurements: any[] = [];
+  readonly measurements: MeasurementEntry[] = [];
 
   drawingLayer!: VectorLayer<VectorSource>;
   measureLayer!: VectorLayer<VectorSource>;
-  commentLayer!: VectorLayer<any>;
+  commentLayer!: VectorLayer<Cluster>;
 
-  private readonly clickSubject = new Subject<any>();
-  readonly onClick$: Observable<any> = this.clickSubject.asObservable();
+  private readonly clickSubject = new Subject<MapBrowserEvent>();
+  readonly onClick$: Observable<MapBrowserEvent> = this.clickSubject.asObservable();
   readonly mousePosition$ = new BehaviorSubject<[number, number]>([0, 0]);
 
   /**
@@ -124,10 +144,11 @@ export class MapService {
     return this.map.getView();
   }
 
-  setBaseLayer(layer: TileLayer<any>): void {
+  setBaseLayer(layer: TileLayer<TileSource>): void {
     this.map.removeLayer(this.baseLayer);
     this.baseLayer = layer;
     this.map.getLayers().insertAt(0, this.baseLayer);
+    this.explicitBaseMapSelected = true;
   }
 
   /**
@@ -139,7 +160,7 @@ export class MapService {
    * paramètres de requête WMTS), cassant le fond de carte.
    */
   applyBaseMap(baseMap: BaseMap): void {
-    let layer: TileLayer<any>;
+    let layer: TileLayer<TileSource>;
 
     // Le backend renvoie le type d'enum Prisma en majuscules (XYZ/WMS/WMTS/MAPBOX) ;
     // on normalise ici pour ne pas dépendre de la casse exacte.
@@ -228,7 +249,7 @@ export class MapService {
    * et le thème sombre (CartoDB Dark Matter).
    */
   switchBasemap(dark: boolean): void {
-    if (!this.map) return;
+    if (!this.map || this.explicitBaseMapSelected) return;
     const source = dark
       ? new XYZ({
           url: DARK_BASEMAP_URL,
@@ -239,7 +260,7 @@ export class MapService {
     this.baseLayer.setSource(source);
   }
 
-  getBaseLayer(): TileLayer<any> {
+  getBaseLayer(): TileLayer<TileSource> {
     return this.baseLayer;
   }
 

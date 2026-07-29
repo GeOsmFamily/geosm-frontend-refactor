@@ -22,12 +22,12 @@ export class SearchService {
     return this.api.get<SearchResult[]>('/search', { q, limit });
   }
 
-  searchLayers(q: string, instanceId?: string, limit?: number): Observable<any> {
-    return this.api.get<any>('/search/layers', { q, instanceId, limit });
+  searchLayers(q: string, instanceId?: string, limit?: number): Observable<unknown> {
+    return this.api.get<unknown>('/search/layers', { q, instanceId, limit });
   }
 
-  searchFeatures(q: string, layerId: string, limit?: number): Observable<any> {
-    return this.api.get<any>('/search/features', { q, layerId, limit });
+  searchFeatures(q: string, layerId: string, limit?: number): Observable<unknown> {
+    return this.api.get<unknown>('/search/features', { q, layerId, limit });
   }
 
   /** Suggestions contextuelles (classement déterministe par fréquence d'activation passée). */

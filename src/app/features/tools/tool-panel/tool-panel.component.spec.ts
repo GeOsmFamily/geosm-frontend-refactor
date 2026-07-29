@@ -28,8 +28,8 @@ describe('ToolPanelComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should have 11 tools defined', () => {
-    expect(component.tools.length).toBe(11);
+  it('should have 12 tools defined', () => {
+    expect(component.tools.length).toBe(12);
   });
 
   it('should start with no active tool', () => {
@@ -65,6 +65,6 @@ describe('ToolPanelComponent', () => {
   it('should render tool grid', () => {
     const compiled = fixture.nativeElement as HTMLElement;
     const buttons = compiled.querySelectorAll('.tool-btn');
-    expect(buttons.length).toBe(11);
+    expect(buttons.length).toBe(12);
   });
 });

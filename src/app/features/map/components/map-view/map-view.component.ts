@@ -11,8 +11,8 @@ import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Subject, takeUntil } from 'rxjs';
 import ScaleLine from 'ol/control/ScaleLine';
-import GeoJSON from 'ol/format/GeoJSON';
-import { Polygon } from 'ol/geom';
+import GeoJSONFormat from 'ol/format/GeoJSON';
+import { Polygon, MultiPolygon } from 'ol/geom';
 import Feature from 'ol/Feature';
 import { Style, Fill } from 'ol/style';
 
@@ -41,7 +41,7 @@ export class MapViewComponent implements AfterViewInit, OnDestroy {
   private readonly http = inject(HttpClient);
   private readonly destroy$ = new Subject<void>();
   private currentInstance: Instance | null = null;
-  private mapMoveListener: any;
+  private mapMoveListener?: () => void;
 
   readonly baseMaps = signal<BaseMap[]>([]);
 
@@ -148,11 +148,11 @@ export class MapViewComponent implements AfterViewInit, OnDestroy {
   }
 
   private loadCameroonBoundary(): void {
-    this.http.get('assets/cameroon-boundary.json').subscribe({
-      next: (geojson: any) => {
+    this.http.get<GeoJSON.GeoJSON>('assets/cameroon-boundary.json').subscribe({
+      next: (geojson) => {
         this.mapService.removeLayerByName('instance-boundary');
 
-        const format = new GeoJSON();
+        const format = new GeoJSONFormat();
         const features = format.readFeatures(geojson, {
           dataProjection: 'EPSG:4326',
           featureProjection: 'EPSG:3857',
@@ -180,10 +180,10 @@ export class MapViewComponent implements AfterViewInit, OnDestroy {
           const rings = [worldCoords, ...polyGeom.getCoordinates()];
           invertedGeom = new Polygon(rings);
         } else if (geomType === 'MultiPolygon') {
-          const multiPolyGeom = geom as any;
+          const multiPolyGeom = geom as MultiPolygon;
           const rings = [worldCoords];
-          multiPolyGeom.getPolygons().forEach((poly: any) => {
-            rings.push(poly.getLinearRing(0).getCoordinates());
+          multiPolyGeom.getPolygons().forEach((poly) => {
+            rings.push(poly.getLinearRing(0)!.getCoordinates());
           });
           invertedGeom = new Polygon(rings);
         }

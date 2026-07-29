@@ -163,10 +163,10 @@ export class CompareToolComponent implements OnInit, OnDestroy {
       ctx.restore();
     };
 
-    this.leftLayer.on('prerender', this.leftPrerender as any);
-    this.leftLayer.on('postrender', this.leftPostrender as any);
-    this.rightLayer.on('prerender', this.rightPrerender as any);
-    this.rightLayer.on('postrender', this.rightPostrender as any);
+    this.leftLayer.on('prerender', this.leftPrerender);
+    this.leftLayer.on('postrender', this.leftPostrender);
+    this.rightLayer.on('prerender', this.rightPrerender);
+    this.rightLayer.on('postrender', this.rightPostrender);
 
     this.map.render();
   }
@@ -180,15 +180,15 @@ export class CompareToolComponent implements OnInit, OnDestroy {
   resetCompare(): void {
     if (this.leftLayer) {
       if (this.leftPrerender) {
-        this.leftLayer.un('prerender', this.leftPrerender as any);
-        this.leftLayer.un('postrender', this.leftPostrender as any);
+        this.leftLayer.un('prerender', this.leftPrerender);
+        this.leftLayer.un('postrender', this.leftPostrender!);
       }
       this.map.removeLayer(this.leftLayer);
     }
     if (this.rightLayer) {
       if (this.rightPrerender) {
-        this.rightLayer.un('prerender', this.rightPrerender as any);
-        this.rightLayer.un('postrender', this.rightPostrender as any);
+        this.rightLayer.un('prerender', this.rightPrerender);
+        this.rightLayer.un('postrender', this.rightPostrender!);
       }
       this.map.removeLayer(this.rightLayer);
     }

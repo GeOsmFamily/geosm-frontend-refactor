@@ -224,6 +224,9 @@
           <mat-radio-button value="color-icon">{{
             'admin.catalog.wizard.styleColorIcon' | translate
           }}</mat-radio-button>
+          <mat-radio-button value="qml">{{
+            'admin.catalog.wizard.styleQml' | translate
+          }}</mat-radio-button>
           <mat-radio-button value="kml">{{
             'admin.catalog.wizard.styleKml' | translate
           }}</mat-radio-button>
@@ -273,6 +276,9 @@
             [selectedKey]="styleIconKey()"
             (selectedKeyChange)="styleIconKey.set($event)"
           ></app-icon-picker>
+        } @else if (styleMode() === 'qml') {
+          <p class="hint-text">{{ 'admin.catalog.wizard.styleQmlHint' | translate }}</p>
+          <input type="file" accept=".qml" (change)="onQmlStyleSelected($event)" />
         } @else {
           <input type="file" accept=".kml" (change)="onKmlStyleSelected($event)" />
         }

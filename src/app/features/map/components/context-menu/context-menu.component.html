@@ -1,34 +1,39 @@
 @if (visible()) {
   <div class="context-menu" [style.left.px]="menuX()" [style.top.px]="menuY()">
     <ul class="menu-list">
-      <li (click)="centerHere()">
+      <li role="menuitem" tabindex="0" (click)="centerHere()" (keydown.enter)="centerHere()">
         <mat-icon>center_focus_strong</mat-icon>
         <span>{{ 'contextMenu.centerHere' | translate }}</span>
       </li>
-      <li (click)="zoomIn()">
+      <li role="menuitem" tabindex="0" (click)="zoomIn()" (keydown.enter)="zoomIn()">
         <mat-icon>zoom_in</mat-icon>
         <span>{{ 'contextMenu.zoomIn' | translate }}</span>
       </li>
       <li class="divider"></li>
-      <li (click)="copyCoordinates()">
+      <li
+        role="menuitem"
+        tabindex="0"
+        (click)="copyCoordinates()"
+        (keydown.enter)="copyCoordinates()"
+      >
         <mat-icon>content_copy</mat-icon>
         <span>{{ 'contextMenu.copyCoords' | translate }}</span>
       </li>
-      <li (click)="queryInfo()">
+      <li role="menuitem" tabindex="0" (click)="queryInfo()" (keydown.enter)="queryInfo()">
         <mat-icon>info</mat-icon>
         <span>{{ 'contextMenu.info' | translate }}</span>
       </li>
       <li class="divider"></li>
-      <li (click)="routeFrom()">
+      <li role="menuitem" tabindex="0" (click)="routeFrom()" (keydown.enter)="routeFrom()">
         <mat-icon>trip_origin</mat-icon>
         <span>{{ 'contextMenu.routeFrom' | translate }}</span>
       </li>
-      <li (click)="routeTo()">
+      <li role="menuitem" tabindex="0" (click)="routeTo()" (keydown.enter)="routeTo()">
         <mat-icon>place</mat-icon>
         <span>{{ 'contextMenu.routeTo' | translate }}</span>
       </li>
       <li class="divider"></li>
-      <li (click)="addComment()">
+      <li role="menuitem" tabindex="0" (click)="addComment()" (keydown.enter)="addComment()">
         <mat-icon>comment</mat-icon>
         <span>{{ 'contextMenu.addComment' | translate }}</span>
       </li>

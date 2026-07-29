@@ -1,0 +1,27 @@
+<app-admin-list-page title="Publications en attente">
+  <mat-form-field filters appearance="outline">
+    <mat-label>Instance</mat-label>
+    <mat-select [ngModel]="selectedInstanceId()" (ngModelChange)="onInstanceChange($event)">
+      @for (instance of instances(); track instance.id) {
+        <mat-option [value]="instance.id">{{ instance.name }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+
+  @if (selectedInstanceId()) {
+    <app-admin-data-table
+      [columns]="columns"
+      [rows]="rows()"
+      [loading]="loading()"
+      [error]="loadError()"
+      [hasActions]="true"
+      [showPaginator]="false"
+    >
+      <ng-template #actions let-item>
+        <button mat-icon-button (click)="review(item)" matTooltip="Examiner">
+          <mat-icon>rate_review</mat-icon>
+        </button>
+      </ng-template>
+    </app-admin-data-table>
+  }
+</app-admin-list-page>

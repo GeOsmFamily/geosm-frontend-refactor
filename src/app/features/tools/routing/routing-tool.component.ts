@@ -16,6 +16,7 @@ import Point from 'ol/geom/Point';
 import GeoJSON from 'ol/format/GeoJSON';
 import { fromLonLat, toLonLat } from 'ol/proj';
 import { Fill, Stroke, Style, Circle as CircleStyle } from 'ol/style';
+import type { MapBrowserEvent } from 'ol';
 
 import { MapService } from '../../map/services/map.service';
 import { RoutingService } from '../../../core/services/routing.service';
@@ -54,7 +55,7 @@ export class RoutingToolComponent implements OnInit, OnDestroy {
   private readonly vectorSource = new VectorSource();
   private vectorLayer!: VectorLayer<VectorSource>;
   private pickTarget: PickTarget | null = null;
-  private clickListener: ((evt: any) => void) | null = null;
+  private clickListener: ((evt: MapBrowserEvent) => void) | null = null;
 
   startText = '';
   endText = '';
@@ -161,7 +162,7 @@ export class RoutingToolComponent implements OnInit, OnDestroy {
     this.pickTarget = target;
     this.mapService.isPicking = true;
 
-    this.clickListener = (evt: any) => {
+    this.clickListener = (evt: MapBrowserEvent) => {
       const lonLat = toLonLat(evt.coordinate) as [number, number];
       const label = `${lonLat[1].toFixed(5)}, ${lonLat[0].toFixed(5)}`;
 

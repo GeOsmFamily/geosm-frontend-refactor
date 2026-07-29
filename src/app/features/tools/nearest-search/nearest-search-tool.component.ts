@@ -15,6 +15,7 @@ import Feature from 'ol/Feature';
 import Point from 'ol/geom/Point';
 import { fromLonLat, toLonLat } from 'ol/proj';
 import { Fill, Stroke, Style, Circle as CircleStyle, Text } from 'ol/style';
+import type { MapBrowserEvent } from 'ol';
 import { Subscription } from 'rxjs';
 
 import { MapService } from '../../map/services/map.service';
@@ -54,7 +55,7 @@ export class NearestSearchToolComponent implements AfterViewInit, OnDestroy {
 
   private map!: Map;
   private markerLayer!: VectorLayer<VectorSource>;
-  private clickListener: ((evt: any) => void) | null = null;
+  private clickListener: ((evt: MapBrowserEvent) => void) | null = null;
   private activeLayersSub?: Subscription;
 
   readonly activeLayers = signal<ActiveLayer[]>([]);
@@ -96,7 +97,7 @@ export class NearestSearchToolComponent implements AfterViewInit, OnDestroy {
     this.picking.set(true);
     this.mapService.isPicking = true;
 
-    this.clickListener = (evt: any) => {
+    this.clickListener = (evt: MapBrowserEvent) => {
       const [lon, lat] = toLonLat(evt.coordinate) as [number, number];
       this.originCoord = [lon, lat];
       this.stopPicking();

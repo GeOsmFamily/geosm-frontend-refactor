@@ -32,17 +32,46 @@ import VectorLayer from 'ol/layer/Vector';
 import VectorSource from 'ol/source/Vector';
 import Feature from 'ol/Feature';
 import Point from 'ol/geom/Point';
-import GeoJSON from 'ol/format/GeoJSON';
+import GeoJSON, { type GeoJSONGeometry } from 'ol/format/GeoJSON';
 import { fromLonLat } from 'ol/proj';
 import { Fill, Stroke, Style, Circle as CircleStyle, Text } from 'ol/style';
 import { TranslateModule } from '@ngx-translate/core';
 import { environment } from '../../../../../environments/environment';
 
+/**
+ * Shape stored on a SearchResultItem — either a raw geocode/boundary hit from the backend
+ * geocode proxy (Nominatim-style class/type/geojson/display_name fields, distinct from the
+ * camelCase GeocodingResult model) or a lightweight layer hit (id/name/description) from
+ * MeiliSearch. All fields optional: the two shapes don't overlap and are told apart via
+ * SearchResultItem.type; only the fields actually read in this component are typed.
+ */
+interface SearchResultData {
+  id?: string;
+  name?: string;
+  description?: string | null;
+  class?: string;
+  type?: string;
+  displayName?: string;
+  display_name?: string;
+  lat?: string | number;
+  lon?: string | number;
+  boundingbox?: (string | number)[];
+  geojson?: GeoJSONGeometry;
+  osm_id?: string | number;
+  osm_type?: string;
+}
+
 interface SearchResultItem {
   type: 'geocoding' | 'boundary' | 'layer';
   label: string;
-  data: any;
+  data: SearchResultData;
 }
+
+/** SearchLayersUseCase (backend) renvoie un résultat façon MeiliSearch { hits: [...],
+ * estimatedTotalHits, ... } - ni un tableau brut, ni { data: [...] } - d'où l'union avec les
+ * deux formes possibles ; seuls les champs lus ici sont typés. */
+type LayerSearchResponse =
+  LayerSuggestion[] | { hits?: LayerSuggestion[]; data?: LayerSuggestion[] };
 
 // Historique des recherches - stocké côté navigateur uniquement (pas d'API dédiée côté
 // backend pour l'instant, voir le plan de fonctionnalités). Une seule clé globale (pas de
@@ -148,11 +177,11 @@ export class SearchBarComponent implements OnInit, OnDestroy {
         distinctUntilChanged(),
         switchMap((query) => {
           if (!query || query.length < 2) {
-            return of({ geocoding: [] as GeocodingResult[], layers: [] as any[] });
+            return of({ geocoding: [] as GeocodingResult[], layers: [] as LayerSuggestion[] });
           }
 
           const country = this.getCountryCode();
-          const searchOpts: Record<string, any> = { limit: 10 };
+          const searchOpts: Record<string, unknown> = { limit: 10 };
           if (country) {
             searchOpts['countrycodes'] = country;
           }
@@ -174,23 +203,26 @@ export class SearchBarComponent implements OnInit, OnDestroy {
         takeUntil(this.destroy$),
       )
       .subscribe(({ geocoding, layers }) => {
-        const allGeocoding = (geocoding || []).map((g: any) => {
+        const allGeocoding = (geocoding || []).map((g) => {
+          const hit = g as SearchResultData;
           const isBoundary =
-            g.class === 'boundary' ||
-            g.type === 'administrative' ||
-            [
-              'country',
-              'state',
-              'state_district',
-              'county',
-              'municipality',
-              'city',
-              'town',
-              'village',
-              'suburb',
-              'neighbourhood',
-            ].includes(g.type) ||
-            (g.class === 'place' &&
+            hit.class === 'boundary' ||
+            hit.type === 'administrative' ||
+            (!!hit.type &&
+              [
+                'country',
+                'state',
+                'state_district',
+                'county',
+                'municipality',
+                'city',
+                'town',
+                'village',
+                'suburb',
+                'neighbourhood',
+              ].includes(hit.type)) ||
+            (hit.class === 'place' &&
+              !!hit.type &&
               [
                 'state',
                 'country',
@@ -201,13 +233,14 @@ export class SearchBarComponent implements OnInit, OnDestroy {
                 'suburb',
                 'town',
                 'village',
-              ].includes(g.type)) ||
-            (g.geojson && (g.geojson.type === 'Polygon' || g.geojson.type === 'MultiPolygon'));
+              ].includes(hit.type)) ||
+            hit.geojson?.type === 'Polygon' ||
+            hit.geojson?.type === 'MultiPolygon';
 
           return {
             type: (isBoundary ? 'boundary' : 'geocoding') as 'boundary' | 'geocoding',
-            label: g.displayName || g.display_name,
-            data: g,
+            label: hit.displayName || hit.display_name || '',
+            data: hit,
           };
         });
 
@@ -218,10 +251,11 @@ export class SearchBarComponent implements OnInit, OnDestroy {
         // { hits: [...], estimatedTotalHits, ... } - ni un tableau brut, ni { data: [...] }.
         // Sans lire .hits, layerArr valait toujours [] même quand la recherche trouvait
         // effectivement une couche (aucune couche ne s'affichait jamais dans les résultats).
-        const layerArr = Array.isArray(layers)
-          ? layers
-          : (layers as any)?.hits || (layers as any)?.data || [];
-        this.layerResults = layerArr.map((l: any) => ({
+        const layersRes = layers as LayerSearchResponse;
+        const layerArr = Array.isArray(layersRes)
+          ? layersRes
+          : layersRes?.hits || layersRes?.data || [];
+        this.layerResults = layerArr.map((l) => ({
           type: 'layer' as const,
           label: l.name,
           data: l,
@@ -283,7 +317,7 @@ export class SearchBarComponent implements OnInit, OnDestroy {
         const lonMin = Number(geo.boundingbox[2]);
         const lonMax = Number(geo.boundingbox[3]);
 
-        const bboxPolygon = {
+        const bboxPolygon: GeoJSONGeometry = {
           type: 'Polygon',
           coordinates: [
             [
@@ -332,7 +366,7 @@ export class SearchBarComponent implements OnInit, OnDestroy {
       // à partir d'un objet incomplet).
       const instanceId = this.instanceService.currentInstance$.value?.id;
       if (instanceId) {
-        this.layerService.getById(instanceId, item.data.id).subscribe({
+        this.layerService.getById(instanceId, item.data.id!).subscribe({
           next: (layer) => {
             this.mapLayerService.addLayer(layer);
             this.mapLayerService.setVisibility(layer.id, true);
@@ -357,7 +391,11 @@ export class SearchBarComponent implements OnInit, OnDestroy {
         layerId: item.type === 'layer' ? item.data?.id : undefined,
         metadata: { resultType: item.type, query: this.searchQuery },
       })
-      .subscribe({ error: () => {} });
+      .subscribe({
+        error: () => {
+          // best-effort analytics ping — a tracking failure must not disrupt the search flow
+        },
+      });
   }
 
   private loadSuggestions(): void {

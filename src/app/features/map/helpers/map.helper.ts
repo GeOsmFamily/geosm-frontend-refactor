@@ -6,7 +6,7 @@ import TileWMS from 'ol/source/TileWMS';
 import XYZ from 'ol/source/XYZ';
 import { Feature } from 'ol';
 import { GeoJSON } from 'ol/format';
-import { Style, Fill, Stroke, Circle as CircleStyle, Text, Icon } from 'ol/style';
+import { Style, Fill, Stroke, Circle as CircleStyle, RegularShape, Text, Icon } from 'ol/style';
 import { FeatureLike } from 'ol/Feature';
 import { transform } from 'ol/proj';
 import { Geometry } from 'ol/geom';
@@ -154,7 +154,7 @@ export function createClusterLayer(
   source: VectorSource,
   layerIconUrl: string = DEFAULT_CLUSTER_ICON,
   distance = 40,
-  style?: Style | ((feature: any) => Style | Style[]),
+  style?: Style | ((feature: FeatureLike) => Style | Style[]),
   badgeColor: string = DEFAULT_BADGE_COLOR,
 ): VectorLayer<Cluster> {
   const clusterSource = new Cluster({
@@ -243,6 +243,72 @@ export function createDefaultStyle(geometryType: string, color?: string): Style 
         }),
       });
   }
+}
+
+/** SVG "pin" en teardrop identique à ZOOM_MARKER_SVG (MapService), mais paramétré par couleur -
+ * utilisé pour le style "pin" des données personnelles (voir PersonalDataToolComponent). */
+function buildPinIconSrc(color: string): string {
+  return (
+    'data:image/svg+xml,' +
+    encodeURIComponent(
+      `<svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24"><path fill="${color}" stroke="#ffffff" stroke-width="0.8" d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>`,
+    )
+  );
+}
+
+/**
+ * Convertit une forme choisie par l'utilisateur (voir IconShape côté admin, même jeu de valeurs
+ * 'circle'|'square'|'triangle'|'star'|'pin') en un ol.style.Style client - contrairement au
+ * catalogue partagé, qui génère une icône SVG côté serveur (SvgGeneratorService), les données
+ * personnelles se rendent uniquement côté client (jamais dans le projet QGIS), donc cette
+ * conversion doit exister en JS.
+ */
+export function buildPointShapeStyle(color: string, shape: string): Style {
+  const fill = new Fill({ color });
+  const stroke = new Stroke({ color: '#ffffff', width: 2 });
+
+  switch (shape) {
+    case 'square':
+      return new Style({
+        image: new RegularShape({ points: 4, radius: 8, angle: Math.PI / 4, fill, stroke }),
+      });
+    case 'triangle':
+      return new Style({
+        image: new RegularShape({ points: 3, radius: 9, angle: 0, fill, stroke }),
+      });
+    case 'star':
+      return new Style({
+        image: new RegularShape({ points: 5, radius: 9, radius2: 4, angle: 0, fill, stroke }),
+      });
+    case 'pin':
+      return new Style({
+        image: new Icon({ anchor: [0.5, 1], src: buildPinIconSrc(color) }),
+      });
+    case 'circle':
+    default:
+      return new Style({ image: new CircleStyle({ radius: 7, fill, stroke }) });
+  }
+}
+
+/** Comme createDefaultStyle(), mais avec une forme de point personnalisable - utilisé pour le
+ * rendu des données personnelles (ligne/polygone retombent sur le même rendu que le catalogue,
+ * seul le point varie selon la forme choisie). */
+export function buildPersonalLayerStyle(
+  geometryType: string | null | undefined,
+  color: string,
+  shape: string,
+): Style {
+  const gt = (geometryType || '').toUpperCase();
+  if (gt === 'LINESTRING' || gt === 'MULTILINESTRING') {
+    return new Style({ stroke: new Stroke({ color, width: 3 }) });
+  }
+  if (gt === 'POLYGON' || gt === 'MULTIPOLYGON') {
+    return new Style({
+      fill: new Fill({ color: hexToRgba(color, 0.3) }),
+      stroke: new Stroke({ color, width: 2 }),
+    });
+  }
+  return buildPointShapeStyle(color, shape);
 }
 
 export function createLabelStyle(text: string, color?: string): Style {

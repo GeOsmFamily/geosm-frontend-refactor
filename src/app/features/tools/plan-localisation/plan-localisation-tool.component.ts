@@ -152,6 +152,9 @@ export class PlanLocalisationToolComponent implements OnDestroy {
         next: (plan) => {
           this.analyticsService
             .trackEvent({ instanceId: instance.id, eventType: 'location_plan_created' })
+            // Erreur ignorée intentionnellement : le suivi analytique ne doit jamais empêcher
+            // le suivi de la génération du plan, qui a déjà démarré côté serveur.
+            // eslint-disable-next-line @typescript-eslint/no-empty-function
             .subscribe({ error: () => {} });
           this.pollUntilDone(plan.id);
         },
