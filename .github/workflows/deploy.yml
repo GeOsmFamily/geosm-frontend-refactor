@@ -45,7 +45,7 @@ jobs:
           cache: 'npm'
       - run: npm ci
       - name: Build production
-        run: npx ng build --configuration production
+        run: npm run build -- --configuration production
 
   build-and-push:
     name: Build et push image Docker

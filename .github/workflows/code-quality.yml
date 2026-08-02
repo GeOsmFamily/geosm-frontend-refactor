@@ -18,7 +18,7 @@ jobs:
           cache: 'npm'
       - run: npm ci
       - name: Build strict
-        run: npx ng build --configuration production
+        run: npm run build -- --configuration production
 
   format:
     name: Formatage Prettier
@@ -44,7 +44,7 @@ jobs:
       - run: npm ci
       - name: Analyse de la taille du bundle
         run: |
-          npx ng build --configuration production 2>/dev/null || true
+          npm run build -- --configuration production 2>/dev/null || true
           echo "=== Taille des fichiers générés ==="
           if [ -d "dist/geosm-frontend/browser" ]; then
             du -sh dist/geosm-frontend/browser/
