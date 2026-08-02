@@ -7,7 +7,7 @@ COPY package*.json ./
 RUN npm ci
 
 COPY . .
-RUN npx ng build --configuration production
+RUN npm run build -- --configuration production
 
 # Injecte le vrai token Mapillary à la place du placeholder committé (voir environment.prod.ts -
 # un vrai token était committé en clair avant ce lot, jamais faire ça pour un secret). Monté via

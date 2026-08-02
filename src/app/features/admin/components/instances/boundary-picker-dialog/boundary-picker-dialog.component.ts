@@ -35,6 +35,9 @@ export interface BoundaryPickerResult {
   boundaryGeomCol: string;
   adminLevel: number | null;
   name: string;
+  bbox?: [number, number, number, number];
+  centerLat?: number;
+  centerLon?: number;
 }
 
 /**
@@ -89,6 +92,8 @@ export class BoundaryPickerDialogComponent implements OnDestroy {
 
   private readonly search$ = new Subject<void>();
   private map: Map | null = null;
+  private selectedBbox: [number, number, number, number] | null = null;
+  private selectedCenter: { lat: number; lon: number } | null = null;
 
   constructor() {
     // distinctUntilChanged() n'a pas sa place ici : ce Subject n'émet jamais de valeur (juste un
@@ -141,6 +146,16 @@ export class BoundaryPickerDialogComponent implements OnDestroy {
   }
 
   private renderPreview(geojson: unknown): void {
+    const rawFeatures = new GeoJSON().readFeatures(geojson);
+    if (rawFeatures.length > 0 && rawFeatures[0].getGeometry()) {
+      const ext4326 = rawFeatures[0].getGeometry()!.getExtent() as [number, number, number, number];
+      this.selectedBbox = ext4326;
+      this.selectedCenter = {
+        lon: (ext4326[0] + ext4326[2]) / 2,
+        lat: (ext4326[1] + ext4326[3]) / 2,
+      };
+    }
+
     if (!this.previewMapEl) return;
 
     const source = new VectorSource({
@@ -229,6 +244,9 @@ export class BoundaryPickerDialogComponent implements OnDestroy {
       boundaryGeomCol: 'geom',
       adminLevel: selected.adminLevel,
       name: selected.name,
+      bbox: this.selectedBbox ?? undefined,
+      centerLat: this.selectedCenter?.lat,
+      centerLon: this.selectedCenter?.lon,
     };
     this.dialogRef.close(result);
   }

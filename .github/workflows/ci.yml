@@ -31,7 +31,7 @@ jobs:
       - run: npm ci
       - run: npx tsc --noEmit -p tsconfig.json
       - name: Build production
-        run: npx ng build --configuration production
+        run: npm run build -- --configuration production
       - uses: actions/upload-artifact@v7
         with:
           name: dist
@@ -55,7 +55,7 @@ jobs:
         with:
           chrome-version: stable
       - name: Tests unitaires avec couverture
-        run: npx ng test --no-watch --no-progress --browsers=ChromeHeadlessNoSandbox --code-coverage
+        run: npx nx test --no-watch --no-progress --browsers=ChromeHeadlessNoSandbox --code-coverage
         env:
           CHROME_BIN: ${{ steps.setup-chrome.outputs.chrome-path }}
       - uses: actions/upload-artifact@v7

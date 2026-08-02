@@ -20,6 +20,7 @@ import { MapService } from '../../services/map.service';
 import { InstanceService } from '../../../../core/services/instance.service';
 import { BaseMapService } from '../../../../core/services/base-map.service';
 import { ThemeService } from '../../../../core/services/theme.service';
+import { BoundaryService } from '../../../../core/services/boundary.service';
 import { BaseMap, Instance } from '../../../../core/models/index';
 import { environment } from '../../../../../environments/environment';
 import { transformExtent } from 'ol/proj';
@@ -38,6 +39,7 @@ export class MapViewComponent implements AfterViewInit, OnDestroy {
   private readonly instanceService = inject(InstanceService);
   private readonly baseMapService = inject(BaseMapService);
   private readonly themeService = inject(ThemeService);
+  private readonly boundaryService = inject(BoundaryService);
   private readonly http = inject(HttpClient);
   private readonly destroy$ = new Subject<void>();
   private currentInstance: Instance | null = null;
@@ -66,12 +68,8 @@ export class MapViewComponent implements AfterViewInit, OnDestroy {
     this.instanceService.currentInstance$.pipe(takeUntil(this.destroy$)).subscribe((instance) => {
       if (instance) {
         this.loadBaseMaps(instance.id);
-        if (instance.slug === 'cameroon') {
-          this.loadCameroonBoundary();
-        } else {
-          this.mapService.removeLayerByName('instance-boundary');
-        }
         this.currentInstance = instance;
+        this.loadInstanceBoundary(instance);
       }
     });
 
@@ -104,13 +102,6 @@ export class MapViewComponent implements AfterViewInit, OnDestroy {
     // Transform instance bbox from EPSG:4326 to EPSG:3857
     const instanceExtent = transformExtent(this.currentInstance.bbox, 'EPSG:4326', 'EPSG:3857');
 
-    // Recentrer uniquement quand le CENTRE de la vue s'éloigne significativement de
-    // l'emprise de l'instance (avec une marge de tolérance) - pas quand une simple
-    // proportion de surface visible est faible. Un ratio de surface (aire visible /
-    // aire de l'instance) casse dès qu'on zoome fort sur un point ou un cluster à
-    // l'intérieur de l'instance : la vue est alors minuscule par rapport à l'emprise
-    // totale, ce qui déclenchait un dézoom immédiat et intempestif après chaque zoom
-    // sur un cluster.
     const width = instanceExtent[2] - instanceExtent[0];
     const height = instanceExtent[3] - instanceExtent[1];
     const marginX = width * 0.5;
@@ -147,62 +138,134 @@ export class MapViewComponent implements AfterViewInit, OnDestroy {
     });
   }
 
-  private loadCameroonBoundary(): void {
-    this.http.get<GeoJSON.GeoJSON>('assets/cameroon-boundary.json').subscribe({
-      next: (geojson) => {
-        this.mapService.removeLayerByName('instance-boundary');
-
-        const format = new GeoJSONFormat();
-        const features = format.readFeatures(geojson, {
-          dataProjection: 'EPSG:4326',
-          featureProjection: 'EPSG:3857',
+  private loadInstanceBoundary(instance: Instance): void {
+    if (
+      instance.boundaryTable &&
+      instance.boundaryId !== null &&
+      instance.boundaryId !== undefined
+    ) {
+      this.boundaryService
+        .getDetail(
+          instance.boundaryTable,
+          instance.boundaryId,
+          instance.boundaryGeomCol ?? undefined,
+        )
+        .subscribe({
+          next: (detail) => {
+            if (detail && detail.geojson) {
+              this.applyBoundaryMask(detail.geojson as GeoJSON.GeoJSON, true);
+            } else {
+              this.loadFallbackBoundary(instance);
+            }
+          },
+          error: () => {
+            this.loadFallbackBoundary(instance);
+          },
         });
+    } else {
+      this.loadFallbackBoundary(instance);
+    }
+  }
 
-        if (features.length === 0) return;
+  private loadFallbackBoundary(instance: Instance): void {
+    if (instance.slug === 'cameroon') {
+      this.http.get<GeoJSON.GeoJSON>('assets/cameroon-boundary.json').subscribe({
+        next: (geojson) => this.applyBoundaryMask(geojson, true),
+        error: () => this.mapService.removeLayerByName('instance-boundary'),
+      });
+    } else if (instance.bbox && instance.bbox.length === 4) {
+      const [minX, minY, maxX, maxY] = instance.bbox;
+      const bboxGeoJSON: GeoJSON.GeoJSON = {
+        type: 'FeatureCollection',
+        features: [
+          {
+            type: 'Feature',
+            properties: {},
+            geometry: {
+              type: 'Polygon',
+              coordinates: [
+                [
+                  [minX, minY],
+                  [maxX, minY],
+                  [maxX, maxY],
+                  [minX, maxY],
+                  [minX, minY],
+                ],
+              ],
+            },
+          },
+        ],
+      };
+      this.applyBoundaryMask(bboxGeoJSON, true);
+    } else {
+      this.mapService.removeLayerByName('instance-boundary');
+    }
+  }
 
-        const geom = features[0].getGeometry();
-        if (!geom) return;
+  private applyBoundaryMask(geojson: GeoJSON.GeoJSON, fitMap = false): void {
+    this.mapService.removeLayerByName('instance-boundary');
 
-        // Inverted polygon for masking (dimming area outside Cameroon)
-        const worldCoords = [
-          [-20037508.34, -20037508.34],
-          [20037508.34, -20037508.34],
-          [20037508.34, 20037508.34],
-          [-20037508.34, 20037508.34],
-          [-20037508.34, -20037508.34],
-        ];
-
-        let invertedGeom: Polygon | null = null;
-        const geomType = geom.getType();
-
-        if (geomType === 'Polygon') {
-          const polyGeom = geom as Polygon;
-          const rings = [worldCoords, ...polyGeom.getCoordinates()];
-          invertedGeom = new Polygon(rings);
-        } else if (geomType === 'MultiPolygon') {
-          const multiPolyGeom = geom as MultiPolygon;
-          const rings = [worldCoords];
-          multiPolyGeom.getPolygons().forEach((poly) => {
-            rings.push(poly.getLinearRing(0)!.getCoordinates());
-          });
-          invertedGeom = new Polygon(rings);
-        }
-
-        if (!invertedGeom) return;
-
-        const maskFeature = new Feature(invertedGeom);
-
-        const maskStyle = new Style({
-          fill: new Fill({
-            color: 'rgba(2, 27, 50, 0.45)', // Premium dimming mask overlay
-          }),
-        });
-
-        maskFeature.setStyle(maskStyle);
-
-        this.mapService.addVectorLayer('instance-boundary', [maskFeature]);
-      },
-      error: (err) => console.error('Failed to load Cameroon boundary:', err),
+    const format = new GeoJSONFormat();
+    const features = format.readFeatures(geojson, {
+      dataProjection: 'EPSG:4326',
+      featureProjection: 'EPSG:3857',
     });
+
+    if (features.length === 0) return;
+
+    const geom = features[0].getGeometry();
+    if (!geom) return;
+
+    const extent3857 = geom.getExtent();
+    if (extent3857 && this.currentInstance && !this.currentInstance.bbox) {
+      const bbox4326 = transformExtent(extent3857, 'EPSG:3857', 'EPSG:4326') as [
+        number,
+        number,
+        number,
+        number,
+      ];
+      this.currentInstance.bbox = bbox4326;
+    }
+
+    if (fitMap && extent3857) {
+      this.mapService.fitExtent(extent3857, [50, 50, 50, 50]);
+    }
+
+    // Inverted polygon for masking (dimming area outside boundary)
+    const worldCoords = [
+      [-20037508.34, -20037508.34],
+      [20037508.34, -20037508.34],
+      [20037508.34, 20037508.34],
+      [-20037508.34, 20037508.34],
+      [-20037508.34, -20037508.34],
+    ];
+
+    let invertedGeom: Polygon | null = null;
+    const geomType = geom.getType();
+
+    if (geomType === 'Polygon') {
+      const polyGeom = geom as Polygon;
+      const rings = [worldCoords, ...polyGeom.getCoordinates()];
+      invertedGeom = new Polygon(rings);
+    } else if (geomType === 'MultiPolygon') {
+      const multiPolyGeom = geom as MultiPolygon;
+      const rings = [worldCoords];
+      multiPolyGeom.getPolygons().forEach((poly) => {
+        rings.push(poly.getLinearRing(0)!.getCoordinates());
+      });
+      invertedGeom = new Polygon(rings);
+    }
+
+    if (!invertedGeom) return;
+
+    const maskFeature = new Feature(invertedGeom);
+    const maskStyle = new Style({
+      fill: new Fill({
+        color: 'rgba(2, 27, 50, 0.45)', // Dimming mask overlay
+      }),
+    });
+    maskFeature.setStyle(maskStyle);
+
+    this.mapService.addVectorLayer('instance-boundary', [maskFeature]);
   }
 }

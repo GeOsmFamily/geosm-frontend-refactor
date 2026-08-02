@@ -190,10 +190,18 @@ export class LayerDetailDialogComponent {
 
   downloadSourceFile(): void {
     this.loadingSource.set(true);
-    this.layerService.getSourceFile(this.data.instanceId, this.data.layer.id).subscribe({
-      next: (result) => {
+    this.layerService.downloadSourceFile(this.data.instanceId, this.data.layer.id).subscribe({
+      next: (blob) => {
         this.loadingSource.set(false);
-        window.open(result.url, '_blank');
+        const safeName = this.data.layer.name.replace(/[^a-zA-Z0-9_\-. ]/g, '_');
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `${safeName}.geojson`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
       },
       error: (err) => {
         this.loadingSource.set(false);
