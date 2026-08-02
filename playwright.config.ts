@@ -15,7 +15,7 @@ export default defineConfig({
     { name: 'chromium', use: { ...devices['Desktop Chrome'] } },
   ],
   webServer: {
-    command: 'npx ng serve --port 4200',
+    command: 'npm start -- --port 4200',
     url: 'http://localhost:4200',
     reuseExistingServer: !process.env['CI'],
     timeout: 180 * 1000,
