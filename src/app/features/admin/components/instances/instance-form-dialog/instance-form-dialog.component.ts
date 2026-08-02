@@ -85,7 +85,15 @@ export class InstanceFormDialogComponent {
       BoundaryPickerResult | null
     >(BoundaryPickerDialogComponent, { data: { initialTable: this.boundary()?.boundaryTable } });
     ref.afterClosed().subscribe((result) => {
-      if (result) this.boundary.set(result);
+      if (result) {
+        this.boundary.set(result);
+        if (result.centerLat !== undefined && result.centerLon !== undefined) {
+          this.form.patchValue({
+            centerLat: Math.round(result.centerLat * 1000000) / 1000000,
+            centerLon: Math.round(result.centerLon * 1000000) / 1000000,
+          });
+        }
+      }
     });
   }
 
@@ -110,6 +118,7 @@ export class InstanceFormDialogComponent {
         boundaryId: boundary?.boundaryId,
         boundaryGeomCol: boundary?.boundaryGeomCol,
         adminLevel: boundary?.adminLevel ?? undefined,
+        bbox: boundary?.bbox ?? undefined,
       });
     } else {
       this.dialogRef.close({
@@ -123,6 +132,7 @@ export class InstanceFormDialogComponent {
         boundaryId: boundary?.boundaryId ?? null,
         boundaryGeomCol: boundary?.boundaryGeomCol ?? null,
         adminLevel: boundary?.adminLevel ?? null,
+        bbox: boundary?.bbox ?? null,
       });
     }
   }
