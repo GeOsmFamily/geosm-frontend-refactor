@@ -139,6 +139,8 @@ export class MapLayoutComponent implements OnInit {
   readonly activeTool = signal<string | null>(null);
 
   readonly searchQuery = signal('');
+  readonly activeInstances = signal<Instance[]>([]);
+  readonly currentInstance = signal<Instance | null>(null);
   readonly currentLang = signal(environment.defaultLanguage);
   readonly availableLanguages = environment.availableLanguages;
   readonly mousePosition = this.mapService.mousePosition$;
@@ -186,6 +188,11 @@ export class MapLayoutComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.instanceService.currentInstance$.subscribe((instance) => {
+      this.currentInstance.set(instance);
+    });
+    this.loadActiveInstances();
+
     this.route.paramMap.subscribe((params) => {
       const slug = params.get('instanceSlug');
       if (slug) {
@@ -663,6 +670,22 @@ export class MapLayoutComponent implements OnInit {
   get isAdmin(): boolean {
     const role = this.currentUser.value?.role;
     return role === Role.SUPER_ADMIN || role === Role.ADMIN_INSTANCE;
+  }
+
+  private loadActiveInstances(): void {
+    this.instanceService.list({ limit: 100, isActive: true }).subscribe({
+      next: (res) => {
+        this.activeInstances.set(res.data || []);
+      },
+      error: () => {
+        this.activeInstances.set([]);
+      },
+    });
+  }
+
+  switchInstance(instance: Instance): void {
+    if (instance.slug === this.currentInstance()?.slug) return;
+    this.router.navigate(['/map', instance.slug]);
   }
 
   navigateToAdmin(): void {

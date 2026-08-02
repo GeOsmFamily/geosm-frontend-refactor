@@ -13,6 +13,39 @@
       <div class="logo-group">
         <img src="assets/icones/logo-geosm.svg" alt="GeOsm" class="logo-icon" />
       </div>
+
+      @if (activeInstances().length > 1) {
+        <button
+          mat-button
+          [matMenuTriggerFor]="instanceMenu"
+          class="instance-switcher-btn"
+          [matTooltip]="'admin.instances.switchInstance' | translate"
+        >
+          <mat-icon class="instance-icon">public</mat-icon>
+          <span class="instance-name">{{
+            currentInstance()?.name || ('admin.instances.name' | translate)
+          }}</span>
+          <mat-icon class="dropdown-icon">expand_more</mat-icon>
+        </button>
+        <mat-menu #instanceMenu="matMenu" class="instance-menu-panel">
+          <div class="instance-menu-header">
+            <span>{{ 'admin.instances.instances' | translate }}</span>
+          </div>
+          <mat-divider></mat-divider>
+          @for (inst of activeInstances(); track inst.id) {
+            <button
+              mat-menu-item
+              (click)="switchInstance(inst)"
+              [class.active-instance]="currentInstance()?.id === inst.id"
+            >
+              <mat-icon [class.active-icon]="currentInstance()?.id === inst.id">
+                {{ currentInstance()?.id === inst.id ? 'check_circle' : 'public' }}
+              </mat-icon>
+              <span>{{ inst.name }}</span>
+            </button>
+          }
+        </mat-menu>
+      }
     </div>
 
     <div class="header-center">

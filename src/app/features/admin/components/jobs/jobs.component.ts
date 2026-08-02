@@ -54,6 +54,7 @@ export class JobsComponent implements OnInit {
   readonly triggeringOsm = signal(false);
   readonly triggeringBackup = signal(false);
   readonly triggeringReindex = signal(false);
+  readonly triggeringPurgeOrphans = signal(false);
 
   pbfPath = '/data/cameroon-latest.osm.pbf';
 
@@ -96,11 +97,12 @@ export class JobsComponent implements OnInit {
     });
   }
 
-  confirmAndTrigger(action: 'osm' | 'backup' | 'reindex'): void {
+  confirmAndTrigger(action: 'osm' | 'backup' | 'reindex' | 'purgeOrphans'): void {
     const titles = {
       osm: 'admin.jobs.confirmOsmImport',
       backup: 'admin.jobs.confirmBackup',
       reindex: 'admin.jobs.confirmReindex',
+      purgeOrphans: 'admin.jobs.confirmPurgeOrphans',
     };
     const ref = this.dialog.open(ConfirmDialogComponent, {
       data: {
@@ -113,6 +115,7 @@ export class JobsComponent implements OnInit {
       if (action === 'osm') this.triggerOsmImport();
       if (action === 'backup') this.triggerBackup();
       if (action === 'reindex') this.triggerReindex();
+      if (action === 'purgeOrphans') this.triggerPurgeOrphans();
     });
   }
 
@@ -163,6 +166,24 @@ export class JobsComponent implements OnInit {
       },
       error: (err) => {
         this.triggeringReindex.set(false);
+        this.notifyError(err);
+      },
+    });
+  }
+
+  private triggerPurgeOrphans(): void {
+    this.triggeringPurgeOrphans.set(true);
+    this.jobService.purgeOrphanTables().subscribe({
+      next: (res) => {
+        this.triggeringPurgeOrphans.set(false);
+        this.snackBar.open(
+          this.translate.instant('admin.jobs.purgeOrphansDone', { count: res.purgedTablesCount }),
+          undefined,
+          { duration: 4000 },
+        );
+      },
+      error: (err) => {
+        this.triggeringPurgeOrphans.set(false);
         this.notifyError(err);
       },
     });

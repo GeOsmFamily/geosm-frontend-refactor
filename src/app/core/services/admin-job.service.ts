@@ -56,6 +56,10 @@ export interface ImportOsmResult {
   message: string;
 }
 
+export interface PurgeOrphansResult {
+  purgedTablesCount: number;
+}
+
 /** Lot A6 admin - jobs/files BullMQ + déclenchement manuel des tâches longues. */
 @Injectable({ providedIn: 'root' })
 export class AdminJobService {
@@ -83,5 +87,9 @@ export class AdminJobService {
 
   triggerOsmImport(pbfPath: string): Observable<ImportOsmResult> {
     return this.api.post<ImportOsmResult>('/admin/osm/import', { pbfPath });
+  }
+
+  purgeOrphanTables(): Observable<PurgeOrphansResult> {
+    return this.api.post<PurgeOrphansResult>('/admin/database/purge-orphan-tables', {});
   }
 }

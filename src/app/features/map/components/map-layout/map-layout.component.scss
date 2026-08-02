@@ -56,6 +56,70 @@
   object-fit: contain;
 }
 
+.instance-switcher-btn {
+  color: #ffffff !important;
+  background: rgba(255, 255, 255, 0.15) !important;
+  border-radius: 20px !important;
+  padding: 0 12px !important;
+  height: 32px !important;
+  line-height: 32px !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  margin-left: 8px !important;
+  transition: all var(--transition-fast) !important;
+  border: 1px solid rgba(255, 255, 255, 0.25) !important;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.28) !important;
+    border-color: rgba(255, 255, 255, 0.45) !important;
+  }
+
+  .instance-icon {
+    font-size: 18px !important;
+    width: 18px !important;
+    height: 18px !important;
+    color: #4db6ac !important;
+  }
+
+  .instance-name {
+    max-width: 140px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .dropdown-icon {
+    font-size: 18px !important;
+    width: 18px !important;
+    height: 18px !important;
+    margin-left: -2px;
+    opacity: 0.85;
+  }
+}
+
+::ng-deep .instance-menu-panel {
+  .instance-menu-header {
+    padding: 8px 16px 6px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-secondary, #757575);
+  }
+
+  button.mat-menu-item.active-instance {
+    background-color: rgba(0, 173, 166, 0.08);
+    font-weight: 600;
+
+    .active-icon {
+      color: #00ada7;
+    }
+  }
+}
+
 .header-center {
   flex: 1;
   display: flex;

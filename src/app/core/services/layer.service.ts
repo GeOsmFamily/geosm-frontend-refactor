@@ -86,13 +86,15 @@ export class LayerService {
     return this.api.post<Layer>(`/instances/${instanceId}/layers/${id}/resync`, {});
   }
 
-  getSourceFile(
-    instanceId: string,
-    id: string,
-  ): Observable<{ layerId: string; name: string; url: string }> {
-    return this.api.get<{ layerId: string; name: string; url: string }>(
-      `/instances/${instanceId}/layers/${id}/source-file`,
-    );
+  /**
+   * Télécharge le contenu GeoJSON d'une couche directement depuis l'API (stream).
+   * Le backend stream le fichier depuis MinIO (ou l'exporte à la demande depuis PostGIS)
+   * sans exposer d'URL MinIO interne inaccessible depuis le navigateur.
+   */
+  downloadSourceFile(instanceId: string, id: string): Observable<Blob> {
+    return this.http.get(`${environment.apiUrl}/instances/${instanceId}/layers/${id}/source-file`, {
+      responseType: 'blob',
+    });
   }
 
   /**
