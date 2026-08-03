@@ -34,7 +34,7 @@ export function stringToColor(str: string): string {
  * Génère un SVG teardrop ("pin" de carte) élégant aux couleurs de la couche
  * en Data URI (pas d'appel réseau nécessaire).
  */
-export function buildPinMarkerSvg(color: string = '#00ada7'): string {
+export function buildPinMarkerSvg(color = '#00ada7'): string {
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 36 36">
     <path d="M18 3 C11.37 3 6 8.37 6 15 C6 23 18 33 18 33 C18 33 30 23 30 15 C30 8.37 24.63 3 18 3 Z" fill="${color}" stroke="#ffffff" stroke-width="2.5"/>
     <circle cx="18" cy="15" r="5.5" fill="#ffffff"/>
