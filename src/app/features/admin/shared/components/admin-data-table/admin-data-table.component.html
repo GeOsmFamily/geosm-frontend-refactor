@@ -4,9 +4,9 @@
       @for (col of columns; track col.key) {
         <ng-container [matColumnDef]="col.key">
           @if (col.sortable) {
-            <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ col.label }}</th>
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ col.label | translate }}</th>
           } @else {
-            <th mat-header-cell *matHeaderCellDef>{{ col.label }}</th>
+            <th mat-header-cell *matHeaderCellDef>{{ col.label | translate }}</th>
           }
           <td mat-cell *matCellDef="let row">{{ row[col.key] }}</td>
         </ng-container>

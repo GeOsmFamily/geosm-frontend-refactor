@@ -506,7 +506,8 @@
       "statusFailed": "Failed",
       "statusDelayed": "Delayed",
       "triggerNow": "Trigger now",
-      "pbfPath": ".osm.pbf file path",
+      "pbfPath": "Path to .osm.pbf file or download URL",
+      "pbfHint": "Geofabrik URL (e.g. https://download.geofabrik.de/africa/mali-latest.osm.pbf) or local server file path",
       "triggerOsmImport": "Import OSM data",
       "triggerBackup": "Immediate backup",
       "triggerReindex": "Reindex search",
@@ -624,6 +625,7 @@
       "deleted": "User deleted"
     },
     "instances": {
+      "instances": "Instances",
       "switchInstance": "Switch instance",
       "create": "Create instance",
       "createFromTemplate": "Create from template",
@@ -856,5 +858,21 @@
       "success": "Thank you for your feedback!",
       "error": "An error occurred while submitting."
     }
+  },
+  "search": {
+    "placeholder": "Search a place, layer...",
+    "recentSearches": "Recent searches",
+    "clear": "Clear",
+    "clearHistory": "Clear history",
+    "removeFromHistory": "Remove from history",
+    "suggestions": "Suggestions for you",
+    "boundaries": "Administrative boundaries",
+    "places": "Places",
+    "layers": "Layers",
+    "boundarySubtitle": "Administrative boundary",
+    "generating": "Generating...",
+    "downloadBoundary": "Download boundary",
+    "formatGeoJson": "GeoJSON format (.geojson)",
+    "formatShapefile": "Shapefile format (.zip)"
   }
 }
