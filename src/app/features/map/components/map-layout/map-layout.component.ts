@@ -20,6 +20,7 @@ import { LayerPanelComponent } from '../../../../features/layers/components/laye
 import { SearchBarComponent } from '../../../../features/search/components/search-bar/search-bar.component';
 import { transformExtent } from 'ol/proj';
 import { MapService } from '../../services/map.service';
+import { MapLayerService } from '../../services/map-layer.service';
 import { AuthService } from '../../../../core/services/auth.service';
 import { InstanceService } from '../../../../core/services/instance.service';
 import { ApiService } from '../../../../core/services/api.service';
@@ -112,6 +113,7 @@ export class MapLayoutComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly authService = inject(AuthService);
   private readonly mapService = inject(MapService);
+  private readonly mapLayerService = inject(MapLayerService);
   private readonly instanceService = inject(InstanceService);
   private readonly apiService = inject(ApiService);
   private readonly translate = inject(TranslateService);
@@ -337,6 +339,23 @@ export class MapLayoutComponent implements OnInit {
   private loadInstance(slug: string): void {
     this.apiService.get<Instance>(`/instances/slug/${slug}`).subscribe({
       next: (instance) => {
+        const previousInstance = this.currentInstance();
+        if (previousInstance && previousInstance.id !== instance.id) {
+          this.mapLayerService.removeAll();
+          this.activeTool.set(null);
+          this.routingService.startCoord = null;
+          this.routingService.endCoord = null;
+          this.locationInfoOpen.set(false);
+          this.locationInfo.set(null);
+          this.geosignetsOpen.set(false);
+          this.myMapsOpen.set(false);
+          this.assistantOpen.set(false);
+          this.shareOpen.set(false);
+          this.toolsMenuOpen.set(false);
+          this.baseMapsOpen.set(false);
+          this.settingsOpen.set(false);
+          this.infoOpen.set(false);
+        }
         this.instanceService.setCurrentInstance(instance);
         // La carte OpenLayers n'est créée que dans MapViewComponent.ngAfterViewInit(),
         // qui s'exécute APRÈS ce ngOnInit parent. Comme cet appel HTTP local peut
