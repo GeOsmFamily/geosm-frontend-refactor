@@ -14,7 +14,7 @@ import { LayerService } from '../../../core/services/layer.service';
 import { AnalyticsService } from '../../../core/services/analytics.service';
 import { InstanceService } from '../../../core/services/instance.service';
 import { createClusterLayer, geoJsonToFeatures } from '../helpers/map.helper';
-import { resolveLayerIconUrlOrDefault } from '../../../core/utils/layer-icon.util';
+import { resolveLayerIconUrlOrDefault, stringToColor } from '../../../core/utils/layer-icon.util';
 
 /**
  * Au-delà de ce nombre de features (metadata.featureCount), on garde le rendu
@@ -182,9 +182,8 @@ export class MapLayerService {
     });
 
     const iconUrl = resolveLayerIconUrlOrDefault(layer);
-    // Couleur du badge de comptage = couleur de la thématique de la couche
-    // (cohérent avec le catalogue), plutôt qu'une couleur fixe arbitraire.
-    const badgeColor = layer.metadata?.color || undefined;
+    // Couleur du badge de comptage = couleur de la couche (ou couleur déterministe basée sur le nom)
+    const badgeColor = layer.metadata?.color || stringToColor(layer.name || layer.id || '');
     const clusterLayer = createClusterLayer(source, iconUrl, 40, undefined, badgeColor);
     clusterLayer.setProperties({ name: layer.name, layerId: layer.id });
     clusterLayer.setOpacity(1);
