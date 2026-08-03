@@ -14,9 +14,15 @@
     [loading]="loading()"
   ></app-stat-card>
   <app-stat-card
-    [label]="'admin.home.exports' | translate"
-    [value]="stats()?.exportCount ?? null"
-    icon="download"
+    [label]="'admin.home.layers' | translate"
+    [value]="stats()?.layerCount ?? null"
+    icon="layers"
+    [loading]="loading()"
+  ></app-stat-card>
+  <app-stat-card
+    [label]="'admin.home.boundaries' | translate"
+    [value]="stats()?.boundaryCount ?? null"
+    icon="map"
     [loading]="loading()"
   ></app-stat-card>
   <app-stat-card
@@ -25,4 +31,109 @@
     icon="palette"
     [loading]="loading()"
   ></app-stat-card>
+  <app-stat-card
+    [label]="'admin.home.exports' | translate"
+    [value]="stats()?.exportCount ?? null"
+    icon="download"
+    [loading]="loading()"
+  ></app-stat-card>
+</div>
+
+<!-- Section Santé Système & Données Spatiales -->
+<div class="dashboard-details" *ngIf="!loading() && stats()">
+  <div class="details-grid">
+    <!-- Card Santé des Services -->
+    <mat-card class="detail-card">
+      <mat-card-header>
+        <mat-icon mat-card-avatar color="primary">health_and_safety</mat-icon>
+        <mat-card-title>{{ 'admin.home.systemHealth' | translate }}</mat-card-title>
+        <mat-card-subtitle>{{ 'admin.home.healthSubtitle' | translate }}</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content class="health-content">
+        <div class="health-item">
+          <span class="health-label">Base de données PostGIS</span>
+          <span
+            class="health-badge"
+            [class.up]="stats()?.servicesHealth?.database === 'up'"
+            [class.down]="stats()?.servicesHealth?.database === 'down'"
+          >
+            <mat-icon>{{
+              stats()?.servicesHealth?.database === 'up' ? 'check_circle' : 'error'
+            }}</mat-icon>
+            {{ stats()?.servicesHealth?.database === 'up' ? 'En ligne' : 'Inaccessible' }}
+          </span>
+        </div>
+        <div class="health-item">
+          <span class="health-label">Cache Redis & Files d'attente</span>
+          <span
+            class="health-badge"
+            [class.up]="stats()?.servicesHealth?.redis === 'up'"
+            [class.down]="stats()?.servicesHealth?.redis === 'down'"
+          >
+            <mat-icon>{{
+              stats()?.servicesHealth?.redis === 'up' ? 'check_circle' : 'error'
+            }}</mat-icon>
+            {{ stats()?.servicesHealth?.redis === 'up' ? 'En ligne' : 'Inaccessible' }}
+          </span>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Card Données Spatiales (PostGIS) -->
+    <mat-card class="detail-card">
+      <mat-card-header>
+        <mat-icon mat-card-avatar color="accent">place</mat-icon>
+        <mat-card-title>{{ 'admin.home.spatialData' | translate }}</mat-card-title>
+        <mat-card-subtitle>{{ 'admin.home.spatialSubtitle' | translate }}</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content class="spatial-content">
+        <div class="spatial-item">
+          <mat-icon class="icon-point">pin_drop</mat-icon>
+          <div class="spatial-info">
+            <span class="spatial-count">{{ stats()?.spatialObjectsCount?.points | number }}</span>
+            <span class="spatial-type">Points / POI (Équipements)</span>
+          </div>
+        </div>
+        <div class="spatial-item">
+          <mat-icon class="icon-polygon">pentagon</mat-icon>
+          <div class="spatial-info">
+            <span class="spatial-count">{{ stats()?.spatialObjectsCount?.polygons | number }}</span>
+            <span class="spatial-type">Polygones (Bâtiments, Zones)</span>
+          </div>
+        </div>
+        <div class="spatial-item">
+          <mat-icon class="icon-line">timeline</mat-icon>
+          <div class="spatial-info">
+            <span class="spatial-count">{{ stats()?.spatialObjectsCount?.lines | number }}</span>
+            <span class="spatial-type">Lignes (Routes, Rivières)</span>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Card Sauvegarde Postgres -->
+    <mat-card class="detail-card">
+      <mat-card-header>
+        <mat-icon mat-card-avatar color="warn">backup</mat-icon>
+        <mat-card-title>{{ 'admin.home.lastBackup' | translate }}</mat-card-title>
+        <mat-card-subtitle>{{ 'admin.home.backupSubtitle' | translate }}</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content class="backup-content">
+        <div *ngIf="stats()?.lastBackupInfo; else noBackup">
+          <p class="backup-key"><strong>Fichier :</strong> {{ stats()?.lastBackupInfo?.key }}</p>
+          <p class="backup-size">
+            <strong>Taille :</strong> {{ formatSizeMb(stats()?.lastBackupInfo?.sizeBytes) }}
+          </p>
+
+          <p class="backup-date">
+            <strong>Date :</strong>
+            {{ stats()?.lastBackupInfo?.lastModified | date: 'dd/MM/yyyy HH:mm' }}
+          </p>
+        </div>
+        <ng-template #noBackup>
+          <p class="no-backup-text">Aucune sauvegarde enregistrée sur MinIO.</p>
+        </ng-template>
+      </mat-card-content>
+    </mat-card>
+  </div>
 </div>

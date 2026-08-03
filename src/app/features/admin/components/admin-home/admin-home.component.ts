@@ -1,29 +1,39 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
+import { MatIconModule } from '@angular/material/icon';
+import { MatCardModule } from '@angular/material/card';
 
 import { ApiService } from '../../../../core/services/api.service';
 import { StatCardComponent } from '../../shared/components/stat-card/stat-card.component';
 
-/** Shape exacte de GetDashboardUseCase (backend) - voir get-dashboard.use-case.ts. */
-interface DashboardStats {
+export interface DashboardStats {
   instanceCount: number;
   userCount: number;
   exportCount: number;
   themeCount: number;
+  layerCount: number;
+  boundaryCount: number;
+  spatialObjectsCount?: {
+    points: number;
+    polygons: number;
+    lines: number;
+  };
+  servicesHealth?: {
+    database: 'up' | 'down';
+    redis: 'up' | 'down';
+  };
+  lastBackupInfo?: {
+    key: string;
+    sizeBytes: number;
+    lastModified: string;
+  };
 }
 
-/**
- * Page d'accueil admin - squelette de KPI au Lot A1 (comptages globaux via GET /admin/dashboard,
- * seul endpoint existant qui agrège tous les utilisateurs/toutes les instances). Un comptage de
- * couches n'est pas inclus ici : GET /layers est scopé par instance
- * (/instances/:instanceId/layers, pas un endpoint global) - un compteur global de couches sera
- * ajouté côté backend au Lot A7 en même temps que les autres enrichissements de ce endpoint.
- */
 @Component({
   selector: 'app-admin-home',
   standalone: true,
-  imports: [CommonModule, TranslateModule, StatCardComponent],
+  imports: [CommonModule, TranslateModule, StatCardComponent, MatIconModule, MatCardModule],
   templateUrl: './admin-home.component.html',
   styleUrl: './admin-home.component.scss',
 })
@@ -41,5 +51,10 @@ export class AdminHomeComponent implements OnInit {
       },
       error: () => this.loading.set(false),
     });
+  }
+
+  formatSizeMb(sizeBytes?: number): string {
+    if (!sizeBytes) return '0 Mo';
+    return (sizeBytes / (1024 * 1024)).toFixed(2) + ' Mo';
   }
 }
