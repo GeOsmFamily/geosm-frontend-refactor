@@ -624,6 +624,7 @@
       "deleted": "User deleted"
     },
     "instances": {
+      "instances": "Instances",
       "switchInstance": "Switch instance",
       "create": "Create instance",
       "createFromTemplate": "Create from template",
@@ -856,5 +857,21 @@
       "success": "Thank you for your feedback!",
       "error": "An error occurred while submitting."
     }
+  },
+  "search": {
+    "placeholder": "Search a place, layer...",
+    "recentSearches": "Recent searches",
+    "clear": "Clear",
+    "clearHistory": "Clear history",
+    "removeFromHistory": "Remove from history",
+    "suggestions": "Suggestions for you",
+    "boundaries": "Administrative boundaries",
+    "places": "Places",
+    "layers": "Layers",
+    "boundarySubtitle": "Administrative boundary",
+    "generating": "Generating...",
+    "downloadBoundary": "Download boundary",
+    "formatGeoJson": "GeoJSON format (.geojson)",
+    "formatShapefile": "Shapefile format (.zip)"
   }
 }

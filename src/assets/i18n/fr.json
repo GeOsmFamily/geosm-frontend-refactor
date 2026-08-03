@@ -624,6 +624,7 @@
       "deleted": "Utilisateur supprimé"
     },
     "instances": {
+      "instances": "Instances",
       "switchInstance": "Changer d'instance",
       "create": "Créer une instance",
       "createFromTemplate": "Créer depuis un modèle",
@@ -856,5 +857,21 @@
       "success": "Merci pour votre retour !",
       "error": "Une erreur est survenue lors de l'envoi."
     }
+  },
+  "search": {
+    "placeholder": "Rechercher un lieu, une couche...",
+    "recentSearches": "Recherches récentes",
+    "clear": "Effacer",
+    "clearHistory": "Effacer l'historique",
+    "removeFromHistory": "Retirer de l'historique",
+    "suggestions": "Suggestions pour vous",
+    "boundaries": "Limites administratives",
+    "places": "Lieux",
+    "layers": "Couches",
+    "boundarySubtitle": "Limite administrative",
+    "generating": "Génération...",
+    "downloadBoundary": "Télécharger la limite",
+    "formatGeoJson": "Format GeoJSON (.geojson)",
+    "formatShapefile": "Format Shapefile (.zip)"
   }
 }

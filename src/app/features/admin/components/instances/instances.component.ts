@@ -57,9 +57,9 @@ export class InstancesComponent implements OnInit {
   private readonly router = inject(Router);
 
   readonly columns: AdminTableColumn[] = [
-    { key: 'name', label: 'Nom', sortable: true },
-    { key: 'slug', label: 'Slug' },
-    { key: 'isActive', label: 'Actif' },
+    { key: 'name', label: 'admin.instances.name', sortable: true },
+    { key: 'slug', label: 'admin.instances.slug' },
+    { key: 'isActive', label: 'admin.instances.active' },
   ];
 
   readonly instances = signal<Instance[]>([]);

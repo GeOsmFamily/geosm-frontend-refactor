@@ -4,11 +4,11 @@
     <input
       matInput
       id="search-input-field"
-      aria-label="Rechercher"
+      [attr.aria-label]="'search.placeholder' | translate"
       [(ngModel)]="searchQuery"
       (ngModelChange)="onInput()"
       [matAutocomplete]="auto"
-      placeholder="Rechercher un lieu, une couche..."
+      [placeholder]="'search.placeholder' | translate"
     />
     @if (searchQuery) {
       <button
@@ -16,7 +16,7 @@
         mat-icon-button
         class="clear-btn"
         (click)="clearSearch()"
-        aria-label="Effacer la recherche"
+        [attr.aria-label]="'search.clear' | translate"
       >
         <mat-icon>clear</mat-icon>
       </button>
@@ -31,14 +31,14 @@
     @if (!searchQuery && history().length > 0) {
       <mat-optgroup class="history-optgroup">
         <div class="optgroup-header">
-          <span class="optgroup-header-label">Recherches récentes</span>
+          <span class="optgroup-header-label">{{ 'search.recentSearches' | translate }}</span>
           <button
             class="optgroup-header-action"
             type="button"
             (click)="clearHistory($event)"
-            aria-label="Effacer l'historique"
+            [attr.aria-label]="'search.clearHistory' | translate"
           >
-            Effacer
+            {{ 'search.clear' | translate }}
           </button>
         </div>
         @for (item of history(); track item.label) {
@@ -49,7 +49,7 @@
               class="history-remove-btn"
               type="button"
               (click)="removeHistoryItem(item, $event)"
-              aria-label="Retirer de l'historique"
+              [attr.aria-label]="'search.removeFromHistory' | translate"
             >
               <mat-icon>close</mat-icon>
             </button>
@@ -59,7 +59,7 @@
     }
 
     @if (!searchQuery && suggestions().length > 0) {
-      <mat-optgroup label="Suggestions pour vous">
+      <mat-optgroup [label]="'search.suggestions' | translate">
         @for (item of suggestions(); track item.label) {
           <mat-option [value]="item">
             <mat-icon class="result-icon suggestion">auto_awesome</mat-icon>
@@ -70,7 +70,7 @@
     }
 
     @if (boundaryResults.length > 0) {
-      <mat-optgroup label="Limites administratives">
+      <mat-optgroup [label]="'search.boundaries' | translate">
         @for (item of boundaryResults; track item.label) {
           <mat-option [value]="item">
             <mat-icon class="result-icon boundary">map</mat-icon>
@@ -81,7 +81,7 @@
     }
 
     @if (geocodingResults.length > 0) {
-      <mat-optgroup label="Lieux">
+      <mat-optgroup [label]="'search.places' | translate">
         @for (item of geocodingResults; track item.label) {
           <mat-option [value]="item">
             <mat-icon class="result-icon place">place</mat-icon>
@@ -92,7 +92,7 @@
     }
 
     @if (layerResults.length > 0) {
-      <mat-optgroup label="Couches">
+      <mat-optgroup [label]="'search.layers' | translate">
         @for (item of layerResults; track item.label) {
           <mat-option [value]="item">
             <mat-icon class="result-icon layer">layers</mat-icon>
@@ -108,7 +108,7 @@
       <mat-icon class="card-icon">map</mat-icon>
       <div class="card-info">
         <div class="card-title">{{ boundary.label.split(',')[0] }}</div>
-        <div class="card-subtitle">Limite administrative</div>
+        <div class="card-subtitle">{{ 'search.boundarySubtitle' | translate }}</div>
       </div>
       <button
         mat-flat-button
@@ -120,12 +120,12 @@
         @if (downloadingBoundary()) {
           <span class="spinner-container">
             <span class="spinner"></span>
-            <span>Génération...</span>
+            <span>{{ 'search.generating' | translate }}</span>
           </span>
         } @else {
           <ng-container>
             <mat-icon>download</mat-icon>
-            <span>Télécharger la limite</span>
+            <span>{{ 'search.downloadBoundary' | translate }}</span>
             <mat-icon class="menu-arrow">arrow_drop_down</mat-icon>
           </ng-container>
         }
@@ -133,18 +133,18 @@
       <mat-menu #downloadMenu="matMenu" class="download-format-menu">
         <button mat-menu-item (click)="downloadBoundary(boundary, 'geojson')">
           <mat-icon>code</mat-icon>
-          <span>Format GeoJSON (.geojson)</span>
+          <span>{{ 'search.formatGeoJson' | translate }}</span>
         </button>
         <button mat-menu-item (click)="downloadBoundary(boundary, 'shapefile')">
           <mat-icon>layers</mat-icon>
-          <span>Format Shapefile (.zip)</span>
+          <span>{{ 'search.formatShapefile' | translate }}</span>
         </button>
       </mat-menu>
       <button
         mat-icon-button
         class="close-card-btn"
         (click)="clearActiveBoundary()"
-        aria-label="Fermer la carte de téléchargement"
+        [attr.aria-label]="'common.close' | translate"
       >
         <mat-icon>clear</mat-icon>
       </button>
