@@ -1,12 +1,46 @@
 import { Layer } from '../models/index';
 import { environment } from '../../../environments/environment';
 
-/** Simple cercle teal comme repli quand une couche n'a pas d'icône SVG résolvable. */
-const DEFAULT_MARKER_SVG =
-  'data:image/svg+xml;utf8,' +
-  encodeURIComponent(
-    '<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32"><circle cx="16" cy="16" r="12" fill="#00ada7" stroke="#ffffff" stroke-width="2.5"/></svg>',
-  );
+/**
+ * Génère une couleur déterministe depuis un nom/identifiant pour que chaque
+ * couche sans couleur explicite ait une couleur distincte et harmonieuse.
+ */
+export function stringToColor(str: string): string {
+  const palette = [
+    '#3B82F6',
+    '#10B981',
+    '#F59E0B',
+    '#EF4444',
+    '#8B5CF6',
+    '#EC4899',
+    '#06B6D4',
+    '#14B8A6',
+    '#F97316',
+    '#6366F1',
+    '#059669',
+    '#D97706',
+    '#DC2626',
+    '#7C3AED',
+    '#DB2777',
+  ];
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    hash = str.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  return palette[Math.abs(hash) % palette.length];
+}
+
+/**
+ * Génère un SVG teardrop ("pin" de carte) élégant aux couleurs de la couche
+ * en Data URI (pas d'appel réseau nécessaire).
+ */
+export function buildPinMarkerSvg(color = '#00ada7'): string {
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 36 36">
+    <path d="M18 3 C11.37 3 6 8.37 6 15 C6 23 18 33 18 33 C18 33 30 23 30 15 C30 8.37 24.63 3 18 3 Z" fill="${color}" stroke="#ffffff" stroke-width="2.5"/>
+    <circle cx="18" cy="15" r="5.5" fill="#ffffff"/>
+  </svg>`;
+  return 'data:image/svg+xml;utf8,' + encodeURIComponent(svg);
+}
 
 /**
  * Résout l'URL de l'icône SVG d'une couche (null si elle doit retomber sur une
@@ -28,9 +62,18 @@ export function resolveLayerIconUrl(layer: Layer): string | null {
   return null;
 }
 
-/** Comme resolveLayerIconUrl(), mais garantit toujours une image utilisable (jamais null). */
+/**
+ * Garantit toujours une icône utilisable (jamais null) :
+ * 1. Si une icône SVG spécifique est configurée (`metadata.icon`), elle est utilisée.
+ * 2. Sinon, génère un marqueur "pin" coloré unique d'après la couleur de la couche
+ *    ou le nom de la couche, de sorte que chaque couche apparaisse automatiquement
+ *    avec un visuel distinct sans configuration manuelle.
+ */
 export function resolveLayerIconUrlOrDefault(layer: Layer): string {
-  return resolveLayerIconUrl(layer) || DEFAULT_MARKER_SVG;
+  const resolved = resolveLayerIconUrl(layer);
+  if (resolved) return resolved;
+  const color = layer.metadata?.color || stringToColor(layer.name || layer.id || '');
+  return buildPinMarkerSvg(color);
 }
 
 export function getGeometryIcon(type: string | null | undefined): string {
