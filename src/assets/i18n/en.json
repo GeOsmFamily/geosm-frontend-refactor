@@ -598,11 +598,19 @@
       "updated": "Feedback updated"
     },
     "home": {
-      "title": "Overview",
+      "title": "Admin Dashboard",
       "users": "Users",
-      "instances": "Instances",
-      "exports": "Exports",
-      "themes": "Default themes"
+      "instances": "Active Instances",
+      "layers": "Map Layers",
+      "boundaries": "Administrative Boundaries",
+      "themes": "Default Themes",
+      "exports": "Completed Exports",
+      "systemHealth": "System Health",
+      "healthSubtitle": "Containers Operational Status",
+      "spatialData": "Spatial Data (PostGIS)",
+      "spatialSubtitle": "Objects stored in OSM schema",
+      "lastBackup": "Last Postgres Backup",
+      "backupSubtitle": "Automated MinIO Storage Backup"
     },
     "users": {
       "create": "Create user",
