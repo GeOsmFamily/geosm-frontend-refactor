@@ -473,21 +473,6 @@
     "administration": "Administration"
   },
   "admin": {
-    "home": {
-      "title": "Tableau de bord d'administration",
-      "users": "Utilisateurs",
-      "instances": "Instances actives",
-      "layers": "Couches cartographiques",
-      "boundaries": "Limites administratives",
-      "themes": "Thématiques par défaut",
-      "exports": "Exportations réalisées",
-      "systemHealth": "Santé des services",
-      "healthSubtitle": "État opérationnel des conteneurs",
-      "spatialData": "Données spatiales (PostGIS)",
-      "spatialSubtitle": "Objets stockés dans le schéma OSM",
-      "lastBackup": "Dernière sauvegarde Postgres",
-      "backupSubtitle": "Sauvegarde automatique MinIO"
-    },
     "title": "Administration",
     "backToMap": "Retour à la carte",
     "toggleNav": "Afficher/masquer le menu",
@@ -613,11 +598,19 @@
       "updated": "Signalement mis à jour"
     },
     "home": {
-      "title": "Vue d'ensemble",
+      "title": "Tableau de bord d'administration",
       "users": "Utilisateurs",
-      "instances": "Instances",
-      "exports": "Exports",
-      "themes": "Thèmes par défaut"
+      "instances": "Instances actives",
+      "layers": "Couches cartographiques",
+      "boundaries": "Limites administratives",
+      "themes": "Thématiques par défaut",
+      "exports": "Exportations réalisées",
+      "systemHealth": "Santé des services",
+      "healthSubtitle": "État opérationnel des conteneurs",
+      "spatialData": "Données spatiales (PostGIS)",
+      "spatialSubtitle": "Objets stockés dans le schéma OSM",
+      "lastBackup": "Dernière sauvegarde Postgres",
+      "backupSubtitle": "Sauvegarde automatique MinIO"
     },
     "users": {
       "create": "Créer un utilisateur",

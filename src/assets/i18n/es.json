@@ -572,11 +572,19 @@
       "updated": "Informe actualizado"
     },
     "home": {
-      "title": "Resumen",
+      "title": "Panel de Administración",
       "users": "Usuarios",
-      "instances": "Instancias",
-      "exports": "Exportaciones",
-      "themes": "Temas predeterminados"
+      "instances": "Instancias Activas",
+      "layers": "Capas Cartográficas",
+      "boundaries": "Límites Administrativos",
+      "themes": "Temas por Defecto",
+      "exports": "Exportaciones Realizadas",
+      "systemHealth": "Salud del Sistema",
+      "healthSubtitle": "Estado Operativo de Contenedores",
+      "spatialData": "Datos Espaciales (PostGIS)",
+      "spatialSubtitle": "Objetos almacenados en esquema OSM",
+      "lastBackup": "Última Copia de Seguridad Postgres",
+      "backupSubtitle": "Copia de Seguridad Automática MinIO"
     },
     "users": {
       "create": "Crear usuario",
