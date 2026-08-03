@@ -50,7 +50,7 @@
     "@angular-eslint/template-parser": "^22.1.0",
     "@angular/cli": "^18.2.21",
     "@angular/compiler-cli": "^18.2.0",
-    "@eslint/js": "^9.39.4",
+    "@eslint/js": "^10.0.1",
     "@nx/angular": "22.2.7",
     "@nx/workspace": "22.2.7",
     "@playwright/test": "^1.61.1",
