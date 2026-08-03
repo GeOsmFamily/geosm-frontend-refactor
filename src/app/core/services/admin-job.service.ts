@@ -53,6 +53,7 @@ export interface ReindexResult {
 
 export interface ImportOsmResult {
   success: boolean;
+  jobId?: string;
   message: string;
 }
 

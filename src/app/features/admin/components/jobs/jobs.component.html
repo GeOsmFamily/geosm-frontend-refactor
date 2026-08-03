@@ -10,7 +10,8 @@
   <div class="trigger-row">
     <mat-form-field appearance="outline" subscriptSizing="dynamic" class="pbf-field">
       <mat-label>{{ 'admin.jobs.pbfPath' | translate }}</mat-label>
-      <input matInput [(ngModel)]="pbfPath" />
+      <input matInput id="pbf-path-input" [(ngModel)]="pbfPath" />
+      <mat-hint>{{ 'admin.jobs.pbfHint' | translate }}</mat-hint>
     </mat-form-field>
     <button mat-stroked-button [disabled]="triggeringOsm()" (click)="confirmAndTrigger('osm')">
       @if (triggeringOsm()) {

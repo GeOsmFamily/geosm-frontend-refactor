@@ -15,6 +15,7 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { AdminJobService, JobQueue, JobInfo } from '../../../../core/services/admin-job.service';
 import { StatCardComponent } from '../../shared/components/stat-card/stat-card.component';
 import { ConfirmDialogComponent } from '../../../../shared/components/confirm-dialog/confirm-dialog.component';
+import { OsmImportProgressDialogComponent } from './osm-import-progress-dialog.component';
 
 /**
  * Lot A6 admin - le backend couvre déjà tout (BullMQ, pas de gap) : cette vue est
@@ -37,6 +38,7 @@ import { ConfirmDialogComponent } from '../../../../shared/components/confirm-di
     MatProgressSpinnerModule,
     TranslateModule,
     StatCardComponent,
+    OsmImportProgressDialogComponent,
   ],
   templateUrl: './jobs.component.html',
   styleUrl: './jobs.component.scss',
@@ -124,7 +126,11 @@ export class JobsComponent implements OnInit {
     this.jobService.triggerOsmImport(this.pbfPath).subscribe({
       next: (res) => {
         this.triggeringOsm.set(false);
-        this.snackBar.open(res.message, undefined, { duration: 4000 });
+        this.dialog.open(OsmImportProgressDialogComponent, {
+          width: '500px',
+          disableClose: true,
+          data: { jobId: res.jobId, pbfPath: this.pbfPath },
+        });
       },
       error: (err) => {
         this.triggeringOsm.set(false);
