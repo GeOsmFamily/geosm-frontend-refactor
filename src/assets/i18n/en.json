@@ -165,7 +165,8 @@
     "resync": "Resync",
     "resyncSuccess": "Layer resynced successfully",
     "featureInfo": {
-      "genericFeature": "Feature"
+      "genericFeature": "Feature",
+      "pixelValue": "Value"
     }
   },
   "fileDropZone": {

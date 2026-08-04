@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -8,9 +8,16 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatCardModule } from '@angular/material/card';
 import { FormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
+import { Subscription, interval, switchMap } from 'rxjs';
 import { MapLayerService, ActiveLayer } from '../../map/services/map-layer.service';
 import { LayerService } from '../../../core/services/layer.service';
 import { GeoportailService } from '../../../core/services/geoportail.service';
+import {
+  RasterAnalysisService,
+  RasterAnalysisType,
+  RasterStats,
+  ZonalStat,
+} from '../../../core/services/raster-analysis.service';
 import { LoadingSpinnerComponent } from '../../../shared/components/loading-spinner/loading-spinner.component';
 
 interface ChartBar {
@@ -44,10 +51,11 @@ interface LayerStats {
   templateUrl: './statistics-tool.component.html',
   styleUrl: './statistics-tool.component.scss',
 })
-export class StatisticsToolComponent implements OnInit {
+export class StatisticsToolComponent implements OnInit, OnDestroy {
   private readonly mapLayerService = inject(MapLayerService);
   private readonly layerService = inject(LayerService);
   private readonly geoportailService = inject(GeoportailService);
+  private readonly rasterAnalysisService = inject(RasterAnalysisService);
 
   activeLayers: ActiveLayer[] = [];
   selectedLayerId: string | null = null;
@@ -56,6 +64,19 @@ export class StatisticsToolComponent implements OnInit {
   stats: LayerStats | null = null;
   narrative: string | null = null;
   narrativeLoading = false;
+
+  // --- Analyse raster (statistiques globales/zonales) - voir plan "Analyse raster" ---
+  rasterAnalysisRunning = false;
+  rasterAnalysisType: RasterAnalysisType | null = null;
+  rasterStats: RasterStats | null = null;
+  zonalStats: ZonalStat[] | null = null;
+  rasterAnalysisError: string | null = null;
+  private rasterPollSubscription: Subscription | null = null;
+
+  get isRasterLayer(): boolean {
+    const layer = this.activeLayers.find((al) => al.layer.id === this.selectedLayerId)?.layer;
+    return layer?.metadata?.source === 'raster';
+  }
   /** Distinct d'un vrai "0 entité" - une couche dont la donnée vient d'un projet QGIS (import
    * admin ou publication depuis "Mes données") n'a pas de table PostGIS suivie par GeOSM,
    * /layers/:id/features échoue alors avec un 404 : sans ce distinguo, l'ancien code affichait
@@ -82,13 +103,26 @@ export class StatisticsToolComponent implements OnInit {
     });
   }
 
+  ngOnDestroy(): void {
+    this.rasterPollSubscription?.unsubscribe();
+  }
+
   loadStats(): void {
     if (!this.selectedLayerId) return;
-    this.loading = true;
+    this.resetRasterState();
     this.stats = null;
     this.statsUnavailable = false;
     this.selectedProperty = null;
     this.narrative = null;
+
+    if (this.isRasterLayer) {
+      // Une couche raster n'a pas de "features" au sens vectoriel - voir runRasterAnalysis(),
+      // déclenché explicitement par l'utilisateur (bouton "Statistiques globales"/"par zone"),
+      // pas de chargement automatique ici.
+      return;
+    }
+
+    this.loading = true;
 
     this.layerService.getFeatures(this.selectedLayerId, { limit: 10000 }).subscribe({
       next: (response) => {
@@ -121,6 +155,74 @@ export class StatisticsToolComponent implements OnInit {
         this.narrativeLoading = false;
       },
     });
+  }
+
+  private resetRasterState(): void {
+    this.rasterPollSubscription?.unsubscribe();
+    this.rasterPollSubscription = null;
+    this.rasterAnalysisRunning = false;
+    this.rasterAnalysisType = null;
+    this.rasterStats = null;
+    this.zonalStats = null;
+    this.rasterAnalysisError = null;
+  }
+
+  /** Déclenche une analyse raster asynchrone et poll son résultat (même principe que
+   * osm-import-progress-dialog.component.ts : interval + switchMap, arrêté dès que le job
+   * termine ou échoue). */
+  runRasterAnalysis(type: RasterAnalysisType): void {
+    if (!this.selectedLayerId) return;
+    this.rasterPollSubscription?.unsubscribe();
+    this.rasterAnalysisRunning = true;
+    this.rasterAnalysisType = type;
+    this.rasterStats = null;
+    this.zonalStats = null;
+    this.rasterAnalysisError = null;
+
+    this.rasterAnalysisService.analyze(this.selectedLayerId, type).subscribe({
+      next: ({ resultId }) => this.pollRasterAnalysis(resultId),
+      error: () => {
+        this.rasterAnalysisRunning = false;
+        this.rasterAnalysisError = "Impossible de lancer l'analyse.";
+      },
+    });
+  }
+
+  private pollRasterAnalysis(resultId: string): void {
+    this.rasterPollSubscription = interval(1500)
+      .pipe(switchMap(() => this.rasterAnalysisService.getResult(resultId)))
+      .subscribe({
+        next: (res) => {
+          if (res.status === 'COMPLETED') {
+            this.rasterAnalysisRunning = false;
+            if (res.type === 'global') this.rasterStats = res.result as RasterStats;
+            else this.zonalStats = res.result as ZonalStat[];
+            this.rasterPollSubscription?.unsubscribe();
+          } else if (res.status === 'FAILED') {
+            this.rasterAnalysisRunning = false;
+            this.rasterAnalysisError = res.error ?? "L'analyse a échoué.";
+            this.rasterPollSubscription?.unsubscribe();
+          }
+        },
+        error: () => {
+          this.rasterAnalysisRunning = false;
+          this.rasterAnalysisError = "Impossible de récupérer le résultat de l'analyse.";
+          this.rasterPollSubscription?.unsubscribe();
+        },
+      });
+  }
+
+  /** Pour le mini bar-chart des stats zonales - même palette/logique que currentBars, sur les
+   * ZonalStat plutôt que les ChartBar vectoriels. */
+  get zonalBars(): ChartBar[] {
+    if (!this.zonalStats || this.zonalStats.length === 0) return [];
+    const maxVal = Math.max(...this.zonalStats.map((z) => z.sum ?? 0), 1);
+    return this.zonalStats.map((z, i) => ({
+      label: z.zoneName,
+      value: z.sum ?? 0,
+      percentage: ((z.sum ?? 0) / maxVal) * 100,
+      color: this.colors[i % this.colors.length],
+    }));
   }
 
   private computeStats(features: unknown[]): LayerStats {
