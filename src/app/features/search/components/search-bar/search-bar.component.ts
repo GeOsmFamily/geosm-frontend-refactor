@@ -296,57 +296,31 @@ export class SearchBarComponent implements OnInit, OnDestroy {
     if (item.type === 'boundary') {
       const geo = item.data;
       if (geo.geojson?.type === 'Polygon' || geo.geojson?.type === 'MultiPolygon') {
-        const geojsonFormat = new GeoJSON();
-        const geom = geojsonFormat.readGeometry(geo.geojson, {
-          featureProjection: 'EPSG:3857',
-          dataProjection: 'EPSG:4326',
+        this.renderBoundaryPolygon(item, geo.geojson);
+      } else if (geo.osm_id !== undefined && geo.osm_type) {
+        // Replaying a history/suggestion entry: addToHistory() strips the (potentially large)
+        // geojson before persisting to localStorage, keeping only osm_id/osm_type/boundingbox -
+        // re-fetch the real polygon via Nominatim lookup instead of drawing the bbox rectangle,
+        // which used to be the only geometry left at this point.
+        const prefix = geo.osm_type.charAt(0).toUpperCase();
+        this.geocodingService.lookup([`${prefix}${geo.osm_id}`]).subscribe({
+          next: (results) => {
+            const hit = (results[0] as unknown as SearchResultData) ?? undefined;
+            if (hit?.geojson?.type === 'Polygon' || hit?.geojson?.type === 'MultiPolygon') {
+              geo.geojson = hit.geojson;
+              this.renderBoundaryPolygon(item, hit.geojson);
+            } else if (geo.boundingbox && geo.boundingbox.length === 4) {
+              this.renderBoundaryBbox(item, geo);
+            }
+          },
+          error: () => {
+            if (geo.boundingbox && geo.boundingbox.length === 4) {
+              this.renderBoundaryBbox(item, geo);
+            }
+          },
         });
-        const feature = new Feature(geom);
-        feature.set('featureType', 'boundary');
-        feature.set('name', item.label.split(',')[0]);
-        this.markerSource.addFeature(feature);
-        this.mapService.addLayer(this.markerLayer);
-
-        const view = this.mapService.getMap().getView();
-        view.fit(geom.getExtent(), { padding: [50, 50, 50, 50], duration: 500 });
-        this.activeBoundary.set(item);
       } else if (geo.boundingbox && geo.boundingbox.length === 4) {
-        // Fallback: draw the bounding box as a polygon
-        const latMin = Number(geo.boundingbox[0]);
-        const latMax = Number(geo.boundingbox[1]);
-        const lonMin = Number(geo.boundingbox[2]);
-        const lonMax = Number(geo.boundingbox[3]);
-
-        const bboxPolygon: GeoJSONGeometry = {
-          type: 'Polygon',
-          coordinates: [
-            [
-              [lonMin, latMin],
-              [lonMax, latMin],
-              [lonMax, latMax],
-              [lonMin, latMax],
-              [lonMin, latMin],
-            ],
-          ],
-        };
-
-        const geojsonFormat = new GeoJSON();
-        const geom = geojsonFormat.readGeometry(bboxPolygon, {
-          featureProjection: 'EPSG:3857',
-          dataProjection: 'EPSG:4326',
-        });
-        const feature = new Feature(geom);
-        feature.set('featureType', 'boundary');
-        feature.set('name', item.label.split(',')[0]);
-        this.markerSource.addFeature(feature);
-        this.mapService.addLayer(this.markerLayer);
-
-        const view = this.mapService.getMap().getView();
-        view.fit(geom.getExtent(), { padding: [50, 50, 50, 50], duration: 500 });
-
-        // Save the generated bbox polygon so that the download feature gets it
-        geo.geojson = bboxPolygon;
-        this.activeBoundary.set(item);
+        this.renderBoundaryBbox(item, geo);
       }
     } else if (item.type === 'geocoding') {
       const geo = item.data;
@@ -379,6 +353,48 @@ export class SearchBarComponent implements OnInit, OnDestroy {
     this.searchQuery = item.label;
     this.results = [];
     this.addToHistory(item);
+  }
+
+  private renderBoundaryPolygon(item: SearchResultItem, geojson: GeoJSONGeometry): void {
+    const geojsonFormat = new GeoJSON();
+    const geom = geojsonFormat.readGeometry(geojson, {
+      featureProjection: 'EPSG:3857',
+      dataProjection: 'EPSG:4326',
+    });
+    const feature = new Feature(geom);
+    feature.set('featureType', 'boundary');
+    feature.set('name', item.label.split(',')[0]);
+    this.markerSource.addFeature(feature);
+    this.mapService.addLayer(this.markerLayer);
+
+    const view = this.mapService.getMap().getView();
+    view.fit(geom.getExtent(), { padding: [50, 50, 50, 50], duration: 500 });
+    this.activeBoundary.set(item);
+  }
+
+  private renderBoundaryBbox(item: SearchResultItem, geo: SearchResultData): void {
+    // Fallback only: an approximate rectangle, used when no real polygon is available at all
+    // (no geojson AND no osm_id/osm_type to re-fetch one, or the lookup failed).
+    const latMin = Number(geo.boundingbox![0]);
+    const latMax = Number(geo.boundingbox![1]);
+    const lonMin = Number(geo.boundingbox![2]);
+    const lonMax = Number(geo.boundingbox![3]);
+
+    const bboxPolygon: GeoJSONGeometry = {
+      type: 'Polygon',
+      coordinates: [
+        [
+          [lonMin, latMin],
+          [lonMax, latMin],
+          [lonMax, latMax],
+          [lonMin, latMax],
+          [lonMin, latMin],
+        ],
+      ],
+    };
+
+    geo.geojson = bboxPolygon;
+    this.renderBoundaryPolygon(item, bboxPolygon);
   }
 
   private trackSearchSelection(item: SearchResultItem): void {
