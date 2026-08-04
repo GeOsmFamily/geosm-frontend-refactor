@@ -79,7 +79,7 @@ export class MapLayerService {
     // features renvoie alors 0 entité et la couche paraît vide, alors que le WMS lui-même a bien
     // les données. Sans table interrogeable, il faut donc toujours retomber sur le rendu WMS,
     // quel que soit le type de géométrie ou le nombre de features.
-    const hasQueryableTable = !!(layer.tableName && layer.schemaName);
+    const hasQueryableTable = !!layer.tableName;
 
     let activeLayer: ActiveLayer;
     if (isPointLayer && underCap && hasQueryableTable) {
