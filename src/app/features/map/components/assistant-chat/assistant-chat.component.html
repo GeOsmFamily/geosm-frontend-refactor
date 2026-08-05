@@ -53,17 +53,19 @@
             <div class="bubble-wrapper">
               <div class="bubble">{{ msg.text }}</div>
               @for (attachment of msg.attachments; track attachment.id) {
-                @if (attachment.type === 'location-plan') {
+                @if (attachment.type === 'location-plan' || attachment.type === 'analysis-report') {
                   <div class="attachment-card">
-                    <mat-icon class="attachment-icon">picture_as_pdf</mat-icon>
+                    <mat-icon class="attachment-icon">{{
+                      attachment.type === 'analysis-report' ? 'summarize' : 'picture_as_pdf'
+                    }}</mat-icon>
                     <div class="attachment-info">
                       <span class="attachment-title">{{ attachment.title }}</span>
                       <span class="attachment-status">{{
                         attachment.status === 'COMPLETED'
-                          ? 'Prêt'
+                          ? 'Prêt - voir le tiroir de tâches 🔔'
                           : attachment.status === 'FAILED'
                             ? 'Échec'
-                            : 'En cours...'
+                            : 'En cours... voir le tiroir de tâches 🔔'
                       }}</span>
                     </div>
                     @if (attachment.downloadUrl) {

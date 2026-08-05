@@ -22,7 +22,7 @@ export interface AssistantClientAction {
 }
 
 export interface AssistantAttachment {
-  type: 'location-plan';
+  type: 'location-plan' | 'analysis-report';
   id: string;
   title: string;
   status: string;

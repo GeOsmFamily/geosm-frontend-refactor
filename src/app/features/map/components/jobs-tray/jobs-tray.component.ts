@@ -10,6 +10,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { JobsTrayService, TrayJob } from '../../../../core/services/jobs-tray.service';
 import { ExportService } from '../../../../core/services/export.service';
 import { LocationPlanService } from '../../../../core/services/location-plan.service';
+import { AnalysisReportService } from '../../../../core/services/analysis-report.service';
 
 /**
  * Icône "tiroir de tâches" dans la barre du haut, à côté de l'assistant IA - voir plan "refonte
@@ -36,6 +37,7 @@ export class JobsTrayComponent {
   private readonly jobsTrayService = inject(JobsTrayService);
   private readonly exportService = inject(ExportService);
   private readonly locationPlanService = inject(LocationPlanService);
+  private readonly analysisReportService = inject(AnalysisReportService);
 
   readonly jobs = toSignal(this.jobsTrayService.jobs$, { initialValue: [] as TrayJob[] });
   downloadingId: string | null = null;
@@ -45,16 +47,22 @@ export class JobsTrayComponent {
   }
 
   canDownload(job: TrayJob): boolean {
-    return job.status === 'completed' && (job.type === 'export' || job.type === 'location-plan');
+    return (
+      job.status === 'completed' &&
+      (job.type === 'export' || job.type === 'location-plan' || job.type === 'analysis-report')
+    );
+  }
+
+  private downloadServiceFor(type: TrayJob['type']) {
+    if (type === 'export') return this.exportService;
+    if (type === 'analysis-report') return this.analysisReportService;
+    return this.locationPlanService;
   }
 
   download(job: TrayJob): void {
     if (!this.canDownload(job) || this.downloadingId) return;
     this.downloadingId = job.id;
-    const download$ =
-      job.type === 'export'
-        ? this.exportService.download(job.entityId)
-        : this.locationPlanService.download(job.entityId);
+    const download$ = this.downloadServiceFor(job.type).download(job.entityId);
 
     download$.subscribe({
       next: (blob) => {

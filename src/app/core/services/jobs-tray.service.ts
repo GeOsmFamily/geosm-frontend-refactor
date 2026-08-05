@@ -2,7 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { NotificationSocketService } from './notification-socket.service';
 
-export type TrayJobType = 'export' | 'import' | 'location-plan';
+export type TrayJobType = 'export' | 'import' | 'location-plan' | 'analysis-report';
 export type TrayJobStatus = 'processing' | 'completed' | 'failed';
 
 export interface TrayJob {
@@ -28,11 +28,12 @@ const TYPE_LABELS: Record<TrayJobType, string> = {
   export: 'Export de couche',
   import: 'Import de couche',
   'location-plan': 'Plan de localisation',
+  'analysis-report': "Rapport d'analyse",
 };
 
 /**
- * Liste persistante des tâches asynchrones (export, import, plan de localisation - bientôt
- * rapport IA) en cours/récemment terminées, alimentée par NotificationSocketService. Résout le
+ * Liste persistante des tâches asynchrones (export, import, plan de localisation, rapport
+ * d'analyse IA) en cours/récemment terminées, alimentée par NotificationSocketService. Résout le
  * bug "je perds le fil quand je quitte le chat/l'outil" (voir plan "refonte Statistiques" du
  * 2026-08-05) : ces tâches restent visibles depuis n'importe où dans l'app, pas seulement dans
  * le composant qui les a lancées.
@@ -50,14 +51,17 @@ export class JobsTrayService {
 
   private handleEvent(event: string, data: unknown): void {
     const [type, phase] = event.split(':') as [TrayJobType | string, string];
-    if (type !== 'export' && type !== 'import' && type !== 'location-plan') return;
+    if (type !== 'export' && type !== 'import' && type !== 'location-plan' && type !== 'analysis-report') {
+      return;
+    }
     const payload = data as {
       exportId?: string;
       locationPlanId?: string;
+      reportId?: string;
       status?: string;
       error?: string;
     };
-    const entityId = payload.locationPlanId ?? payload.exportId;
+    const entityId = payload.locationPlanId ?? payload.reportId ?? payload.exportId;
     if (!entityId) return;
 
     const id = `${type}:${entityId}`;
