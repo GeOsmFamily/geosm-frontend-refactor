@@ -166,7 +166,10 @@
     "resyncSuccess": "Layer resynced successfully",
     "featureInfo": {
       "genericFeature": "Feature",
-      "pixelValue": "Value"
+      "pixelValue": "Value",
+      "pixelValuePopulation": "Estimated population",
+      "pixelValueWithArea": "≈ {{value}} (~{{cellSize}} m × {{cellSize}} m cell)",
+      "pixelDensity": "≈ {{density}} / km²"
     }
   },
   "fileDropZone": {

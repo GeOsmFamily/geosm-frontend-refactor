@@ -11,25 +11,98 @@
     </mat-select>
   </mat-form-field>
 
+  @if (selectedLayerId && !isRasterLayer) {
+    <mat-button-toggle-group
+      class="stats-scope-toggle"
+      [value]="statsScope"
+      (change)="setStatsScope($event.value)"
+    >
+      <mat-button-toggle value="extent">Zone visible</mat-button-toggle>
+      <mat-button-toggle value="all">Toute la couche</mat-button-toggle>
+    </mat-button-toggle-group>
+  }
+
   @if (isRasterLayer) {
     <div class="raster-actions">
       <button
         mat-stroked-button
+        [class.action-done]="rasterAnalysisType === 'global' && rasterStats && !rasterAnalysisRunning"
         [disabled]="rasterAnalysisRunning"
         (click)="runRasterAnalysis('global')"
       >
-        <mat-icon>bar_chart</mat-icon>
+        <mat-icon>{{
+          rasterAnalysisType === 'global' && rasterStats && !rasterAnalysisRunning
+            ? 'check_circle'
+            : 'bar_chart'
+        }}</mat-icon>
         Statistiques globales
       </button>
       <button
         mat-stroked-button
+        [class.action-done]="
+          rasterAnalysisType === 'zonal' && zonalStats && !rasterAnalysisRunning
+        "
         [disabled]="rasterAnalysisRunning"
-        (click)="runRasterAnalysis('zonal')"
+        (click)="openZonalLevelPicker()"
       >
-        <mat-icon>grid_view</mat-icon>
+        <mat-icon>{{
+          rasterAnalysisType === 'zonal' && zonalStats && !rasterAnalysisRunning
+            ? 'check_circle'
+            : 'grid_view'
+        }}</mat-icon>
         Statistiques par zone
       </button>
+      <button
+        mat-stroked-button
+        [class.action-done]="
+          rasterAnalysisType === 'custom' && zonalStats && !rasterAnalysisRunning
+        "
+        [disabled]="rasterAnalysisRunning || drawingZone"
+        (click)="startDrawZone()"
+      >
+        <mat-icon>{{
+          rasterAnalysisType === 'custom' && zonalStats && !rasterAnalysisRunning
+            ? 'check_circle'
+            : 'draw'
+        }}</mat-icon>
+        Dessiner une zone
+      </button>
     </div>
+
+    @if (drawingZone) {
+      <p class="hint">
+        Dessinez un polygone sur la carte (clic pour chaque sommet, double-clic pour terminer).
+      </p>
+    }
+
+    @if (showZonalLevelPicker) {
+      <div class="zonal-level-picker">
+        @if (adminLevelsLoading) {
+          <app-loading-spinner></app-loading-spinner>
+        } @else if (adminLevelsError) {
+          <p class="hint error">{{ adminLevelsError }}</p>
+        } @else if (availableAdminLevels.length === 0) {
+          <p class="hint">Aucun niveau administratif disponible pour cette instance.</p>
+        } @else {
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Niveau administratif</mat-label>
+            <mat-select [(ngModel)]="selectedAdminLevel">
+              @for (level of availableAdminLevels; track level) {
+                <mat-option [value]="level">Niveau {{ level }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+          <button
+            mat-flat-button
+            color="primary"
+            [disabled]="selectedAdminLevel == null"
+            (click)="runRasterAnalysis('zonal')"
+          >
+            Lancer l'analyse
+          </button>
+        }
+      </div>
+    }
 
     @if (rasterAnalysisRunning) {
       <app-loading-spinner></app-loading-spinner>
@@ -44,13 +117,17 @@
       <div class="raster-stats-grid">
         <mat-card class="stats-card">
           <mat-card-content>
-            <span class="big-number">{{ rasterStats.min ?? '—' }}</span>
+            <span class="big-number">{{
+              rasterStats.min != null ? (rasterStats.min | number: '1.0-2') : '—'
+            }}</span>
             <span class="stat-label">min</span>
           </mat-card-content>
         </mat-card>
         <mat-card class="stats-card">
           <mat-card-content>
-            <span class="big-number">{{ rasterStats.max ?? '—' }}</span>
+            <span class="big-number">{{
+              rasterStats.max != null ? (rasterStats.max | number: '1.0-2') : '—'
+            }}</span>
             <span class="stat-label">max</span>
           </mat-card-content>
         </mat-card>
@@ -89,11 +166,15 @@
                   [style.background]="bar.color"
                 ></div>
               </div>
-              <div class="chart-value">{{ bar.value | number: '1.0-2' }}</div>
+              <div class="chart-value">{{ bar.value | number: '1.0-0' }}</div>
             </div>
           }
         </div>
       }
+    }
+
+    @if (rasterNarrative && !rasterAnalysisRunning) {
+      <p class="narrative"><mat-icon class="ai-icon">auto_awesome</mat-icon> {{ rasterNarrative }}</p>
     }
   }
 
@@ -109,14 +190,59 @@
   }
 
   @if (stats && !loading && !isRasterLayer) {
-    <mat-card class="stats-card">
-      <mat-card-content>
-        <div class="stat-number">
+    <div class="raster-stats-grid">
+      <mat-card class="stats-card">
+        <mat-card-content>
           <span class="big-number">{{ stats.totalFeatures }}</span>
           <span class="stat-label">entités</span>
+        </mat-card-content>
+      </mat-card>
+      @if (stats.totalAreaM2 != null) {
+        <mat-card class="stats-card">
+          <mat-card-content>
+            <span class="big-number">{{
+              stats.totalAreaM2 >= 1000000
+                ? (stats.totalAreaM2 / 1000000 | number: '1.0-2') + ' km²'
+                : (stats.totalAreaM2 | number: '1.0-0') + ' m²'
+            }}</span>
+            <span class="stat-label">surface totale</span>
+          </mat-card-content>
+        </mat-card>
+      }
+      @if (stats.totalLengthM != null) {
+        <mat-card class="stats-card">
+          <mat-card-content>
+            <span class="big-number">{{
+              stats.totalLengthM >= 1000
+                ? (stats.totalLengthM / 1000 | number: '1.0-2') + ' km'
+                : (stats.totalLengthM | number: '1.0-0') + ' m'
+            }}</span>
+            <span class="stat-label">longueur totale</span>
+          </mat-card-content>
+        </mat-card>
+      }
+    </div>
+
+    @if (stats.numericStats | keyvalue; as numericEntries) {
+      @if (numericEntries.length > 0) {
+        <div class="chart">
+          <h5>Attributs numériques</h5>
+          @for (entry of numericEntries; track entry.key) {
+            <div class="numeric-stat-row">
+              <div class="chart-label" [title]="entry.key">{{ entry.key }}</div>
+              <div class="numeric-stat-values">
+                <span
+                  >min {{ entry.value.min | number: '1.0-2' }} · max
+                  {{ entry.value.max | number: '1.0-2' }} · moyenne
+                  {{ entry.value.mean | number: '1.0-2' }} · somme
+                  {{ entry.value.sum | number: '1.0-2' }}</span
+                >
+              </div>
+            </div>
+          }
         </div>
-      </mat-card-content>
-    </mat-card>
+      }
+    }
 
     @if (narrativeLoading) {
       <p class="narrative-loading">

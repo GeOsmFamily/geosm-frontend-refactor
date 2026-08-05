@@ -13,21 +13,98 @@
     width: 100%;
   }
 
+  .stats-scope-toggle {
+    display: flex;
+    margin-bottom: 12px;
+    width: 100%;
+    ::ng-deep .mat-button-toggle {
+      flex: 1;
+      text-align: center;
+    }
+  }
+
+  .raster-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 8px;
+
+    // État "terminé" - la dernière analyse lancée sur ce bouton a un résultat affiché plus bas
+    // (voir plan "refonte Statistiques" du 2026-08-05 : les 3 boutons doivent avoir un état
+    // visuel clair inactif/en cours/terminé/erreur, pas seulement un spinner générique).
+    .action-done {
+      border-color: var(--accent, #00ada7);
+      color: var(--accent, #00ada7);
+      mat-icon {
+        color: var(--accent, #00ada7);
+      }
+    }
+  }
+
+  .zonal-level-picker {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 10px 12px;
+    margin-bottom: 12px;
+    background: rgba(0, 0, 0, 0.02);
+    border: 1px solid var(--border, rgba(0, 0, 0, 0.08));
+    border-radius: 8px;
+    .full-width {
+      margin-bottom: 0;
+    }
+  }
+
+  .hint.error {
+    color: var(--error, #d32f2f);
+  }
+
+  .raster-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+    gap: 10px;
+    margin-bottom: 12px;
+    .stats-card {
+      margin-bottom: 0;
+      text-align: center;
+    }
+  }
+
+  .numeric-stat-row {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 6px 0;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+    font-size: 12px;
+    .chart-label {
+      width: auto;
+      text-align: left;
+      font-weight: 600;
+      color: var(--text);
+    }
+    .numeric-stat-values {
+      color: var(--text-secondary);
+    }
+  }
+
   .stats-card {
     margin-bottom: 12px;
     .stat-number {
       display: flex;
       align-items: baseline;
       gap: 8px;
-      .big-number {
-        font-size: 32px;
-        font-weight: 700;
-        color: var(--primary);
-      }
-      .stat-label {
-        font-size: 14px;
-        color: var(--text-secondary);
-      }
+    }
+    .big-number {
+      display: block;
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--primary);
+    }
+    .stat-label {
+      display: block;
+      font-size: 12px;
+      color: var(--text-secondary);
     }
   }
 

@@ -12,10 +12,21 @@ export class GeoportailService {
     return this.api.get<unknown>('/geoportail/altitude', { lon, lat });
   }
 
-  /** narrative=true ajoute une synthèse textuelle générée par IA (Gemini), en plus des chiffres bruts. */
-  getLayerStats(layerId: string, narrative = false): Observable<LayerStats> {
+  /** narrative=true ajoute une synthèse textuelle générée par IA (Gemini), en plus des chiffres
+   * bruts. `bbox` (voir MapService.getCurrentExtent()) restreint le calcul - et, avec
+   * narrative, la synthèse - à la zone visible sur la carte au lieu de toute la couche (voir
+   * plan "refonte Statistiques" du 2026-08-05). */
+  getLayerStats(
+    layerId: string,
+    narrative = false,
+    bbox?: number[],
+  ): Observable<LayerStats> {
+    const params = new URLSearchParams();
+    if (narrative) params.set('narrative', 'true');
+    if (bbox) params.set('bbox', bbox.join(','));
+    const qs = params.toString();
     return this.api.post<LayerStats>(
-      `/geoportail/layers/${layerId}/stats${narrative ? '?narrative=true' : ''}`,
+      `/geoportail/layers/${layerId}/stats${qs ? `?${qs}` : ''}`,
       {},
     );
   }

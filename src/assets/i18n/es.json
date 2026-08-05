@@ -166,7 +166,10 @@
     "resyncSuccess": "Capa resincronizada con éxito",
     "featureInfo": {
       "genericFeature": "Entidad",
-      "pixelValue": "Valor"
+      "pixelValue": "Valor",
+      "pixelValuePopulation": "Población estimada",
+      "pixelValueWithArea": "≈ {{value}} (celda de ~{{cellSize}} m × {{cellSize}} m)",
+      "pixelDensity": "≈ {{density}} / km²"
     }
   },
   "fileDropZone": {

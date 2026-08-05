@@ -311,23 +311,61 @@ export class FeatureInfoComponent implements OnInit, OnDestroy {
 
     const [lon, lat] = toLonLat(coordinate);
     this.rasterAnalysisService.getPixelValue(activeLayer.layer.id, lon, lat).subscribe({
-      next: ({ value }) => {
+      next: ({ value, cellAreaM2 }) => {
         this.loading.set(false);
         if (value == null) {
           this.close();
           return;
         }
-        this.showProperties(
+        const { label, formatted } = this.formatPixelValue(
           activeLayer.layer.name,
-          { [this.translate.instant('map.featureInfo.pixelValue')]: value },
-          coordinate,
+          value,
+          cellAreaM2 ?? null,
         );
+        this.showProperties(activeLayer.layer.name, { [label]: formatted }, coordinate);
       },
       error: () => {
         this.loading.set(false);
         this.close();
       },
     });
+  }
+
+  /** Un nombre brut ("267.47") ne dit rien de l'échelle réelle - voir plan "refonte
+   * Statistiques" du 2026-08-05 : on recontextualise avec la surface de la cellule (connue à
+   * l'import, voir RasterService.getRasterInfo) et, pour un raster de population, une densité
+   * au km². `cellAreaM2` est absent pour les rasters importés avant ce champ - dans ce cas on
+   * retombe sur l'ancien affichage brut plutôt que d'inventer une surface. */
+  private formatPixelValue(
+    layerName: string,
+    value: number,
+    cellAreaM2: number | null,
+  ): { label: string; formatted: string } {
+    const isPopulation = /popul/i.test(layerName);
+    const label = this.translate.instant(
+      isPopulation ? 'map.featureInfo.pixelValuePopulation' : 'map.featureInfo.pixelValue',
+    );
+
+    if (cellAreaM2 == null || cellAreaM2 <= 0) {
+      return { label, formatted: this.formatNumber(value) };
+    }
+
+    const cellSize = Math.round(Math.sqrt(cellAreaM2));
+    let formatted = this.translate.instant('map.featureInfo.pixelValueWithArea', {
+      value: this.formatNumber(value),
+      cellSize,
+    });
+    if (isPopulation) {
+      const densityPerKm2 = value / (cellAreaM2 / 1_000_000);
+      formatted += ` — ${this.translate.instant('map.featureInfo.pixelDensity', {
+        density: this.formatNumber(densityPerKm2),
+      })}`;
+    }
+    return { label, formatted };
+  }
+
+  private formatNumber(n: number): string {
+    return n.toLocaleString(undefined, { maximumFractionDigits: 0 });
   }
 
   private showProperties(
