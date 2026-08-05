@@ -124,6 +124,19 @@ jobs:
               STATUS=$(docker inspect --format='{{.State.Health.Status}}' "$(docker compose -f docker-compose.yml -f docker-compose.prod.yml ps -q frontend)" 2>/dev/null || echo "starting")
               if [ "$STATUS" = "healthy" ]; then
                 echo "✅ Déploiement réussi (${FRONTEND_IMAGE})"
+                # "export FRONTEND_IMAGE=..." ne vaut que pour ce script SSH - une invocation
+                # ultérieure de "docker compose" dans une AUTRE session (ex: le déploiement du
+                # backend, qui doit démarrer "frontend" comme dépendance si un depends_on existe
+                # dans l'autre sens, ou simplement un "up" manuel) relit .env et retombe sur
+                # l'ancienne valeur qui y est écrite si on ne la persiste pas ici. Même incident
+                # vécu côté "api" (voir le commentaire symétrique dans le deploy.yml backend) :
+                # .env était resté figé sur "FRONTEND_IMAGE=...:latest", jamais mis à jour depuis
+                # sa création.
+                if grep -q '^FRONTEND_IMAGE=' .env; then
+                  sed -i "s|^FRONTEND_IMAGE=.*|FRONTEND_IMAGE=${FRONTEND_IMAGE}|" .env
+                else
+                  echo "FRONTEND_IMAGE=${FRONTEND_IMAGE}" >> .env
+                fi
                 exit 0
               fi
               sleep 4
@@ -132,6 +145,11 @@ jobs:
             export FRONTEND_IMAGE="${PREVIOUS_IMAGE}"
             docker compose -f docker-compose.yml -f docker-compose.prod.yml pull frontend
             docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d frontend
+            if grep -q '^FRONTEND_IMAGE=' .env; then
+              sed -i "s|^FRONTEND_IMAGE=.*|FRONTEND_IMAGE=${FRONTEND_IMAGE}|" .env
+            else
+              echo "FRONTEND_IMAGE=${FRONTEND_IMAGE}" >> .env
+            fi
             exit 1
 
   create-release:
