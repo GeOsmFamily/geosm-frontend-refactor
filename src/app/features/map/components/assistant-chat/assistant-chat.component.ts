@@ -190,7 +190,18 @@ export class AssistantChatComponent implements OnInit, OnDestroy {
       // eslint-disable-next-line @typescript-eslint/no-empty-function
       .subscribe({ error: () => {} });
 
-    this.assistantService.chat(instance.id, conversationId, text).subscribe({
+    // Contexte ambiant (emprise visible + couches actives) envoyé à chaque message - permet à
+    // l'assistant de répondre à "analyse cette zone" ou de réutiliser directement l'ID d'une
+    // couche déjà active sans repasser par search_layers (voir analyze_map_context côté
+    // backend, plan "refonte Statistiques" du 2026-08-05).
+    const mapContext = {
+      extent: this.mapService.getCurrentExtent() as [number, number, number, number],
+      activeLayers: this.mapLayerService
+        .getActiveLayers()
+        .map((al) => ({ id: al.layer.id, name: al.layer.name })),
+    };
+
+    this.assistantService.chat(instance.id, conversationId, text, mapContext).subscribe({
       next: (result) => {
         this.messages.update((m) => [
           ...m,

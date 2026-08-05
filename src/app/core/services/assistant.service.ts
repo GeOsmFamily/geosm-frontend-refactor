@@ -46,6 +46,13 @@ export interface AssistantConversationDetail extends AssistantConversationSummar
   messages: AssistantChatTurn[];
 }
 
+/** Contexte carte ambiant envoyé à chaque message - voir AssistantMapContext côté backend
+ * (analyze_map_context). L'IA ne connaît pas la vue courante autrement. */
+export interface AssistantMapContext {
+  extent?: [number, number, number, number];
+  activeLayers?: { id: string; name: string }[];
+}
+
 @Injectable({ providedIn: 'root' })
 export class AssistantService {
   private readonly api = inject(ApiService);
@@ -56,11 +63,13 @@ export class AssistantService {
     instanceId: string,
     conversationId: string,
     message: string,
+    mapContext?: AssistantMapContext,
   ): Observable<AssistantChatResult> {
     return this.api.post<AssistantChatResult>('/assistant/chat', {
       instanceId,
       conversationId,
       message,
+      mapContext,
     });
   }
 
