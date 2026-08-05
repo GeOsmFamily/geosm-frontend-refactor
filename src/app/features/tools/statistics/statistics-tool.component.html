@@ -11,6 +11,92 @@
     </mat-select>
   </mat-form-field>
 
+  @if (isRasterLayer) {
+    <div class="raster-actions">
+      <button
+        mat-stroked-button
+        [disabled]="rasterAnalysisRunning"
+        (click)="runRasterAnalysis('global')"
+      >
+        <mat-icon>bar_chart</mat-icon>
+        Statistiques globales
+      </button>
+      <button
+        mat-stroked-button
+        [disabled]="rasterAnalysisRunning"
+        (click)="runRasterAnalysis('zonal')"
+      >
+        <mat-icon>grid_view</mat-icon>
+        Statistiques par zone
+      </button>
+    </div>
+
+    @if (rasterAnalysisRunning) {
+      <app-loading-spinner></app-loading-spinner>
+      <p class="hint">Analyse en cours, ça peut prendre quelques instants sur un gros raster...</p>
+    }
+
+    @if (rasterAnalysisError) {
+      <p class="hint error">{{ rasterAnalysisError }}</p>
+    }
+
+    @if (rasterStats && !rasterAnalysisRunning) {
+      <div class="raster-stats-grid">
+        <mat-card class="stats-card">
+          <mat-card-content>
+            <span class="big-number">{{ rasterStats.min ?? '—' }}</span>
+            <span class="stat-label">min</span>
+          </mat-card-content>
+        </mat-card>
+        <mat-card class="stats-card">
+          <mat-card-content>
+            <span class="big-number">{{ rasterStats.max ?? '—' }}</span>
+            <span class="stat-label">max</span>
+          </mat-card-content>
+        </mat-card>
+        <mat-card class="stats-card">
+          <mat-card-content>
+            <span class="big-number">{{
+              rasterStats.mean ? (rasterStats.mean | number: '1.0-2') : '—'
+            }}</span>
+            <span class="stat-label">moyenne</span>
+          </mat-card-content>
+        </mat-card>
+        <mat-card class="stats-card">
+          <mat-card-content>
+            <span class="big-number">{{
+              rasterStats.stddev ? (rasterStats.stddev | number: '1.0-2') : '—'
+            }}</span>
+            <span class="stat-label">écart-type</span>
+          </mat-card-content>
+        </mat-card>
+      </div>
+    }
+
+    @if (zonalStats && !rasterAnalysisRunning) {
+      @if (zonalStats.length === 0) {
+        <p class="hint">Aucune zone administrative trouvée pour cette instance.</p>
+      } @else {
+        <div class="chart">
+          <h5>Total par zone</h5>
+          @for (bar of zonalBars; track bar.label) {
+            <div class="chart-row">
+              <div class="chart-label" [title]="bar.label">{{ bar.label }}</div>
+              <div class="chart-bar-container">
+                <div
+                  class="chart-bar"
+                  [style.width.%]="bar.percentage"
+                  [style.background]="bar.color"
+                ></div>
+              </div>
+              <div class="chart-value">{{ bar.value | number: '1.0-2' }}</div>
+            </div>
+          }
+        </div>
+      }
+    }
+  }
+
   @if (loading) {
     <app-loading-spinner></app-loading-spinner>
   }
@@ -22,7 +108,7 @@
     </p>
   }
 
-  @if (stats && !loading) {
+  @if (stats && !loading && !isRasterLayer) {
     <mat-card class="stats-card">
       <mat-card-content>
         <div class="stat-number">

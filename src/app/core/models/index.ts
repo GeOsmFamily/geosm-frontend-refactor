@@ -145,6 +145,10 @@ export interface Layer {
     totalLength?: number | null;
     importedAt?: string | null;
     lastSyncedAt?: string | null;
+    /** 'raster' pour une couche importée via /rasters/upload (voir UploadRasterUseCase côté
+     * backend) - seul signal fiable pour distinguer une couche raster d'une couche vectorielle,
+     * geometryType vaut toujours 'POLYGON' pour un raster (approximation de son emprise). */
+    source?: string | null;
     [key: string]: unknown;
   } | null;
 }

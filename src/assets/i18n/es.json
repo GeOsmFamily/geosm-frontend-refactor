@@ -165,7 +165,8 @@
     "resync": "Resincronizar",
     "resyncSuccess": "Capa resincronizada con éxito",
     "featureInfo": {
-      "genericFeature": "Entidad"
+      "genericFeature": "Entidad",
+      "pixelValue": "Valor"
     }
   },
   "fileDropZone": {

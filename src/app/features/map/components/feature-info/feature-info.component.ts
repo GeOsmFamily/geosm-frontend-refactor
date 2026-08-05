@@ -19,6 +19,7 @@ import { MapService } from '../../services/map.service';
 import { MapLayerService } from '../../services/map-layer.service';
 import { ToolActionService } from '../../../../core/services/tool-action.service';
 import { ExportService } from '../../../../core/services/export.service';
+import { RasterAnalysisService } from '../../../../core/services/raster-analysis.service';
 import { getExportFileExtension } from '../../../../core/utils/export-format.util';
 
 const KNOWN_KEYS = new Set([
@@ -74,6 +75,7 @@ export class FeatureInfoComponent implements OnInit, OnDestroy {
   private readonly mapLayerService = inject(MapLayerService);
   private readonly toolAction = inject(ToolActionService);
   private readonly exportService = inject(ExportService);
+  private readonly rasterAnalysisService = inject(RasterAnalysisService);
   private readonly snackBar = inject(MatSnackBar);
   private readonly translate = inject(TranslateService);
   private readonly http = inject(HttpClient);
@@ -223,6 +225,25 @@ export class FeatureInfoComponent implements OnInit, OnDestroy {
 
         if (wmsLayers.length > 0) {
           this.queryWmsLayers(wmsLayers, event.coordinate, map.getView().getResolution()!);
+          return;
+        }
+
+        // Couche raster (voir plan "Analyse raster") - exclue du filtre point/multipoint
+        // ci-dessus (un raster a geometryType 'POLYGON', son emprise) mais reste cliquable :
+        // valeur du pixel via GetPixelValueUseCase plutôt que GetFeatureInfo WMS, pour un format
+        // de réponse propre et cohérent avec le reste de la fonctionnalité d'analyse raster.
+        const rasterLayer = map
+          .getLayers()
+          .getArray()
+          .find((l): l is TileLayer<TileWMS> => {
+            if (!(l instanceof TileLayer) || !(l.getSource() instanceof TileWMS) || !l.getVisible())
+              return false;
+            const activeLayer = activeLayers.find((al) => al.olLayer === l);
+            return activeLayer?.layer.metadata?.source === 'raster';
+          });
+
+        if (rasterLayer) {
+          this.queryRasterPixel(rasterLayer, event.coordinate);
         } else {
           this.close();
         }
@@ -270,6 +291,37 @@ export class FeatureInfoComponent implements OnInit, OnDestroy {
         } else {
           this.close();
         }
+      },
+      error: () => {
+        this.loading.set(false);
+        this.close();
+      },
+    });
+  }
+
+  private queryRasterPixel(layer: TileLayer<TileWMS>, coordinate: number[]): void {
+    const activeLayer = this.mapLayerService.getActiveLayers().find((al) => al.olLayer === layer);
+    if (!activeLayer) {
+      this.close();
+      return;
+    }
+    this.lastLayerId = activeLayer.layer.id;
+    this.lastFeatureId = null;
+    this.loading.set(true);
+
+    const [lon, lat] = toLonLat(coordinate);
+    this.rasterAnalysisService.getPixelValue(activeLayer.layer.id, lon, lat).subscribe({
+      next: ({ value }) => {
+        this.loading.set(false);
+        if (value == null) {
+          this.close();
+          return;
+        }
+        this.showProperties(
+          activeLayer.layer.name,
+          { [this.translate.instant('map.featureInfo.pixelValue')]: value },
+          coordinate,
+        );
       },
       error: () => {
         this.loading.set(false);

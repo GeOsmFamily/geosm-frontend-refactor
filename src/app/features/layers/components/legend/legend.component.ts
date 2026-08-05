@@ -53,7 +53,12 @@ export class LegendComponent implements OnInit, OnDestroy {
         const params = source.getParams();
         const baseUrl = source.getUrls()?.[0] || al.layer.url;
         const layerName = params['LAYERS'] || al.layer.tableName;
-        const legendUrl = `${baseUrl}?SERVICE=WMS&VERSION=1.1.1&REQUEST=GetLegendGraphic&LAYER=${layerName}&FORMAT=image/png`;
+        // baseUrl porte déjà "?map=/projects/..." pour toute couche servie par QGIS Server - un
+        // "?" gobait ce paramètre existant dans une seule valeur invalide côté serveur ("map=...
+        // ?SERVICE=WMS"), faisant échouer GetLegendGraphic pour TOUTE couche WMS (confirmé en
+        // conditions réelles : 502 de QGIS Server sur une URL à deux "?").
+        const separator = baseUrl.includes('?') ? '&' : '?';
+        const legendUrl = `${baseUrl}${separator}SERVICE=WMS&VERSION=1.1.1&REQUEST=GetLegendGraphic&LAYER=${layerName}&FORMAT=image/png`;
         return {
           layerName: al.layer.name,
           layerId: al.layer.id,
