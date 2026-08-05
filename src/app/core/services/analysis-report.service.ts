@@ -30,12 +30,14 @@ export class AnalysisReportService {
     topic: string,
     layerIds: string[],
     extent?: [number, number, number, number],
+    geometry?: GeoJSON.Geometry,
   ): Observable<{ reportId: string }> {
     return this.api.post<{ reportId: string }>('/analysis-reports', {
       instanceId,
       topic,
       layerIds,
       extent,
+      geometry,
     });
   }
 

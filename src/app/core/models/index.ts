@@ -227,10 +227,20 @@ export interface LayerStats {
   narrative?: string;
 }
 
+export interface LayerSummaryEntry {
+  layerId: string;
+  name: string;
+  kind: 'vector' | 'raster';
+  featureCount?: number;
+  totalAreaKm2?: number | null;
+  totalLengthKm?: number | null;
+  raster?: { min: number | null; max: number | null; mean: number | null; sum: number | null; count: number };
+}
+
 export interface ViewportSummary {
   layerCount: number;
   totalFeatureCount: number;
-  perLayer: { name: string; featureCount: number }[];
+  perLayer: LayerSummaryEntry[];
   narrative?: string;
 }
 

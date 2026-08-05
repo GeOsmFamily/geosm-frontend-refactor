@@ -7,6 +7,7 @@ import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatCardModule } from '@angular/material/card';
+import { MatInputModule } from '@angular/material/input';
 import { FormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { Subscription, interval, switchMap } from 'rxjs';
@@ -22,6 +23,8 @@ import { MapService } from '../../map/services/map.service';
 import { LayerService } from '../../../core/services/layer.service';
 import { GeoportailService } from '../../../core/services/geoportail.service';
 import { InstanceService } from '../../../core/services/instance.service';
+import { AnalysisReportService } from '../../../core/services/analysis-report.service';
+import { ViewportSummary } from '../../../core/models/index';
 import {
   RasterAnalysisService,
   RasterAnalysisType,
@@ -70,6 +73,7 @@ interface LayerStats {
     MatFormFieldModule,
     MatDividerModule,
     MatCardModule,
+    MatInputModule,
     TranslateModule,
     LoadingSpinnerComponent,
   ],
@@ -83,6 +87,7 @@ export class StatisticsToolComponent implements OnInit, OnDestroy {
   private readonly rasterAnalysisService = inject(RasterAnalysisService);
   private readonly instanceService = inject(InstanceService);
   private readonly mapService = inject(MapService);
+  private readonly analysisReportService = inject(AnalysisReportService);
 
   private map: Map | null = null;
   private drawLayer: VectorLayer<VectorSource> | null = null;
@@ -101,6 +106,25 @@ export class StatisticsToolComponent implements OnInit, OnDestroy {
   /** "extent" par défaut - répond directement à la demande "l'analyse doit prendre en compte
    * la zone zoomée" (voir plan "refonte Statistiques" du 2026-08-05). */
   statsScope: 'all' | 'extent' = 'extent';
+
+  // --- Analyse multi-couches (onglet "vitrine" de l'agent IA directement dans Statistiques,
+  // sans passer par le chat - voir plan "refonte Statistiques" du 2026-08-05, section G) ---
+  multiLayerMode = false;
+  viewSummary: ViewportSummary | null = null;
+  viewSummaryLoading = false;
+  viewSummaryError: string | null = null;
+  reportTopic = '';
+  reportGenerating = false;
+  reportGenerated = false;
+  reportError: string | null = null;
+  /** Zone dessinée à la main (voir startDrawZoneForMultiLayer()) - remplace l'emprise carte
+   * pour restreindre l'analyse/le rapport à une zone précise plutôt qu'à tout ce qui est
+   * visible à l'écran. */
+  multiLayerZoneGeometry: GeoJSON.Geometry | null = null;
+
+  get canUseMultiLayerMode(): boolean {
+    return this.activeLayers.length >= 2;
+  }
 
   // --- Analyse raster (statistiques globales/zonales) - voir plan "Analyse raster" ---
   rasterAnalysisRunning = false;
@@ -154,6 +178,80 @@ export class StatisticsToolComponent implements OnInit, OnDestroy {
     this.rasterPollSubscription?.unsubscribe();
     this.stopDrawZone();
     if (this.drawLayer) this.mapService.removeLayer(this.drawLayer);
+  }
+
+  toggleMultiLayerMode(): void {
+    this.multiLayerMode = !this.multiLayerMode;
+    this.viewSummary = null;
+    this.viewSummaryError = null;
+    this.reportTopic = '';
+    this.reportGenerated = false;
+    this.reportError = null;
+    this.clearMultiLayerZone();
+  }
+
+  /** "Analyser ces couches" - équivalent direct de l'outil `analyze_map_context` de l'assistant
+   * IA (Lot 3), mais appelable sans passer par le chat - même endpoint, même moteur d'analyse
+   * (SummarizeViewportUseCase), voir plan "refonte Statistiques" du 2026-08-05, section G. */
+  analyzeActiveLayers(): void {
+    const layerIds = this.activeLayers.map((al) => al.layer.id);
+    if (layerIds.length === 0) return;
+    this.viewSummaryLoading = true;
+    this.viewSummaryError = null;
+    this.viewSummary = null;
+
+    this.geoportailService
+      .summarizeView(
+        layerIds,
+        this.multiLayerZoneGeometry ? undefined : this.mapService.getCurrentExtent(),
+        this.multiLayerZoneGeometry ?? undefined,
+      )
+      .subscribe({
+        next: (summary) => {
+          this.viewSummary = summary;
+          this.viewSummaryLoading = false;
+        },
+        error: () => {
+          this.viewSummaryError = "Impossible d'analyser les couches actives.";
+          this.viewSummaryLoading = false;
+        },
+      });
+  }
+
+  /** "Générer un rapport PDF" - déclenche le même job que l'outil `generate_analysis_report` du
+   * chat (Lot 4) ; le suivi se fait dans le tiroir de tâches (déjà abonné aux événements
+   * `analysis-report:*` indépendamment de ce composant), pas ici. */
+  generateReport(): void {
+    const instanceId = this.instanceService.currentInstance$.value?.id;
+    const layerIds = this.activeLayers.map((al) => al.layer.id);
+    if (!instanceId || layerIds.length === 0 || !this.reportTopic.trim() || this.reportGenerating) {
+      return;
+    }
+    this.reportGenerating = true;
+    this.reportError = null;
+    this.reportGenerated = false;
+
+    this.analysisReportService
+      .generate(
+        instanceId,
+        this.reportTopic.trim(),
+        layerIds,
+        this.multiLayerZoneGeometry
+          ? undefined
+          : (this.mapService.getCurrentExtent() as [number, number, number, number]),
+        this.multiLayerZoneGeometry ?? undefined,
+      )
+      .subscribe({
+        next: () => {
+          this.reportGenerating = false;
+          this.reportGenerated = true;
+          this.reportTopic = '';
+        },
+        error: () => {
+          this.reportGenerating = false;
+          this.reportError = 'Impossible de lancer la génération du rapport.';
+        },
+      });
   }
 
   /** Bascule "Toute la couche" / "Zone visible" - recalcule immédiatement (voir plan "refonte
@@ -243,15 +341,12 @@ export class StatisticsToolComponent implements OnInit, OnDestroy {
   }
 
   /** "Dessiner une zone" - trace un polygone libre sur la carte (même pattern que
-   * SpatialAnalysisToolComponent.pick()) et lance directement une analyse raster dessus une
-   * fois le tracé terminé, sans dépendre d'une limite administrative. */
-  startDrawZone(): void {
-    if (!this.selectedLayerId || this.drawingZone) return;
-    this.rasterStats = null;
-    this.zonalStats = null;
-    this.rasterNarrative = null;
-    this.rasterAnalysisError = null;
-    this.showZonalLevelPicker = false;
+   * SpatialAnalysisToolComponent.pick()) - générique : le tracé terminé est remis au callback
+   * fourni par l'appelant (analyse raster sur zone dessinée, OU zone d'étude pour l'analyse
+   * multi-couches - voir startDrawZoneForRaster()/startDrawZoneForMultiLayer()) plutôt que
+   * d'avoir une méthode de dessin dupliquée pour chaque usage. */
+  private startDrawZone(onComplete: (geometry: GeoJSON.Geometry) => void): void {
+    if (this.drawingZone) return;
 
     if (!this.map) this.map = this.mapService.getMap();
     if (!this.drawLayer) {
@@ -276,9 +371,40 @@ export class StatisticsToolComponent implements OnInit, OnDestroy {
         dataProjection: 'EPSG:4326',
       }) as unknown as GeoJSON.Geometry;
       this.stopDrawZone();
-      this.runRasterAnalysis('custom', geometry);
+      onComplete(geometry);
     });
     this.map.addInteraction(this.drawInteraction);
+  }
+
+  /** Bouton "Dessiner une zone" du panneau raster - lance directement l'analyse dessus. */
+  startDrawZoneForRaster(): void {
+    if (!this.selectedLayerId) return;
+    this.rasterStats = null;
+    this.zonalStats = null;
+    this.rasterNarrative = null;
+    this.rasterAnalysisError = null;
+    this.showZonalLevelPicker = false;
+    this.startDrawZone((geometry) => this.runRasterAnalysis('custom', geometry));
+  }
+
+  /** Bouton "Dessiner une zone" de l'onglet analyse multi-couches - la géométrie remplace
+   * l'emprise carte pour "Analyser ces couches"/"Générer un rapport PDF" (voir
+   * analyzeActiveLayers()/generateReport()), pour circonscrire l'analyse à une zone précise
+   * plutôt qu'à tout ce qui est visible à l'écran. */
+  startDrawZoneForMultiLayer(): void {
+    this.viewSummary = null;
+    this.viewSummaryError = null;
+    this.startDrawZone((geometry) => {
+      this.multiLayerZoneGeometry = geometry;
+    });
+  }
+
+  /** Efface la zone dessinée pour l'analyse multi-couches - revient à l'emprise carte. */
+  clearMultiLayerZone(): void {
+    this.multiLayerZoneGeometry = null;
+    this.drawLayer?.getSource()?.clear();
+    this.viewSummary = null;
+    this.viewSummaryError = null;
   }
 
   private stopDrawZone(): void {

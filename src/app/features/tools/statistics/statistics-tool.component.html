@@ -2,14 +2,128 @@
   <h3>{{ 'tools.statistics' | translate }}</h3>
   <p class="description">Visualisez les statistiques des données de vos couches actives.</p>
 
-  <mat-form-field appearance="outline" class="full-width">
-    <mat-label>Couche</mat-label>
-    <mat-select [(ngModel)]="selectedLayerId" (selectionChange)="loadStats()">
-      @for (al of activeLayers; track al.layer.id) {
-        <mat-option [value]="al.layer.id">{{ al.layer.name }}</mat-option>
+  @if (canUseMultiLayerMode) {
+    <button mat-stroked-button class="multi-layer-toggle" (click)="toggleMultiLayerMode()">
+      <mat-icon>{{ multiLayerMode ? 'arrow_back' : 'layers' }}</mat-icon>
+      {{
+        multiLayerMode
+          ? 'Retour aux statistiques par couche'
+          : 'Analyser ' + activeLayers.length + ' couches actives ensemble'
+      }}
+    </button>
+  }
+
+  @if (multiLayerMode) {
+    <div class="multi-layer-panel">
+      <p class="hint">Couches actives :</p>
+      <div class="multi-layer-chips">
+        @for (al of activeLayers; track al.layer.id) {
+          <span class="layer-chip">{{ al.layer.name }}</span>
+        }
+      </div>
+
+      <div class="multi-layer-zone-row">
+        @if (multiLayerZoneGeometry) {
+          <span class="hint zone-active">
+            <mat-icon>check_circle</mat-icon> Zone dessinée active
+          </span>
+          <button mat-button (click)="clearMultiLayerZone()">Effacer (revenir à la zone visible)</button>
+        } @else {
+          <button
+            mat-stroked-button
+            [disabled]="drawingZone"
+            (click)="startDrawZoneForMultiLayer()"
+          >
+            <mat-icon>draw</mat-icon> Dessiner une zone précise
+          </button>
+          <span class="hint">sinon, la zone visible sur la carte est utilisée</span>
+        }
+      </div>
+      @if (drawingZone) {
+        <p class="hint">
+          Dessinez un polygone sur la carte (clic pour chaque sommet, double-clic pour terminer).
+        </p>
       }
-    </mat-select>
-  </mat-form-field>
+
+      <button
+        mat-flat-button
+        color="primary"
+        [disabled]="viewSummaryLoading"
+        (click)="analyzeActiveLayers()"
+      >
+        <mat-icon>auto_awesome</mat-icon> Analyser ces couches
+      </button>
+
+      @if (viewSummaryLoading) {
+        <app-loading-spinner></app-loading-spinner>
+      }
+      @if (viewSummaryError) {
+        <p class="hint error">{{ viewSummaryError }}</p>
+      }
+      @if (viewSummary && !viewSummaryLoading) {
+        @if (viewSummary.narrative) {
+          <p class="narrative">
+            <mat-icon class="ai-icon">auto_awesome</mat-icon> {{ viewSummary.narrative }}
+          </p>
+        }
+        <div class="raster-stats-grid">
+          @for (entry of viewSummary.perLayer; track entry.layerId) {
+            <mat-card class="stats-card">
+              <mat-card-content>
+                @if (entry.kind === 'raster' && entry.raster) {
+                  <span class="big-number">{{ entry.raster.sum ?? entry.raster.mean | number: '1.0-0' }}</span>
+                  <span class="stat-label">{{ entry.name }} (raster)</span>
+                } @else {
+                  <span class="big-number">{{ entry.featureCount }}</span>
+                  <span class="stat-label">{{ entry.name }}</span>
+                }
+              </mat-card-content>
+            </mat-card>
+          }
+        </div>
+      }
+
+      <mat-divider></mat-divider>
+
+      <p class="hint">Générer un rapport PDF complet sur ces couches :</p>
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Sujet du rapport</mat-label>
+        <input
+          matInput
+          id="report-topic-input"
+          [(ngModel)]="reportTopic"
+          placeholder="ex: Couverture scolaire face à la densité de population"
+        />
+      </mat-form-field>
+      <button
+        mat-flat-button
+        color="primary"
+        [disabled]="!reportTopic.trim() || reportGenerating"
+        (click)="generateReport()"
+      >
+        <mat-icon>picture_as_pdf</mat-icon> Générer un rapport PDF
+      </button>
+      @if (reportGenerating) {
+        <app-loading-spinner></app-loading-spinner>
+      }
+      @if (reportGenerated) {
+        <p class="hint">Rapport en cours de génération - suis-le dans le tiroir de tâches 🔔.</p>
+      }
+      @if (reportError) {
+        <p class="hint error">{{ reportError }}</p>
+      }
+    </div>
+  }
+
+  @if (!multiLayerMode) {
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Couche</mat-label>
+      <mat-select [(ngModel)]="selectedLayerId" (selectionChange)="loadStats()">
+        @for (al of activeLayers; track al.layer.id) {
+          <mat-option [value]="al.layer.id">{{ al.layer.name }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
 
   @if (selectedLayerId && !isRasterLayer) {
     <mat-button-toggle-group
@@ -58,7 +172,7 @@
           rasterAnalysisType === 'custom' && zonalStats && !rasterAnalysisRunning
         "
         [disabled]="rasterAnalysisRunning || drawingZone"
-        (click)="startDrawZone()"
+        (click)="startDrawZoneForRaster()"
       >
         <mat-icon>{{
           rasterAnalysisType === 'custom' && zonalStats && !rasterAnalysisRunning
@@ -281,5 +395,6 @@
     } @else {
       <p class="hint">Aucune propriété analysable trouvée.</p>
     }
+  }
   }
 </div>

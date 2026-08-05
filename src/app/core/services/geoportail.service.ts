@@ -31,8 +31,20 @@ export class GeoportailService {
     );
   }
 
-  summarizeView(layerIds: string[]): Observable<ViewportSummary> {
-    return this.api.post<ViewportSummary>('/geoportail/summarize-view', { layerIds });
+  /** `extent` (voir MapService.getCurrentExtent()) restreint l'agrégation à la zone visible sur
+   * la carte ; `geometry` (zone dessinée à la main) restreint à une géométrie précise à la
+   * place - utilisé par l'onglet "Analyse multi-couches" du panneau Statistiques (plan
+   * "refonte Statistiques" du 2026-08-05, section G). */
+  summarizeView(
+    layerIds: string[],
+    extent?: number[],
+    geometry?: GeoJSON.Geometry,
+  ): Observable<ViewportSummary> {
+    return this.api.post<ViewportSummary>('/geoportail/summarize-view', {
+      layerIds,
+      extent,
+      geometry,
+    });
   }
 
   getElevationProfile(
