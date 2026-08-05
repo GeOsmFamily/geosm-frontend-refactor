@@ -133,6 +133,9 @@
       >
         <mat-icon>dashboard_customize</mat-icon>
       </button>
+      @if (currentUser | async) {
+        <app-jobs-tray></app-jobs-tray>
+      }
       <button
         mat-icon-button
         (click)="toggleAssistant()"

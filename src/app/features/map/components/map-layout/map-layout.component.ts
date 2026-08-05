@@ -31,7 +31,9 @@ import { ContextMenuComponent } from '../context-menu/context-menu.component';
 import { GeosignetsComponent } from '../geosignets/geosignets.component';
 import { MyMapsComponent } from '../my-maps/my-maps.component';
 import { AssistantChatComponent } from '../assistant-chat/assistant-chat.component';
+import { JobsTrayComponent } from '../jobs-tray/jobs-tray.component';
 import { LegendComponent } from '../../../../features/layers/components/legend/legend.component';
+import { NotificationSocketService } from '../../../../core/services/notification-socket.service';
 
 import { MapToolbarComponent } from '../map-toolbar/map-toolbar.component';
 import { ToolActionService } from '../../../../core/services/tool-action.service';
@@ -83,6 +85,7 @@ import { CloseOnEscapeOrOutsideDirective } from '../../../../shared/directives/c
     GeosignetsComponent,
     MyMapsComponent,
     AssistantChatComponent,
+    JobsTrayComponent,
     LegendComponent,
 
     MapToolbarComponent,
@@ -112,6 +115,7 @@ export class MapLayoutComponent implements OnInit {
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
   private readonly authService = inject(AuthService);
+  private readonly notificationSocket = inject(NotificationSocketService);
   private readonly mapService = inject(MapService);
   private readonly mapLayerService = inject(MapLayerService);
   private readonly instanceService = inject(InstanceService);
@@ -177,6 +181,9 @@ export class MapLayoutComponent implements OnInit {
         // eslint-disable-next-line @typescript-eslint/no-empty-function
         error: () => {},
       });
+      // Voir NotificationSocketService/JobsTrayService - alimente le tiroir de tâches (icône
+      // cloche) avec les événements export/import/plan de localisation en temps réel.
+      this.notificationSocket.connect();
     }
     this.mapService.mapReady$.subscribe((ready) => {
       if (ready) {
@@ -675,6 +682,7 @@ export class MapLayoutComponent implements OnInit {
   }
 
   logout(): void {
+    this.notificationSocket.disconnect();
     this.authService.logout();
   }
 
