@@ -59,6 +59,7 @@ export class AnalyticsComponent implements OnInit, OnDestroy {
         next: (res) => this.instances.set(res.data),
         // Erreur ignorée intentionnellement : le sélecteur d'instance reste vide, la vue
         // plateforme (par défaut) fonctionne quand même.
+        // eslint-disable-next-line @typescript-eslint/no-empty-function
         error: () => {},
       });
     }
@@ -89,6 +90,10 @@ export class AnalyticsComponent implements OnInit, OnDestroy {
         const current = this.dashboard();
         if (current) this.dashboard.set({ ...current, onlineNow: res.onlineNow });
       },
+      // Erreur ignorée intentionnellement : un échec ponctuel du rafraîchissement périodique
+      // ne doit pas interrompre le polling ni afficher d'erreur pour une simple mise à jour
+      // de fond.
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
       error: () => {},
     });
   }

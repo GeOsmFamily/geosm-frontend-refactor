@@ -5,6 +5,19 @@
   padding: 4px;
 }
 
+.version-badge {
+  align-self: center;
+  font-family: 'Roboto Mono', 'Courier New', monospace;
+  font-size: 11px;
+  letter-spacing: 0.02em;
+  color: var(--text-secondary, #64748b);
+  background: rgba(2, 63, 95, 0.06);
+  border: 1px solid rgba(2, 63, 95, 0.12);
+  border-radius: 999px;
+  padding: 3px 12px;
+  margin-bottom: -8px;
+}
+
 .info-section {
   display: flex;
   flex-direction: column;
@@ -103,12 +116,76 @@ button.full-width {
   flex-direction: column;
   gap: 4px;
   margin-top: 4px;
+}
 
-  button[type='submit'] {
-    margin-top: 8px;
+// Bouton d'envoi du formulaire de retour - dégradé cohérent avec l'identité visuelle de
+// l'app (même paire de couleurs que le bouton flottant de l'assistant IA), plutôt que le
+// mat-flat-button uni utilisé par défaut ailleurs dans ce panneau. --mdc-filled-button-* :
+// les MDC filled buttons appliquent leur couleur via ces variables CSS, pas juste
+// `background` - sans les neutraliser, le dégradé personnalisé resterait invisible sous la
+// couleur posée par Material (même pattern que les icon-buttons ajustés dans le tiroir de
+// tâches, voir jobs-tray.component.scss).
+.send-feedback-btn {
+  --mdc-filled-button-container-color: transparent;
+  --mdc-filled-button-label-text-color: #fff;
+  --mdc-filled-button-disabled-container-color: transparent;
+  --mdc-filled-button-disabled-label-text-color: rgba(255, 255, 255, 0.75);
 
-    mat-spinner {
-      display: inline-block;
+  position: relative;
+  height: 46px !important;
+  margin-top: 10px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, var(--accent) 0%, var(--primary) 100%);
+  font-family: 'Avenir Next Rounded Pro Demi', 'Roboto', sans-serif;
+  font-weight: 600;
+  font-size: 13.5px;
+  letter-spacing: 0.03em;
+  box-shadow:
+    0 4px 14px rgba(2, 63, 95, 0.28),
+    0 1px 4px rgba(0, 173, 167, 0.25);
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease,
+    opacity 0.15s ease;
+
+  mat-icon {
+    color: #fff;
+  }
+
+  // Le contenu projeté (icône + texte) atterrit dans le <span class="mdc-button__label">
+  // interne généré par MatButton, pas directement dans le <button> - le flex/gap posé sur
+  // .full-width ne s'applique donc qu'au label pris comme bloc unique, pas à l'icône et au
+  // texte À L'INTÉRIEUR de ce label, d'où le mauvais alignement. ::ng-deep nécessaire pour
+  // atteindre ce span, qui appartient à la vue de MatButton et non à celle de ce composant.
+  ::ng-deep .mdc-button__label {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+  }
+
+  &:hover:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow:
+      0 8px 20px rgba(2, 63, 95, 0.32),
+      0 2px 8px rgba(0, 173, 167, 0.3);
+  }
+
+  &:active:not(:disabled) {
+    transform: translateY(0);
+    box-shadow: 0 2px 8px rgba(2, 63, 95, 0.25);
+  }
+
+  &.is-submitting,
+  &:disabled {
+    opacity: 0.8;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  mat-spinner {
+    ::ng-deep circle {
+      stroke: #fff;
     }
   }
 }

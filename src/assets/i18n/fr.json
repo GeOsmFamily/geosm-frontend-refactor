@@ -890,6 +890,7 @@
       "emailLabel": "Email de contact (optionnel)",
       "emailInvalid": "Adresse email invalide",
       "submit": "Envoyer",
+      "sending": "Envoi en cours...",
       "success": "Merci pour votre retour !",
       "error": "Une erreur est survenue lors de l'envoi."
     }

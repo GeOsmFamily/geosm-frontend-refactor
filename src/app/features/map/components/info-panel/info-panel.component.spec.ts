@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { of, throwError } from 'rxjs';
 import { TranslateModule } from '@ngx-translate/core';
 
@@ -10,22 +11,50 @@ describe('InfoPanelComponent', () => {
   let component: InfoPanelComponent;
   let fixture: ComponentFixture<InfoPanelComponent>;
   let feedbackServiceSpy: jasmine.SpyObj<FeedbackService>;
+  let httpMock: HttpTestingController;
 
   beforeEach(async () => {
     feedbackServiceSpy = jasmine.createSpyObj('FeedbackService', ['submit']);
 
     await TestBed.configureTestingModule({
-      imports: [InfoPanelComponent, NoopAnimationsModule, TranslateModule.forRoot()],
+      imports: [
+        InfoPanelComponent,
+        NoopAnimationsModule,
+        TranslateModule.forRoot(),
+        HttpClientTestingModule,
+      ],
       providers: [{ provide: FeedbackService, useValue: feedbackServiceSpy }],
     }).compileComponents();
 
     fixture = TestBed.createComponent(InfoPanelComponent);
     component = fixture.componentInstance;
+    httpMock = TestBed.inject(HttpTestingController);
     fixture.detectChanges();
+
+    // ngOnInit charge assets/version.json - le flusher ici avec une valeur fixe évite que
+    // chaque test doive s'en soucier individuellement (voir test dédié plus bas pour la
+    // vérification du contenu affiché).
+    httpMock.expectOne('assets/version.json').flush({
+      major: 1,
+      minor: 0,
+      build: 42,
+      codename: 'Atlas',
+      month: 'AUG',
+      year: 2026,
+      full: 'GeOsm 1.0.42 - Atlas.AUG.2026',
+    });
+  });
+
+  afterEach(() => {
+    httpMock.verify();
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should fetch and expose the version info', () => {
+    expect(component.version()?.full).toBe('GeOsm 1.0.42 - Atlas.AUG.2026');
   });
 
   it('should display the developer credits', () => {

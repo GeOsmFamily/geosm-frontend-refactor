@@ -1,4 +1,10 @@
 <div class="info-container">
+  @if (version(); as v) {
+    <div class="version-badge">
+      {{ v.full }}
+    </div>
+  }
+
   <!-- Developer credits -->
   <div class="info-section">
     <div class="section-title">
@@ -109,17 +115,18 @@
 
       <button
         mat-flat-button
-        color="primary"
         type="submit"
-        class="full-width"
+        class="full-width send-feedback-btn"
+        [class.is-submitting]="submitting()"
         [disabled]="submitting()"
       >
         @if (submitting()) {
-          <mat-spinner diameter="20"></mat-spinner>
+          <mat-spinner diameter="18" strokeWidth="2"></mat-spinner>
+          <span>{{ 'infoPanel.feedback.sending' | translate }}</span>
         } @else {
           <ng-container>
             <mat-icon>send</mat-icon>
-            {{ 'infoPanel.feedback.submit' | translate }}
+            <span>{{ 'infoPanel.feedback.submit' | translate }}</span>
           </ng-container>
         }
       </button>
