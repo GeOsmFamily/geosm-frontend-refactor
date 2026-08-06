@@ -190,7 +190,7 @@ jobs:
         uses: softprops/action-gh-release@v3
         with:
           tag_name: ${{ needs.version-tag.outputs.version }}
-          name: "GeOSM Frontend v${{ needs.version-tag.outputs.version }}"
+          name: "GeOsm Frontend v${{ needs.version-tag.outputs.version }}"
           body: |
             ## Release ${{ needs.version-tag.outputs.version }}
 

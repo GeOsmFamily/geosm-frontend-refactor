@@ -99,6 +99,6 @@ describe('LoginComponent', () => {
 
   it('should render the brand area', () => {
     const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('.brand-name')?.textContent).toContain('GeOSM');
+    expect(compiled.querySelector('.brand-name')?.textContent).toContain('GeOsm');
   });
 });

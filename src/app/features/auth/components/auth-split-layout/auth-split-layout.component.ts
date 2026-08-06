@@ -16,6 +16,6 @@ import { MatIconModule } from '@angular/material/icon';
   styleUrl: './auth-split-layout.component.scss',
 })
 export class AuthSplitLayoutComponent {
-  @Input() brandName = 'GeOSM';
+  @Input() brandName = 'GeOsm';
   @Input({ required: true }) tagline = '';
 }

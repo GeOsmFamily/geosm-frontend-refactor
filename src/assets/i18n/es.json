@@ -90,7 +90,7 @@
     }
   },
   "app": {
-    "title": "GeOSM",
+    "title": "GeOsm",
     "subtitle": "Plataforma Cartografica"
   },
   "auth": {
@@ -450,6 +450,11 @@
     "settings": "Configuración",
     "administration": "Administración"
   },
+  "shared": {
+    "error": "Se produjo un error",
+    "savedSuccessfully": "Guardado con éxito",
+    "deletedSuccessfully": "Eliminado con éxito"
+  },
   "admin": {
     "title": "Administración",
     "backToMap": "Volver al mapa",
@@ -464,6 +469,7 @@
       "personalData": "Datos personales",
       "jobs": "Tareas y copias de seguridad",
       "observability": "Observabilidad",
+      "analytics": "Estadísticas de uso",
       "infra": "Infraestructura",
       "systemTools": "Herramientas del sistema"
     },
@@ -508,6 +514,23 @@
       "uptime": "Disponible desde",
       "externalTools": "Herramientas externas",
       "healthError": "No se pudo obtener el estado de salud del sistema."
+    },
+    "analytics": {
+      "allInstances": "Todas las instancias",
+      "onlineNow": "Conectados ahora",
+      "eventsInPeriod": "Eventos en el período",
+      "activeUsersToday": "Activos hoy",
+      "dailyActivity": "Actividad diaria",
+      "featureUsage": "Funcionalidades más usadas",
+      "topLayers": "Capas más consultadas",
+      "aiSection": "Asistente IA",
+      "aiMessages": "Mensajes enviados",
+      "aiConversations": "Conversaciones iniciadas",
+      "aiReports": "Informes generados",
+      "aiToolUsage": "Herramientas IA más usadas",
+      "downloads": "Descargas",
+      "noData": "Sin datos para este período.",
+      "loadError": "No se pudo cargar el panel de uso."
     },
     "infra": {
       "unavailable": "Infraestructura Docker no disponible (docker-socket-proxy inalcanzable).",
@@ -844,12 +867,12 @@
     },
     "openSource": {
       "title": "Proyecto de código abierto",
-      "description": "GeOSM es un proyecto de código abierto. El código fuente está disponible públicamente y las contribuciones son bienvenidas.",
+      "description": "GeOsm es un proyecto de código abierto. El código fuente está disponible públicamente y las contribuciones son bienvenidas.",
       "viewRepo": "Ver repositorio en GitHub"
     },
     "guide": {
       "title": "Guía de usuario",
-      "description": "Descargue la guía completa de GeOSM en formato PDF, con una explicación detallada de cada funcionalidad y ejemplos de casos de uso.",
+      "description": "Descargue la guía completa de GeOsm en formato PDF, con una explicación detallada de cada funcionalidad y ejemplos de casos de uso.",
       "download": "Descargar la guía (PDF)"
     },
     "feedback": {

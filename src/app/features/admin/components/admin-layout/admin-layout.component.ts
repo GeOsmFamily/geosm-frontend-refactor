@@ -35,6 +35,7 @@ const NAV_ITEMS: AdminNavItem[] = [
   { path: 'personal-data', icon: 'upload_file', labelKey: 'admin.nav.personalData' },
   { path: 'jobs', icon: 'schedule', labelKey: 'admin.nav.jobs' },
   { path: 'observability', icon: 'insights', labelKey: 'admin.nav.observability' },
+  { path: 'analytics', icon: 'monitoring', labelKey: 'admin.nav.analytics' },
   { path: 'infra', icon: 'dns', labelKey: 'admin.nav.infra', superAdminOnly: true },
   { path: 'system-tools', icon: 'build', labelKey: 'admin.nav.systemTools', superAdminOnly: true },
 ];

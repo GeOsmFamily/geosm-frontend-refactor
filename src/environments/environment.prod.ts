@@ -6,7 +6,7 @@ export const environment = {
   availableLanguages: ['fr', 'en', 'es'],
   primaryColor: '#023f5f',
   accentColor: '#00ada7',
-  instanceName: 'GeOSM',
+  instanceName: 'GeOsm',
   qgisServerUrl: '/ows',
   // Sous-domaines dedies (voir docs/deploiement.md backend, section "Sous-domaines pour les
   // outils d'observabilite") - Prometheus/Jaeger sont proteges par une authentification basique

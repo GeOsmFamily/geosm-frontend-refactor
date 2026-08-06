@@ -15,7 +15,7 @@ import { AdminFormDialogComponent } from '../../../shared/components/admin-form-
  * catalogue par défaut - couches, fonds de carte, projet QGIS) : POST /admin/instances/template
  * ne crée que l'instance et quelques groupes vides nommés par l'utilisateur, à remplir
  * manuellement ensuite. Utile pour un pays dont la structure thématique diffère du modèle
- * standard GeOSM.
+ * standard GeOsm.
  */
 @Component({
   selector: 'app-instance-template-dialog',

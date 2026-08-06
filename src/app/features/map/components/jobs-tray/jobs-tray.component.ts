@@ -11,6 +11,8 @@ import { JobsTrayService, TrayJob } from '../../../../core/services/jobs-tray.se
 import { ExportService } from '../../../../core/services/export.service';
 import { LocationPlanService } from '../../../../core/services/location-plan.service';
 import { AnalysisReportService } from '../../../../core/services/analysis-report.service';
+import { AnalyticsService } from '../../../../core/services/analytics.service';
+import { InstanceService } from '../../../../core/services/instance.service';
 
 /**
  * Icône "tiroir de tâches" dans la barre du haut, à côté de l'assistant IA - voir plan "refonte
@@ -38,6 +40,8 @@ export class JobsTrayComponent {
   private readonly exportService = inject(ExportService);
   private readonly locationPlanService = inject(LocationPlanService);
   private readonly analysisReportService = inject(AnalysisReportService);
+  private readonly analyticsService = inject(AnalyticsService);
+  private readonly instanceService = inject(InstanceService);
 
   readonly jobs = toSignal(this.jobsTrayService.jobs$, { initialValue: [] as TrayJob[] });
   downloadingId: string | null = null;
@@ -59,6 +63,25 @@ export class JobsTrayComponent {
     return this.locationPlanService;
   }
 
+  private downloadEventTypeFor(type: TrayJob['type']): string {
+    if (type === 'export') return 'export_downloaded';
+    if (type === 'analysis-report') return 'analysis_report_downloaded';
+    return 'location_plan_downloaded';
+  }
+
+  private trackDownload(type: TrayJob['type']): void {
+    const instanceId = this.instanceService.currentInstance$.value?.id;
+    if (!instanceId) return;
+    this.analyticsService
+      .trackEvent({ instanceId, eventType: this.downloadEventTypeFor(type) })
+      .subscribe({
+        // Erreur ignorée intentionnellement : le tracking analytique est un effet de bord non
+        // essentiel, un échec ne doit jamais perturber le téléchargement pour l'utilisateur.
+        // eslint-disable-next-line @typescript-eslint/no-empty-function
+        error: () => {},
+      });
+  }
+
   download(job: TrayJob): void {
     if (!this.canDownload(job) || this.downloadingId) return;
     this.downloadingId = job.id;
@@ -73,6 +96,7 @@ export class JobsTrayComponent {
         a.click();
         URL.revokeObjectURL(url);
         this.downloadingId = null;
+        this.trackDownload(job.type);
       },
       error: () => {
         this.downloadingId = null;

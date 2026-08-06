@@ -6,7 +6,7 @@ export const environment = {
   availableLanguages: ['fr', 'en', 'es'],
   primaryColor: '#023f5f',
   accentColor: '#00ada7',
-  instanceName: 'GeOSM',
+  instanceName: 'GeOsm',
   qgisServerUrl: 'http://localhost:8380/ows',
   observabilityLinks: {
     grafana: 'http://localhost:3001',

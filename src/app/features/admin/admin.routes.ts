@@ -75,6 +75,13 @@ export const ADMIN_ROUTES: Routes = [
           ),
       },
       {
+        path: 'analytics',
+        loadComponent: () =>
+          import('./components/analytics/analytics.component').then(
+            (m) => m.AnalyticsComponent,
+          ),
+      },
+      {
         path: 'system-tools',
         canActivate: [roleGuard([Role.SUPER_ADMIN])],
         loadComponent: () =>

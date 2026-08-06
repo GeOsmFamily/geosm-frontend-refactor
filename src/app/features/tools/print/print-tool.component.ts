@@ -93,29 +93,29 @@ export class PrintToolComponent {
       const pageHeight = pdf.internal.pageSize.getHeight();
       const margin = 15;
 
-      // 1. Draw Branded Header Bar (GeOSM Primary Color #023f5f)
+      // 1. Draw Branded Header Bar (GeOsm Primary Color #023f5f)
       pdf.setFillColor(2, 63, 95);
       pdf.rect(0, 0, pageWidth, 24, 'F');
 
-      // GeOSM Title text
+      // GeOsm Title text
       pdf.setFont('helvetica', 'bold');
       pdf.setFontSize(16);
       pdf.setTextColor(255, 255, 255);
-      pdf.text('GeOSM', margin, 11);
+      pdf.text('GeOsm', margin, 11);
 
-      // GeOSM Subtitle text
+      // GeOsm Subtitle text
       pdf.setFont('helvetica', 'normal');
       pdf.setFontSize(8);
       pdf.setTextColor(0, 173, 167); // Accent color
       pdf.text('PLATEFORME CARTOGRAPHIQUE', margin, 16);
 
-      // Attempt to load and render the GeOSM logo in the header
+      // Attempt to load and render the GeOsm logo in the header
       try {
         const logoImg = await this.loadImg('assets/icones/logogeo.png');
         // Render logo at top-right
         pdf.addImage(logoImg, 'PNG', pageWidth - margin - 14, 5, 14, 14);
       } catch (e) {
-        console.warn('[PrintTool] Failed to load GeOSM logo, using text branding fallback.', e);
+        console.warn('[PrintTool] Failed to load GeOsm logo, using text branding fallback.', e);
       }
 
       let yPos = 32;
@@ -195,7 +195,7 @@ export class PrintToolComponent {
 
       // Attributions on the right
       pdf.text(
-        'Données © OpenStreetMap contributors | Propulsé par GeOSM',
+        'Données © OpenStreetMap contributors | Propulsé par GeOsm',
         pageWidth - margin,
         pageHeight - 10,
         { align: 'right' },

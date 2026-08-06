@@ -389,6 +389,37 @@ export interface AnalyticsEvent {
   metadata?: Record<string, unknown>;
 }
 
+export interface DailyCount {
+  date: string;
+  count: number;
+}
+
+export interface ToolUsageCount {
+  tool: string;
+  count: number;
+}
+
+export interface FeatureUsageEntry {
+  eventType: string;
+  label: string;
+  count: number;
+}
+
+export interface UsageDashboard {
+  onlineNow: number;
+  dailyEvents: DailyCount[];
+  dailyActiveUsers: DailyCount[];
+  featureUsage: FeatureUsageEntry[];
+  aiUsage: {
+    messagesSent: number;
+    toolUsage: ToolUsageCount[];
+    reportsGenerated: number;
+    conversationsStarted: number;
+  };
+  downloads: FeatureUsageEntry[];
+  topLayers: { layerId: string; name: string; count: number }[];
+}
+
 export interface PaginationMeta {
   page: number;
   limit: number;

@@ -153,7 +153,14 @@ export class MapLayoutComponent implements OnInit {
   readonly currentUser = this.authService.currentUser$;
   currentZoom = 6;
 
+  // Liste complète : sert aussi bien à afficher la grille du panneau "Outils" qu'à résoudre
+  // l'icône/le libellé du panneau actif (getActiveToolIcon/getActiveToolLabel) - 'compare' doit
+  // donc y rester même s'il est masqué de la grille (voir HIDDEN_FROM_TOOLS_MENU) car il reste
+  // déclenchable depuis le bouton dédié de app-map-toolbar (toggleCompareTool()).
   readonly tools = [
+    { id: 'geosignets', icon: 'bookmarks', label: 'geosignets.title' },
+    { id: 'my-maps', icon: 'dashboard_customize', label: 'myMaps.title' },
+    { id: 'basemaps', icon: 'map', label: 'map.baseMaps' },
     { id: 'drawing', icon: 'draw', label: 'tools.drawing' },
     { id: 'measure', icon: 'straighten', label: 'right_menu.tools.mesure.title' },
     { id: 'routing', icon: 'directions', label: 'right_menu.map_routing.title' },
@@ -169,6 +176,16 @@ export class MapLayoutComponent implements OnInit {
     { id: 'nearest-search', icon: 'social_distance', label: 'tools.nearestSearch' },
     { id: 'personal-data', icon: 'upload_file', label: 'tools.personalData.label' },
   ];
+
+  // 'compare' : déjà accessible via le bouton dédié du panneau d'accès rapide (app-map-toolbar) -
+  // redondant dans cette grille. 'spatial-analysis' : masqué temporairement à la demande du
+  // 2026-08-05 ("pour le moment je ne veux pas qu'il soit visible") - l'outil reste fonctionnel,
+  // juste retiré de la liste, pour pouvoir le réafficher facilement plus tard.
+  private readonly HIDDEN_FROM_TOOLS_MENU = new Set(['compare', 'spatial-analysis']);
+
+  get toolsMenuItems() {
+    return this.tools.filter((t) => !this.HIDDEN_FROM_TOOLS_MENU.has(t.id));
+  }
 
   constructor() {
     // Le géoportail est consultable sans compte (visiteur anonyme) - ne tente de charger le
@@ -626,6 +643,32 @@ export class MapLayoutComponent implements OnInit {
     } else {
       this.selectTool('compare');
     }
+  }
+
+  // geosignets/my-maps/basemaps sont des panneaux flottants indépendants (leur propre signal
+  // open/close, pas activeTool()) déplacés dans cette grille depuis la barre du haut (demande du
+  // 2026-08-05) - la grille doit donc les router vers leur toggle dédié plutôt que selectTool().
+  onToolGridClick(toolId: string): void {
+    if (toolId === 'geosignets') {
+      this.toggleGeosignets();
+      return;
+    }
+    if (toolId === 'my-maps') {
+      this.toggleMyMaps();
+      return;
+    }
+    if (toolId === 'basemaps') {
+      this.toggleBaseMaps();
+      return;
+    }
+    this.selectTool(toolId);
+  }
+
+  isToolActive(toolId: string): boolean {
+    if (toolId === 'geosignets') return this.geosignetsOpen();
+    if (toolId === 'my-maps') return this.myMapsOpen();
+    if (toolId === 'basemaps') return this.baseMapsOpen();
+    return this.activeTool() === toolId;
   }
 
   selectTool(toolId: string): void {

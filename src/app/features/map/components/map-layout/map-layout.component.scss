@@ -358,6 +358,83 @@
   }
 }
 
+// Assistant IA - bouton flottant en bas à droite (retiré de la barre du haut, voir demande
+// du 2026-08-05 : la barre était trop chargée). Sous les panneaux flottants (--z-panel) donc
+// qu'il ne passe jamais devant un panneau ouvert, mais au-dessus de la carte.
+.assistant-fab {
+  position: absolute;
+  // 24px suffisait tant que l'attribution OpenLayers (bas-droite, ol-attribution) restait
+  // repliée sur une ligne - avec plusieurs sources actives (OSM + fond + Mapillary...) elle
+  // s'étend sur 2 lignes et chevauchait le bouton (retour du 2026-08-06) - marge relevée.
+  bottom: 60px;
+  right: 24px;
+  z-index: calc(var(--z-panel) - 1);
+  width: 58px;
+  height: 58px;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, var(--accent) 0%, var(--primary) 100%);
+  box-shadow:
+    0 6px 18px rgba(2, 63, 95, 0.35),
+    0 2px 6px rgba(0, 173, 167, 0.3);
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+
+  mat-icon {
+    color: #fff;
+    font-size: 26px;
+    width: 26px;
+    height: 26px;
+    z-index: 1;
+  }
+
+  &:hover {
+    transform: translateY(-2px) scale(1.04);
+    box-shadow:
+      0 10px 24px rgba(2, 63, 95, 0.4),
+      0 4px 10px rgba(0, 173, 167, 0.35);
+  }
+
+  &:active {
+    transform: translateY(0) scale(0.97);
+  }
+
+  &.active {
+    background: linear-gradient(135deg, var(--primary) 0%, #011f2f 100%);
+  }
+}
+
+.assistant-fab-glow {
+  position: absolute;
+  inset: -6px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(0, 173, 167, 0.55) 0%, rgba(0, 173, 167, 0) 70%);
+  animation: assistant-pulse 2.8s ease-in-out infinite;
+}
+
+@keyframes assistant-pulse {
+  0%,
+  100% {
+    opacity: 0.55;
+    transform: scale(0.92);
+  }
+  50% {
+    opacity: 0.9;
+    transform: scale(1.08);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .assistant-fab-glow {
+    animation: none;
+  }
+}
+
 // Coordinate display — bottom-left, right of the OL scale line
 .coord-display {
   position: absolute;

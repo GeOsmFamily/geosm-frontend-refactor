@@ -149,7 +149,7 @@ export class StatisticsToolComponent implements OnInit, OnDestroy {
     return layer?.metadata?.source === 'raster';
   }
   /** Distinct d'un vrai "0 entité" - une couche dont la donnée vient d'un projet QGIS (import
-   * admin ou publication depuis "Mes données") n'a pas de table PostGIS suivie par GeOSM,
+   * admin ou publication depuis "Mes données") n'a pas de table PostGIS suivie par GeOsm,
    * /layers/:id/features échoue alors avec un 404 : sans ce distinguo, l'ancien code affichait
    * silencieusement "0 entités", ce qui semblait indiquer une couche vide plutôt qu'une
    * limitation connue (statistiques non calculables pour une source WMS externe). */

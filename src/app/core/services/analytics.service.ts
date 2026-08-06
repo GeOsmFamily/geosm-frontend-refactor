@@ -2,7 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 
 import { ApiService } from './api.service';
-import { AnalyticsEvent } from '../models/index';
+import { AnalyticsEvent, UsageDashboard } from '../models/index';
 
 @Injectable({ providedIn: 'root' })
 export class AnalyticsService {
@@ -18,5 +18,11 @@ export class AnalyticsService {
 
   incrementView(type: 'layer' | 'instance', id: string): Observable<void> {
     return this.api.post<void>('/analytics/view', { type, id });
+  }
+
+  getUsageDashboard(instanceId?: string, days = 30): Observable<UsageDashboard> {
+    const params: Record<string, unknown> = { days };
+    if (instanceId) params['instanceId'] = instanceId;
+    return this.api.get<UsageDashboard>('/analytics/usage-dashboard', params);
   }
 }
