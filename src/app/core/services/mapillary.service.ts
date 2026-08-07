@@ -16,7 +16,7 @@ export interface MapillaryImage {
 export class MapillaryService {
   private readonly http = inject(HttpClient);
 
-  // Token applicatif fourni par GeOSM - les utilisateurs n'ont pas à fournir le leur.
+  // Token applicatif fourni par GeOsm - les utilisateurs n'ont pas à fournir le leur.
   getToken(): string {
     return environment.mapillaryToken;
   }

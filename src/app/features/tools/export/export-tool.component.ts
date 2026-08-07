@@ -32,6 +32,7 @@ const FORMAT_ICONS: Record<string, string> = {
   GEOPACKAGE: 'inventory_2',
   KML: 'public',
   CSV: 'table_chart',
+  GML: 'account_tree',
 };
 
 @Component({
@@ -86,6 +87,9 @@ export class ExportToolComponent implements OnInit, OnDestroy {
     { value: 'GEOPACKAGE', label: 'GeoPackage' },
     { value: 'KML', label: 'KML' },
     { value: 'CSV', label: 'CSV' },
+    // Générique (driver GDAL natif) - PAS conforme INSPIRE (aucun mapping de schéma par thème),
+    // le label le précise pour éviter toute confusion côté utilisateur institutionnel.
+    { value: 'GML', label: 'GML (générique, non INSPIRE)' },
   ];
 
   readonly bulkFormats = [

@@ -90,7 +90,7 @@
     }
   },
   "app": {
-    "title": "GeOSM",
+    "title": "GeOsm",
     "subtitle": "Plataforma Cartografica"
   },
   "auth": {
@@ -166,7 +166,10 @@
     "resyncSuccess": "Capa resincronizada con éxito",
     "featureInfo": {
       "genericFeature": "Entidad",
-      "pixelValue": "Valor"
+      "pixelValue": "Valor",
+      "pixelValuePopulation": "Población estimada",
+      "pixelValueWithArea": "≈ {{value}} (celda de ~{{cellSize}} m × {{cellSize}} m)",
+      "pixelDensity": "≈ {{density}} / km²"
     }
   },
   "fileDropZone": {
@@ -275,7 +278,15 @@
       "infoTitle": "Instrucciones de uso",
       "infoStep1": "Haga clic en el icono de la mira (🎯) de un campo y luego en el mapa para definir su posición.",
       "infoStep2": "Alternativamente, haga clic derecho en el mapa para definir la salida o la llegada.",
-      "infoStep3": "Elija su modo de transporte (coche, bicicleta, peatón) y haga clic en Calcular."
+      "infoStep3": "Elija su modo de transporte (coche, bicicleta, peatón) y haga clic en Calcular.",
+      "elevationLoading": "Calculando el perfil de elevación...",
+      "isochroneTitle": "Zona alcanzable (isócrona)",
+      "isochroneMinutes": "Minutos",
+      "isochroneCalculate": "Calcular",
+      "multimodalToggle": "Trayecto multimodal (punto de enlace)",
+      "junction": "Punto de enlace",
+      "profileBeforeJunction": "Antes del enlace",
+      "profileAfterJunction": "Después del enlace"
     },
     "export": {
       "selectLayer": "Seleccionar una capa",
@@ -355,6 +366,14 @@
       "invalidLink": "Enlace de uso compartido no válido.",
       "notFoundOrExpired": "No se encontró este mapa compartido o ha caducado.",
       "instanceNotFound": "Este mapa compartido hace referencia a una instancia no encontrada."
+    }
+  },
+  "faq": {
+    "title": "Preguntas frecuentes",
+    "empty": "Todavía no hay preguntas frecuentes publicadas.",
+    "errors": {
+      "invalidLink": "Enlace de FAQ no válido.",
+      "notFound": "Esta FAQ no se encontró."
     }
   },
   "geosignets": {
@@ -447,6 +466,11 @@
     "settings": "Configuración",
     "administration": "Administración"
   },
+  "shared": {
+    "error": "Se produjo un error",
+    "savedSuccessfully": "Guardado con éxito",
+    "deletedSuccessfully": "Eliminado con éxito"
+  },
   "admin": {
     "title": "Administración",
     "backToMap": "Volver al mapa",
@@ -459,8 +483,10 @@
       "content": "Contenido y moderación",
       "feedback": "Reportes",
       "personalData": "Datos personales",
+      "faq": "Preguntas frecuentes",
       "jobs": "Tareas y copias de seguridad",
       "observability": "Observabilidad",
+      "analytics": "Estadísticas de uso",
       "infra": "Infraestructura",
       "systemTools": "Herramientas del sistema"
     },
@@ -505,6 +531,23 @@
       "uptime": "Disponible desde",
       "externalTools": "Herramientas externas",
       "healthError": "No se pudo obtener el estado de salud del sistema."
+    },
+    "analytics": {
+      "allInstances": "Todas las instancias",
+      "onlineNow": "Conectados ahora",
+      "eventsInPeriod": "Eventos en el período",
+      "activeUsersToday": "Activos hoy",
+      "dailyActivity": "Actividad diaria",
+      "featureUsage": "Funcionalidades más usadas",
+      "topLayers": "Capas más consultadas",
+      "aiSection": "Asistente IA",
+      "aiMessages": "Mensajes enviados",
+      "aiConversations": "Conversaciones iniciadas",
+      "aiReports": "Informes generados",
+      "aiToolUsage": "Herramientas IA más usadas",
+      "downloads": "Descargas",
+      "noData": "Sin datos para este período.",
+      "loadError": "No se pudo cargar el panel de uso."
     },
     "infra": {
       "unavailable": "Infraestructura Docker no disponible (docker-socket-proxy inalcanzable).",
@@ -841,12 +884,12 @@
     },
     "openSource": {
       "title": "Proyecto de código abierto",
-      "description": "GeOSM es un proyecto de código abierto. El código fuente está disponible públicamente y las contribuciones son bienvenidas.",
+      "description": "GeOsm es un proyecto de código abierto. El código fuente está disponible públicamente y las contribuciones son bienvenidas.",
       "viewRepo": "Ver repositorio en GitHub"
     },
     "guide": {
       "title": "Guía de usuario",
-      "description": "Descargue la guía completa de GeOSM en formato PDF, con una explicación detallada de cada funcionalidad y ejemplos de casos de uso.",
+      "description": "Descargue la guía completa de GeOsm en formato PDF, con una explicación detallada de cada funcionalidad y ejemplos de casos de uso.",
       "download": "Descargar la guía (PDF)"
     },
     "feedback": {
@@ -864,6 +907,7 @@
       "emailLabel": "Correo de contacto (opcional)",
       "emailInvalid": "Dirección de correo inválida",
       "submit": "Enviar",
+      "sending": "Enviando...",
       "success": "¡Gracias por sus comentarios!",
       "error": "Ocurrió un error al enviar."
     }

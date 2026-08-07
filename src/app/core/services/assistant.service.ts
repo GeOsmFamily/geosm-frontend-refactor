@@ -5,9 +5,18 @@ import { Observable, map } from 'rxjs';
 import { ApiService } from './api.service';
 import { environment } from '../../../environments/environment';
 
+/** Couche(s) réellement interrogée(s) pour produire une réponse - voir AssistantSourceRef
+ * côté backend (assistant-chat.use-case.ts), demande du 2026-08-06 "chat expert
+ * cadastre/urbanisme". */
+export interface AssistantSourceRef {
+  layerId: string;
+  layerName: string;
+}
+
 export interface AssistantChatTurn {
   role: 'user' | 'model';
   text: string;
+  sources?: AssistantSourceRef[];
 }
 
 export interface AssistantClientAction {
@@ -22,7 +31,7 @@ export interface AssistantClientAction {
 }
 
 export interface AssistantAttachment {
-  type: 'location-plan';
+  type: 'location-plan' | 'analysis-report';
   id: string;
   title: string;
   status: string;
@@ -34,6 +43,7 @@ export interface AssistantChatResult {
   reply: string;
   clientActions: AssistantClientAction[];
   attachments: AssistantAttachment[];
+  sources: AssistantSourceRef[];
 }
 
 export interface AssistantConversationSummary {
@@ -46,6 +56,13 @@ export interface AssistantConversationDetail extends AssistantConversationSummar
   messages: AssistantChatTurn[];
 }
 
+/** Contexte carte ambiant envoyé à chaque message - voir AssistantMapContext côté backend
+ * (analyze_map_context). L'IA ne connaît pas la vue courante autrement. */
+export interface AssistantMapContext {
+  extent?: [number, number, number, number];
+  activeLayers?: { id: string; name: string }[];
+}
+
 @Injectable({ providedIn: 'root' })
 export class AssistantService {
   private readonly api = inject(ApiService);
@@ -56,11 +73,13 @@ export class AssistantService {
     instanceId: string,
     conversationId: string,
     message: string,
+    mapContext?: AssistantMapContext,
   ): Observable<AssistantChatResult> {
     return this.api.post<AssistantChatResult>('/assistant/chat', {
       instanceId,
       conversationId,
       message,
+      mapContext,
     });
   }
 

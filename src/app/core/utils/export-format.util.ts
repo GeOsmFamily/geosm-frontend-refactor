@@ -10,6 +10,7 @@ const FORMAT_EXTENSIONS: Record<string, string> = {
   GEOPACKAGE: 'gpkg',
   SHAPEFILE: 'zip',
   CSV: 'csv',
+  GML: 'gml',
 };
 
 export function getExportFileExtension(format: string): string {

@@ -1,11 +1,14 @@
 import { Injectable, inject } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Subscription, interval, startWith, switchMap } from 'rxjs';
 import VectorLayer from 'ol/layer/Vector';
 import VectorSource from 'ol/source/Vector';
 import Cluster from 'ol/source/Cluster';
 import Heatmap from 'ol/layer/Heatmap';
 import TileLayer from 'ol/layer/Tile';
 import TileWMS from 'ol/source/TileWMS';
+import GeoJSONFormat from 'ol/format/GeoJSON';
+import type { StyleFunction } from 'ol/style/Style';
+import { Circle as CircleStyle, Fill, Stroke, Style } from 'ol/style';
 import { bbox as bboxLoadingStrategy } from 'ol/loadingstrategy';
 import { transformExtent } from 'ol/proj';
 import { Layer } from '../../../core/models/index';
@@ -13,8 +16,14 @@ import { MapService } from './map.service';
 import { LayerService } from '../../../core/services/layer.service';
 import { AnalyticsService } from '../../../core/services/analytics.service';
 import { InstanceService } from '../../../core/services/instance.service';
+import { LiveLayerService } from '../../../core/services/live-layer.service';
 import { createClusterLayer, geoJsonToFeatures } from '../helpers/map.helper';
 import { resolveLayerIconUrlOrDefault, stringToColor } from '../../../core/utils/layer-icon.util';
+
+/** Fréquence de rafraîchissement plancher/plafond, indépendamment de refreshSeconds configuré
+ * (protège contre une valeur admin trop agressive ou aberrante). */
+const MIN_LIVE_REFRESH_SECONDS = 10;
+const MAX_LIVE_REFRESH_SECONDS = 3600;
 
 /**
  * Au-delà de ce nombre de features (metadata.featureCount), on garde le rendu
@@ -27,7 +36,7 @@ const VECTOR_LOAD_LIMIT = 5000;
 
 export interface ActiveLayer {
   layer: Layer;
-  olLayer: TileLayer<TileWMS> | VectorLayer<Cluster>;
+  olLayer: TileLayer<TileWMS> | VectorLayer<Cluster> | VectorLayer<VectorSource>;
   visible: boolean;
   opacity: number;
   // Couche heatmap alternative, partageant la même VectorSource que le cluster (pas de
@@ -35,6 +44,9 @@ export interface ActiveLayer {
   // de points rendues côté client (voir isPointLayer/underCap dans addLayer()).
   heatmapLayer?: Heatmap;
   viewMode?: 'cluster' | 'heatmap';
+  // Abonnement au polling d'une couche vivante (voir addLiveLayer()) - doit être désabonné
+  // explicitement au retrait de la couche, sinon le polling continue indéfiniment en arrière-plan.
+  liveSubscription?: Subscription;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -43,9 +55,16 @@ export class MapLayerService {
   private readonly layerService = inject(LayerService);
   private readonly analyticsService = inject(AnalyticsService);
   private readonly instanceService = inject(InstanceService);
+  private readonly liveLayerService = inject(LiveLayerService);
 
   private readonly activeLayersSubject = new BehaviorSubject<ActiveLayer[]>([]);
   readonly activeLayers$ = this.activeLayersSubject.asObservable();
+
+  // Couches de résultat d'analyse (choroplèthe/carroyage, voir plan "Choroplèthes + Carroyage"
+  // du 2026-08-06) - volontairement tenues à l'écart de activeLayersSubject/ActiveLayer : ce ne
+  // sont pas des Layer du catalogue mais des géométries éphémères calculées à la demande, sans
+  // équivalent dans le reste de l'app (légende, réordonnancement, opacité par couche...).
+  private readonly analysisLayers = new Map<string, VectorLayer<VectorSource>>();
 
   getActiveLayers(): ActiveLayer[] {
     return this.activeLayersSubject.value;
@@ -67,6 +86,14 @@ export class MapLayerService {
   addLayer(layer: Layer): void {
     const existing = this.activeLayersSubject.value.find((al) => al.layer.id === layer.id);
     if (existing) return;
+
+    // Couche vivante (capteur externe, voir plan "Couches vivantes + rapport de fraîcheur" du
+    // 2026-08-06) - prioritaire sur la logique point/WMS habituelle : `metadata.live` n'a rien
+    // à voir avec le type de géométrie ou tableName, c'est un mode de rendu à part entière.
+    if (layer.metadata?.live) {
+      this.addLiveLayer(layer, layer.metadata.live);
+      return;
+    }
 
     const geometryType = (layer.geometryType || layer.metadata?.geometryType || '').toLowerCase();
     const featureCount = layer.metadata?.featureCount;
@@ -101,6 +128,72 @@ export class MapLayerService {
     }
 
     this.activeLayersSubject.next([...this.activeLayersSubject.value, activeLayer]);
+    this.trackLayerEvent('layer_activated', layer.id);
+  }
+
+  /** Couche vivante : interroge GET /layers/:id/live à intervalle régulier (jamais directement
+   * l'URL externe - le backend fait le cache-aside, voir LiveLayerService côté backend) et
+   * remplace les features affichées à chaque réponse. La réponse est traitée comme un GeoJSON
+   * FeatureCollection - c'est la convention attendue pour une couche vivante cartographique
+   * (documentée pour l'admin qui configure `metadata.live.url`) ; une réponse qui ne suit pas ce
+   * format est journalisée et traitée comme "aucune feature" plutôt que de faire planter le
+   * rendu de la carte. */
+  private addLiveLayer(
+    layer: Layer,
+    config: { url: string; ttlSeconds: number; refreshSeconds: number },
+  ): void {
+    const source = new VectorSource();
+    const olLayer = new VectorLayer({
+      source,
+      style: new Style({
+        image: new CircleStyle({
+          radius: 7,
+          fill: new Fill({ color: layer.metadata?.color || stringToColor(layer.name) }),
+          stroke: new Stroke({ color: '#ffffff', width: 2 }),
+        }),
+        stroke: new Stroke({ color: layer.metadata?.color || stringToColor(layer.name), width: 3 }),
+        fill: new Fill({ color: 'rgba(0, 173, 167, 0.15)' }),
+      }),
+      properties: { name: layer.name, layerId: layer.id },
+    });
+    this.mapService.addLayer(olLayer);
+
+    const refreshMs =
+      Math.min(
+        Math.max(config.refreshSeconds || MIN_LIVE_REFRESH_SECONDS, MIN_LIVE_REFRESH_SECONDS),
+        MAX_LIVE_REFRESH_SECONDS,
+      ) * 1000;
+
+    const geoJsonFormat = new GeoJSONFormat();
+    const liveSubscription = interval(refreshMs)
+      .pipe(
+        startWith(0),
+        switchMap(() => this.liveLayerService.getLiveData(layer.id)),
+      )
+      .subscribe({
+        next: (result) => {
+          try {
+            const features = geoJsonFormat.readFeatures(result.data, {
+              featureProjection: 'EPSG:3857',
+              dataProjection: 'EPSG:4326',
+            });
+            source.clear();
+            source.addFeatures(features);
+          } catch {
+            // Réponse externe qui n'est pas un GeoJSON valide - couche laissée vide plutôt que
+            // de faire planter le rendu de la carte (voir doc de la méthode).
+            source.clear();
+          }
+        },
+        // Erreur réseau/backend ponctuelle - on garde les dernières features affichées plutôt
+        // que de vider la couche, le prochain intervalle réessaiera.
+        error: () => undefined,
+      });
+
+    this.activeLayersSubject.next([
+      ...this.activeLayersSubject.value,
+      { layer, olLayer, visible: true, opacity: 1, liveSubscription },
+    ]);
     this.trackLayerEvent('layer_activated', layer.id);
   }
 
@@ -209,6 +302,7 @@ export class MapLayerService {
     if (found) {
       this.mapService.removeLayer(found.olLayer);
       if (found.heatmapLayer) this.mapService.removeLayer(found.heatmapLayer);
+      found.liveSubscription?.unsubscribe();
       this.activeLayersSubject.next(current.filter((al) => al.layer.id !== layerId));
       this.trackLayerEvent('layer_deactivated', layerId);
     }
@@ -218,6 +312,7 @@ export class MapLayerService {
     for (const al of this.activeLayersSubject.value) {
       this.mapService.removeLayer(al.olLayer);
       if (al.heatmapLayer) this.mapService.removeLayer(al.heatmapLayer);
+      al.liveSubscription?.unsubscribe();
     }
     this.activeLayersSubject.next([]);
   }
@@ -283,5 +378,34 @@ export class MapLayerService {
 
   isLayerActive(layerId: string): boolean {
     return this.activeLayersSubject.value.some((al) => al.layer.id === layerId);
+  }
+
+  /** Affiche un résultat d'analyse (choroplèthe/carroyage) comme couche vectorielle stylée -
+   * remplace toute couche existante sous le même id (un nouveau calcul remplace l'ancien
+   * résultat plutôt que de s'empiler dessus). */
+  addAnalysisVectorLayer(
+    id: string,
+    geojson: GeoJSON.FeatureCollection,
+    styleFn: StyleFunction,
+  ): VectorLayer<VectorSource> {
+    this.removeAnalysisLayer(id);
+    const source = new VectorSource({
+      features: new GeoJSONFormat().readFeatures(geojson, {
+        featureProjection: 'EPSG:3857',
+        dataProjection: 'EPSG:4326',
+      }),
+    });
+    const olLayer = new VectorLayer({ source, style: styleFn, properties: { name: id } });
+    this.mapService.addLayer(olLayer);
+    this.analysisLayers.set(id, olLayer);
+    return olLayer;
+  }
+
+  removeAnalysisLayer(id: string): void {
+    const existing = this.analysisLayers.get(id);
+    if (existing) {
+      this.mapService.removeLayer(existing);
+      this.analysisLayers.delete(id);
+    }
   }
 }

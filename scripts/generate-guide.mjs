@@ -1,4 +1,4 @@
-// Génère les guides PDF GeOSM (fr/en) à partir d'un gabarit HTML statique - PAS à la demande
+// Génère les guides PDF GeOsm (fr/en) à partir d'un gabarit HTML statique - PAS à la demande
 // par requête HTTP, le contenu est de la documentation, pas des données dynamiques. À relancer
 // manuellement après une mise à jour du contenu (voir scripts/guide-pdf/content.mjs), ou
 // automatiquement en CI/CD avant un déploiement.

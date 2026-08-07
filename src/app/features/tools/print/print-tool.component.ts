@@ -10,9 +10,21 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatDividerModule } from '@angular/material/divider';
 
 import { MapService } from '../../map/services/map.service';
+import { MapLayerService } from '../../map/services/map-layer.service';
 import { LoadingSpinnerComponent } from '../../../shared/components/loading-spinner/loading-spinner.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { fitImageContain } from '../../../core/utils/pdf-image-fit.util';
+import { stringToColor } from '../../../core/utils/layer-icon.util';
+import type { jsPDF } from 'jspdf';
+
+const MAX_LEGEND_ROWS = 6;
+
+/** #RRGGBB -> [r,g,b] pour jsPDF.setFillColor(), qui n'accepte pas les chaînes hexadécimales. */
+function hexToRgb(hex: string): [number, number, number] {
+  const clean = hex.replace('#', '');
+  const num = parseInt(clean, 16);
+  return [(num >> 16) & 255, (num >> 8) & 255, num & 255];
+}
 
 @Component({
   selector: 'app-print-tool',
@@ -35,6 +47,7 @@ import { fitImageContain } from '../../../core/utils/pdf-image-fit.util';
 })
 export class PrintToolComponent {
   private readonly mapService = inject(MapService);
+  private readonly mapLayerService = inject(MapLayerService);
 
   title = '';
   description = '';
@@ -93,29 +106,29 @@ export class PrintToolComponent {
       const pageHeight = pdf.internal.pageSize.getHeight();
       const margin = 15;
 
-      // 1. Draw Branded Header Bar (GeOSM Primary Color #023f5f)
+      // 1. Draw Branded Header Bar (GeOsm Primary Color #023f5f)
       pdf.setFillColor(2, 63, 95);
       pdf.rect(0, 0, pageWidth, 24, 'F');
 
-      // GeOSM Title text
+      // GeOsm Title text
       pdf.setFont('helvetica', 'bold');
       pdf.setFontSize(16);
       pdf.setTextColor(255, 255, 255);
-      pdf.text('GeOSM', margin, 11);
+      pdf.text('GeOsm', margin, 11);
 
-      // GeOSM Subtitle text
+      // GeOsm Subtitle text
       pdf.setFont('helvetica', 'normal');
       pdf.setFontSize(8);
       pdf.setTextColor(0, 173, 167); // Accent color
       pdf.text('PLATEFORME CARTOGRAPHIQUE', margin, 16);
 
-      // Attempt to load and render the GeOSM logo in the header
+      // Attempt to load and render the GeOsm logo in the header
       try {
         const logoImg = await this.loadImg('assets/icones/logogeo.png');
         // Render logo at top-right
         pdf.addImage(logoImg, 'PNG', pageWidth - margin - 14, 5, 14, 14);
       } catch (e) {
-        console.warn('[PrintTool] Failed to load GeOSM logo, using text branding fallback.', e);
+        console.warn('[PrintTool] Failed to load GeOsm logo, using text branding fallback.', e);
       }
 
       let yPos = 32;
@@ -142,13 +155,18 @@ export class PrintToolComponent {
       // 4. Map Image - ajustée en "contain" pour ne jamais déformer l'aspect ratio
       // réel de la capture (qui dépend de la taille de l'écran, pas du format PDF).
       const boxWidth = pageWidth - margin * 2;
-      const footerSpace = this.includeLegend ? 40 : 25;
+      // 50mm (vs 25 sans légende) : espace réellement dimensionné pour la légende maintenant
+      // qu'elle dessine du contenu (jusqu'à MAX_LEGEND_ROWS lignes) - l'ancienne valeur (40)
+      // n'avait jamais été validée contre un rendu réel, la case à cocher n'ayant jamais rien
+      // dessiné avant ce correctif.
+      const footerSpace = this.includeLegend ? 50 : 25;
       const boxHeight = pageHeight - yPos - footerSpace;
       const fit = fitImageContain(mapImg.naturalWidth, mapImg.naturalHeight, boxWidth, boxHeight);
 
       pdf.setFillColor(241, 245, 249); // Slate-100, comble les bandes laissées par le "contain"
       pdf.rect(margin, yPos, boxWidth, boxHeight, 'F');
       pdf.addImage(dataUrl, 'PNG', margin + fit.offsetX, yPos + fit.offsetY, fit.width, fit.height);
+      this.drawNorthArrow(pdf, margin + boxWidth - 14, yPos + 8);
       yPos += boxHeight + 6;
 
       // 5. Scale representation
@@ -167,6 +185,14 @@ export class PrintToolComponent {
         pdf.line(margin + 20, yPos + 0.8, margin + 20, yPos + 2.2);
 
         yPos += 8;
+      }
+
+      // 5b. Légende - une ligne (swatch + nom) par couche active ET visible, plutôt qu'un
+      // simple agrandissement d'espace vide comme avant (voir plan "Itinéraires : altimétrie,
+      // isochrones, multimodal" du 2026-08-06 - correction du même chantier "Export
+      // cartographique").
+      if (this.includeLegend) {
+        yPos = this.drawLegend(pdf, margin, yPos, pageWidth - margin * 2);
       }
 
       // 6. Footer Line & Attributions
@@ -195,7 +221,7 @@ export class PrintToolComponent {
 
       // Attributions on the right
       pdf.text(
-        'Données © OpenStreetMap contributors | Propulsé par GeOSM',
+        'Données © OpenStreetMap contributors | Propulsé par GeOsm',
         pageWidth - margin,
         pageHeight - 10,
         { align: 'right' },
@@ -209,5 +235,84 @@ export class PrintToolComponent {
     } finally {
       this.generating = false;
     }
+  }
+
+  /** Flèche du nord dessinée en vecteur (pas une image) - suit la rotation réelle de la vue OL
+   * (toujours 0 dans cette app aujourd'hui, aucune UI ne l'expose, mais un `getRotation()` non
+   * nul serait silencieusement ignoré sans ce calcul). */
+  private drawNorthArrow(pdf: jsPDF, cx: number, cy: number): void {
+    const rotation = this.mapService.getMap().getView().getRotation() || 0;
+    const len = 7;
+    const halfWidth = 2.2;
+
+    // Vecteur "vers le haut de l'écran" tourné de `rotation` (sens horaire, convention
+    // OpenLayers) - toujours (0,-1) en pratique, généralisé par prudence.
+    const dirX = Math.sin(rotation);
+    const dirY = -Math.cos(rotation);
+    const perpX = -dirY;
+    const perpY = dirX;
+
+    const tipX = cx + dirX * len * 0.6;
+    const tipY = cy + dirY * len * 0.6;
+    const baseX = cx - dirX * len * 0.4;
+    const baseY = cy - dirY * len * 0.4;
+
+    pdf.setFillColor(2, 63, 95);
+    pdf.setDrawColor(255, 255, 255);
+    pdf.setLineWidth(0.3);
+    pdf.triangle(
+      tipX,
+      tipY,
+      baseX + perpX * halfWidth,
+      baseY + perpY * halfWidth,
+      baseX - perpX * halfWidth,
+      baseY - perpY * halfWidth,
+      'FD',
+    );
+
+    pdf.setFont('helvetica', 'bold');
+    pdf.setFontSize(7);
+    pdf.setTextColor(2, 63, 95);
+    pdf.text('N', cx + dirX * (len * 0.6 + 3), cy + dirY * (len * 0.6 + 3), { align: 'center' });
+  }
+
+  /** Une ligne (swatch + nom) par couche active ET visible - même source de couleur que le
+   * cluster de points sur la carte (metadata.color, sinon couleur déterministe par nom, voir
+   * map-layer.service.ts) pour rester visuellement cohérent avec ce qui est réellement affiché.
+   * Retourne le yPos après la légende (pour que l'appelant sache où continuer). */
+  private drawLegend(pdf: jsPDF, x: number, yStart: number, maxWidth: number): number {
+    const activeLayers = this.mapLayerService.getActiveLayers().filter((al) => al.visible);
+    if (activeLayers.length === 0) return yStart;
+
+    let y = yStart + 2;
+    pdf.setFont('helvetica', 'bold');
+    pdf.setFontSize(8);
+    pdf.setTextColor(2, 63, 95);
+    pdf.text('Légende', x, y);
+    y += 4;
+
+    const rowHeight = 3;
+    const shown = activeLayers.slice(0, MAX_LEGEND_ROWS);
+    pdf.setFont('helvetica', 'normal');
+    pdf.setFontSize(7.5);
+    for (const al of shown) {
+      const color = al.layer.metadata?.color || stringToColor(al.layer.name || al.layer.id);
+      const [r, g, b] = hexToRgb(color);
+      pdf.setFillColor(r, g, b);
+      pdf.rect(x, y - 2.2, 3, 3, 'F');
+      pdf.setTextColor(51, 65, 85);
+      const wrapped: string[] = pdf.splitTextToSize(al.layer.name, maxWidth - 6);
+      pdf.text(wrapped.length > 1 ? `${wrapped[0]}…` : wrapped[0], x + 5, y);
+      y += rowHeight;
+    }
+
+    if (activeLayers.length > MAX_LEGEND_ROWS) {
+      pdf.setTextColor(100, 116, 139);
+      pdf.setFontSize(7);
+      pdf.text(`+${activeLayers.length - MAX_LEGEND_ROWS} autre(s) couche(s)`, x + 5, y);
+      y += rowHeight;
+    }
+
+    return y + 1;
   }
 }

@@ -3,7 +3,7 @@ import { Observable } from 'rxjs';
 
 import { ApiService } from './api.service';
 
-export type RasterAnalysisType = 'global' | 'zonal';
+export type RasterAnalysisType = 'global' | 'zonal' | 'custom';
 
 export interface RasterStats {
   min: number | null;
@@ -29,6 +29,9 @@ export interface RasterAnalysisResult {
   type: RasterAnalysisType;
   status: 'PENDING' | 'PROCESSING' | 'COMPLETED' | 'FAILED';
   result: RasterStats | ZonalStat[] | null;
+  /** Synthèse IA comparative/conclusive (voir raster-analysis.worker.ts) - null si Gemini est
+   * indisponible/en échec, jamais bloquant. */
+  narrative: string | null;
   error: string | null;
 }
 
@@ -37,15 +40,36 @@ export interface RasterAnalysisResult {
 export class RasterAnalysisService {
   private readonly api = inject(ApiService);
 
-  analyze(layerId: string, type: RasterAnalysisType): Observable<{ resultId: string }> {
-    return this.api.post<{ resultId: string }>(`/rasters/${layerId}/analyze`, { type });
+  analyze(
+    layerId: string,
+    type: RasterAnalysisType,
+    options?: { adminLevel?: number; geometry?: GeoJSON.Geometry },
+  ): Observable<{ resultId: string }> {
+    return this.api.post<{ resultId: string }>(`/rasters/${layerId}/analyze`, {
+      type,
+      ...options,
+    });
   }
 
   getResult(resultId: string): Observable<RasterAnalysisResult> {
     return this.api.get<RasterAnalysisResult>(`/rasters/analysis/${resultId}`);
   }
 
-  getPixelValue(layerId: string, lon: number, lat: number): Observable<{ value: number | null }> {
-    return this.api.get<{ value: number | null }>(`/rasters/${layerId}/value`, { lon, lat });
+  /** Niveaux administratifs (admin_level) disponibles pour l'instance - alimente le sélecteur
+   * "Statistiques par zone" (voir FindAdminBoundariesByLevelUseCase.findAvailableLevels côté
+   * backend, corrige le cas d'une instance sans Instance.adminLevel configuré, ex. Cameroun). */
+  getAvailableAdminLevels(instanceId: string): Observable<number[]> {
+    return this.api.get<number[]>(`/geoportail/instances/${instanceId}/admin-levels`);
+  }
+
+  getPixelValue(
+    layerId: string,
+    lon: number,
+    lat: number,
+  ): Observable<{ value: number | null; cellAreaM2?: number | null }> {
+    return this.api.get<{ value: number | null; cellAreaM2?: number | null }>(
+      `/rasters/${layerId}/value`,
+      { lon, lat },
+    );
   }
 }

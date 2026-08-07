@@ -1,5 +1,6 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
 import {
   FormsModule,
   ReactiveFormsModule,
@@ -18,6 +19,18 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 import { FeedbackService, FeedbackType } from '../../../../core/services/feedback.service';
+
+/** Généré par scripts/generate-version.mjs à chaque build (voir "build" dans package.json) -
+ * jamais écrit à la main. */
+export interface GeOsmVersion {
+  major: number;
+  minor: number;
+  build: number;
+  codename: string;
+  month: string;
+  year: number;
+  full: string;
+}
 
 @Component({
   selector: 'app-info-panel',
@@ -39,17 +52,29 @@ import { FeedbackService, FeedbackType } from '../../../../core/services/feedbac
   templateUrl: './info-panel.component.html',
   styleUrl: './info-panel.component.scss',
 })
-export class InfoPanelComponent {
+export class InfoPanelComponent implements OnInit {
   private readonly fb = inject(FormBuilder);
   private readonly feedbackService = inject(FeedbackService);
   private readonly translate = inject(TranslateService);
   private readonly snackBar = inject(MatSnackBar);
+  private readonly http = inject(HttpClient);
 
   readonly developerName = 'Boris Gautier TCHOUKOUAHA';
   readonly developerEmail = 'me@borisgauty.com';
   readonly repoUrl = 'https://github.com/GeOsmFamily/geosm-frontend-refactor';
 
   readonly submitting = signal(false);
+  readonly version = signal<GeOsmVersion | null>(null);
+
+  ngOnInit(): void {
+    this.http.get<GeOsmVersion>('assets/version.json').subscribe({
+      next: (v) => this.version.set(v),
+      // Erreur ignorée intentionnellement : l'absence du numéro de version ne doit jamais
+      // empêcher le reste du panneau Infos de fonctionner.
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      error: () => {},
+    });
+  }
 
   readonly feedbackTypes: { value: FeedbackType; label: string }[] = [
     { value: 'BUG', label: 'infoPanel.feedback.types.bug' },

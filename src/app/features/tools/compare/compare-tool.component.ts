@@ -8,13 +8,19 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatDividerModule } from '@angular/material/divider';
 import { TranslateModule } from '@ngx-translate/core';
 import Map from 'ol/Map';
-import { Subscription } from 'rxjs';
+import { Subscription, firstValueFrom } from 'rxjs';
 import TileLayer from 'ol/layer/Tile';
 import OSM from 'ol/source/OSM';
 import XYZ from 'ol/source/XYZ';
+import VectorLayer from 'ol/layer/Vector';
+import VectorSource from 'ol/source/Vector';
+import { Style, Stroke, Fill, Circle as CircleStyle } from 'ol/style';
 import { MapService } from '../../map/services/map.service';
 import { BaseMapService } from '../../../core/services/base-map.service';
 import { InstanceService } from '../../../core/services/instance.service';
+import { LayerService } from '../../../core/services/layer.service';
+import { MapLayerService } from '../../map/services/map-layer.service';
+import { geoJsonToFeatures } from '../../map/helpers/map.helper';
 import { BaseMap, Instance } from '../../../core/models/index';
 import type { Layer } from 'ol/layer';
 import type RenderEvent from 'ol/render/Event';
@@ -43,9 +49,14 @@ interface BaseMapOption {
   styleUrl: './compare-tool.component.scss',
 })
 export class CompareToolComponent implements OnInit, OnDestroy {
+  /** Désactivé le 2026-08-07 à la demande utilisateur (repasser à true pour réactiver). */
+  protected readonly vectorCompareEnabled = false;
+
   private readonly mapService = inject(MapService);
   private readonly baseMapService = inject(BaseMapService);
   private readonly instanceService = inject(InstanceService);
+  private readonly layerService = inject(LayerService);
+  private readonly mapLayerService = inject(MapLayerService);
 
   private map!: Map;
   private subscription!: Subscription;
@@ -55,6 +66,23 @@ export class CompareToolComponent implements OnInit, OnDestroy {
   rightBaseMapId: string | null = null;
   comparing = false;
   swipePosition = 50;
+
+  // --- Comparateur temporel vecteur (voir plan "Partage enrichi : annotations persistantes +
+  // comparateur temporel vecteur" du 2026-08-06) - mode alternatif comparant deux couches
+  // vectorielles du catalogue au lieu de deux fonds de carte, même mécanisme de swipe. Limité
+  // aux couches déjà ACTIVES sur la carte (pas de nouvelle UI de navigation du catalogue), voir
+  // MapLayerService.getActiveLayers(). ---
+  mode: 'basemap' | 'vector' = 'basemap';
+  leftVectorLayerId: string | null = null;
+  rightVectorLayerId: string | null = null;
+  vectorCompareError: string | null = null;
+  vectorCompareLoading = false;
+
+  get vectorLayerOptions(): { id: string; name: string }[] {
+    return this.mapLayerService
+      .getActiveLayers()
+      .map((al) => ({ id: al.layer.id, name: al.layer.name }));
+  }
 
   private leftLayer: Layer | null = null;
   private rightLayer: Layer | null = null;
@@ -118,7 +146,22 @@ export class CompareToolComponent implements OnInit, OnDestroy {
     return new TileLayer({ visible: false });
   }
 
+  private createVectorOlLayer(color: string): VectorLayer<VectorSource> {
+    return new VectorLayer({
+      source: new VectorSource(),
+      style: new Style({
+        stroke: new Stroke({ color, width: 3 }),
+        fill: new Fill({ color: `${color}33` }),
+        image: new CircleStyle({ radius: 6, fill: new Fill({ color }) }),
+      }),
+    });
+  }
+
   startCompare(): void {
+    if (this.mode === 'vector') {
+      this.startVectorCompare();
+      return;
+    }
     if (!this.leftBaseMapId || !this.rightBaseMapId) return;
 
     this.leftLayer = this.createOlLayer(this.leftBaseMapId);
@@ -132,7 +175,44 @@ export class CompareToolComponent implements OnInit, OnDestroy {
     this.map.getLayers().insertAt(1, this.rightLayer);
 
     this.comparing = true;
+    this.attachClipHandlers();
+  }
 
+  /** Compare deux couches vectorielles déjà actives sur la carte (pas de fond de carte masqué,
+   * contrairement au mode basemap - les deux couches sont des overlays). */
+  private startVectorCompare(): void {
+    if (!this.leftVectorLayerId || !this.rightVectorLayerId) return;
+    this.vectorCompareError = null;
+    this.vectorCompareLoading = true;
+
+    Promise.all([
+      firstValueFrom(this.layerService.getFeatures(this.leftVectorLayerId, { limit: 5000 })),
+      firstValueFrom(this.layerService.getFeatures(this.rightVectorLayerId, { limit: 5000 })),
+    ])
+      .then(([leftFeatures, rightFeatures]) => {
+        this.vectorCompareLoading = false;
+        this.leftLayer = this.createVectorOlLayer('#023f5f');
+        this.rightLayer = this.createVectorOlLayer('#e67e22');
+        (this.leftLayer as VectorLayer<VectorSource>)
+          .getSource()!
+          .addFeatures(geoJsonToFeatures(leftFeatures));
+        (this.rightLayer as VectorLayer<VectorSource>)
+          .getSource()!
+          .addFeatures(geoJsonToFeatures(rightFeatures));
+
+        this.map.getLayers().insertAt(0, this.leftLayer);
+        this.map.getLayers().insertAt(1, this.rightLayer);
+        this.comparing = true;
+        this.attachClipHandlers();
+      })
+      .catch(() => {
+        this.vectorCompareLoading = false;
+        this.vectorCompareError = 'Impossible de charger les entités des couches sélectionnées.';
+      });
+  }
+
+  private attachClipHandlers(): void {
+    if (!this.leftLayer || !this.rightLayer) return;
     this.leftPrerender = (event: RenderEvent) => {
       const ctx = event.context as CanvasRenderingContext2D;
       const width = ctx.canvas.width;
@@ -197,12 +277,22 @@ export class CompareToolComponent implements OnInit, OnDestroy {
     this.rightLayer = null;
     this.comparing = false;
     this.swipePosition = 50;
+    this.vectorCompareError = null;
 
-    // Restore original base layer
-    this.mapService.getBaseLayer().setVisible(true);
+    // Restore original base layer - non pertinent en mode vecteur, où le fond de carte
+    // n'a jamais été masqué (les deux couches comparées sont des overlays, pas des fonds).
+    if (this.mode === 'basemap') {
+      this.mapService.getBaseLayer().setVisible(true);
+    }
 
     if (this.map) {
       this.map.render();
     }
+  }
+
+  setMode(mode: 'basemap' | 'vector'): void {
+    if (this.mode === mode) return;
+    this.resetCompare();
+    this.mode = mode;
   }
 }

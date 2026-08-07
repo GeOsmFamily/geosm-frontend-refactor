@@ -54,11 +54,47 @@ export class BaseMapFormDialogComponent {
     thumbnail: [this.data.baseMap?.thumbnail ?? ''],
     isDefault: [this.data.baseMap?.isDefault ?? false],
     order: [this.data.baseMap?.order ?? 0],
+    // Bac JSON générique plutôt qu'un champ dédié par type : WMS ne lit que `layers`
+    // (voir map.service.ts applyBaseMap()), WMTS lit `layer`/`matrixSet`/`format`/`style`
+    // (voir default-basemaps.constants.ts "France Topo") - un champ unique évite de
+    // dupliquer cette logique de lecture ici et de la faire diverger du code qui la consomme.
+    configText: [
+      this.data.baseMap?.config ? JSON.stringify(this.data.baseMap.config, null, 2) : '',
+    ],
   });
 
+  configError: string | null = null;
+
+  /** true pour les types dont le rendu carte a réellement besoin de `config` (voir
+   * map.service.ts) - pour les autres (XYZ/MAPBOX), le champ reste disponible mais optionnel. */
+  needsConfig(): boolean {
+    return this.form.value.type === 'WMS' || this.form.value.type === 'WMTS';
+  }
+
+  configPlaceholder(): string {
+    return this.form.value.type === 'WMTS'
+      ? '{\n  "layer": "GEOGRAPHICALGRIDSYSTEMS.MAPS",\n  "matrixSet": "PM",\n  "format": "image/png",\n  "style": "normal"\n}'
+      : '{\n  "layers": "nom_de_la_couche_wms"\n}';
+  }
+
   onSubmit(): void {
+    this.configError = null;
     if (this.form.invalid) return;
     const value = this.form.getRawValue();
+
+    let config: Record<string, unknown> | undefined;
+    const raw = (value.configText || '').trim();
+    if (raw) {
+      try {
+        config = JSON.parse(raw);
+      } catch {
+        this.configError = 'JSON invalide';
+        return;
+      }
+    } else if (this.needsConfig()) {
+      this.configError = `La configuration (${this.form.value.type === 'WMTS' ? 'layer/matrixSet/format/style' : 'layers'}) est requise pour ce type de fond de carte.`;
+      return;
+    }
 
     // Le endpoint PATCH ne permet pas de modifier `slug`/`type` (ni ne les accepte dans
     // son body, dont le schéma refuse toute propriété additionnelle) - les envoyer lors
@@ -71,6 +107,7 @@ export class BaseMapFormDialogComponent {
       thumbnail: value.thumbnail || null,
       isDefault: value.isDefault,
       order: value.order,
+      config: config ?? null,
     });
   }
 

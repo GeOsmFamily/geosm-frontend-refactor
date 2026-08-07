@@ -1,0 +1,47 @@
+<button
+  mat-icon-button
+  [matMenuTriggerFor]="notifMenu"
+  matTooltip="Notifications"
+  class="header-action"
+  [matBadge]="unreadCount() > 0 ? unreadCount() : null"
+  matBadgeColor="warn"
+  matBadgeSize="small"
+>
+  <mat-icon>inbox</mat-icon>
+</button>
+
+<mat-menu #notifMenu="matMenu" class="notification-panel-menu">
+  <div class="notification-panel-header" (click)="$event.stopPropagation()">
+    <span>Notifications</span>
+    @if (unreadCount() > 0) {
+      <button mat-button (click)="markAllRead()">Tout marquer comme lu</button>
+    }
+  </div>
+
+  @if (loading()) {
+    <div class="notification-panel-empty" (click)="$event.stopPropagation()">Chargement...</div>
+  } @else if (notifications().length === 0) {
+    <div class="notification-panel-empty" (click)="$event.stopPropagation()">
+      Aucune notification.
+    </div>
+  } @else {
+    @for (notif of notifications(); track notif.id) {
+      <div
+        class="notification-panel-item"
+        [class.unread]="!notif.readAt"
+        (click)="markRead(notif, $event)"
+      >
+        <mat-icon class="notification-panel-item-icon">
+          {{ notif.type === 'comment-reply' ? 'forum' : 'flag' }}
+        </mat-icon>
+        <div class="notification-panel-item-body">
+          <span class="notification-panel-item-label">{{ label(notif) }}</span>
+          <span class="notification-panel-item-date">{{ notif.createdAt | date: 'short' }}</span>
+        </div>
+        @if (!notif.readAt) {
+          <span class="notification-panel-item-dot"></span>
+        }
+      </div>
+    }
+  }
+</mat-menu>

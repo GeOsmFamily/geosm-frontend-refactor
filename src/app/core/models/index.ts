@@ -149,6 +149,10 @@ export interface Layer {
      * backend) - seul signal fiable pour distinguer une couche raster d'une couche vectorielle,
      * geometryType vaut toujours 'POLYGON' pour un raster (approximation de son emprise). */
     source?: string | null;
+    /** Couche vivante (capteur externe, voir plan "Couches vivantes + rapport de fraîcheur" du
+     * 2026-08-06) - proxifiée/cachée via GET /layers/:id/live, jamais appelée directement
+     * depuis le frontend (évite d'exposer l'URL externe/le TTL au navigateur). */
+    live?: { url: string; ttlSeconds: number; refreshSeconds: number } | null;
     [key: string]: unknown;
   } | null;
 }
@@ -227,10 +231,26 @@ export interface LayerStats {
   narrative?: string;
 }
 
+export interface LayerSummaryEntry {
+  layerId: string;
+  name: string;
+  kind: 'vector' | 'raster';
+  featureCount?: number;
+  totalAreaKm2?: number | null;
+  totalLengthKm?: number | null;
+  raster?: {
+    min: number | null;
+    max: number | null;
+    mean: number | null;
+    sum: number | null;
+    count: number;
+  };
+}
+
 export interface ViewportSummary {
   layerCount: number;
   totalFeatureCount: number;
-  perLayer: { name: string; featureCount: number }[];
+  perLayer: LayerSummaryEntry[];
   narrative?: string;
 }
 
@@ -377,6 +397,37 @@ export interface AnalyticsEvent {
   eventType: string;
   layerId?: string;
   metadata?: Record<string, unknown>;
+}
+
+export interface DailyCount {
+  date: string;
+  count: number;
+}
+
+export interface ToolUsageCount {
+  tool: string;
+  count: number;
+}
+
+export interface FeatureUsageEntry {
+  eventType: string;
+  label: string;
+  count: number;
+}
+
+export interface UsageDashboard {
+  onlineNow: number;
+  dailyEvents: DailyCount[];
+  dailyActiveUsers: DailyCount[];
+  featureUsage: FeatureUsageEntry[];
+  aiUsage: {
+    messagesSent: number;
+    toolUsage: ToolUsageCount[];
+    reportsGenerated: number;
+    conversationsStarted: number;
+  };
+  downloads: FeatureUsageEntry[];
+  topLayers: { layerId: string; name: string; count: number }[];
 }
 
 export interface PaginationMeta {

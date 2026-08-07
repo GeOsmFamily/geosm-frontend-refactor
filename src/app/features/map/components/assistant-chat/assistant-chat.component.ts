@@ -23,6 +23,7 @@ import { AuthService } from '../../../../core/services/auth.service';
 import { AnalyticsService } from '../../../../core/services/analytics.service';
 import { LayerService } from '../../../../core/services/layer.service';
 import { LocationPlanService } from '../../../../core/services/location-plan.service';
+import { AnalysisReportService } from '../../../../core/services/analysis-report.service';
 import { MapLayerService } from '../../services/map-layer.service';
 import { MapService } from '../../services/map.service';
 
@@ -47,6 +48,7 @@ export class AssistantChatComponent implements OnInit, OnDestroy {
   private readonly router = inject(Router);
   private readonly layerService = inject(LayerService);
   private readonly locationPlanService = inject(LocationPlanService);
+  private readonly analysisReportService = inject(AnalysisReportService);
   private readonly mapLayerService = inject(MapLayerService);
   private readonly mapService = inject(MapService);
   private readonly analyticsService = inject(AnalyticsService);
@@ -60,6 +62,12 @@ export class AssistantChatComponent implements OnInit, OnDestroy {
   readonly loadingConversation = signal(false);
   readonly downloadingId = signal<string | null>(null);
   readonly mapResultVisible = signal(false);
+  // Retour qualité sur un rapport IA (voir plan "Gouvernance citoyenne & qualité IA" du
+  // 2026-08-06) - état local (pas relu depuis le backend au rechargement de la conversation,
+  // AssistantAttachment ne porte pas encore le rating) : suffisant pour refléter la notation
+  // qu'on vient de donner dans CETTE session, la ré-ouvrir plus tard réaffiche juste les
+  // boutons (renoter écrase simplement l'ancienne note côté backend, sans conséquence).
+  readonly ratedAttachments = signal<Record<string, 1 | -1>>({});
   // L'assistant IA nécessite un compte (routes /assistant/* protégées côté API) - un visiteur
   // anonyme du géoportail public ne peut pas en créer. Sans cette détection explicite, les
   // appels échouaient en 401 silencieusement avalés (aucun gestionnaire d'erreur sur
@@ -190,11 +198,27 @@ export class AssistantChatComponent implements OnInit, OnDestroy {
       // eslint-disable-next-line @typescript-eslint/no-empty-function
       .subscribe({ error: () => {} });
 
-    this.assistantService.chat(instance.id, conversationId, text).subscribe({
+    // Contexte ambiant (emprise visible + couches actives) envoyé à chaque message - permet à
+    // l'assistant de répondre à "analyse cette zone" ou de réutiliser directement l'ID d'une
+    // couche déjà active sans repasser par search_layers (voir analyze_map_context côté
+    // backend, plan "refonte Statistiques" du 2026-08-05).
+    const mapContext = {
+      extent: this.mapService.getCurrentExtent() as [number, number, number, number],
+      activeLayers: this.mapLayerService
+        .getActiveLayers()
+        .map((al) => ({ id: al.layer.id, name: al.layer.name })),
+    };
+
+    this.assistantService.chat(instance.id, conversationId, text, mapContext).subscribe({
       next: (result) => {
         this.messages.update((m) => [
           ...m,
-          { role: 'model', text: result.reply || '...', attachments: result.attachments },
+          {
+            role: 'model',
+            text: result.reply || '...',
+            attachments: result.attachments,
+            sources: result.sources,
+          },
         ]);
         this.executeClientActions(instance.id, result.clientActions);
         this.refreshConversationSummary(conversationId, text);
@@ -231,6 +255,17 @@ export class AssistantChatComponent implements OnInit, OnDestroy {
       error: () => {
         this.downloadingId.set(null);
       },
+    });
+  }
+
+  rateReport(attachment: AssistantAttachment, rating: 1 | -1): void {
+    if (this.ratedAttachments()[attachment.id]) return;
+    // Optimiste : le retour qualité est un bonus, jamais bloquant - on reflète le clic
+    // immédiatement plutôt que d'attendre la réponse réseau (voir doc de ratedAttachments).
+    this.ratedAttachments.update((map) => ({ ...map, [attachment.id]: rating }));
+    this.analysisReportService.rate(attachment.id, rating).subscribe({
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      error: () => {},
     });
   }
 

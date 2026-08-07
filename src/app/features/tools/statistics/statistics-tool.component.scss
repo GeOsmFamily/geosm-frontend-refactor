@@ -13,21 +13,189 @@
     width: 100%;
   }
 
+  .multi-layer-toggle {
+    width: 100%;
+    margin-bottom: 12px;
+    justify-content: center;
+  }
+
+  .multi-layer-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 16px;
+
+    mat-divider {
+      margin: 8px 0;
+    }
+
+    .multi-layer-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 4px;
+    }
+
+    .layer-chip {
+      font-size: 11.5px;
+      padding: 3px 10px;
+      border-radius: 12px;
+      background: rgba(2, 63, 95, 0.08);
+      color: var(--primary, #023f5f);
+    }
+
+    .multi-layer-zone-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+
+      .zone-active {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        color: var(--accent, #00ada7);
+        font-weight: 500;
+        mat-icon {
+          font-size: 16px;
+          width: 16px;
+          height: 16px;
+        }
+      }
+    }
+  }
+
+  .stats-scope-toggle {
+    display: flex;
+    margin-bottom: 12px;
+    width: 100%;
+    ::ng-deep .mat-button-toggle {
+      flex: 1;
+      text-align: center;
+    }
+  }
+
+  .raster-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 8px;
+
+    // État "terminé" - la dernière analyse lancée sur ce bouton a un résultat affiché plus bas
+    // (voir plan "refonte Statistiques" du 2026-08-05 : les 3 boutons doivent avoir un état
+    // visuel clair inactif/en cours/terminé/erreur, pas seulement un spinner générique).
+    .action-done {
+      border-color: var(--accent, #00ada7);
+      color: var(--accent, #00ada7);
+      mat-icon {
+        color: var(--accent, #00ada7);
+      }
+    }
+  }
+
+  .zonal-level-picker {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 10px 12px;
+    margin-bottom: 12px;
+    background: rgba(0, 0, 0, 0.02);
+    border: 1px solid var(--border, rgba(0, 0, 0, 0.08));
+    border-radius: 8px;
+    .full-width {
+      margin-bottom: 0;
+    }
+  }
+
+  .hint.error {
+    color: var(--error, #d32f2f);
+  }
+
+  .cell-size-field {
+    width: 110px;
+  }
+
+  .grid-type-select {
+    min-width: 120px;
+    padding: 0 8px;
+    border: 1px solid var(--border, rgba(0, 0, 0, 0.08));
+    border-radius: 4px;
+    height: 36px;
+  }
+
+  .graduated-legend {
+    margin: 8px 0;
+
+    h5 {
+      margin: 0 0 6px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-secondary, #64748b);
+    }
+
+    .legend-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      padding: 2px 0;
+    }
+
+    .legend-swatch {
+      width: 14px;
+      height: 14px;
+      border-radius: 3px;
+      flex-shrink: 0;
+      border: 1px solid rgba(0, 0, 0, 0.15);
+    }
+  }
+
+  .raster-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+    gap: 10px;
+    margin-bottom: 12px;
+    .stats-card {
+      margin-bottom: 0;
+      text-align: center;
+    }
+  }
+
+  .numeric-stat-row {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 6px 0;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+    font-size: 12px;
+    .chart-label {
+      width: auto;
+      text-align: left;
+      font-weight: 600;
+      color: var(--text);
+    }
+    .numeric-stat-values {
+      color: var(--text-secondary);
+    }
+  }
+
   .stats-card {
     margin-bottom: 12px;
     .stat-number {
       display: flex;
       align-items: baseline;
       gap: 8px;
-      .big-number {
-        font-size: 32px;
-        font-weight: 700;
-        color: var(--primary);
-      }
-      .stat-label {
-        font-size: 14px;
-        color: var(--text-secondary);
-      }
+    }
+    .big-number {
+      display: block;
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--primary);
+    }
+    .stat-label {
+      display: block;
+      font-size: 12px;
+      color: var(--text-secondary);
     }
   }
 

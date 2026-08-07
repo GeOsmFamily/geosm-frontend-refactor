@@ -31,7 +31,10 @@ import { ContextMenuComponent } from '../context-menu/context-menu.component';
 import { GeosignetsComponent } from '../geosignets/geosignets.component';
 import { MyMapsComponent } from '../my-maps/my-maps.component';
 import { AssistantChatComponent } from '../assistant-chat/assistant-chat.component';
+import { JobsTrayComponent } from '../jobs-tray/jobs-tray.component';
+import { NotificationPanelComponent } from '../notification-panel/notification-panel.component';
 import { LegendComponent } from '../../../../features/layers/components/legend/legend.component';
+import { NotificationSocketService } from '../../../../core/services/notification-socket.service';
 
 import { MapToolbarComponent } from '../map-toolbar/map-toolbar.component';
 import { ToolActionService } from '../../../../core/services/tool-action.service';
@@ -83,6 +86,8 @@ import { CloseOnEscapeOrOutsideDirective } from '../../../../shared/directives/c
     GeosignetsComponent,
     MyMapsComponent,
     AssistantChatComponent,
+    JobsTrayComponent,
+    NotificationPanelComponent,
     LegendComponent,
 
     MapToolbarComponent,
@@ -112,6 +117,7 @@ export class MapLayoutComponent implements OnInit {
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
   private readonly authService = inject(AuthService);
+  private readonly notificationSocket = inject(NotificationSocketService);
   private readonly mapService = inject(MapService);
   private readonly mapLayerService = inject(MapLayerService);
   private readonly instanceService = inject(InstanceService);
@@ -149,7 +155,14 @@ export class MapLayoutComponent implements OnInit {
   readonly currentUser = this.authService.currentUser$;
   currentZoom = 6;
 
+  // Liste complète : sert aussi bien à afficher la grille du panneau "Outils" qu'à résoudre
+  // l'icône/le libellé du panneau actif (getActiveToolIcon/getActiveToolLabel) - 'compare' doit
+  // donc y rester même s'il est masqué de la grille (voir HIDDEN_FROM_TOOLS_MENU) car il reste
+  // déclenchable depuis le bouton dédié de app-map-toolbar (toggleCompareTool()).
   readonly tools = [
+    { id: 'geosignets', icon: 'bookmarks', label: 'geosignets.title' },
+    { id: 'my-maps', icon: 'dashboard_customize', label: 'myMaps.title' },
+    { id: 'basemaps', icon: 'map', label: 'map.baseMaps' },
     { id: 'drawing', icon: 'draw', label: 'tools.drawing' },
     { id: 'measure', icon: 'straighten', label: 'right_menu.tools.mesure.title' },
     { id: 'routing', icon: 'directions', label: 'right_menu.map_routing.title' },
@@ -166,6 +179,16 @@ export class MapLayoutComponent implements OnInit {
     { id: 'personal-data', icon: 'upload_file', label: 'tools.personalData.label' },
   ];
 
+  // 'compare' : déjà accessible via le bouton dédié du panneau d'accès rapide (app-map-toolbar) -
+  // redondant dans cette grille. 'spatial-analysis' : masqué temporairement à la demande du
+  // 2026-08-05 ("pour le moment je ne veux pas qu'il soit visible") - l'outil reste fonctionnel,
+  // juste retiré de la liste, pour pouvoir le réafficher facilement plus tard.
+  private readonly HIDDEN_FROM_TOOLS_MENU = new Set(['compare', 'spatial-analysis']);
+
+  get toolsMenuItems() {
+    return this.tools.filter((t) => !this.HIDDEN_FROM_TOOLS_MENU.has(t.id));
+  }
+
   constructor() {
     // Le géoportail est consultable sans compte (visiteur anonyme) - ne tente de charger le
     // profil que si une session existe réellement, sinon /auth/me renvoie 401 pour rien à
@@ -177,6 +200,9 @@ export class MapLayoutComponent implements OnInit {
         // eslint-disable-next-line @typescript-eslint/no-empty-function
         error: () => {},
       });
+      // Voir NotificationSocketService/JobsTrayService - alimente le tiroir de tâches (icône
+      // cloche) avec les événements export/import/plan de localisation en temps réel.
+      this.notificationSocket.connect();
     }
     this.mapService.mapReady$.subscribe((ready) => {
       if (ready) {
@@ -621,6 +647,32 @@ export class MapLayoutComponent implements OnInit {
     }
   }
 
+  // geosignets/my-maps/basemaps sont des panneaux flottants indépendants (leur propre signal
+  // open/close, pas activeTool()) déplacés dans cette grille depuis la barre du haut (demande du
+  // 2026-08-05) - la grille doit donc les router vers leur toggle dédié plutôt que selectTool().
+  onToolGridClick(toolId: string): void {
+    if (toolId === 'geosignets') {
+      this.toggleGeosignets();
+      return;
+    }
+    if (toolId === 'my-maps') {
+      this.toggleMyMaps();
+      return;
+    }
+    if (toolId === 'basemaps') {
+      this.toggleBaseMaps();
+      return;
+    }
+    this.selectTool(toolId);
+  }
+
+  isToolActive(toolId: string): boolean {
+    if (toolId === 'geosignets') return this.geosignetsOpen();
+    if (toolId === 'my-maps') return this.myMapsOpen();
+    if (toolId === 'basemaps') return this.baseMapsOpen();
+    return this.activeTool() === toolId;
+  }
+
   selectTool(toolId: string): void {
     this.activeTool.set(toolId);
     this.toolsMenuOpen.set(false);
@@ -675,6 +727,7 @@ export class MapLayoutComponent implements OnInit {
   }
 
   logout(): void {
+    this.notificationSocket.disconnect();
     this.authService.logout();
   }
 

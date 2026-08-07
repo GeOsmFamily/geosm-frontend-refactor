@@ -90,7 +90,7 @@
     }
   },
   "app": {
-    "title": "GeOSM",
+    "title": "GeOsm",
     "subtitle": "Mapping Platform"
   },
   "auth": {
@@ -166,7 +166,10 @@
     "resyncSuccess": "Layer resynced successfully",
     "featureInfo": {
       "genericFeature": "Feature",
-      "pixelValue": "Value"
+      "pixelValue": "Value",
+      "pixelValuePopulation": "Estimated population",
+      "pixelValueWithArea": "≈ {{value}} (~{{cellSize}} m × {{cellSize}} m cell)",
+      "pixelDensity": "≈ {{density}} / km²"
     }
   },
   "fileDropZone": {
@@ -275,7 +278,15 @@
       "infoTitle": "How it works",
       "infoStep1": "Click the target icon (🎯) next to a field, then click on the map to set its position.",
       "infoStep2": "Alternatively, right-click on the map to set the start or destination directly.",
-      "infoStep3": "Choose your mode of transport (car, bicycle, foot) and click Calculate."
+      "infoStep3": "Choose your mode of transport (car, bicycle, foot) and click Calculate.",
+      "elevationLoading": "Computing elevation profile...",
+      "isochroneTitle": "Reachable area (isochrone)",
+      "isochroneMinutes": "Minutes",
+      "isochroneCalculate": "Calculate",
+      "multimodalToggle": "Multimodal trip (junction point)",
+      "junction": "Junction point",
+      "profileBeforeJunction": "Before junction",
+      "profileAfterJunction": "After junction"
     },
     "export": {
       "selectLayer": "Select a layer",
@@ -355,6 +366,14 @@
       "invalidLink": "Invalid share link.",
       "notFoundOrExpired": "This shared map could not be found or has expired.",
       "instanceNotFound": "This shared map refers to an instance that could not be found."
+    }
+  },
+  "faq": {
+    "title": "Frequently asked questions",
+    "empty": "No frequently asked questions published yet.",
+    "errors": {
+      "invalidLink": "Invalid FAQ link.",
+      "notFound": "This FAQ could not be found."
     }
   },
   "settings": {
@@ -473,6 +492,11 @@
     "settings": "Settings",
     "administration": "Administration"
   },
+  "shared": {
+    "error": "An error occurred",
+    "savedSuccessfully": "Saved successfully",
+    "deletedSuccessfully": "Deleted successfully"
+  },
   "admin": {
     "title": "Administration",
     "backToMap": "Back to map",
@@ -485,8 +509,10 @@
       "content": "Content & moderation",
       "feedback": "Feedback",
       "personalData": "Personal data",
+      "faq": "FAQ",
       "jobs": "Jobs & backups",
       "observability": "Observability",
+      "analytics": "Usage analytics",
       "infra": "Infrastructure",
       "systemTools": "System tools"
     },
@@ -531,6 +557,23 @@
       "uptime": "Uptime",
       "externalTools": "External tools",
       "healthError": "Could not retrieve system health status."
+    },
+    "analytics": {
+      "allInstances": "All instances",
+      "onlineNow": "Online now",
+      "eventsInPeriod": "Events in period",
+      "activeUsersToday": "Active today",
+      "dailyActivity": "Daily activity",
+      "featureUsage": "Most used features",
+      "topLayers": "Most viewed layers",
+      "aiSection": "AI assistant",
+      "aiMessages": "Messages sent",
+      "aiConversations": "Conversations started",
+      "aiReports": "Reports generated",
+      "aiToolUsage": "Most used AI tools",
+      "downloads": "Downloads",
+      "noData": "No data for this period.",
+      "loadError": "Could not load the usage dashboard."
     },
     "infra": {
       "unavailable": "Docker infrastructure unavailable (docker-socket-proxy unreachable).",
@@ -841,12 +884,12 @@
     },
     "openSource": {
       "title": "Open source project",
-      "description": "GeOSM is an open source project. The source code is publicly available and contributions are welcome.",
+      "description": "GeOsm is an open source project. The source code is publicly available and contributions are welcome.",
       "viewRepo": "View repository on GitHub"
     },
     "guide": {
       "title": "User guide",
-      "description": "Download the complete GeOSM guide as a PDF, with a detailed explanation of every feature and usage examples.",
+      "description": "Download the complete GeOsm guide as a PDF, with a detailed explanation of every feature and usage examples.",
       "download": "Download the guide (PDF)"
     },
     "feedback": {
@@ -864,6 +907,7 @@
       "emailLabel": "Contact email (optional)",
       "emailInvalid": "Invalid email address",
       "submit": "Submit",
+      "sending": "Sending...",
       "success": "Thank you for your feedback!",
       "error": "An error occurred while submitting."
     }

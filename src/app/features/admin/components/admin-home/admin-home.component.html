@@ -135,5 +135,23 @@
         </ng-template>
       </mat-card-content>
     </mat-card>
+
+    <!-- Card Fraîcheur des couches -->
+    <mat-card class="detail-card">
+      <mat-card-header>
+        <mat-icon mat-card-avatar color="warn">history_toggle_off</mat-icon>
+        <mat-card-title>Fraîcheur des couches</mat-card-title>
+        <mat-card-subtitle>Non resynchronisées depuis plus de 90 jours</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content class="freshness-content">
+        <div *ngIf="!staleLayersLoading() && staleLayers().length === 0" class="no-backup-text">
+          Aucune couche périmée détectée.
+        </div>
+        <div *ngFor="let layer of staleLayers()" class="freshness-item">
+          <span class="freshness-name" [title]="layer.name">{{ layer.name }}</span>
+          <span class="freshness-days">{{ layer.daysSinceUpdate }} j</span>
+        </div>
+      </mat-card-content>
+    </mat-card>
   </div>
 </div>

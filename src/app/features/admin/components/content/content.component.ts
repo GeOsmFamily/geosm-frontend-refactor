@@ -14,7 +14,11 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { PageEvent } from '@angular/material/paginator';
 import { Sort } from '@angular/material/sort';
 
-import { CommentService, Comment } from '../../../../core/services/comment.service';
+import {
+  CommentService,
+  Comment,
+  CommentReportType,
+} from '../../../../core/services/comment.service';
 import { InstanceService } from '../../../../core/services/instance.service';
 import { Instance } from '../../../../core/models/index';
 import {
@@ -67,6 +71,13 @@ export class ContentComponent implements OnInit {
     { key: 'createdAt', label: 'Créé le', sortable: true },
   ];
 
+  readonly reportTypes: { value: CommentReportType; label: string }[] = [
+    { value: 'FEATURE_CLOSED', label: 'Élément fermé / disparu' },
+    { value: 'WRONG_ATTRIBUTE', label: 'Attribut incorrect' },
+    { value: 'OUTDATED_GEOMETRY', label: 'Géométrie obsolète' },
+    { value: 'OTHER', label: 'Autre' },
+  ];
+
   readonly comments = signal<Comment[]>([]);
   readonly loading = signal(false);
   readonly loadError = signal(false);
@@ -78,6 +89,7 @@ export class ContentComponent implements OnInit {
   instanceFilter: string | null = null;
   flaggedFilter: boolean | null = null;
   resolvedFilter: boolean | null = null;
+  reportTypeFilter: CommentReportType | null = null;
 
   ngOnInit(): void {
     this.instanceService.list({ limit: 100 }).subscribe({
@@ -96,6 +108,7 @@ export class ContentComponent implements OnInit {
         instanceId: this.instanceFilter ?? undefined,
         flagged: this.flaggedFilter ?? undefined,
         resolved: this.resolvedFilter ?? undefined,
+        reportType: this.reportTypeFilter ?? undefined,
       })
       .subscribe({
         next: (res) => {
@@ -143,6 +156,26 @@ export class ContentComponent implements OnInit {
     this.commentService.unflag(comment.id).subscribe({
       next: () => {
         this.notify('admin.content.unflaggedSuccess');
+        this.load();
+      },
+      error: (err) => this.notifyError(err),
+    });
+  }
+
+  reportTypeLabel(reportType: CommentReportType | null): string {
+    return this.reportTypes.find((rt) => rt.value === reportType)?.label ?? '';
+  }
+
+  /** Tranche un signalement structuré (voir plan "Gouvernance citoyenne & qualité IA" du
+   * 2026-08-06) - distinct de flag/unflag qui ne fait que repérer sans trancher. */
+  review(comment: Comment, decision: 'APPROVE' | 'REJECT'): void {
+    this.commentService.review(comment.id, decision).subscribe({
+      next: () => {
+        this.snackBar.open(
+          decision === 'APPROVE' ? 'Signalement validé' : 'Signalement refusé',
+          undefined,
+          { duration: 3000 },
+        );
         this.load();
       },
       error: (err) => this.notifyError(err),

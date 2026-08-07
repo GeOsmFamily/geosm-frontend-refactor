@@ -1,0 +1,81 @@
+.notification-panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 8px 12px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+
+  button {
+    font-size: 11.5px;
+    line-height: normal;
+    padding: 0 6px;
+  }
+}
+
+.notification-panel-empty {
+  padding: 16px;
+  font-size: 13px;
+  color: var(--text-secondary, #777);
+  text-align: center;
+  min-width: 260px;
+}
+
+.notification-panel-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 8px 10px 12px;
+  min-width: 280px;
+  max-width: 340px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+  cursor: pointer;
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  &.unread {
+    background: rgba(0, 173, 167, 0.05);
+  }
+
+  &-icon {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+    color: var(--text-secondary, #777);
+  }
+
+  &-body {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    flex: 1;
+    min-width: 0;
+  }
+
+  &-label {
+    font-size: 12.5px;
+    line-height: 1.35;
+    color: var(--text);
+    white-space: normal;
+  }
+
+  &-date {
+    font-size: 11px;
+    color: var(--text-secondary, #999);
+  }
+
+  &-dot {
+    flex-shrink: 0;
+    width: 8px;
+    height: 8px;
+    margin-top: 4px;
+    border-radius: 50%;
+    background: var(--accent, #00ada7);
+  }
+}

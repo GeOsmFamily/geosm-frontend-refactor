@@ -23,7 +23,8 @@ import { ToolActionService } from '../../../core/services/tool-action.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { InstanceService } from '../../../core/services/instance.service';
 import { AnalyticsService } from '../../../core/services/analytics.service';
-import { CommentService } from '../../../core/services/comment.service';
+import { CommentService, CommentReportType } from '../../../core/services/comment.service';
+import { MatSelectModule } from '@angular/material/select';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
 
@@ -61,6 +62,7 @@ interface MapComment {
     MatListModule,
     MatSnackBarModule,
     MatCardModule,
+    MatSelectModule,
   ],
   templateUrl: './comment-tool.component.html',
   styleUrl: './comment-tool.component.scss',
@@ -90,6 +92,17 @@ export class CommentToolComponent implements OnInit, OnDestroy {
   readonly expandedIds = new Set<string>();
   replyingId: string | null = null;
   replyText = '';
+
+  // --- Signalement structuré (voir plan "Gouvernance citoyenne & qualité IA" du 2026-08-06) -
+  // optionnel : un pin "libre" (reportType non renseigné) reste possible, comportement
+  // historique inchangé. ---
+  readonly reportTypes: { value: CommentReportType; label: string }[] = [
+    { value: 'FEATURE_CLOSED', label: 'Élément fermé / disparu' },
+    { value: 'WRONG_ATTRIBUTE', label: 'Attribut incorrect' },
+    { value: 'OUTDATED_GEOMETRY', label: 'Géométrie obsolète' },
+    { value: 'OTHER', label: 'Autre' },
+  ];
+  selectedReportType: CommentReportType | null = null;
 
   ngOnInit(): void {
     this.map = this.mapService.getMap();
@@ -211,6 +224,7 @@ export class CommentToolComponent implements OnInit, OnDestroy {
         text,
         lat,
         lon,
+        ...(this.selectedReportType ? { reportType: this.selectedReportType } : {}),
       })
       .subscribe({
         next: (savedComment) => {
@@ -241,6 +255,7 @@ export class CommentToolComponent implements OnInit, OnDestroy {
 
           this.commentText = '';
           this.pendingCoord = null;
+          this.selectedReportType = null;
           this.snackBar.open(
             this.translate.instant('shared.savedSuccessfully') ||
               'Commentaire enregistré avec succès',

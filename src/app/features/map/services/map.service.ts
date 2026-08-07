@@ -72,6 +72,13 @@ export class MapService {
   readonly onClick$: Observable<MapBrowserEvent> = this.clickSubject.asObservable();
   readonly mousePosition$ = new BehaviorSubject<[number, number]>([0, 0]);
 
+  /** Emprise courante (lon/lat, EPSG:4326) à chaque déplacement/zoom de la carte - voir plan
+   * "refonte Statistiques" du 2026-08-05 : les stats vectorielles "zone visible" et le contexte
+   * carte envoyé à l'assistant IA ont besoin de savoir ce qui est réellement affiché à l'écran,
+   * ce qu'aucun service ne permettait de lire avant (fitExtent() n'est qu'un setter). */
+  private readonly extentChangedSubject = new Subject<Extent>();
+  readonly extentChanged$: Observable<Extent> = this.extentChangedSubject.asObservable();
+
   /**
    * Vrai pendant qu'un outil (itinéraire, plan de localisation...) attend un clic sur la
    * carte pour choisir un point. Consulté par FeatureInfoComponent pour ne pas ouvrir la
@@ -130,6 +137,10 @@ export class MapService {
     this.map.on('pointermove', (event) => {
       const coords = toLonLat(event.coordinate);
       this.mousePosition$.next([coords[0], coords[1]]);
+    });
+
+    this.map.on('moveend', () => {
+      this.zone.run(() => this.extentChangedSubject.next(this.getCurrentExtent()));
     });
 
     this.mapReady$.next(true);
@@ -315,6 +326,15 @@ export class MapService {
   fitExtent(extent: Extent, padding: number[] = [50, 50, 50, 50]): void {
     if (!this.map) return;
     this.map.getView().fit(extent, { padding, duration: 500 });
+  }
+
+  /** Emprise actuellement visible, en lon/lat (EPSG:4326) - ex: `[minLon, minLat, maxLon,
+   * maxLat]`, directement utilisable pour un `ST_MakeEnvelope(..., 4326)` côté backend. */
+  getCurrentExtent(): Extent {
+    const extent3857 = this.map.getView().calculateExtent(this.map.getSize());
+    const [minLon, minLat] = toLonLat([extent3857[0], extent3857[1]]);
+    const [maxLon, maxLat] = toLonLat([extent3857[2], extent3857[3]]);
+    return [minLon, minLat, maxLon, maxLat];
   }
 
   addLayer(layer: BaseLayer): void {

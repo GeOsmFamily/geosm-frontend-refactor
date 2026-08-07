@@ -24,6 +24,15 @@
             {{ pendingCoord[0] | number: '1.5-5' }}
           </p>
           <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Type de signalement (optionnel)</mat-label>
+            <mat-select [(ngModel)]="selectedReportType">
+              <mat-option [value]="null">Commentaire libre</mat-option>
+              @for (rt of reportTypes; track rt.value) {
+                <mat-option [value]="rt.value">{{ rt.label }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="full-width">
             <mat-label>{{ 'comment.commentLabel' | translate }}</mat-label>
             <textarea
               matInput

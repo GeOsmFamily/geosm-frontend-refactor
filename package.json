@@ -1,10 +1,10 @@
 {
   "name": "geosm-frontend",
-  "version": "1.0.3",
+  "version": "3.0.3",
   "scripts": {
     "ng": "ng",
     "start": "nx serve",
-    "build": "nx build",
+    "build": "node scripts/generate-version.mjs && nx build",
     "watch": "nx build --watch --configuration development",
     "test": "nx test",
     "lint": "nx lint",
@@ -12,7 +12,8 @@
     "format:check": "prettier --check 'src/**/*.{ts,html,scss}'",
     "e2e": "playwright test",
     "e2e:ui": "playwright test --ui",
-    "generate:guide": "node scripts/generate-guide.mjs"
+    "generate:guide": "node scripts/generate-guide.mjs",
+    "generate:version": "node scripts/generate-version.mjs"
   },
   "private": true,
   "dependencies": {

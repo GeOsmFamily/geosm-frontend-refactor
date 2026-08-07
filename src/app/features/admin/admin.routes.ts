@@ -63,6 +63,11 @@ export const ADMIN_ROUTES: Routes = [
           ),
       },
       {
+        path: 'faq',
+        loadComponent: () =>
+          import('./components/faq/faq-review.component').then((m) => m.FaqReviewComponent),
+      },
+      {
         path: 'jobs',
         loadComponent: () =>
           import('./components/jobs/jobs.component').then((m) => m.JobsComponent),
@@ -73,6 +78,11 @@ export const ADMIN_ROUTES: Routes = [
           import('./components/observability/observability.component').then(
             (m) => m.ObservabilityComponent,
           ),
+      },
+      {
+        path: 'analytics',
+        loadComponent: () =>
+          import('./components/analytics/analytics.component').then((m) => m.AnalyticsComponent),
       },
       {
         path: 'system-tools',

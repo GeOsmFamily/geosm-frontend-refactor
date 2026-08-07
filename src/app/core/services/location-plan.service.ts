@@ -21,6 +21,8 @@ export interface CreateLocationPlanDTO {
   includeGrid?: boolean;
   includeNorthArrow?: boolean;
   autoFillWithAI?: boolean;
+  originLon?: number;
+  originLat?: number;
 }
 
 @Injectable({ providedIn: 'root' })

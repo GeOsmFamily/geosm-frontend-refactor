@@ -1,0 +1,128 @@
+.jobs-tray-empty {
+  padding: 16px;
+  font-size: 13px;
+  color: var(--text-secondary, #777);
+  text-align: center;
+  min-width: 220px;
+}
+
+.jobs-tray-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 8px 10px 12px;
+  min-width: 260px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  &-status {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 20px;
+    flex-shrink: 0;
+    mat-icon {
+      font-size: 20px;
+      width: 20px;
+      height: 20px;
+    }
+    .ok {
+      color: var(--accent, #00ada7);
+    }
+    .ko {
+      color: var(--error, #d32f2f);
+    }
+    .spinning {
+      animation: jobs-tray-spin 1.2s linear infinite;
+      color: var(--text-secondary, #777);
+    }
+  }
+
+  &-body {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+    flex: 1;
+    min-width: 0;
+  }
+
+  &-label {
+    display: block;
+    line-height: 20px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text);
+  }
+
+  &-hint {
+    font-size: 11.5px;
+    color: var(--text-secondary, #777);
+    &.error {
+      color: var(--error, #d32f2f);
+    }
+  }
+
+  // Bouton texte+icône Material - centrer explicitement les deux plutôt que de dépendre du
+  // line-height (qui ne s'aligne pas toujours avec la hauteur réelle du bouton MDC et donnait
+  // un icône/texte visuellement décalés l'un par rapport à l'autre).
+  .jobs-tray-download {
+    --mdc-text-button-container-height: 26px;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    align-self: flex-start;
+    padding: 0 8px;
+    font-size: 12px;
+    line-height: normal;
+    mat-icon {
+      font-size: 16px;
+      width: 16px;
+      height: 16px;
+      display: inline-flex;
+    }
+  }
+
+  // mat-icon-button dimensionne sa zone de survol/ripple via ces variables CSS, pas seulement
+  // via width/height - les fixer ici garde le cercle de survol centré sur l'icône au lieu d'un
+  // survol décalé (zone de clic Material par défaut à 40-48px alors que le bouton visible est
+  // réduit à 28px).
+  .jobs-tray-dismiss {
+    --mdc-icon-button-state-layer-size: 28px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    flex-shrink: 0;
+    color: var(--text-secondary, #999);
+    transition:
+      color 0.15s ease,
+      background-color 0.15s ease;
+
+    &:hover,
+    &:focus-visible {
+      color: var(--error, #d32f2f);
+      background-color: rgba(211, 47, 47, 0.08);
+    }
+
+    mat-icon {
+      font-size: 16px;
+      width: 16px;
+      height: 16px;
+    }
+  }
+}
+
+@keyframes jobs-tray-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}

@@ -1,0 +1,40 @@
+<app-admin-list-page title="FAQ générée - revue avant publication">
+  <mat-form-field filters appearance="outline">
+    <mat-label>Instance</mat-label>
+    <mat-select [ngModel]="selectedInstanceId()" (ngModelChange)="onInstanceChange($event)">
+      @for (instance of instances(); track instance.id) {
+        <mat-option [value]="instance.id">{{ instance.name }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+
+  @if (selectedInstanceId()) {
+    <app-admin-data-table
+      [columns]="columns"
+      [rows]="rows()"
+      [loading]="loading()"
+      [error]="loadError()"
+      [hasActions]="true"
+      [showPaginator]="false"
+    >
+      <ng-template #actions let-item>
+        <button
+          mat-icon-button
+          (click)="publish(item)"
+          [disabled]="reviewingId() === item.id"
+          matTooltip="Publier"
+        >
+          <mat-icon>check_circle</mat-icon>
+        </button>
+        <button
+          mat-icon-button
+          (click)="reject(item)"
+          [disabled]="reviewingId() === item.id"
+          matTooltip="Refuser"
+        >
+          <mat-icon>cancel</mat-icon>
+        </button>
+      </ng-template>
+    </app-admin-data-table>
+  }
+</app-admin-list-page>

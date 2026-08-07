@@ -1,0 +1,58 @@
+<button
+  mat-icon-button
+  [matMenuTriggerFor]="trayMenu"
+  matTooltip="Mes tâches"
+  class="header-action"
+  [matBadge]="processingCount > 0 ? processingCount : null"
+  matBadgeColor="accent"
+  matBadgeSize="small"
+>
+  <mat-icon>notifications</mat-icon>
+</button>
+
+<mat-menu #trayMenu="matMenu" class="jobs-tray-menu">
+  @if (jobs().length === 0) {
+    <div class="jobs-tray-empty" (click)="$event.stopPropagation()">Aucune tâche récente.</div>
+  } @else {
+    @for (job of jobs(); track job.id) {
+      <div class="jobs-tray-item" (click)="$event.stopPropagation()">
+        <div class="jobs-tray-item-status">
+          @if (job.status === 'processing') {
+            <mat-icon class="spinning">autorenew</mat-icon>
+          } @else if (job.status === 'completed') {
+            <mat-icon class="ok">check_circle</mat-icon>
+          } @else {
+            <mat-icon class="ko">error</mat-icon>
+          }
+        </div>
+        <div class="jobs-tray-item-body">
+          <span class="jobs-tray-item-label">{{ job.label }}</span>
+          @if (job.status === 'processing') {
+            <span class="jobs-tray-item-hint">En cours...</span>
+          } @else if (job.status === 'failed') {
+            <span class="jobs-tray-item-hint error">{{
+              job.error || "L'opération a échoué."
+            }}</span>
+          } @else if (canDownload(job)) {
+            <button
+              mat-button
+              class="jobs-tray-download"
+              [disabled]="downloadingId === job.id"
+              (click)="download(job)"
+            >
+              <mat-icon>download</mat-icon> Télécharger
+            </button>
+          }
+        </div>
+        <button
+          mat-icon-button
+          class="jobs-tray-dismiss"
+          matTooltip="Retirer"
+          (click)="dismiss(job, $event)"
+        >
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+    }
+  }
+</mat-menu>
