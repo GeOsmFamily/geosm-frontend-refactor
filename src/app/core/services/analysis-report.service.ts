@@ -14,6 +14,8 @@ export interface AnalysisReport {
   filePath: string | null;
   fileSize: number | null;
   errorMessage: string | null;
+  rating: number | null;
+  ratingComment: string | null;
 }
 
 /** Rapports d'analyse IA en PDF (voir plan "refonte Statistiques" du 2026-08-05) - même pattern
@@ -49,5 +51,11 @@ export class AnalysisReportService {
     return this.http.get(`${this.baseUrl}/analysis-reports/${id}/download`, {
       responseType: 'blob',
     });
+  }
+
+  /** Retour qualité (voir plan "Gouvernance citoyenne & qualité IA" du 2026-08-06) - réservé à
+   * l'auteur du rapport côté backend. */
+  rate(id: string, rating: 1 | -1, ratingComment?: string): Observable<void> {
+    return this.api.post<void>(`/analysis-reports/${id}/rate`, { rating, ratingComment });
   }
 }

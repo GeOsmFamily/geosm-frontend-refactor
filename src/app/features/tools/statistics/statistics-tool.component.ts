@@ -8,6 +8,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatCardModule } from '@angular/material/card';
 import { MatInputModule } from '@angular/material/input';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { FormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { Subscription, interval, switchMap } from 'rxjs';
@@ -31,6 +32,14 @@ import {
   RasterStats,
   ZonalStat,
 } from '../../../core/services/raster-analysis.service';
+import { ChoroplethService, ChoroplethZone, GridCell } from '../../../core/services/choropleth.service';
+import {
+  computeQuantileBreaks,
+  buildGraduatedLegend,
+  buildChoroplethStyleFn,
+  buildGridStyleFn,
+  GraduatedLegendEntry,
+} from '../../map/utils/graduated-style.util';
 import { LoadingSpinnerComponent } from '../../../shared/components/loading-spinner/loading-spinner.component';
 
 interface ChartBar {
@@ -74,6 +83,7 @@ interface LayerStats {
     MatDividerModule,
     MatCardModule,
     MatInputModule,
+    MatTooltipModule,
     TranslateModule,
     LoadingSpinnerComponent,
   ],
@@ -81,10 +91,14 @@ interface LayerStats {
   styleUrl: './statistics-tool.component.scss',
 })
 export class StatisticsToolComponent implements OnInit, OnDestroy {
+  /** Désactivé le 2026-08-07 à la demande utilisateur (repasser à true pour réactiver). */
+  protected readonly choroplethGridEnabled = false;
+
   private readonly mapLayerService = inject(MapLayerService);
   private readonly layerService = inject(LayerService);
   private readonly geoportailService = inject(GeoportailService);
   private readonly rasterAnalysisService = inject(RasterAnalysisService);
+  private readonly choroplethService = inject(ChoroplethService);
   private readonly instanceService = inject(InstanceService);
   private readonly mapService = inject(MapService);
   private readonly analysisReportService = inject(AnalysisReportService);
@@ -143,6 +157,32 @@ export class StatisticsToolComponent implements OnInit, OnDestroy {
   adminLevelsLoading = false;
   adminLevelsError: string | null = null;
   showZonalLevelPicker = false;
+  /** Le même sélecteur de niveau administratif sert deux déclencheurs (statistiques raster
+   * "par zone" ET choroplèthe vectoriel) - ce flag détermine quelle analyse le bouton "Lancer
+   * l'analyse" déclenche réellement, voir openZonalLevelPicker()/openChoroplethPicker(). */
+  zonalPickerMode: 'raster' | 'choropleth' | null = null;
+
+  // --- Choroplèthe (couches vectorielles) - voir plan "Choroplèthes + Carroyage" du
+  // 2026-08-06. Réutilise les mêmes numericStats déjà calculés par computeStats() pour peupler
+  // le sélecteur d'attribut, plutôt que d'ajouter une route backend de description de schéma. ---
+  choroplethAttribute: string | null = null;
+  choroplethRunning = false;
+  choroplethResult: ChoroplethZone[] | null = null;
+  choroplethError: string | null = null;
+  choroplethLegend: GraduatedLegendEntry[] = [];
+
+  // --- Carroyage/hexbin (couches vectorielles) - opère sur l'emprise carte courante, pas de
+  // sélecteur de zone administrative nécessaire. ---
+  gridCellSizeMeters = 500;
+  gridType: 'square' | 'hexagon' = 'square';
+  gridRunning = false;
+  gridResult: GridCell[] | null = null;
+  gridError: string | null = null;
+  gridLegend: GraduatedLegendEntry[] = [];
+
+  get numericAttributes(): string[] {
+    return this.stats ? Object.keys(this.stats.numericStats) : [];
+  }
 
   get isRasterLayer(): boolean {
     const layer = this.activeLayers.find((al) => al.layer.id === this.selectedLayerId)?.layer;
@@ -178,6 +218,8 @@ export class StatisticsToolComponent implements OnInit, OnDestroy {
     this.rasterPollSubscription?.unsubscribe();
     this.stopDrawZone();
     if (this.drawLayer) this.mapService.removeLayer(this.drawLayer);
+    this.mapLayerService.removeAnalysisLayer('choropleth');
+    this.mapLayerService.removeAnalysisLayer('grid');
   }
 
   toggleMultiLayerMode(): void {
@@ -336,8 +378,21 @@ export class StatisticsToolComponent implements OnInit, OnDestroy {
     this.availableAdminLevels = [];
     this.selectedAdminLevel = null;
     this.adminLevelsError = null;
+    this.zonalPickerMode = null;
     this.stopDrawZone();
     this.drawLayer?.getSource()?.clear();
+
+    this.choroplethAttribute = null;
+    this.choroplethRunning = false;
+    this.choroplethResult = null;
+    this.choroplethError = null;
+    this.choroplethLegend = [];
+    this.gridRunning = false;
+    this.gridResult = null;
+    this.gridError = null;
+    this.gridLegend = [];
+    this.mapLayerService.removeAnalysisLayer('choropleth');
+    this.mapLayerService.removeAnalysisLayer('grid');
   }
 
   /** "Dessiner une zone" - trace un polygone libre sur la carte (même pattern que
@@ -425,13 +480,29 @@ export class StatisticsToolComponent implements OnInit, OnDestroy {
    * donc on ne peut plus deviner un niveau par défaut sans risquer un échec silencieux. */
   openZonalLevelPicker(): void {
     if (!this.selectedLayerId) return;
-    const instanceId = this.instanceService.currentInstance$.value?.id;
-    if (!instanceId) return;
-
     this.rasterStats = null;
     this.zonalStats = null;
     this.rasterNarrative = null;
     this.rasterAnalysisError = null;
+    this.zonalPickerMode = 'raster';
+    this.loadAdminLevelsForPicker();
+  }
+
+  /** "Choroplèthe" (couches vectorielles) - même sélecteur de niveau administratif que
+   * "Statistiques par zone" raster, voir zonalPickerMode. */
+  openChoroplethPicker(): void {
+    if (!this.selectedLayerId || this.numericAttributes.length === 0) return;
+    this.choroplethResult = null;
+    this.choroplethError = null;
+    this.choroplethAttribute = this.numericAttributes[0];
+    this.zonalPickerMode = 'choropleth';
+    this.loadAdminLevelsForPicker();
+  }
+
+  private loadAdminLevelsForPicker(): void {
+    const instanceId = this.instanceService.currentInstance$.value?.id;
+    if (!instanceId) return;
+
     this.showZonalLevelPicker = true;
     this.adminLevelsLoading = true;
     this.adminLevelsError = null;
@@ -449,6 +520,99 @@ export class StatisticsToolComponent implements OnInit, OnDestroy {
         this.adminLevelsLoading = false;
       },
     });
+  }
+
+  /** Lance le choroplèthe pour l'attribut/niveau sélectionnés dans le picker partagé, puis
+   * rend le résultat comme couche vectorielle graduée sur la carte (voir
+   * MapLayerService.addAnalysisVectorLayer). */
+  runChoropleth(): void {
+    if (!this.selectedLayerId || !this.choroplethAttribute || this.selectedAdminLevel == null) {
+      return;
+    }
+    this.choroplethRunning = true;
+    this.choroplethError = null;
+    this.choroplethResult = null;
+    this.showZonalLevelPicker = false;
+
+    this.choroplethService
+      .getChoropleth(this.selectedLayerId, this.choroplethAttribute, this.selectedAdminLevel)
+      .subscribe({
+        next: (zones) => {
+          this.choroplethRunning = false;
+          this.choroplethResult = zones;
+          this.renderChoropleth(zones);
+        },
+        error: () => {
+          this.choroplethRunning = false;
+          this.choroplethError = 'Impossible de calculer le choroplèthe.';
+        },
+      });
+  }
+
+  private renderChoropleth(zones: ChoroplethZone[]): void {
+    const values = zones.map((z) => z.value).filter((v): v is number => v != null);
+    if (values.length === 0) return;
+    const numClasses = Math.min(5, new Set(values).size);
+    const breaks = computeQuantileBreaks(values, numClasses);
+    this.choroplethLegend = buildGraduatedLegend(breaks);
+
+    const featureCollection: GeoJSON.FeatureCollection = {
+      type: 'FeatureCollection',
+      features: zones
+        .filter((z) => z.value != null)
+        .map((z) => ({
+          type: 'Feature',
+          geometry: z.geometry as GeoJSON.Geometry,
+          properties: { value: z.value, name: z.zoneName },
+        })),
+    };
+    this.mapLayerService.addAnalysisVectorLayer(
+      'choropleth',
+      featureCollection,
+      buildChoroplethStyleFn('value', breaks),
+    );
+  }
+
+  /** "Carroyage" (couches vectorielles) - opère directement sur l'emprise carte courante, pas
+   * de sélecteur de zone administrative (contrairement au choroplèthe). */
+  runGrid(): void {
+    if (!this.selectedLayerId) return;
+    this.gridRunning = true;
+    this.gridError = null;
+    this.gridResult = null;
+
+    const extent = this.mapService.getCurrentExtent() as [number, number, number, number];
+    this.choroplethService
+      .getGrid(this.selectedLayerId, extent, this.gridCellSizeMeters, this.gridType)
+      .subscribe({
+        next: (cells) => {
+          this.gridRunning = false;
+          this.gridResult = cells;
+          this.renderGrid(cells);
+        },
+        error: () => {
+          this.gridRunning = false;
+          this.gridError = 'Impossible de générer la grille.';
+        },
+      });
+  }
+
+  private renderGrid(cells: GridCell[]): void {
+    if (cells.length === 0) return;
+    const values = cells.map((c) => c.value);
+    const numClasses = Math.min(5, new Set(values).size);
+    const breaks = computeQuantileBreaks(values, numClasses);
+    this.gridLegend = buildGraduatedLegend(breaks);
+
+    const featureCollection: GeoJSON.FeatureCollection = {
+      type: 'FeatureCollection',
+      features: cells.map((c) => ({
+        type: 'Feature',
+        geometry: c.geometry as GeoJSON.Geometry,
+        properties: { value: c.value },
+      })),
+    };
+    this.mapLayerService.addAnalysisVectorLayer('grid', featureCollection, buildGridStyleFn('value', breaks));
   }
 
   /** Déclenche une analyse raster asynchrone et poll son résultat (même principe que

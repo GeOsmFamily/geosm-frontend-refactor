@@ -28,14 +28,12 @@ import { GeoportailService } from '../../../core/services/geoportail.service';
 import { ElevationPoint } from '../../../core/models/index';
 import { LoadingSpinnerComponent } from '../../../shared/components/loading-spinner/loading-spinner.component';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
-
-interface ProfileStats {
-  distanceM: number;
-  minAltitude: number;
-  maxAltitude: number;
-  ascent: number;
-  descent: number;
-}
+import {
+  computeElevationStats,
+  renderElevationChart,
+  elevationSampleCount,
+  ElevationProfileStats,
+} from '../shared/elevation-chart.util';
 
 @Component({
   selector: 'app-altimetry-tool',
@@ -72,7 +70,7 @@ export class AltimetryToolComponent implements AfterViewInit, OnDestroy {
   readonly picking = signal(false);
   readonly loading = signal(false);
   readonly hasProfile = signal(false);
-  readonly stats = signal<ProfileStats | null>(null);
+  readonly stats = signal<ElevationProfileStats | null>(null);
 
   ngAfterViewInit(): void {
     this.map = this.mapService.getMap();
@@ -149,8 +147,7 @@ export class AltimetryToolComponent implements AfterViewInit, OnDestroy {
       dataProjection: 'EPSG:4326',
     });
 
-    const length = geom3857.getLength();
-    const numPoints = Math.max(20, Math.min(300, Math.round(length / 50)));
+    const numPoints = elevationSampleCount(geom3857.getLength());
 
     this.geoportailService
       .getElevationProfile(geojson as unknown as GeoJSON.Geometry, numPoints)
@@ -167,7 +164,7 @@ export class AltimetryToolComponent implements AfterViewInit, OnDestroy {
             );
             return;
           }
-          this.stats.set(this.computeStats(points));
+          this.stats.set(computeElevationStats(points));
           this.hasProfile.set(true);
           // Le <canvas #chartCanvas> est dans un bloc @if(hasProfile()) : il n'existe pas encore
           // dans le DOM au moment de ce set() (Angular ne l'a pas encore rendu). afterNextRender()
@@ -186,83 +183,18 @@ export class AltimetryToolComponent implements AfterViewInit, OnDestroy {
       });
   }
 
-  private computeStats(points: ElevationPoint[]): ProfileStats {
-    let ascent = 0;
-    let descent = 0;
-    let minAltitude = points[0].altitude;
-    let maxAltitude = points[0].altitude;
-
-    for (let i = 1; i < points.length; i++) {
-      const delta = points[i].altitude - points[i - 1].altitude;
-      if (delta > 0) ascent += delta;
-      else descent += -delta;
-      minAltitude = Math.min(minAltitude, points[i].altitude);
-      maxAltitude = Math.max(maxAltitude, points[i].altitude);
-    }
-
-    return {
-      distanceM: points[points.length - 1].distance,
-      minAltitude,
-      maxAltitude,
-      ascent,
-      descent,
-    };
-  }
-
   private async renderChart(points: ElevationPoint[]): Promise<void> {
     if (!this.chartCanvas) return;
-    const { Chart } = await import('chart.js/auto');
-
-    this.chart?.destroy();
-
-    const labels = points.map((p) => (p.distance / 1000).toFixed(2));
-    const data = points.map((p) => p.altitude);
-
-    this.chart = new Chart(this.chartCanvas.nativeElement, {
-      type: 'line',
-      data: {
-        labels,
-        datasets: [
-          {
-            data,
-            borderColor: '#00ada7',
-            backgroundColor: 'rgba(0, 173, 167, 0.15)',
-            fill: true,
-            tension: 0.15,
-            pointRadius: 0,
-            pointHoverRadius: 5,
-            pointHoverBackgroundColor: '#e74c3c',
-            borderWidth: 2,
-          },
-        ],
+    this.chart = await renderElevationChart(
+      this.chartCanvas.nativeElement,
+      points,
+      this.chart,
+      (fraction) => {
+        if (!this.lineGeom3857) return;
+        const coord = this.lineGeom3857.getCoordinateAt(fraction);
+        this.showMarker(coord);
       },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        animation: false,
-        interaction: { mode: 'index', intersect: false },
-        scales: {
-          x: { title: { display: true, text: 'Distance (km)' }, ticks: { maxTicksLimit: 8 } },
-          y: { title: { display: true, text: 'Altitude (m)' } },
-        },
-        plugins: {
-          legend: { display: false },
-          tooltip: {
-            callbacks: {
-              title: (items) => `${items[0].label} km`,
-              label: (item) => `${item.formattedValue} m`,
-            },
-          },
-        },
-        onHover: (_event, elements) => {
-          if (elements.length === 0 || !this.lineGeom3857) return;
-          const idx = elements[0].index;
-          const fraction = points[idx].distance / (this.stats()?.distanceM || 1);
-          const coord = this.lineGeom3857.getCoordinateAt(Math.min(1, Math.max(0, fraction)));
-          this.showMarker(coord);
-        },
-      },
-    });
+    );
   }
 
   private showMarker(coord: number[]): void {

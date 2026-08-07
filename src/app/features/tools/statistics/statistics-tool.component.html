@@ -189,35 +189,6 @@
       </p>
     }
 
-    @if (showZonalLevelPicker) {
-      <div class="zonal-level-picker">
-        @if (adminLevelsLoading) {
-          <app-loading-spinner></app-loading-spinner>
-        } @else if (adminLevelsError) {
-          <p class="hint error">{{ adminLevelsError }}</p>
-        } @else if (availableAdminLevels.length === 0) {
-          <p class="hint">Aucun niveau administratif disponible pour cette instance.</p>
-        } @else {
-          <mat-form-field appearance="outline" class="full-width">
-            <mat-label>Niveau administratif</mat-label>
-            <mat-select [(ngModel)]="selectedAdminLevel">
-              @for (level of availableAdminLevels; track level) {
-                <mat-option [value]="level">Niveau {{ level }}</mat-option>
-              }
-            </mat-select>
-          </mat-form-field>
-          <button
-            mat-flat-button
-            color="primary"
-            [disabled]="selectedAdminLevel === null"
-            (click)="runRasterAnalysis('zonal')"
-          >
-            Lancer l'analyse
-          </button>
-        }
-      </div>
-    }
-
     @if (rasterAnalysisRunning) {
       <app-loading-spinner></app-loading-spinner>
       <p class="hint">Analyse en cours, ça peut prendre quelques instants sur un gros raster...</p>
@@ -290,6 +261,48 @@
     @if (rasterNarrative && !rasterAnalysisRunning) {
       <p class="narrative"><mat-icon class="ai-icon">auto_awesome</mat-icon> {{ rasterNarrative }}</p>
     }
+  }
+
+  @if (showZonalLevelPicker) {
+    <div class="zonal-level-picker">
+      @if (adminLevelsLoading) {
+        <app-loading-spinner></app-loading-spinner>
+      } @else if (adminLevelsError) {
+        <p class="hint error">{{ adminLevelsError }}</p>
+      } @else if (availableAdminLevels.length === 0) {
+        <p class="hint">Aucun niveau administratif disponible pour cette instance.</p>
+      } @else {
+        @if (zonalPickerMode === 'choropleth') {
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Attribut numérique</mat-label>
+            <mat-select [(ngModel)]="choroplethAttribute">
+              @for (attr of numericAttributes; track attr) {
+                <mat-option [value]="attr">{{ attr }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+        }
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Niveau administratif</mat-label>
+          <mat-select [(ngModel)]="selectedAdminLevel">
+            @for (level of availableAdminLevels; track level) {
+              <mat-option [value]="level">Niveau {{ level }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+        <button
+          mat-flat-button
+          color="primary"
+          [disabled]="
+            selectedAdminLevel === null ||
+            (zonalPickerMode === 'choropleth' && !choroplethAttribute)
+          "
+          (click)="zonalPickerMode === 'choropleth' ? runChoropleth() : runRasterAnalysis('zonal')"
+        >
+          Lancer l'analyse
+        </button>
+      }
+    </div>
   }
 
   @if (loading) {
@@ -394,6 +407,70 @@
       </div>
     } @else {
       <p class="hint">Aucune propriété analysable trouvée.</p>
+    }
+
+    <mat-divider></mat-divider>
+
+    @if (choroplethGridEnabled) {
+      <div class="raster-actions">
+        <button
+          mat-stroked-button
+          [disabled]="numericAttributes.length === 0"
+          [matTooltip]="
+            numericAttributes.length === 0 ? 'Aucun attribut numérique sur cette couche' : ''
+          "
+          (click)="openChoroplethPicker()"
+        >
+          <mat-icon>{{ choroplethResult ? 'check_circle' : 'palette' }}</mat-icon>
+          Choroplèthe
+        </button>
+        <button mat-stroked-button [disabled]="gridRunning" (click)="runGrid()">
+          <mat-icon>{{ gridResult ? 'check_circle' : 'grid_on' }}</mat-icon>
+          Carroyage
+        </button>
+        <mat-form-field appearance="outline" class="cell-size-field">
+          <mat-label>Maille (m)</mat-label>
+          <input matInput type="number" [(ngModel)]="gridCellSizeMeters" min="10" max="100000" />
+        </mat-form-field>
+        <mat-select [(ngModel)]="gridType" class="grid-type-select">
+          <mat-option value="square">Carrée</mat-option>
+          <mat-option value="hexagon">Hexagonale</mat-option>
+        </mat-select>
+      </div>
+
+      @if (choroplethRunning || gridRunning) {
+        <app-loading-spinner></app-loading-spinner>
+      }
+      @if (choroplethError) {
+        <p class="hint error">{{ choroplethError }}</p>
+      }
+      @if (gridError) {
+        <p class="hint error">{{ gridError }}</p>
+      }
+
+      @if (choroplethLegend.length > 0 && choroplethResult && !choroplethRunning) {
+        <div class="graduated-legend">
+          <h5>Légende - {{ choroplethAttribute }} (somme par zone)</h5>
+          @for (entry of choroplethLegend; track $index) {
+            <div class="legend-row">
+              <span class="legend-swatch" [style.background]="entry.color"></span>
+              <span>{{ entry.min | number: '1.0-1' }} – {{ entry.max | number: '1.0-1' }}</span>
+            </div>
+          }
+        </div>
+      }
+
+      @if (gridLegend.length > 0 && gridResult && !gridRunning) {
+        <div class="graduated-legend">
+          <h5>Légende - nombre d'entités par cellule</h5>
+          @for (entry of gridLegend; track $index) {
+            <div class="legend-row">
+              <span class="legend-swatch" [style.background]="entry.color"></span>
+              <span>{{ entry.min | number: '1.0-0' }} – {{ entry.max | number: '1.0-0' }}</span>
+            </div>
+          }
+        </div>
+      }
     }
   }
   }

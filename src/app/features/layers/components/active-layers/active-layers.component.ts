@@ -19,6 +19,7 @@ import { GeoportailService } from '../../../../core/services/geoportail.service'
 import { SearchService, LayerRecommendation } from '../../../../core/services/search.service';
 import { Role, ViewportSummary } from '../../../../core/models/index';
 import { toLonLat } from 'ol/proj';
+import GeoJSON from 'ol/format/GeoJSON';
 
 @Component({
   selector: 'app-active-layers',
@@ -195,10 +196,25 @@ export class ActiveLayersComponent implements OnInit {
       visible: al.layer.id === activeLayer.layer.id ? true : al.visible,
     }));
 
+    // Annotations tracées via l'outil de dessin (voir plan "Partage enrichi : annotations
+    // persistantes" du 2026-08-06) - embarquées directement dans mapState.annotations (GeoJSON
+    // brut, pas de FK vers le modèle Drawing) pour qu'un visiteur anonyme du lien de partage
+    // les voie sans passer par les routes /drawings, authentifiées uniquement. Le même
+    // drawingSource partagé (MapService) que celui utilisé par l'outil de dessin.
+    const drawnFeatures = this.mapService.drawingSource.getFeatures();
+    const annotations =
+      drawnFeatures.length > 0
+        ? new GeoJSON().writeFeaturesObject(drawnFeatures, {
+            featureProjection: 'EPSG:3857',
+            dataProjection: 'EPSG:4326',
+          })
+        : undefined;
+
     const mapState = {
       center,
       zoom,
       layers: layersState,
+      ...(annotations ? { annotations } : {}),
     };
 
     this.sharingService

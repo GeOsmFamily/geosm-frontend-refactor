@@ -68,6 +68,11 @@ export const routes: Routes = [
       import('./features/sharing/shared-map.component').then((m) => m.SharedMapComponent),
   },
   {
+    path: 'faq/:instanceSlug',
+    loadComponent: () =>
+      import('./features/faq/faq-page.component').then((m) => m.FaqPageComponent),
+  },
+  {
     path: 'admin',
     canActivate: [roleGuard([Role.SUPER_ADMIN, Role.ADMIN_INSTANCE])],
     loadChildren: () => import('./features/admin/admin.routes').then((m) => m.ADMIN_ROUTES),

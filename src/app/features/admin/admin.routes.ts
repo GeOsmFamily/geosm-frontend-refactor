@@ -63,6 +63,11 @@ export const ADMIN_ROUTES: Routes = [
           ),
       },
       {
+        path: 'faq',
+        loadComponent: () =>
+          import('./components/faq/faq-review.component').then((m) => m.FaqReviewComponent),
+      },
+      {
         path: 'jobs',
         loadComponent: () =>
           import('./components/jobs/jobs.component').then((m) => m.JobsComponent),

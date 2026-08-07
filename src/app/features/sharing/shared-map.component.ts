@@ -5,6 +5,8 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatIconModule } from '@angular/material/icon';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
+import { Style, Stroke, Fill, Circle as CircleStyle } from 'ol/style';
+
 import { MapViewComponent } from '../map/components/map-view/map-view.component';
 import { MapService } from '../map/services/map.service';
 import { ApiService } from '../../core/services/api.service';
@@ -141,6 +143,36 @@ export class SharedMapComponent implements OnInit {
         this.mapService.zoomTo(center, zoom);
       }, 500);
     }
+    this.applyAnnotations(share);
+  }
+
+  /** Annotations tracées par le créateur du lien de partage (voir plan "Partage enrichi :
+   * annotations persistantes" du 2026-08-06) - GeoJSON brut embarqué dans mapState.annotations,
+   * rendu indépendamment de la résolution du catalogue (contrairement aux couches, une
+   * annotation n'a pas besoin du catalogue pour s'afficher) - voir les 3 points d'appel de
+   * applyMapCoordinates() dans loadInstanceAndApply(), qui couvrent aussi les deux cas d'échec
+   * (instance/catalogue introuvable). */
+  private applyAnnotations(share: ShareMap): void {
+    const annotations = share.mapState?.['annotations'] as GeoJSON.FeatureCollection | undefined;
+    if (!annotations || !Array.isArray(annotations.features) || annotations.features.length === 0) {
+      return;
+    }
+    setTimeout(() => {
+      this.mapLayerService.addAnalysisVectorLayer(
+        'shared-annotations',
+        annotations,
+        () =>
+          new Style({
+            stroke: new Stroke({ color: '#e74c3c', width: 3 }),
+            fill: new Fill({ color: 'rgba(231, 76, 60, 0.15)' }),
+            image: new CircleStyle({
+              radius: 7,
+              stroke: new Stroke({ color: '#e74c3c', width: 2 }),
+              fill: new Fill({ color: '#ffffff' }),
+            }),
+          }),
+      );
+    }, 500);
   }
 
   private applyMapState(share: ShareMap, catalogLayers: Layer[]): void {

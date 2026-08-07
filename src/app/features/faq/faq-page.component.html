@@ -1,0 +1,39 @@
+<div class="faq-page">
+  <div class="info-bar">
+    <span class="brand">GeOsm</span>
+    <span class="faq-label">{{ 'faq.title' | translate }}{{ instance() ? ' - ' + instance()!.name : '' }}</span>
+  </div>
+
+  @if (loading()) {
+    <div class="loading-overlay">
+      <mat-spinner diameter="48"></mat-spinner>
+      <p>{{ 'common.loading' | translate }}</p>
+    </div>
+  }
+
+  @if (error()) {
+    <div class="error-overlay">
+      <mat-icon class="error-icon">error_outline</mat-icon>
+      <p>{{ error() }}</p>
+    </div>
+  }
+
+  @if (!loading() && !error()) {
+    <div class="faq-content">
+      @if (entries().length === 0) {
+        <p class="empty">{{ 'faq.empty' | translate }}</p>
+      } @else {
+        <mat-accordion>
+          @for (entry of entries(); track entry.id) {
+            <mat-expansion-panel>
+              <mat-expansion-panel-header>
+                <mat-panel-title>{{ entry.question }}</mat-panel-title>
+              </mat-expansion-panel-header>
+              <p>{{ entry.answer }}</p>
+            </mat-expansion-panel>
+          }
+        </mat-accordion>
+      }
+    </div>
+  }
+</div>

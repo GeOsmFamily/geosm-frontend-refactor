@@ -76,8 +76,17 @@ export class PlanLocalisationToolComponent implements OnDestroy {
   readonly generating = signal(false);
   readonly pickedLonLat = signal<[number, number] | null>(null);
 
+  /** Point de départ optionnel - si renseigné, le backend calcule un itinéraire d'accès
+   * (OSRM + altimétrie + rédaction IA), voir CreateLocationPlanUseCase. */
+  readonly addAccessRoute = signal(false);
+  readonly pickingOrigin = signal(false);
+  readonly hasOriginPoint = signal(false);
+  readonly pickedOriginLonLat = signal<[number, number] | null>(null);
+
   private markerLayer!: VectorLayer<VectorSource>;
+  private originMarkerLayer!: VectorLayer<VectorSource>;
   private clickSub: Subscription | null = null;
+  private originClickSub: Subscription | null = null;
   private pollSub: Subscription | null = null;
 
   private ensureMarkerLayer(): void {
@@ -89,6 +98,21 @@ export class PlanLocalisationToolComponent implements OnDestroy {
         image: new CircleStyle({
           radius: 9,
           fill: new Fill({ color: '#e74c3c' }),
+          stroke: new Stroke({ color: '#ffffff', width: 2.5 }),
+        }),
+      }),
+    );
+  }
+
+  private ensureOriginMarkerLayer(): void {
+    if (this.originMarkerLayer) return;
+    this.originMarkerLayer = this.mapService.addVectorLayer(
+      'plan-localisation-origin-marker',
+      [],
+      new Style({
+        image: new CircleStyle({
+          radius: 9,
+          fill: new Fill({ color: '#27ae60' }),
           stroke: new Stroke({ color: '#ffffff', width: 2.5 }),
         }),
       }),
@@ -125,10 +149,53 @@ export class PlanLocalisationToolComponent implements OnDestroy {
     this.pickedLonLat.set(toLonLat(coordinate3857) as [number, number]);
   }
 
+  toggleOriginPicking(): void {
+    if (this.pickingOrigin()) {
+      this.stopOriginPicking();
+      return;
+    }
+    this.ensureOriginMarkerLayer();
+    this.pickingOrigin.set(true);
+    this.mapService.isPicking = true;
+    this.originClickSub = this.mapService.onClick$.subscribe((event) => {
+      this.setOriginPoint(event.coordinate);
+      this.stopOriginPicking();
+    });
+  }
+
+  private stopOriginPicking(): void {
+    this.pickingOrigin.set(false);
+    this.mapService.isPicking = false;
+    this.originClickSub?.unsubscribe();
+    this.originClickSub = null;
+  }
+
+  private setOriginPoint(coordinate3857: number[]): void {
+    this.ensureOriginMarkerLayer();
+    const source = this.originMarkerLayer.getSource()!;
+    source.clear();
+    source.addFeature(new Feature(new Point(coordinate3857)));
+    this.hasOriginPoint.set(true);
+    this.pickedOriginLonLat.set(toLonLat(coordinate3857) as [number, number]);
+  }
+
+  private clearOriginPoint(): void {
+    this.stopOriginPicking();
+    this.hasOriginPoint.set(false);
+    this.pickedOriginLonLat.set(null);
+    this.originMarkerLayer?.getSource()?.clear();
+  }
+
+  onAddAccessRouteToggle(checked: boolean): void {
+    this.addAccessRoute.set(checked);
+    if (!checked) this.clearOriginPoint();
+  }
+
   generatePdf(): void {
     const lonLat = this.pickedLonLat();
     const instance = this.instanceService.currentInstance$.value;
     if (!lonLat || !instance) return;
+    const originLonLat = this.addAccessRoute() ? this.pickedOriginLonLat() : null;
 
     this.generating.set(true);
     this.locationPlanService
@@ -147,6 +214,8 @@ export class PlanLocalisationToolComponent implements OnDestroy {
         includeGrid: this.includeGrid,
         includeNorthArrow: this.includeNorthArrow,
         autoFillWithAI: this.autoFillWithAI,
+        originLon: originLonLat ? originLonLat[0] : undefined,
+        originLat: originLonLat ? originLonLat[1] : undefined,
       })
       .subscribe({
         next: (plan) => {
@@ -245,9 +314,13 @@ export class PlanLocalisationToolComponent implements OnDestroy {
 
   ngOnDestroy(): void {
     this.clickSub?.unsubscribe();
+    this.originClickSub?.unsubscribe();
     this.pollSub?.unsubscribe();
     if (this.markerLayer) {
       this.mapService.removeLayer(this.markerLayer);
+    }
+    if (this.originMarkerLayer) {
+      this.mapService.removeLayer(this.originMarkerLayer);
     }
   }
 }

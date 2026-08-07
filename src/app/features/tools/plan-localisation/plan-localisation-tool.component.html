@@ -29,6 +29,41 @@
     </p>
   }
 
+  <mat-checkbox
+    [ngModel]="addAccessRoute()"
+    (ngModelChange)="onAddAccessRouteToggle($event)"
+    class="ai-autofill-checkbox"
+  >
+    <mat-icon class="ai-icon">directions</mat-icon>
+    Ajouter un itinéraire d'accès (véhicule/marche + altimétrie)
+  </mat-checkbox>
+
+  @if (addAccessRoute()) {
+    <button
+      mat-stroked-button
+      color="primary"
+      class="full-width pick-btn"
+      [class.active]="pickingOrigin()"
+      (click)="toggleOriginPicking()"
+    >
+      <mat-icon>{{ pickingOrigin() ? 'close' : 'trip_origin' }}</mat-icon>
+      {{
+        pickingOrigin()
+          ? 'Cliquez sur la carte...'
+          : hasOriginPoint()
+            ? 'Changer le point de départ'
+            : 'Choisir le point de départ sur la carte'
+      }}
+    </button>
+
+    @if (hasOriginPoint() && pickedOriginLonLat()) {
+      <p class="picked-coords">
+        <mat-icon>trip_origin</mat-icon>
+        {{ pickedOriginLonLat()![1].toFixed(6) }}, {{ pickedOriginLonLat()![0].toFixed(6) }}
+      </p>
+    }
+  }
+
   <mat-form-field appearance="outline" class="full-width">
     <mat-label>Titre</mat-label>
     <input matInput [(ngModel)]="title" placeholder="Titre du plan" />
@@ -94,7 +129,7 @@
     mat-flat-button
     color="primary"
     class="full-width generate-pdf-btn"
-    [disabled]="!hasPoint() || generating()"
+    [disabled]="!hasPoint() || generating() || (addAccessRoute() && !hasOriginPoint())"
     (click)="generatePdf()"
   >
     @if (generating()) {

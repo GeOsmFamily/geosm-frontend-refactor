@@ -278,7 +278,15 @@
       "infoTitle": "Mode d'emploi",
       "infoStep1": "Cliquez sur l'icône de cible (🎯) d'un champ puis sur la carte pour définir sa position.",
       "infoStep2": "Alternativement, faites un clic droit sur la carte pour définir le départ ou l'arrivée.",
-      "infoStep3": "Choisissez votre mode de transport (voiture, vélo, piéton) puis cliquez sur Calculer."
+      "infoStep3": "Choisissez votre mode de transport (voiture, vélo, piéton) puis cliquez sur Calculer.",
+      "elevationLoading": "Calcul du profil altimétrique...",
+      "isochroneTitle": "Zone atteignable (isochrone)",
+      "isochroneMinutes": "Minutes",
+      "isochroneCalculate": "Calculer",
+      "multimodalToggle": "Trajet multimodal (point de jonction)",
+      "junction": "Point de jonction",
+      "profileBeforeJunction": "Avant la jonction",
+      "profileAfterJunction": "Après la jonction"
     },
     "export": {
       "selectLayer": "Selectionner une couche",
@@ -358,6 +366,14 @@
       "invalidLink": "Lien de partage invalide.",
       "notFoundOrExpired": "Cette carte partagée est introuvable ou a expiré.",
       "instanceNotFound": "Cette carte partagée fait référence à une instance introuvable."
+    }
+  },
+  "faq": {
+    "title": "Questions fréquentes",
+    "empty": "Aucune question fréquente publiée pour le moment.",
+    "errors": {
+      "invalidLink": "Lien de FAQ invalide.",
+      "notFound": "Cette FAQ est introuvable."
     }
   },
   "settings": {
@@ -493,6 +509,7 @@
       "content": "Contenu & modération",
       "feedback": "Signalements",
       "personalData": "Données personnelles",
+      "faq": "FAQ",
       "jobs": "Jobs & sauvegardes",
       "observability": "Observabilité",
       "analytics": "Statistiques d'usage",

@@ -149,6 +149,10 @@ export interface Layer {
      * backend) - seul signal fiable pour distinguer une couche raster d'une couche vectorielle,
      * geometryType vaut toujours 'POLYGON' pour un raster (approximation de son emprise). */
     source?: string | null;
+    /** Couche vivante (capteur externe, voir plan "Couches vivantes + rapport de fraîcheur" du
+     * 2026-08-06) - proxifiée/cachée via GET /layers/:id/live, jamais appelée directement
+     * depuis le frontend (évite d'exposer l'URL externe/le TTL au navigateur). */
+    live?: { url: string; ttlSeconds: number; refreshSeconds: number } | null;
     [key: string]: unknown;
   } | null;
 }

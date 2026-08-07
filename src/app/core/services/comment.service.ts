@@ -5,6 +5,8 @@ import { Observable, map } from 'rxjs';
 import { ApiService } from './api.service';
 import { environment } from '../../../environments/environment';
 
+export type CommentReportType = 'FEATURE_CLOSED' | 'WRONG_ATTRIBUTE' | 'OUTDATED_GEOMETRY' | 'OTHER';
+
 export interface Comment {
   id: string;
   userId: string;
@@ -17,6 +19,12 @@ export interface Comment {
   flagged: boolean;
   flagReason: string | null;
   flaggedAt: string | null;
+  reportType: CommentReportType | null;
+  layerId: string | null;
+  featureId: string | null;
+  reviewedBy: string | null;
+  reviewedAt: string | null;
+  reviewNote: string | null;
   createdAt: string;
   authorName?: string;
   replies?: Comment[];
@@ -28,6 +36,7 @@ export interface AdminListCommentsParams {
   instanceId?: string;
   flagged?: boolean;
   resolved?: boolean;
+  reportType?: CommentReportType;
 }
 
 export interface AdminCommentsPage {
@@ -46,7 +55,15 @@ export class CommentService {
     return this.api.get<Comment[]>('/comments', { instanceId });
   }
 
-  create(dto: { instanceId: string; text: string; lat: number; lon: number }): Observable<Comment> {
+  create(dto: {
+    instanceId: string;
+    text: string;
+    lat: number;
+    lon: number;
+    reportType?: CommentReportType;
+    layerId?: string;
+    featureId?: string;
+  }): Observable<Comment> {
     return this.api.post<Comment>('/comments', dto);
   }
 
@@ -83,5 +100,13 @@ export class CommentService {
     return this.http
       .delete(`${this.baseUrl}/admin/comments/${id}`, { observe: 'response' })
       .pipe(map(() => undefined as void));
+  }
+
+  review(
+    id: string,
+    decision: 'APPROVE' | 'REJECT',
+    reviewNote?: string,
+  ): Observable<Comment> {
+    return this.api.post<Comment>(`/admin/comments/${id}/review`, { decision, reviewNote });
   }
 }

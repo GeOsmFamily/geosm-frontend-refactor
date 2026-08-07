@@ -3,49 +3,105 @@
   <p class="description">{{ 'compare_maps.title' | translate }}</p>
 
   @if (!comparing) {
-    <mat-form-field appearance="outline" class="full-width">
-      <mat-label
-        >{{ 'left_menu.fonds' | translate }} ({{
-          'naviguation_tools.past_view' | translate
-        }})</mat-label
-      >
-      <mat-select [(ngModel)]="leftBaseMapId">
-        @for (bm of baseMaps; track bm.id) {
-          <mat-option [value]="bm.id" [disabled]="bm.id === rightBaseMapId">
-            {{ bm.name }}
-          </mat-option>
-        }
-      </mat-select>
-    </mat-form-field>
-
-    <mat-form-field appearance="outline" class="full-width">
-      <mat-label
-        >{{ 'left_menu.fonds' | translate }} ({{
-          'naviguation_tools.next_view' | translate
-        }})</mat-label
-      >
-      <mat-select [(ngModel)]="rightBaseMapId">
-        @for (bm of baseMaps; track bm.id) {
-          <mat-option [value]="bm.id" [disabled]="bm.id === leftBaseMapId">
-            {{ bm.name }}
-          </mat-option>
-        }
-      </mat-select>
-    </mat-form-field>
-
-    @if (baseMaps.length < 2) {
-      <p class="hint">Chargez au moins 2 fonds de carte pour les comparer.</p>
+    @if (vectorCompareEnabled) {
+      <div class="mode-toggle">
+        <button
+          mat-stroked-button
+          [class.active]="mode === 'basemap'"
+          (click)="setMode('basemap')"
+        >
+          <mat-icon>map</mat-icon> Fonds de carte
+        </button>
+        <button mat-stroked-button [class.active]="mode === 'vector'" (click)="setMode('vector')">
+          <mat-icon>layers</mat-icon> Couches vectorielles
+        </button>
+      </div>
     }
 
-    <button
-      mat-raised-button
-      color="primary"
-      class="full-width"
-      [disabled]="!leftBaseMapId || !rightBaseMapId"
-      (click)="startCompare()"
-    >
-      <mat-icon>compare</mat-icon> {{ 'compare_maps.compare' | translate }}
-    </button>
+    @if (mode === 'basemap') {
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label
+          >{{ 'left_menu.fonds' | translate }} ({{
+            'naviguation_tools.past_view' | translate
+          }})</mat-label
+        >
+        <mat-select [(ngModel)]="leftBaseMapId">
+          @for (bm of baseMaps; track bm.id) {
+            <mat-option [value]="bm.id" [disabled]="bm.id === rightBaseMapId">
+              {{ bm.name }}
+            </mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label
+          >{{ 'left_menu.fonds' | translate }} ({{
+            'naviguation_tools.next_view' | translate
+          }})</mat-label
+        >
+        <mat-select [(ngModel)]="rightBaseMapId">
+          @for (bm of baseMaps; track bm.id) {
+            <mat-option [value]="bm.id" [disabled]="bm.id === leftBaseMapId">
+              {{ bm.name }}
+            </mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      @if (baseMaps.length < 2) {
+        <p class="hint">Chargez au moins 2 fonds de carte pour les comparer.</p>
+      }
+
+      <button
+        mat-raised-button
+        color="primary"
+        class="full-width"
+        [disabled]="!leftBaseMapId || !rightBaseMapId"
+        (click)="startCompare()"
+      >
+        <mat-icon>compare</mat-icon> {{ 'compare_maps.compare' | translate }}
+      </button>
+    } @else {
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Couche (gauche)</mat-label>
+        <mat-select [(ngModel)]="leftVectorLayerId">
+          @for (l of vectorLayerOptions; track l.id) {
+            <mat-option [value]="l.id" [disabled]="l.id === rightVectorLayerId">
+              {{ l.name }}
+            </mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Couche (droite)</mat-label>
+        <mat-select [(ngModel)]="rightVectorLayerId">
+          @for (l of vectorLayerOptions; track l.id) {
+            <mat-option [value]="l.id" [disabled]="l.id === leftVectorLayerId">
+              {{ l.name }}
+            </mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      @if (vectorLayerOptions.length < 2) {
+        <p class="hint">Activez au moins 2 couches sur la carte pour les comparer.</p>
+      }
+      @if (vectorCompareError) {
+        <p class="hint error">{{ vectorCompareError }}</p>
+      }
+
+      <button
+        mat-raised-button
+        color="primary"
+        class="full-width"
+        [disabled]="!leftVectorLayerId || !rightVectorLayerId || vectorCompareLoading"
+        (click)="startCompare()"
+      >
+        <mat-icon>compare</mat-icon> {{ 'compare_maps.compare' | translate }}
+      </button>
+    }
   } @else {
     <div class="swipe-control">
       <div class="swipe-labels">

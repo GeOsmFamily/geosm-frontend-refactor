@@ -78,17 +78,98 @@
     </mat-select>
   </mat-form-field>
 
+  <button
+    mat-stroked-button
+    class="full-width multimodal-toggle"
+    [class.active]="multimodalMode"
+    (click)="toggleMultimodalMode()"
+  >
+    <mat-icon>alt_route</mat-icon>
+    {{ 'tools.routing.multimodalToggle' | translate }}
+  </button>
+
+  @if (multimodalMode) {
+    <div class="multimodal-panel">
+      <div class="point-input">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>{{ 'tools.routing.junction' | translate }}</mat-label>
+          <input
+            matInput
+            [(ngModel)]="junctionText"
+            [placeholder]="'tools.routing.clickMap' | translate"
+            readonly
+          />
+          <button matSuffix mat-icon-button (click)="pickOnMap('junction')">
+            <mat-icon>my_location</mat-icon>
+          </button>
+        </mat-form-field>
+      </div>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>{{ 'tools.routing.profileBeforeJunction' | translate }}</mat-label>
+        <mat-select [(ngModel)]="profileBeforeJunction">
+          @for (p of profiles; track p.value) {
+            <mat-option [value]="p.value">
+              <mat-icon>{{ p.icon }}</mat-icon> {{ p.label }}
+            </mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>{{ 'tools.routing.profileAfterJunction' | translate }}</mat-label>
+        <mat-select [(ngModel)]="profileAfterJunction">
+          @for (p of profiles; track p.value) {
+            <mat-option [value]="p.value">
+              <mat-icon>{{ p.icon }}</mat-icon> {{ p.label }}
+            </mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      <button
+        mat-flat-button
+        color="primary"
+        class="full-width"
+        [disabled]="!startCoord || !junctionCoord || !endCoord || multimodalLoading"
+        (click)="calculateMultimodalRoute()"
+      >
+        <mat-icon>directions</mat-icon>
+        {{ 'tools.routing.calculate' | translate }}
+      </button>
+
+      @if (multimodalLoading) {
+        <app-loading-spinner [message]="'common.loading' | translate" [diameter]="24" />
+      }
+      @if (multimodalError) {
+        <p class="hint error">{{ multimodalError }}</p>
+      }
+      @if (multimodalLegs) {
+        <div class="multimodal-legs">
+          @for (leg of multimodalLegs; track $index) {
+            <div class="leg-row">
+              <span class="leg-badge" [class.leg-2]="$index === 1">{{ profileLabel(leg.profile) }}</span>
+              <span>{{ formatDistance(leg.distance) }} · {{ formatDuration(leg.duration) }}</span>
+            </div>
+          }
+        </div>
+      }
+    </div>
+  }
+
   <div class="actions">
-    <button
-      class="calculate-btn"
-      mat-flat-button
-      color="primary"
-      [disabled]="!startCoord || !endCoord || loading"
-      (click)="calculateRoute()"
-    >
-      <mat-icon>directions</mat-icon>
-      <span>{{ 'tools.routing.calculate' | translate }}</span>
-    </button>
+    @if (!multimodalMode) {
+      <button
+        class="calculate-btn"
+        mat-flat-button
+        color="primary"
+        [disabled]="!startCoord || !endCoord || loading"
+        (click)="calculateRoute()"
+      >
+        <mat-icon>directions</mat-icon>
+        <span>{{ 'tools.routing.calculate' | translate }}</span>
+      </button>
+    }
     <button
       class="clear-btn"
       mat-stroked-button
@@ -101,6 +182,35 @@
 
   @if (loading) {
     <app-loading-spinner [message]="'common.loading' | translate" [diameter]="30" />
+  }
+
+  @if (startCoord && isochroneEnabled) {
+    <mat-divider></mat-divider>
+    <div class="isochrone-panel">
+      <h5>{{ 'tools.routing.isochroneTitle' | translate }}</h5>
+      <div class="isochrone-controls">
+        <mat-form-field appearance="outline" class="minutes-field">
+          <mat-label>{{ 'tools.routing.isochroneMinutes' | translate }}</mat-label>
+          <input matInput type="number" [(ngModel)]="isochroneMinutes" min="1" max="180" />
+        </mat-form-field>
+        <button
+          mat-stroked-button
+          [disabled]="isochroneRunning"
+          (click)="runIsochrone()"
+        >
+          <mat-icon>{{ hasIsochrone ? 'check_circle' : 'timelapse' }}</mat-icon>
+          {{ 'tools.routing.isochroneCalculate' | translate }}
+        </button>
+      </div>
+      @if (isochroneRunning) {
+        <div class="loading-row">
+          <app-loading-spinner [diameter]="20" message="" />
+        </div>
+      }
+      @if (isochroneError) {
+        <p class="hint error">{{ isochroneError }}</p>
+      }
+    </div>
   }
 
   @if (routeResult) {
@@ -121,5 +231,35 @@
         >
       </div>
     </div>
+
+    @if (elevationLoading) {
+      <div class="loading-row">
+        <app-loading-spinner [diameter]="20" message="" />
+        <span>{{ 'tools.routing.elevationLoading' | translate }}</span>
+      </div>
+    }
+
+    @if (hasElevationProfile) {
+      <div class="chart-wrapper">
+        <canvas #elevationCanvas class="elevation-chart"></canvas>
+      </div>
+
+      @if (elevationStats; as s) {
+        <div class="elevation-stats-grid">
+          <div class="stat-card">
+            <mat-icon>trending_up</mat-icon>
+            <span class="stat-value">+{{ s.ascent.toFixed(0) }} m</span>
+          </div>
+          <div class="stat-card">
+            <mat-icon>trending_down</mat-icon>
+            <span class="stat-value">-{{ s.descent.toFixed(0) }} m</span>
+          </div>
+          <div class="stat-card">
+            <mat-icon>vertical_align_top</mat-icon>
+            <span class="stat-value">{{ s.maxAltitude.toFixed(0) }} m</span>
+          </div>
+        </div>
+      }
+    }
   }
 </div>

@@ -9,6 +9,7 @@ export interface CreateInstanceTemplateDTO {
   slug: string;
   description?: string;
   thematiques?: string[];
+  sourceInstanceId?: string;
 }
 
 @Injectable({ providedIn: 'root' })

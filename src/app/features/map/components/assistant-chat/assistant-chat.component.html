@@ -52,6 +52,16 @@
             }
             <div class="bubble-wrapper">
               <div class="bubble">{{ msg.text }}</div>
+              @if (msg.sources && msg.sources.length > 0) {
+                <div class="sources-row">
+                  <mat-icon class="sources-icon" matTooltip="Couches utilisées pour cette réponse"
+                    >layers</mat-icon
+                  >
+                  @for (source of msg.sources; track source.layerId) {
+                    <span class="source-chip">{{ source.layerName }}</span>
+                  }
+                </div>
+              }
               @for (attachment of msg.attachments; track attachment.id) {
                 @if (attachment.type === 'location-plan' || attachment.type === 'analysis-report') {
                   <div class="attachment-card">
@@ -81,6 +91,32 @@
                       </button>
                     }
                   </div>
+                  @if (attachment.type === 'analysis-report' && attachment.status === 'COMPLETED') {
+                    <div class="rating-row">
+                      @if (ratedAttachments()[attachment.id]; as given) {
+                        <span class="rating-thanks">
+                          <mat-icon>{{ given === 1 ? 'thumb_up' : 'thumb_down' }}</mat-icon>
+                          Merci pour votre retour
+                        </span>
+                      } @else {
+                        <span class="rating-label">Ce rapport vous a-t-il été utile ?</span>
+                        <button
+                          mat-icon-button
+                          (click)="rateReport(attachment, 1)"
+                          matTooltip="Utile"
+                        >
+                          <mat-icon>thumb_up</mat-icon>
+                        </button>
+                        <button
+                          mat-icon-button
+                          (click)="rateReport(attachment, -1)"
+                          matTooltip="Pas utile"
+                        >
+                          <mat-icon>thumb_down</mat-icon>
+                        </button>
+                      }
+                    </div>
+                  }
                 }
               }
             </div>

@@ -32,6 +32,7 @@ import { GeosignetsComponent } from '../geosignets/geosignets.component';
 import { MyMapsComponent } from '../my-maps/my-maps.component';
 import { AssistantChatComponent } from '../assistant-chat/assistant-chat.component';
 import { JobsTrayComponent } from '../jobs-tray/jobs-tray.component';
+import { NotificationPanelComponent } from '../notification-panel/notification-panel.component';
 import { LegendComponent } from '../../../../features/layers/components/legend/legend.component';
 import { NotificationSocketService } from '../../../../core/services/notification-socket.service';
 
@@ -86,6 +87,7 @@ import { CloseOnEscapeOrOutsideDirective } from '../../../../shared/directives/c
     MyMapsComponent,
     AssistantChatComponent,
     JobsTrayComponent,
+    NotificationPanelComponent,
     LegendComponent,
 
     MapToolbarComponent,

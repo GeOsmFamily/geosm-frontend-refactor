@@ -27,6 +27,16 @@
     </mat-select>
   </mat-form-field>
 
+  <mat-form-field filters appearance="outline">
+    <mat-label>Type de signalement</mat-label>
+    <mat-select [(ngModel)]="reportTypeFilter" (selectionChange)="onFilterChange()">
+      <mat-option [value]="null">{{ 'admin.common.all' | translate }}</mat-option>
+      @for (rt of reportTypes; track rt.value) {
+        <mat-option [value]="rt.value">{{ rt.label }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+
   <app-admin-data-table
     [columns]="columns"
     [rows]="comments()"
@@ -41,6 +51,19 @@
   >
     <ng-template #actions let-comment>
       <div class="row-actions">
+        @if (comment.reportType) {
+          <mat-chip color="accent" highlighted [matTooltip]="comment.reviewNote || ''">{{
+            reportTypeLabel(comment.reportType)
+          }}</mat-chip>
+          @if (!comment.reviewedAt) {
+            <button mat-icon-button (click)="review(comment, 'APPROVE')" matTooltip="Valider le signalement">
+              <mat-icon>check_circle</mat-icon>
+            </button>
+            <button mat-icon-button (click)="review(comment, 'REJECT')" matTooltip="Refuser le signalement">
+              <mat-icon>cancel</mat-icon>
+            </button>
+          }
+        }
         @if (comment.flagged) {
           <mat-chip color="warn" highlighted [matTooltip]="comment.flagReason || ''">{{
             'admin.content.flaggedOnly' | translate

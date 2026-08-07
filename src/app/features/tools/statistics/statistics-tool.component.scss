@@ -111,6 +111,45 @@
     color: var(--error, #d32f2f);
   }
 
+  .cell-size-field {
+    width: 110px;
+  }
+
+  .grid-type-select {
+    min-width: 120px;
+    padding: 0 8px;
+    border: 1px solid var(--border, rgba(0, 0, 0, 0.08));
+    border-radius: 4px;
+    height: 36px;
+  }
+
+  .graduated-legend {
+    margin: 8px 0;
+
+    h5 {
+      margin: 0 0 6px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-secondary, #64748b);
+    }
+
+    .legend-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      padding: 2px 0;
+    }
+
+    .legend-swatch {
+      width: 14px;
+      height: 14px;
+      border-radius: 3px;
+      flex-shrink: 0;
+      border: 1px solid rgba(0, 0, 0, 0.15);
+    }
+  }
+
   .raster-stats-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));

@@ -141,6 +141,139 @@
   mat-divider {
     margin: 12px 0;
   }
+
+  .loading-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 12.5px;
+    color: var(--text-secondary, rgba(0, 0, 0, 0.6));
+    padding: 8px 0;
+  }
+
+  .multimodal-toggle {
+    margin-bottom: 8px;
+
+    &.active {
+      border-color: var(--accent, #00ada7);
+      color: var(--accent, #00ada7);
+      mat-icon {
+        color: var(--accent, #00ada7);
+      }
+    }
+  }
+
+  .multimodal-panel {
+    padding: 8px 0 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+
+    .multimodal-legs {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-top: 8px;
+
+      .leg-row {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 13px;
+      }
+
+      .leg-badge {
+        display: inline-flex;
+        align-items: center;
+        padding: 2px 8px;
+        border-radius: 999px;
+        font-size: 11px;
+        font-weight: 600;
+        color: #fff;
+        background: #9c27b0;
+
+        &.leg-2 {
+          background: #1976d2;
+        }
+      }
+    }
+  }
+
+  .isochrone-panel {
+    padding: 10px 0;
+
+    h5 {
+      margin: 0 0 8px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-secondary, #64748b);
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+
+    .isochrone-controls {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+
+      .minutes-field {
+        width: 90px;
+      }
+    }
+
+    .hint.error {
+      color: var(--error, #d32f2f);
+      font-size: 12px;
+      margin: 6px 0 0;
+    }
+  }
+
+  // Chart.js (options.responsive + maintainAspectRatio:false) mesure la taille de son
+  // conteneur parent direct pour redimensionner le canvas - sans un parent à hauteur fixée
+  // explicitement (et non "auto"), la mesure boucle et le canvas grandit indéfiniment (même
+  // contrainte que altimetry-tool.component.scss).
+  .chart-wrapper {
+    position: relative;
+    width: 100%;
+    height: 160px;
+    margin-bottom: 12px;
+  }
+
+  .elevation-chart {
+    width: 100%;
+    height: 100%;
+  }
+
+  .elevation-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-bottom: 12px;
+
+    .stat-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+      padding: 8px 4px;
+      border-radius: 10px;
+      background: var(--surface-hover, rgba(0, 173, 167, 0.06));
+      border: 1px solid rgba(0, 173, 167, 0.15);
+
+      mat-icon {
+        font-size: 16px;
+        width: 16px;
+        height: 16px;
+        color: var(--accent, #00ada7);
+      }
+
+      .stat-value {
+        font-size: 12.5px;
+        font-weight: 600;
+        color: var(--text, #1e293b);
+      }
+    }
+  }
 }
 
 :host-context(body.dark-theme) {

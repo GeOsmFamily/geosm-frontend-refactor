@@ -7,6 +7,14 @@ import { MatCardModule } from '@angular/material/card';
 import { ApiService } from '../../../../core/services/api.service';
 import { StatCardComponent } from '../../shared/components/stat-card/stat-card.component';
 
+export interface StaleLayer {
+  id: string;
+  name: string;
+  instanceName: string;
+  updatedAt: string;
+  daysSinceUpdate: number;
+}
+
 export interface DashboardStats {
   instanceCount: number;
   userCount: number;
@@ -42,6 +50,8 @@ export class AdminHomeComponent implements OnInit {
 
   readonly loading = signal(true);
   readonly stats = signal<DashboardStats | null>(null);
+  readonly staleLayers = signal<StaleLayer[]>([]);
+  readonly staleLayersLoading = signal(true);
 
   ngOnInit(): void {
     this.api.get<DashboardStats>('/admin/dashboard').subscribe({
@@ -50,6 +60,16 @@ export class AdminHomeComponent implements OnInit {
         this.loading.set(false);
       },
       error: () => this.loading.set(false),
+    });
+
+    // Rapport de fraîcheur (voir plan "Couches vivantes + rapport de fraîcheur" du 2026-08-06) -
+    // même seuil par défaut (90 jours) que SendLayerFreshnessReportUseCase côté backend.
+    this.api.get<StaleLayer[]>('/admin/layers/freshness').subscribe({
+      next: (layers) => {
+        this.staleLayers.set(layers.slice(0, 8));
+        this.staleLayersLoading.set(false);
+      },
+      error: () => this.staleLayersLoading.set(false),
     });
   }
 

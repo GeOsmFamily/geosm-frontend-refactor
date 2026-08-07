@@ -11,3 +11,9 @@
     flex: 1;
   }
 }
+
+.config-error {
+  margin: -8px 0 12px;
+  font-size: 12px;
+  color: var(--warn, #d32f2f);
+}

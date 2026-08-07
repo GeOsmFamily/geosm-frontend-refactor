@@ -4,6 +4,12 @@ import { Observable } from 'rxjs';
 import { ApiService } from './api.service';
 import { RouteResult } from '../models/index';
 
+export interface IsochronePoint {
+  lon: number;
+  lat: number;
+  durationSeconds: number;
+}
+
 @Injectable({ providedIn: 'root' })
 export class RoutingService {
   private readonly api = inject(ApiService);
@@ -29,5 +35,14 @@ export class RoutingService {
 
   getNearest(lon: number, lat: number): Observable<unknown> {
     return this.api.get<unknown>('/routing/nearest', { lon, lat });
+  }
+
+  getIsochrone(
+    lon: number,
+    lat: number,
+    profile: string,
+    minutes: number,
+  ): Observable<IsochronePoint[]> {
+    return this.api.get<IsochronePoint[]>('/routing/isochrone', { lon, lat, profile, minutes });
   }
 }

@@ -5,9 +5,18 @@ import { Observable, map } from 'rxjs';
 import { ApiService } from './api.service';
 import { environment } from '../../../environments/environment';
 
+/** Couche(s) réellement interrogée(s) pour produire une réponse - voir AssistantSourceRef
+ * côté backend (assistant-chat.use-case.ts), demande du 2026-08-06 "chat expert
+ * cadastre/urbanisme". */
+export interface AssistantSourceRef {
+  layerId: string;
+  layerName: string;
+}
+
 export interface AssistantChatTurn {
   role: 'user' | 'model';
   text: string;
+  sources?: AssistantSourceRef[];
 }
 
 export interface AssistantClientAction {
@@ -34,6 +43,7 @@ export interface AssistantChatResult {
   reply: string;
   clientActions: AssistantClientAction[];
   attachments: AssistantAttachment[];
+  sources: AssistantSourceRef[];
 }
 
 export interface AssistantConversationSummary {

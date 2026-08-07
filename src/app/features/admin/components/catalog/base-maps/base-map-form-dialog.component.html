@@ -32,6 +32,26 @@
     </mat-form-field>
 
     <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Configuration (JSON){{ needsConfig() ? ' *' : ' (optionnel)' }}</mat-label>
+      <textarea
+        matInput
+        formControlName="configText"
+        rows="4"
+        [placeholder]="configPlaceholder()"
+      ></textarea>
+      <mat-hint
+        >{{
+          form.value.type === 'WMTS'
+            ? "Couche/matrixSet/format/style attendus par le flux WMTS"
+            : "Nom de la couche WMS (paramètre LAYERS envoyé au serveur)"
+        }}</mat-hint
+      >
+    </mat-form-field>
+    @if (configError) {
+      <p class="config-error">{{ configError }}</p>
+    }
+
+    <mat-form-field appearance="outline" class="full-width">
       <mat-label>{{ 'admin.catalog.attribution' | translate }}</mat-label>
       <input matInput formControlName="attribution" />
     </mat-form-field>

@@ -278,7 +278,15 @@
       "infoTitle": "Instrucciones de uso",
       "infoStep1": "Haga clic en el icono de la mira (🎯) de un campo y luego en el mapa para definir su posición.",
       "infoStep2": "Alternativamente, haga clic derecho en el mapa para definir la salida o la llegada.",
-      "infoStep3": "Elija su modo de transporte (coche, bicicleta, peatón) y haga clic en Calcular."
+      "infoStep3": "Elija su modo de transporte (coche, bicicleta, peatón) y haga clic en Calcular.",
+      "elevationLoading": "Calculando el perfil de elevación...",
+      "isochroneTitle": "Zona alcanzable (isócrona)",
+      "isochroneMinutes": "Minutos",
+      "isochroneCalculate": "Calcular",
+      "multimodalToggle": "Trayecto multimodal (punto de enlace)",
+      "junction": "Punto de enlace",
+      "profileBeforeJunction": "Antes del enlace",
+      "profileAfterJunction": "Después del enlace"
     },
     "export": {
       "selectLayer": "Seleccionar una capa",
@@ -358,6 +366,14 @@
       "invalidLink": "Enlace de uso compartido no válido.",
       "notFoundOrExpired": "No se encontró este mapa compartido o ha caducado.",
       "instanceNotFound": "Este mapa compartido hace referencia a una instancia no encontrada."
+    }
+  },
+  "faq": {
+    "title": "Preguntas frecuentes",
+    "empty": "Todavía no hay preguntas frecuentes publicadas.",
+    "errors": {
+      "invalidLink": "Enlace de FAQ no válido.",
+      "notFound": "Esta FAQ no se encontró."
     }
   },
   "geosignets": {
@@ -467,6 +483,7 @@
       "content": "Contenido y moderación",
       "feedback": "Reportes",
       "personalData": "Datos personales",
+      "faq": "Preguntas frecuentes",
       "jobs": "Tareas y copias de seguridad",
       "observability": "Observabilidad",
       "analytics": "Estadísticas de uso",

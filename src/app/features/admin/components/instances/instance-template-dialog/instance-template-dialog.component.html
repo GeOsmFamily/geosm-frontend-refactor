@@ -23,9 +23,25 @@
     </mat-form-field>
 
     <mat-form-field appearance="outline" class="full-width">
-      <mat-label>{{ 'admin.instances.thematiques' | translate }}</mat-label>
-      <input matInput formControlName="thematiques" />
-      <mat-hint>{{ 'admin.instances.thematiquesHint' | translate }}</mat-hint>
+      <mat-label>Cloner le catalogue d'une instance existante (optionnel)</mat-label>
+      <mat-select formControlName="sourceInstanceId">
+        <mat-option [value]="null">Aucun (groupes vides)</mat-option>
+        @for (inst of sourceInstances(); track inst.id) {
+          <mat-option [value]="inst.id">{{ inst.name }}</mat-option>
+        }
+      </mat-select>
+      <mat-hint>
+        Clone la structure (thématiques, sous-thématiques, couches, styles, fonds de carte) -
+        jamais les données géographiques elles-mêmes.
+      </mat-hint>
     </mat-form-field>
+
+    @if (!form.value.sourceInstanceId) {
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>{{ 'admin.instances.thematiques' | translate }}</mat-label>
+        <input matInput formControlName="thematiques" />
+        <mat-hint>{{ 'admin.instances.thematiquesHint' | translate }}</mat-hint>
+      </mat-form-field>
+    }
   </app-admin-form-dialog>
 </form>

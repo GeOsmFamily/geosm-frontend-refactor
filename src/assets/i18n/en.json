@@ -278,7 +278,15 @@
       "infoTitle": "How it works",
       "infoStep1": "Click the target icon (🎯) next to a field, then click on the map to set its position.",
       "infoStep2": "Alternatively, right-click on the map to set the start or destination directly.",
-      "infoStep3": "Choose your mode of transport (car, bicycle, foot) and click Calculate."
+      "infoStep3": "Choose your mode of transport (car, bicycle, foot) and click Calculate.",
+      "elevationLoading": "Computing elevation profile...",
+      "isochroneTitle": "Reachable area (isochrone)",
+      "isochroneMinutes": "Minutes",
+      "isochroneCalculate": "Calculate",
+      "multimodalToggle": "Multimodal trip (junction point)",
+      "junction": "Junction point",
+      "profileBeforeJunction": "Before junction",
+      "profileAfterJunction": "After junction"
     },
     "export": {
       "selectLayer": "Select a layer",
@@ -358,6 +366,14 @@
       "invalidLink": "Invalid share link.",
       "notFoundOrExpired": "This shared map could not be found or has expired.",
       "instanceNotFound": "This shared map refers to an instance that could not be found."
+    }
+  },
+  "faq": {
+    "title": "Frequently asked questions",
+    "empty": "No frequently asked questions published yet.",
+    "errors": {
+      "invalidLink": "Invalid FAQ link.",
+      "notFound": "This FAQ could not be found."
     }
   },
   "settings": {
@@ -493,6 +509,7 @@
       "content": "Content & moderation",
       "feedback": "Feedback",
       "personalData": "Personal data",
+      "faq": "FAQ",
       "jobs": "Jobs & backups",
       "observability": "Observability",
       "analytics": "Usage analytics",

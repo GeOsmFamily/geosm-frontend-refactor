@@ -9,8 +9,30 @@
     color: var(--text-light);
     font-style: italic;
   }
+  .hint.error {
+    color: var(--error, #d32f2f);
+    font-style: normal;
+  }
   .full-width {
     width: 100%;
+  }
+
+  .mode-toggle {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 12px;
+
+    button {
+      flex: 1;
+
+      &.active {
+        border-color: var(--accent, #00ada7);
+        color: var(--accent, #00ada7);
+        mat-icon {
+          color: var(--accent, #00ada7);
+        }
+      }
+    }
   }
 
   .swipe-control {
