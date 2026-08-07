@@ -5,7 +5,8 @@ import { Observable, map } from 'rxjs';
 import { ApiService } from './api.service';
 import { environment } from '../../../environments/environment';
 
-export type CommentReportType = 'FEATURE_CLOSED' | 'WRONG_ATTRIBUTE' | 'OUTDATED_GEOMETRY' | 'OTHER';
+export type CommentReportType =
+  'FEATURE_CLOSED' | 'WRONG_ATTRIBUTE' | 'OUTDATED_GEOMETRY' | 'OTHER';
 
 export interface Comment {
   id: string;
@@ -102,11 +103,7 @@ export class CommentService {
       .pipe(map(() => undefined as void));
   }
 
-  review(
-    id: string,
-    decision: 'APPROVE' | 'REJECT',
-    reviewNote?: string,
-  ): Observable<Comment> {
+  review(id: string, decision: 'APPROVE' | 'REJECT', reviewNote?: string): Observable<Comment> {
     return this.api.post<Comment>(`/admin/comments/${id}/review`, { decision, reviewNote });
   }
 }

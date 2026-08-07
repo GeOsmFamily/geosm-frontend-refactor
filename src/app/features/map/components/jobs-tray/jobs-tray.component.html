@@ -30,7 +30,9 @@
           @if (job.status === 'processing') {
             <span class="jobs-tray-item-hint">En cours...</span>
           } @else if (job.status === 'failed') {
-            <span class="jobs-tray-item-hint error">{{ job.error || "L'opération a échoué." }}</span>
+            <span class="jobs-tray-item-hint error">{{
+              job.error || "L'opération a échoué."
+            }}</span>
           } @else if (canDownload(job)) {
             <button
               mat-button

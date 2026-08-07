@@ -100,7 +100,9 @@ export class NotificationPanelComponent implements OnInit, OnDestroy {
   label(notification: AppNotification): string {
     if (notification.type === 'comment-reply') {
       const text = notification.payload?.['replyText'];
-      return typeof text === 'string' ? `Nouvelle réponse : « ${text.slice(0, 60)} »` : 'Nouvelle réponse à votre commentaire';
+      return typeof text === 'string'
+        ? `Nouvelle réponse : « ${text.slice(0, 60)} »`
+        : 'Nouvelle réponse à votre commentaire';
     }
     if (notification.type === 'feedback-status-change') {
       const status = notification.payload?.['status'];

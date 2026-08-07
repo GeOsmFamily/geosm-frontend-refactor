@@ -56,10 +56,18 @@
             reportTypeLabel(comment.reportType)
           }}</mat-chip>
           @if (!comment.reviewedAt) {
-            <button mat-icon-button (click)="review(comment, 'APPROVE')" matTooltip="Valider le signalement">
+            <button
+              mat-icon-button
+              (click)="review(comment, 'APPROVE')"
+              matTooltip="Valider le signalement"
+            >
               <mat-icon>check_circle</mat-icon>
             </button>
-            <button mat-icon-button (click)="review(comment, 'REJECT')" matTooltip="Refuser le signalement">
+            <button
+              mat-icon-button
+              (click)="review(comment, 'REJECT')"
+              matTooltip="Refuser le signalement"
+            >
               <mat-icon>cancel</mat-icon>
             </button>
           }

@@ -32,7 +32,11 @@ import {
   RasterStats,
   ZonalStat,
 } from '../../../core/services/raster-analysis.service';
-import { ChoroplethService, ChoroplethZone, GridCell } from '../../../core/services/choropleth.service';
+import {
+  ChoroplethService,
+  ChoroplethZone,
+  GridCell,
+} from '../../../core/services/choropleth.service';
 import {
   computeQuantileBreaks,
   buildGraduatedLegend,
@@ -612,7 +616,11 @@ export class StatisticsToolComponent implements OnInit, OnDestroy {
         properties: { value: c.value },
       })),
     };
-    this.mapLayerService.addAnalysisVectorLayer('grid', featureCollection, buildGridStyleFn('value', breaks));
+    this.mapLayerService.addAnalysisVectorLayer(
+      'grid',
+      featureCollection,
+      buildGridStyleFn('value', breaks),
+    );
   }
 
   /** Déclenche une analyse raster asynchrone et poll son résultat (même principe que

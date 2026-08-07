@@ -5,11 +5,7 @@
   @if (!comparing) {
     @if (vectorCompareEnabled) {
       <div class="mode-toggle">
-        <button
-          mat-stroked-button
-          [class.active]="mode === 'basemap'"
-          (click)="setMode('basemap')"
-        >
+        <button mat-stroked-button [class.active]="mode === 'basemap'" (click)="setMode('basemap')">
           <mat-icon>map</mat-icon> Fonds de carte
         </button>
         <button mat-stroked-button [class.active]="mode === 'vector'" (click)="setMode('vector')">

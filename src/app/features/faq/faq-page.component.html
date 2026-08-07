@@ -1,7 +1,9 @@
 <div class="faq-page">
   <div class="info-bar">
     <span class="brand">GeOsm</span>
-    <span class="faq-label">{{ 'faq.title' | translate }}{{ instance() ? ' - ' + instance()!.name : '' }}</span>
+    <span class="faq-label"
+      >{{ 'faq.title' | translate }}{{ instance() ? ' - ' + instance()!.name : '' }}</span
+    >
   </div>
 
   @if (loading()) {

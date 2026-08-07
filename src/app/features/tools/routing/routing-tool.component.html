@@ -148,7 +148,9 @@
         <div class="multimodal-legs">
           @for (leg of multimodalLegs; track $index) {
             <div class="leg-row">
-              <span class="leg-badge" [class.leg-2]="$index === 1">{{ profileLabel(leg.profile) }}</span>
+              <span class="leg-badge" [class.leg-2]="$index === 1">{{
+                profileLabel(leg.profile)
+              }}</span>
               <span>{{ formatDistance(leg.distance) }} · {{ formatDuration(leg.duration) }}</span>
             </div>
           }
@@ -193,11 +195,7 @@
           <mat-label>{{ 'tools.routing.isochroneMinutes' | translate }}</mat-label>
           <input matInput type="number" [(ngModel)]="isochroneMinutes" min="1" max="180" />
         </mat-form-field>
-        <button
-          mat-stroked-button
-          [disabled]="isochroneRunning"
-          (click)="runIsochrone()"
-        >
+        <button mat-stroked-button [disabled]="isochroneRunning" (click)="runIsochrone()">
           <mat-icon>{{ hasIsochrone ? 'check_circle' : 'timelapse' }}</mat-icon>
           {{ 'tools.routing.isochroneCalculate' | translate }}
         </button>

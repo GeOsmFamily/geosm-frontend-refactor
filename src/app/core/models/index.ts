@@ -238,7 +238,13 @@ export interface LayerSummaryEntry {
   featureCount?: number;
   totalAreaKm2?: number | null;
   totalLengthKm?: number | null;
-  raster?: { min: number | null; max: number | null; mean: number | null; sum: number | null; count: number };
+  raster?: {
+    min: number | null;
+    max: number | null;
+    mean: number | null;
+    sum: number | null;
+    count: number;
+  };
 }
 
 export interface ViewportSummary {

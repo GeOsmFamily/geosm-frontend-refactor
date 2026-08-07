@@ -16,11 +16,7 @@ export class GeoportailService {
    * bruts. `bbox` (voir MapService.getCurrentExtent()) restreint le calcul - et, avec
    * narrative, la synthèse - à la zone visible sur la carte au lieu de toute la couche (voir
    * plan "refonte Statistiques" du 2026-08-05). */
-  getLayerStats(
-    layerId: string,
-    narrative = false,
-    bbox?: number[],
-  ): Observable<LayerStats> {
+  getLayerStats(layerId: string, narrative = false, bbox?: number[]): Observable<LayerStats> {
     const params = new URLSearchParams();
     if (narrative) params.set('narrative', 'true');
     if (bbox) params.set('bbox', bbox.join(','));

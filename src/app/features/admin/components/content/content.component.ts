@@ -14,7 +14,11 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { PageEvent } from '@angular/material/paginator';
 import { Sort } from '@angular/material/sort';
 
-import { CommentService, Comment, CommentReportType } from '../../../../core/services/comment.service';
+import {
+  CommentService,
+  Comment,
+  CommentReportType,
+} from '../../../../core/services/comment.service';
 import { InstanceService } from '../../../../core/services/instance.service';
 import { Instance } from '../../../../core/models/index';
 import {

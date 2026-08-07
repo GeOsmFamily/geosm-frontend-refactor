@@ -29,7 +29,11 @@ export interface NotificationsPage {
 export class NotificationService {
   private readonly api = inject(ApiService);
 
-  list(params?: { page?: number; limit?: number; unreadOnly?: boolean }): Observable<NotificationsPage> {
+  list(params?: {
+    page?: number;
+    limit?: number;
+    unreadOnly?: boolean;
+  }): Observable<NotificationsPage> {
     return this.api.get<NotificationsPage>('/notifications', params as Record<string, unknown>);
   }
 

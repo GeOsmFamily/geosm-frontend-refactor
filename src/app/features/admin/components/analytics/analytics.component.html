@@ -8,16 +8,15 @@
         (selectionChange)="onInstanceChange($event.value)"
         [placeholder]="'admin.analytics.allInstances' | translate"
       >
-        <mat-option [value]="undefined">{{ 'admin.analytics.allInstances' | translate }}</mat-option>
+        <mat-option [value]="undefined">{{
+          'admin.analytics.allInstances' | translate
+        }}</mat-option>
         @for (instance of instances(); track instance.id) {
           <mat-option [value]="instance.id">{{ instance.name }}</mat-option>
         }
       </mat-select>
     }
-    <mat-button-toggle-group
-      [value]="days()"
-      (change)="onDaysChange($event.value)"
-    >
+    <mat-button-toggle-group [value]="days()" (change)="onDaysChange($event.value)">
       <mat-button-toggle [value]="7">7j</mat-button-toggle>
       <mat-button-toggle [value]="30">30j</mat-button-toggle>
       <mat-button-toggle [value]="90">90j</mat-button-toggle>
@@ -37,110 +36,113 @@
        imbriquer un @if simple dans le @else contourne le problème (même contournement que
        observability.component.html). -->
   @if (dashboard(); as d) {
-  <div class="section glass">
-    <div class="stat-row">
-      <app-stat-card
-        [label]="'admin.analytics.onlineNow' | translate"
-        [value]="d.onlineNow"
-        icon="sensors"
-        accentVar="--accent"
-      ></app-stat-card>
-      <app-stat-card
-        [label]="'admin.analytics.eventsInPeriod' | translate"
-        [value]="totalEvents()"
-        icon="bolt"
-      ></app-stat-card>
-      <app-stat-card
-        [label]="'admin.analytics.activeUsersToday' | translate"
-        [value]="activeUsersToday()"
-        icon="group"
-      ></app-stat-card>
-      <app-stat-card
-        [label]="'admin.analytics.aiMessages' | translate"
-        [value]="d.aiUsage.messagesSent"
-        icon="smart_toy"
-      ></app-stat-card>
-    </div>
-  </div>
-
-  <div class="section glass">
-    <h3>{{ 'admin.analytics.dailyActivity' | translate }}</h3>
-    <app-chart-card
-      type="line"
-      [labels]="dailyActivityLabels()"
-      [datasets]="dailyActivityDatasets()"
-      [loading]="loading()"
-    ></app-chart-card>
-  </div>
-
-  <div class="charts-grid">
     <div class="section glass">
-      <h3>{{ 'admin.analytics.featureUsage' | translate }}</h3>
+      <div class="stat-row">
+        <app-stat-card
+          [label]="'admin.analytics.onlineNow' | translate"
+          [value]="d.onlineNow"
+          icon="sensors"
+          accentVar="--accent"
+        ></app-stat-card>
+        <app-stat-card
+          [label]="'admin.analytics.eventsInPeriod' | translate"
+          [value]="totalEvents()"
+          icon="bolt"
+        ></app-stat-card>
+        <app-stat-card
+          [label]="'admin.analytics.activeUsersToday' | translate"
+          [value]="activeUsersToday()"
+          icon="group"
+        ></app-stat-card>
+        <app-stat-card
+          [label]="'admin.analytics.aiMessages' | translate"
+          [value]="d.aiUsage.messagesSent"
+          icon="smart_toy"
+        ></app-stat-card>
+      </div>
+    </div>
+
+    <div class="section glass">
+      <h3>{{ 'admin.analytics.dailyActivity' | translate }}</h3>
       <app-chart-card
-        type="bar"
-        [labels]="featureUsageLabels()"
-        [datasets]="featureUsageDatasets()"
+        type="line"
+        [labels]="dailyActivityLabels()"
+        [datasets]="dailyActivityDatasets()"
         [loading]="loading()"
       ></app-chart-card>
     </div>
 
+    <div class="charts-grid">
+      <div class="section glass">
+        <h3>{{ 'admin.analytics.featureUsage' | translate }}</h3>
+        <app-chart-card
+          type="bar"
+          [labels]="featureUsageLabels()"
+          [datasets]="featureUsageDatasets()"
+          [loading]="loading()"
+        ></app-chart-card>
+      </div>
+
+      <div class="section glass">
+        <h3>{{ 'admin.analytics.topLayers' | translate }}</h3>
+        @if (d.topLayers.length === 0) {
+          <p class="hint">{{ 'admin.analytics.noData' | translate }}</p>
+        } @else {
+          <ol class="ranked-list">
+            @for (layer of d.topLayers; track layer.layerId) {
+              <li>
+                <span class="name">{{ layer.name }}</span
+                ><span class="count">{{ layer.count }}</span>
+              </li>
+            }
+          </ol>
+        }
+      </div>
+    </div>
+
     <div class="section glass">
-      <h3>{{ 'admin.analytics.topLayers' | translate }}</h3>
-      @if (d.topLayers.length === 0) {
-        <p class="hint">{{ 'admin.analytics.noData' | translate }}</p>
-      } @else {
-        <ol class="ranked-list">
-          @for (layer of d.topLayers; track layer.layerId) {
-            <li><span class="name">{{ layer.name }}</span><span class="count">{{ layer.count }}</span></li>
-          }
-        </ol>
+      <h3>{{ 'admin.analytics.aiSection' | translate }}</h3>
+      <div class="stat-row">
+        <app-stat-card
+          [label]="'admin.analytics.aiMessages' | translate"
+          [value]="d.aiUsage.messagesSent"
+          icon="chat"
+        ></app-stat-card>
+        <app-stat-card
+          [label]="'admin.analytics.aiConversations' | translate"
+          [value]="d.aiUsage.conversationsStarted"
+          icon="forum"
+        ></app-stat-card>
+        <app-stat-card
+          [label]="'admin.analytics.aiReports' | translate"
+          [value]="d.aiUsage.reportsGenerated"
+          icon="summarize"
+        ></app-stat-card>
+      </div>
+      @if (d.aiUsage.toolUsage.length > 0) {
+        <app-chart-card
+          type="bar"
+          [title]="'admin.analytics.aiToolUsage' | translate"
+          [labels]="toolUsageLabels()"
+          [datasets]="toolUsageDatasets()"
+          [loading]="loading()"
+        ></app-chart-card>
       }
     </div>
-  </div>
 
-  <div class="section glass">
-    <h3>{{ 'admin.analytics.aiSection' | translate }}</h3>
-    <div class="stat-row">
-      <app-stat-card
-        [label]="'admin.analytics.aiMessages' | translate"
-        [value]="d.aiUsage.messagesSent"
-        icon="chat"
-      ></app-stat-card>
-      <app-stat-card
-        [label]="'admin.analytics.aiConversations' | translate"
-        [value]="d.aiUsage.conversationsStarted"
-        icon="forum"
-      ></app-stat-card>
-      <app-stat-card
-        [label]="'admin.analytics.aiReports' | translate"
-        [value]="d.aiUsage.reportsGenerated"
-        icon="summarize"
-      ></app-stat-card>
+    <div class="section glass">
+      <h3>{{ 'admin.analytics.downloads' | translate }}</h3>
+      @if (totalDownloads() === 0) {
+        <p class="hint">{{ 'admin.analytics.noData' | translate }}</p>
+      } @else {
+        <app-chart-card
+          type="bar"
+          [labels]="downloadsLabels()"
+          [datasets]="downloadsDatasets()"
+          [loading]="loading()"
+        ></app-chart-card>
+      }
     </div>
-    @if (d.aiUsage.toolUsage.length > 0) {
-      <app-chart-card
-        type="bar"
-        [title]="'admin.analytics.aiToolUsage' | translate"
-        [labels]="toolUsageLabels()"
-        [datasets]="toolUsageDatasets()"
-        [loading]="loading()"
-      ></app-chart-card>
-    }
-  </div>
-
-  <div class="section glass">
-    <h3>{{ 'admin.analytics.downloads' | translate }}</h3>
-    @if (totalDownloads() === 0) {
-      <p class="hint">{{ 'admin.analytics.noData' | translate }}</p>
-    } @else {
-      <app-chart-card
-        type="bar"
-        [labels]="downloadsLabels()"
-        [datasets]="downloadsDatasets()"
-        [loading]="loading()"
-      ></app-chart-card>
-    }
-  </div>
   } @else {
     <p class="hint">{{ 'admin.analytics.loadError' | translate }}</p>
   }

@@ -13,7 +13,10 @@ import { InstanceService } from '../../../../core/services/instance.service';
 import { AuthService } from '../../../../core/services/auth.service';
 import { Instance, Role, UsageDashboard } from '../../../../core/models/index';
 import { StatCardComponent } from '../../shared/components/stat-card/stat-card.component';
-import { ChartCardComponent, ChartCardDataset } from '../../shared/components/chart-card/chart-card.component';
+import {
+  ChartCardComponent,
+  ChartCardDataset,
+} from '../../shared/components/chart-card/chart-card.component';
 
 /**
  * Tableau de bord d'usage produit (qui utilise quoi, combien de fois) - voir plan "tableau de
@@ -138,7 +141,13 @@ export class AnalyticsComponent implements OnInit, OnDestroy {
   toolUsageDatasets(): ChartCardDataset[] {
     const d = this.dashboard();
     if (!d) return [];
-    return [{ label: 'Appels', data: d.aiUsage.toolUsage.map((t) => t.count), backgroundColor: 'rgba(0,173,166,0.5)' }];
+    return [
+      {
+        label: 'Appels',
+        data: d.aiUsage.toolUsage.map((t) => t.count),
+        backgroundColor: 'rgba(0,173,166,0.5)',
+      },
+    ];
   }
 
   toolUsageLabels(): string[] {
@@ -148,7 +157,13 @@ export class AnalyticsComponent implements OnInit, OnDestroy {
   downloadsDatasets(): ChartCardDataset[] {
     const d = this.dashboard();
     if (!d) return [];
-    return [{ label: 'Téléchargements', data: d.downloads.map((x) => x.count), backgroundColor: 'rgba(245,158,11,0.5)' }];
+    return [
+      {
+        label: 'Téléchargements',
+        data: d.downloads.map((x) => x.count),
+        backgroundColor: 'rgba(245,158,11,0.5)',
+      },
+    ];
   }
 
   downloadsLabels(): string[] {

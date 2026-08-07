@@ -51,7 +51,12 @@ export class JobsTrayService {
 
   private handleEvent(event: string, data: unknown): void {
     const [type, phase] = event.split(':') as [TrayJobType | string, string];
-    if (type !== 'export' && type !== 'import' && type !== 'location-plan' && type !== 'analysis-report') {
+    if (
+      type !== 'export' &&
+      type !== 'import' &&
+      type !== 'location-plan' &&
+      type !== 'analysis-report'
+    ) {
       return;
     }
     const payload = data as {
