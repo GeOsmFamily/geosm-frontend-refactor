@@ -113,6 +113,49 @@
       @if (reportGenerated) {
         <p class="hint">Rapport en cours de génération - suis-le dans le tiroir de tâches 🔔.</p>
       }
+
+      <button mat-button class="full-width" (click)="toggleMyReports()">
+        <mat-icon>{{ myReportsExpanded ? 'expand_less' : 'expand_more' }}</mat-icon>
+        Mes rapports récents
+      </button>
+      @if (myReportsExpanded) {
+        @if (myReportsLoading) {
+          <app-loading-spinner></app-loading-spinner>
+        } @else if (myReports.length === 0) {
+          <p class="hint">Aucun rapport généré pour l'instant.</p>
+        } @else {
+          <div class="my-reports-list">
+            @for (report of myReports; track report.id) {
+              <div class="my-reports-item">
+                <div class="my-reports-item-info">
+                  <span class="my-reports-item-topic">{{ report.topic }}</span>
+                  <span class="my-reports-item-date">{{ report.createdAt | date: 'short' }}</span>
+                </div>
+                @if (report.status === 'COMPLETED') {
+                  <button
+                    mat-icon-button
+                    [disabled]="downloadingReportId === report.id"
+                    matTooltip="Télécharger le PDF"
+                    (click)="downloadReport(report)"
+                  >
+                    <mat-icon>download</mat-icon>
+                  </button>
+                } @else if (report.status === 'FAILED') {
+                  <mat-icon
+                    class="my-reports-item-status-failed"
+                    matTooltip="Échec de la génération"
+                    >error_outline</mat-icon
+                  >
+                } @else {
+                  <mat-icon class="my-reports-item-status-pending" matTooltip="En cours"
+                    >schedule</mat-icon
+                  >
+                }
+              </div>
+            }
+          </div>
+        }
+      }
       @if (reportError) {
         <p class="hint error">{{ reportError }}</p>
       }

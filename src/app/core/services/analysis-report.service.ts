@@ -18,6 +18,15 @@ export interface AnalysisReport {
   ratingComment: string | null;
 }
 
+export interface AnalysisReportSummary {
+  id: string;
+  topic: string;
+  status: 'PENDING' | 'PROCESSING' | 'COMPLETED' | 'FAILED';
+  fileSize: number | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
 /** Rapports d'analyse IA en PDF (voir plan "refonte Statistiques" du 2026-08-05) - même pattern
  * que LocationPlanService (génération asynchrone, téléchargement en blob via proxy API car
  * MinIO n'est pas joignable depuis le navigateur). */
@@ -45,6 +54,12 @@ export class AnalysisReportService {
 
   getById(id: string): Observable<AnalysisReport> {
     return this.api.get<AnalysisReport>(`/analysis-reports/${id}`);
+  }
+
+  /** Historique persisté, indépendant du tiroir de tâches (temps réel uniquement) - voir
+   * ListMyAnalysisReportsUseCase côté backend. */
+  listMine(): Observable<AnalysisReportSummary[]> {
+    return this.api.get<AnalysisReportSummary[]>('/analysis-reports');
   }
 
   download(id: string): Observable<Blob> {
