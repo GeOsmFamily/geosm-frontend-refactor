@@ -24,7 +24,10 @@ import { MapService } from '../../map/services/map.service';
 import { LayerService } from '../../../core/services/layer.service';
 import { GeoportailService } from '../../../core/services/geoportail.service';
 import { InstanceService } from '../../../core/services/instance.service';
-import { AnalysisReportService } from '../../../core/services/analysis-report.service';
+import {
+  AnalysisReportService,
+  AnalysisReportSummary,
+} from '../../../core/services/analysis-report.service';
 import { ViewportSummary } from '../../../core/models/index';
 import {
   RasterAnalysisService,
@@ -135,6 +138,15 @@ export class StatisticsToolComponent implements OnInit, OnDestroy {
   reportGenerating = false;
   reportGenerated = false;
   reportError: string | null = null;
+
+  // --- Historique persisté des rapports (voir ListMyAnalysisReportsUseCase côté backend) -
+  // le tiroir de tâches ne montre que les événements temps réel reçus PENDANT que l'onglet est
+  // ouvert ; un rapport terminé après une déconnexion WebSocket y reste invisible bien que
+  // généré avec succès, d'où cette liste persistée comme filet de sécurité. ---
+  myReports: AnalysisReportSummary[] = [];
+  myReportsLoading = false;
+  myReportsExpanded = false;
+  downloadingReportId: string | null = null;
   /** Zone dessinée à la main (voir startDrawZoneForMultiLayer()) - remplace l'emprise carte
    * pour restreindre l'analyse/le rapport à une zone précise plutôt qu'à tout ce qui est
    * visible à l'écran. */
@@ -298,6 +310,43 @@ export class StatisticsToolComponent implements OnInit, OnDestroy {
           this.reportError = 'Impossible de lancer la génération du rapport.';
         },
       });
+  }
+
+  toggleMyReports(): void {
+    this.myReportsExpanded = !this.myReportsExpanded;
+    if (this.myReportsExpanded && this.myReports.length === 0) this.loadMyReports();
+  }
+
+  loadMyReports(): void {
+    this.myReportsLoading = true;
+    this.analysisReportService.listMine().subscribe({
+      next: (reports) => {
+        this.myReports = reports;
+        this.myReportsLoading = false;
+      },
+      error: () => {
+        this.myReportsLoading = false;
+      },
+    });
+  }
+
+  downloadReport(report: AnalysisReportSummary): void {
+    if (this.downloadingReportId) return;
+    this.downloadingReportId = report.id;
+    this.analysisReportService.download(report.id).subscribe({
+      next: (blob) => {
+        this.downloadingReportId = null;
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `${report.topic.toLowerCase().replace(/\s+/g, '-')}-${report.id.slice(0, 8)}.pdf`;
+        a.click();
+        URL.revokeObjectURL(url);
+      },
+      error: () => {
+        this.downloadingReportId = null;
+      },
+    });
   }
 
   /** Bascule "Toute la couche" / "Zone visible" - recalcule immédiatement (voir plan "refonte

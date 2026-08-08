@@ -19,6 +19,50 @@
     justify-content: center;
   }
 
+  .my-reports-list {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin: 8px 0 12px;
+  }
+
+  .my-reports-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 6px 8px;
+    border-radius: 6px;
+    background: rgba(0, 0, 0, 0.03);
+
+    &-info {
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+
+    &-topic {
+      font-size: 13px;
+      color: var(--text);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    &-date {
+      font-size: 11px;
+      color: var(--text-secondary);
+    }
+
+    &-status-failed {
+      color: var(--warn, #d32f2f);
+    }
+
+    &-status-pending {
+      color: var(--text-secondary);
+    }
+  }
+
   .multi-layer-panel {
     display: flex;
     flex-direction: column;

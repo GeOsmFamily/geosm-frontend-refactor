@@ -10,7 +10,7 @@
   <mat-icon>inbox</mat-icon>
 </button>
 
-<mat-menu #notifMenu="matMenu" class="notification-panel-menu">
+<mat-menu #notifMenu="matMenu" class="notification-panel-menu" xPosition="before">
   <div class="notification-panel-header" (click)="$event.stopPropagation()">
     <span>Notifications</span>
     @if (unreadCount() > 0) {
