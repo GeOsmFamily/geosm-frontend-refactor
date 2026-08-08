@@ -6,6 +6,8 @@ Le format s'inspire de [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/).
 
 ## [Unreleased]
 
+## [3.1.0] - 2026-08-08
+
 ### Ajoute
 
 - **Connexion via OpenStreetMap** : bouton de connexion en un clic sur la page de login, panneau Parametres affichant le profil OSM lie (avatar, nom, date de creation du compte, contributions), liaison/deliaison depuis les parametres.
@@ -15,14 +17,19 @@ Le format s'inspire de [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/).
 - **Bouton "Infos"** dans le header : credits du developpeur, mention open source (lien vers le depot GitHub), telechargement du guide d'utilisation complet au format PDF (fr/en, genere statiquement via un script Puppeteer, voir `npm run generate:guide`), et formulaire de signalement (bug/suggestion/nouvelle fonctionnalite) accessible avec ou sans connexion.
 - **Contenu complet du guide PDF bilingue** (`scripts/guide-pdf/content.mjs`) : les 7 sections precedemment livrees avec un contenu provisoire ("a venir") sont desormais entierement redigees en francais et en anglais - 41 fonctionnalites documentees, chacune avec une explication et un exemple de cas d'usage concret (carte et navigation, recherche et decouverte, outils d'analyse et de production, assistant IA, partage, gestion de compte, administration).
 - Nettoyage complet des fichiers de traduction (`fr.json`/`en.json`/`es.json`) : suppression des cles mortes heritees d'un fork anterieur, parite complete des cles entre les trois langues verifiee en CI.
-- **Plateforme d'administration** (`/admin`, nouveau `roleGuard` reserve SUPER_ADMIN/ADMIN_INSTANCE) : layout dedie (sidebar, KPI d'accueil), gestion des utilisateurs (SUPER_ADMIN uniquement, `/users` reserve cote backend), gestion des instances (CRUD, creation depuis un modele, gestion des utilisateurs par instance) accessible aux deux roles admin.
+- **Plateforme d'administration** (`/admin`, nouveau `roleGuard` reserve SUPER_ADMIN/ADMIN_INSTANCE) : layout dedie (sidebar, KPI d'accueil), gestion des utilisateurs (SUPER_ADMIN uniquement, `/users` reserve cote backend), gestion des instances (CRUD, creation depuis un modele, gestion des utilisateurs par instance) accessible aux deux roles admin. Etendue depuis avec : catalogue (groupes/sous-groupes/couches/fonds de carte, y compris un assistant de creation de couche multi-source - fichier/extraction OSM/projet QGIS - avec selecteur d'icone/couleur), moderation des commentaires et signalements citoyens, gestion des signalements utilisateur (bug/suggestion), revue des FAQ generees par IA, suivi/relance des jobs en arriere-plan, observabilite et outils systeme (sante des services, apercu base de donnees, purge des tables orphelines, vidage cache, sauvegardes), supervision Docker en lecture seule, revue des donnees personnelles (RGPD).
 - **Selecteur de limite administrative** dans le formulaire de creation/edition d'instance : recherche par nom dans une table de limites (avec apercu geometrique OpenLayers avant validation), et import direct d'un shapefile/GeoJSON (mapping du champ nom + niveau administratif) sans quitter le formulaire.
+- **Outil Statistiques** (`tools/statistics`) : statistiques de couche adaptees a l'emprise (toute la couche vs zone visible), statistiques raster (globales/par zone administrative/zone dessinee a main levee), analyse multi-couches croisee par IA sur une zone (emprise ou geometrie dessinee), generation d'un rapport PDF telechargeable avec suivi de progression dans le tiroir de taches. Le rapport inclut desormais une section "Zone analysee" (nom de lieu + vrai fond de carte reconnaissable, avec repli schematique si indisponible) et une repartition des donnees par couche. Historique persiste "Mes rapports" (independant du tiroir de taches temps reel, qui ne montre que les evenements recus pendant que l'onglet est ouvert).
+- **Panneaux flottants deplacables** (drag-and-drop via Angular CDK) sur les 9 panneaux de la carte, pour liberer la zone qu'ils occupent selon les besoins de l'utilisateur.
+- **Parcours d'authentification complete** : connexion automatique apres inscription, pages dediees de verification d'email, mot de passe oublie et reinitialisation de mot de passe, case "Se souvenir de moi" sur l'ecran de connexion. Portail public consultable sans etre force vers `/login`.
 
 ### Corrige
 
 - **Message d'erreur de connexion/inscription** : le composant lisait le mauvais niveau d'imbrication de l'enveloppe d'erreur renvoyee par le backend (`err.error.message` au lieu de `err.error.error.message`), affichant systematiquement un message generique au lieu du vrai message serveur (ex. "Invalid credentials").
 - **Bug de compilation JIT sous `ng serve`** : `GeosignetsComponent` importait statiquement son propre parent `MapLayoutComponent` (charge en lazy via le routeur) pour acceder a deux de ses signaux - cet import circulaire enfant/parent cassait la navigation vers `/map` en developpement avec une erreur `needs to be compiled using the JIT compiler`. Corrige via un `@Output() shareRequested` plutot qu'une injection directe du parent. Le build de production (AOT) n'etait pas affecte.
 - Deux tests unitaires obsolètes (`tool-panel.component.spec.ts`, `login.component.spec.ts`) desynchronises de l'implementation reelle.
+- Popup du compteur de notifications masque en bordure d'ecran (le menu s'ouvrait toujours vers la droite, quelle que soit la position du bouton dans la barre du haut).
+- Erreur generique et non explicative lors d'une analyse/generation de rapport sans etre connecte (le panneau Statistiques masquait le vrai statut/message HTTP renvoye par l'API derriere un texte fixe, y compris pour un simple 401).
 
 ### Securite
 
