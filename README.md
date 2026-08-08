@@ -102,10 +102,12 @@ src/app/
 ├── features/           # Modules fonctionnels
 │   ├── map/            # Carte OL, layout, toolbar, popups, geosignets
 │   ├── layers/         # Catalogue, couches actives, fonds de carte, legende
-│   ├── tools/          # Dessin, mesure, itineraire, export, impression, commentaire, altimetrie
+│   ├── tools/          # Dessin, mesure, itineraire, export, impression, commentaire, altimetrie,
+│   │                   # statistiques (analyse multi-couches + rapports IA PDF)
 │   ├── search/         # Barre de recherche avec geocodage
-│   ├── auth/           # Login, inscription
-│   └── sharing/        # Partage social, carte partagee
+│   ├── auth/           # Login, inscription, verification email, mot de passe oublie/reinitialisation
+│   ├── sharing/        # Partage social, carte partagee
+│   └── admin/          # Back-office (voir section Administration ci-dessous)
 └── shared/             # Composants reutilisables
 ```
 
@@ -144,6 +146,7 @@ L'application comprend **38 composants** organises en modules fonctionnels :
 - Plan de localisation PDF (QGIS) avec constructeur de mise en page personnalisee (legende/echelle/grille/fleche nord activables independamment)
 - Commentaires geolocalises avec fils de discussion (reponses) et statut resolu/non resolu
 - Altimetrie
+- Statistiques et analyse multi-couches : synthese IA (croise les couches actives sur une zone dessinee ou l'emprise carte), generation d'un rapport PDF (contexte/methode/resultats/conclusion redige par IA, avec section "Zone analysee" - nom de lieu + fond de carte reel - et repartition des donnees par couche), historique persiste "Mes rapports"
 
 ### Recherche et geocodage
 - Barre de recherche avec geocodage Nominatim
@@ -166,6 +169,26 @@ L'application comprend **38 composants** organises en modules fonctionnels :
 - 3 langues supportees (francais, anglais, espagnol)
 - 304 cles de traduction
 - Fichiers dans `src/assets/i18n/`
+
+### Administration
+
+Back-office (`src/app/features/admin/`) reserve aux roles SUPER_ADMIN/ADMIN_INSTANCE (certains
+ecrans egalement accessibles a EDITOR) - voir `docs/reference-api.md` et
+`docs/fonctionnalites-detaillees.md` du depot backend pour le detail des endpoints correspondants.
+
+- Tableau de bord (statistiques globales), analytique
+- Catalogue : gestion des instances/groupes/sous-groupes/couches/fonds de carte, y compris
+  l'**assistant de creation de couche** (`layer-creation-wizard`) - 3 sources au choix (fichier,
+  extraction OSM, projet QGIS), avec un selecteur de style (couleur + icone parmi un catalogue
+  d'icones generiques)
+- Moderation : commentaires signales, signalements utilisateur (bug/suggestion), FAQ generees
+  automatiquement par IA (revue avant publication)
+- Jobs : suivi des taches en arriere-plan (imports, exports, rapports...), relance d'un job echoue
+- Observabilite et outils systeme : sante des services, apercu base de donnees, vidage cache,
+  sauvegardes
+- Supervision Docker en lecture seule (conteneurs, stats CPU/memoire, logs - aucune action de
+  cycle de vie exposee, par choix produit)
+- Utilisateurs et donnees personnelles (revue RGPD)
 
 ---
 
