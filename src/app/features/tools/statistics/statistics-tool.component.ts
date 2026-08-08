@@ -48,6 +48,7 @@ import {
   GraduatedLegendEntry,
 } from '../../map/utils/graduated-style.util';
 import { LoadingSpinnerComponent } from '../../../shared/components/loading-spinner/loading-spinner.component';
+import { httpErrorMessage } from '../../../core/utils/http-error.util';
 
 interface ChartBar {
   label: string;
@@ -269,8 +270,11 @@ export class StatisticsToolComponent implements OnInit, OnDestroy {
           this.viewSummary = summary;
           this.viewSummaryLoading = false;
         },
-        error: () => {
-          this.viewSummaryError = "Impossible d'analyser les couches actives.";
+        error: (error) => {
+          this.viewSummaryError = httpErrorMessage(
+            error,
+            "Impossible d'analyser les couches actives.",
+          );
           this.viewSummaryLoading = false;
         },
       });
@@ -305,9 +309,12 @@ export class StatisticsToolComponent implements OnInit, OnDestroy {
           this.reportGenerated = true;
           this.reportTopic = '';
         },
-        error: () => {
+        error: (error) => {
           this.reportGenerating = false;
-          this.reportError = 'Impossible de lancer la génération du rapport.';
+          this.reportError = httpErrorMessage(
+            error,
+            'Impossible de lancer la génération du rapport.',
+          );
         },
       });
   }
@@ -568,8 +575,11 @@ export class StatisticsToolComponent implements OnInit, OnDestroy {
         this.selectedAdminLevel = levels.length > 0 ? Math.max(...levels) : null;
         this.adminLevelsLoading = false;
       },
-      error: () => {
-        this.adminLevelsError = 'Impossible de récupérer les niveaux administratifs disponibles.';
+      error: (error) => {
+        this.adminLevelsError = httpErrorMessage(
+          error,
+          'Impossible de récupérer les niveaux administratifs disponibles.',
+        );
         this.adminLevelsLoading = false;
       },
     });
@@ -595,9 +605,9 @@ export class StatisticsToolComponent implements OnInit, OnDestroy {
           this.choroplethResult = zones;
           this.renderChoropleth(zones);
         },
-        error: () => {
+        error: (error) => {
           this.choroplethRunning = false;
-          this.choroplethError = 'Impossible de calculer le choroplèthe.';
+          this.choroplethError = httpErrorMessage(error, 'Impossible de calculer le choroplèthe.');
         },
       });
   }
@@ -643,9 +653,9 @@ export class StatisticsToolComponent implements OnInit, OnDestroy {
           this.gridResult = cells;
           this.renderGrid(cells);
         },
-        error: () => {
+        error: (error) => {
           this.gridRunning = false;
-          this.gridError = 'Impossible de générer la grille.';
+          this.gridError = httpErrorMessage(error, 'Impossible de générer la grille.');
         },
       });
   }
@@ -695,9 +705,9 @@ export class StatisticsToolComponent implements OnInit, OnDestroy {
       })
       .subscribe({
         next: ({ resultId }) => this.pollRasterAnalysis(resultId),
-        error: () => {
+        error: (error) => {
           this.rasterAnalysisRunning = false;
-          this.rasterAnalysisError = "Impossible de lancer l'analyse.";
+          this.rasterAnalysisError = httpErrorMessage(error, "Impossible de lancer l'analyse.");
         },
       });
   }
@@ -719,9 +729,12 @@ export class StatisticsToolComponent implements OnInit, OnDestroy {
             this.rasterPollSubscription?.unsubscribe();
           }
         },
-        error: () => {
+        error: (error) => {
           this.rasterAnalysisRunning = false;
-          this.rasterAnalysisError = "Impossible de récupérer le résultat de l'analyse.";
+          this.rasterAnalysisError = httpErrorMessage(
+            error,
+            "Impossible de récupérer le résultat de l'analyse.",
+          );
           this.rasterPollSubscription?.unsubscribe();
         },
       });
