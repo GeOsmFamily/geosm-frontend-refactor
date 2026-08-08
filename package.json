@@ -58,7 +58,7 @@
     "@schematics/angular": "^18.2.21",
     "@types/geojson": "^7946.0.16",
     "@types/jasmine": "~6.0.0",
-    "angular-eslint": "^18.4.3",
+    "angular-eslint": "^22.1.0",
     "eslint": "^9.39.1",
     "jasmine-core": "~6.3.0",
     "karma": "~6.4.0",
