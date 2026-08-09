@@ -15,6 +15,12 @@ Merci de votre interet pour contribuer a GeOSM Frontend. Ce document fournit les
    git checkout -b feat/nom-de-votre-fonctionnalite
    ```
 4. **Installer les dependances** et configurer votre environnement (voir [README.md](./README.md), section `environment.ts`)
+   - **Raccourci recommande** : ouvrez le depot dans VS Code avec l'extension *Dev Containers*
+     (ou dans GitHub Codespaces) et choisissez "Reopen in Container" - `.devcontainer/`
+     installe tout ce qu'il faut (Node, Chromium pour les tests/e2e) automatiquement. Une fois
+     pret : `npm start`. Pour naviguer l'application reelle (pas seulement lint/build/tests),
+     l'API backend doit tourner a part sur `localhost:3005` - voir le `.devcontainer/` du depot
+     `geosm-api-refactor`.
 5. **Effectuer vos modifications**, ecrire les tests et verifier que tout passe
 6. **Pousser** votre branche et ouvrir une **Pull Request**
 
@@ -34,7 +40,8 @@ Merci de votre interet pour contribuer a GeOSM Frontend. Ce document fournit les
 Executez ces commandes avant de commiter :
 
 ```bash
-npm run lint          # Verifier les problemes de linting (ng lint)
+npm run lint          # Verifier les problemes de linting (nx lint - ce workspace utilise Nx,
+                       # pas l'Angular CLI seul, voir docs/adr/0002-nx-workspace.md)
 npm run format        # Formater automatiquement le code avec Prettier
 npm run format:check  # Verifier le formatage sans modifier (utilise en CI)
 ```
@@ -44,6 +51,11 @@ npm run format:check  # Verifier le formatage sans modifier (utilise en CI)
 ---
 
 ## Directives architecturales
+
+> **Pourquoi, pas seulement comment** : pour le raisonnement derriere les choix structurants
+> (standalone vs NgModules, Nx, OpenLayers, ngx-translate...), voir
+> [`docs/adr/`](docs/adr/README.md) avant de proposer un changement qui les remettrait en
+> question - et ajoutez-y une ADR si vous introduisez vous-meme un choix structurant.
 
 Le projet est organise en modules fonctionnels sous `src/app/` :
 

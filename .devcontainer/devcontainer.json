@@ -1,0 +1,40 @@
+{
+  "name": "GeOSM (frontend)",
+  "build": {
+    "dockerfile": "Dockerfile"
+  },
+  "workspaceFolder": "/workspace",
+  "workspaceMount": "source=${localWorkspaceFolder},target=/workspace,type=bind,consistency=cached",
+
+  "forwardPorts": [4200],
+  "portsAttributes": {
+    "4200": { "label": "ng serve", "onAutoForward": "openBrowser" }
+  },
+
+  // Chromium de Playwright + bibliotheques systeme partagees necessaires pour executer un
+  // navigateur headless (couvre aussi les tests unitaires Karma, qui reutilisent le Chromium de
+  // Puppeteer deja telecharge par "npm ci" - voir Dockerfile).
+  "postCreateCommand": "npm ci && npx playwright install --with-deps chromium",
+
+  // L'API backend (voir depot geosm-api-refactor, son propre .devcontainer/) doit tourner a
+  // part sur localhost:3005 pour que l'application soit pleinement fonctionnelle - voir
+  // src/environments/environment.ts (apiUrl). Un devcontainer frontend seul suffit pour
+  // lint/build/tests unitaires/e2e contre des mocks, mais pas pour naviguer l'application reelle.
+  "postAttachCommand": "echo 'Pret. Lancez : npm start  (ouvre http://localhost:4200 - necessite l API backend sur localhost:3005, voir geosm-api-refactor/.devcontainer)'",
+
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "angular.ng-template",
+        "nrwl.angular-console",
+        "dbaeumer.vscode-eslint",
+        "esbenp.prettier-vscode",
+        "ms-playwright.playwright"
+      ],
+      "settings": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode",
+        "editor.formatOnSave": true
+      }
+    }
+  }
+}
