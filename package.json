@@ -32,7 +32,7 @@
     "@nx/angular": "22.2.7",
     "@turf/turf": "^7.3.5",
     "chart.js": "^4.5.1",
-    "dom-to-image-more": "^3.10.0",
+    "dom-to-image-more": "^3.10.2",
     "jspdf": "^4.2.1",
     "material-icons": "^1.13.14",
     "ol": "^10.10.0",
