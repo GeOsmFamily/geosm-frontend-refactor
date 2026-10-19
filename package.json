@@ -69,7 +69,7 @@
     "nx": "22.2.7",
     "prettier": "^3.9.5",
     "puppeteer": "^25.3.0",
-    "typescript": "~5.5.2",
+    "typescript": "~7.0.2",
     "typescript-eslint": "8.65.0"
   }
 }
